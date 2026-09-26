@@ -6,6 +6,16 @@ use loomcc::testbed::{loom_units, Unit};
 use std::path::Path;
 use std::process::Command;
 
+/// Loom's units include PVSnesLib's headers (`<snes.h>`); without the
+/// toolchain ($PVSNESLIB_HOME) the checks that need them skip.
+fn have_pvsneslib() -> bool {
+    let ok = loomcc::testbed::pvsneslib_home().join("pvsneslib/include/snes.h").exists();
+    if !ok {
+        eprintln!("PVSnesLib headers not installed ($PVSNESLIB_HOME); skipping");
+    }
+    ok
+}
+
 fn units() -> Vec<Unit> {
     let u = loom_units();
     assert!(!u.is_empty(), "testbed/loom/units.json not found");
@@ -14,6 +24,9 @@ fn units() -> Vec<Unit> {
 
 #[test]
 fn every_loom_unit_preprocesses_and_parses() {
+    if !have_pvsneslib() {
+        return;
+    }
     let mut failures = Vec::new();
     for u in units() {
         let parsed = loomcc::parse(&u.path, &u.options()).unwrap();
@@ -73,6 +86,9 @@ fn flags(u: &Unit) -> Vec<String> {
 
 #[test]
 fn token_equal_to_clang_e() {
+    if !have_pvsneslib() {
+        return;
+    }
     if Command::new("clang").arg("--version").output().is_err() {
         eprintln!("clang not installed; skipping");
         return;
@@ -142,6 +158,9 @@ fn token_equal_to_816_tcc_e() {
 
 #[test]
 fn every_loom_unit_type_checks() {
+    if !have_pvsneslib() {
+        return;
+    }
     let mut failures = Vec::new();
     let mut warnings = 0;
     for u in units() {
