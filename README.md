@@ -114,7 +114,7 @@ Directives live in comments so every compiler ignores them; each is
 | directive | meaning |
 |---|---|
 | `loomcc-do: preprocess \| syntax \| compile \| run` | the action (required) |
-| `loomcc-options: -DX=1 -Iinc` | extra arguments for loomcc and every reference tool (quotes allowed) |
+| `loomcc-options: -DX=1 -Iinc` | extra arguments for loomcc and every reference tool (quotes allowed; `%PVSNESLIB%` and `%ROOT%` expand to the PVSnesLib root and this repository) |
 | `loomcc-expect: <tokens>` | expected `-E` output; all expect lines are joined in order and compared token by token (whitespace and line breaks do not matter; `+ +` is not `++`). An empty `loomcc-expect:` means "no tokens". A sidecar `<test>.expected` file may be used instead |
 | `loomcc-error: <regex>` | an error must be reported on this line; the message must match the case-insensitive regex (empty = any message) |
 | `loomcc-warning: <regex>` | the same for a warning |

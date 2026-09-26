@@ -215,6 +215,20 @@ the 816-tcc-only build passes. (Calls in the other direction, loomcc to
   `OBJ_LIKE (1-1)`; loomcc reports the other lines of that test.)
 - `n_7.c`, `n_line.c` (#line: F1), `n_pragma.c` (_Pragma: F2).
 
+### F18. The offsetof idiom is not folded: Loom's runtime does not compile (loomcc 65be77e)
+
+Tests: `t3-sema/constexpr/offsetof-idiom.c`, `t6-loom/compile/runtime-actor.c`.
+
+`(unsigned int)(&((LoomInputSnapshot *)0)->pad_count) == 2u` inside a
+`LOOM_STATIC_ASSERT` (a negative-array-size typedef), from Loom's
+runtime/src/actor.c:108. loomcc: `error: variable-length arrays are not
+supported`, i.e. it does not treat the expression as a constant. Strictly it
+is not an integer constant expression (C17 6.6p6), but gcc, clang and 816-tcc
+fold it (6.6p10 lets an implementation accept other forms), devkitsnes's own
+`offsetof` is written this way, and Loom depends on it. This is the only
+failure in T6 stage 1: the other 30 Loom and Cliffside units compile and
+assemble.
+
 ### F15. Not yet supported (tracked, not bugs)
 
 `rom` mode rejects 32-bit multiply, divide and shift, and recursion

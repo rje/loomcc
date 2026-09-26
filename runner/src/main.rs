@@ -167,7 +167,15 @@ fn real_main() -> Result<i32, String> {
     files.sort();
     let mut tests: Vec<(String, PathBuf, Result<Test, String>)> = Vec::new();
     for f in files {
-        let id = f.strip_prefix(&tests_dir).unwrap_or(&f).to_string_lossy().into_owned();
+        // Ids are relative to tests/ (tier = first component); external
+        // suites under external/fetched/<suite>/ get the tier `ext-<suite>`.
+        let id = match f.strip_prefix(&tests_dir) {
+            Ok(rel) => rel.to_string_lossy().into_owned(),
+            Err(_) => match f.strip_prefix(root.join("external/fetched")) {
+                Ok(rel) => format!("ext-{}", rel.to_string_lossy()),
+                Err(_) => f.to_string_lossy().into_owned(),
+            },
+        };
         let tier = tier_of(&id);
         if let Some(ts) = &tiers {
             if !ts.iter().any(|t| tier.starts_with(t.as_str())) {

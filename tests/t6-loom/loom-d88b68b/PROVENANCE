@@ -1,0 +1,13 @@
+Copied from the Loom repository (/Users/rje/src/rust/loom) at commit d88b68b
+("perf(runtime): the pass decides the idle second player; still sprites keep
+their x-sign bit"), unchanged:
+
+  runtime/include, runtime/src, runtime/backends/pvsneslib/{include,src}
+  examples/cliffside/Code
+  examples/cliffside/.loom/generated/{include,src,target/pvsneslib}
+    (Loom's generated C for the Cliffside sample, as present in that
+    working tree)
+
+The T6 tests in ../compile include these files; they are never edited here.
+To refresh: copy the same paths from a newer Loom commit into a new
+loom-<commit> directory and point the wrappers at it.

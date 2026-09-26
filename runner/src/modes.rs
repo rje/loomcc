@@ -42,7 +42,17 @@ pub fn default_refs(t: &Test) -> Vec<&'static str> {
     }
 }
 
+/// Expands `%ROOT%` (this repository) and `%PVSNESLIB%` in test options.
+fn substitute(t: &Test, cfg: &Config) -> Test {
+    let mut t = t.clone();
+    let pvs = cfg.tools.pvsneslib.as_ref().map(|p| p.display().to_string()).unwrap_or_default();
+    let root = cfg.root.display().to_string();
+    t.options = t.options.iter().map(|o| o.replace("%PVSNESLIB%", &pvs).replace("%ROOT%", &root)).collect();
+    t
+}
+
 pub fn plan(_i: usize, id: &str, path: &Path, t: &Test, cfg: &Config) -> Vec<Job> {
+    let t = &substitute(t, cfg);
     let mut jobs = Vec::new();
     let mk = |mode: &str| Job {
         id: id.to_string(),
@@ -351,7 +361,12 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
                 } else if let Some(wla) = &cfg.tools.wla {
                     if cfg.tools.pvsneslib.is_some() {
                         let _ = rom::write_hdr(&cfg.tools, work);
-                        let o = exec::run(wla, &["-o".into(), "out.obj".into(), "out.asm".into()], work, Duration::from_secs(60));
+                        let o = exec::run(
+                            wla,
+                            &["-d".into(), "-s".into(), "-x".into(), "-o".into(), "out.obj".into(), "out.asm".into()],
+                            work,
+                            Duration::from_secs(60),
+                        );
                         rom::log_cmd(log, &o);
                         if !o.ok() {
                             p.push(format!("wla-65816 rejected loomcc's output: {}", rom::first_lines(&o.stderr, 5)));
