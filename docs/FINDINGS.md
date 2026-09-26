@@ -151,7 +151,7 @@ before 'T'`. Loom does not do this today, but hooks written by users could.
 Test: `t3-sema/layout/bitfields-816tcc.c`, line 19:
 `struct P { unsigned char a : 4; unsigned b : 4; };` is 4 bytes in 816-tcc
 (`scripts/tcc-layout.py`: `a` in a char unit at byte 0, `b` in a new 16-bit
-unit at byte 2). loomcc gives another size. The other seven structs in the
+unit at byte 2). loomcc makes it 2 bytes (b packed into the same bytes as a). The other seven structs in the
 file match.
 
 ### F12. Negative pointer offsets read the wrong element (same build, `rom` mode)
