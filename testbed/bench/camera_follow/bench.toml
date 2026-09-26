@@ -1,0 +1,11 @@
+name = "camera_follow"
+kind = "pair"
+description = "The camera's tick: target lookup, regions, centre/dead-zone/screens follow with look-ahead, auto-scroll, clamp, smoothing and Mode 1's store. Eight ticks through seven scenes."
+unit_labels = ["loom_pvs_camera_update"]
+helper_labels = ["tcc__mul", "tcc__div"]
+
+[provenance]
+loom_commit = "925fc3a"
+c_source = "runtime/src/camera.c:43-278 at 925fc3a^ (loom_camera_active_settings, _auto_step, _axis_goal, _approach, _apply) plus the Mode 1 calls it makes, runtime/src/mode1.c:65-76, 1386-1416, 1454-1474, 1662-1670 at 925fc3a^ (loom_mode1_clamp, _set_camera, _sprite_index, _sprite_position, _camera_x/_y)"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_camera_update (with loom_pvs_camera_half/_axis_goal/_approach/_auto and loom_pvs_player_umul/_udiv) at 925fc3a (changed by HEAD: HEAD tests the facing's sign bit instead of comparing it with 1, and adds unrelated routines)"
+notes = "loom_camera_apply is specialised to snap == LOOM_FALSE (the snap-only bounds read and auto-scroll arms dropped; the asm has no snap). Mode 1's state and scene are cut down to the fields the path reads; the asm reads them through driver-bound pointers (loom_pvs_mode1_*) as Loom binds them at activation. The loom_camera_update guards (initialized, scene null) stay with the caller in both."
