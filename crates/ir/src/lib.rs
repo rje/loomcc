@@ -1,14 +1,11 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+//! loomcc-ir: the IR, lowering from the typed tree, and an interpreter.
+
+pub mod interp;
+pub mod ir;
+pub mod lower;
+pub mod verify;
+
+pub use ir::*;
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+mod tests;

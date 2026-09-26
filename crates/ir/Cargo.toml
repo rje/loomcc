@@ -4,3 +4,6 @@ version = "0.1.0"
 edition.workspace = true
 
 [dependencies]
+loomcc-pp = { path = "../pp" }
+loomcc-parse = { path = "../parse" }
+loomcc-sema = { path = "../sema" }
