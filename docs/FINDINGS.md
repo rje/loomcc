@@ -107,14 +107,6 @@ external suites) call `strcpy`: the ROM links PVSnesLib's libc and passes;
 implements printf/puts/putchar; it would need the mem*/str* functions
 PVSnesLib provides as well (harness/libc/string.h lists them).
 
-### F15. Not yet supported (tracked, not bugs) - done in cac2523
-
-`rom` mode rejects 32-bit multiply, divide, remainder and variable shifts,
-and recursion (`recursion is not supported yet (static frames)`):
-`t4-exec/arith32/*`, `t4-exec/call/recursion-*.c`, `mutual-recursion.c`,
-`misc/fixed-point.c`, `algo/gcd-lcm.c`, and about 50 of the wrapped GCC and
-c-testsuite tests.
-
 ## Design questions
 
 ### Q2. PVSnesLib's `int32_t` under loomcc
