@@ -18,6 +18,9 @@
 ;                 $e817  exit() was called; test_result holds its argument
 ;                 $c4ec  a CHECK failed; test_result holds its line
 ;                        (loomcc-test.h's CHECK calls loomcc_test_fail_line)
+;                 $0bad  main returned 0 (or exit(0)) but the printed output
+;                        differs from the expected output; test_result holds
+;                        the offset of the first difference (stdio.c)
 ;   test_result = the 16-bit return value (0 means pass)
 
 .SECTION "loomcc_harness.code" SUPERFREE
@@ -34,10 +37,28 @@ main:
   sta.l test_result
   lda.w #$600d
   sta.l test_status
+  lda.l test_result
+  bne harness_finish
+  jsr harness_check_output
+harness_finish:
   lda.w #1
   sta.l test_done
 harness_idle:
   bra harness_idle
+
+; Compares the printed output with the expected output (stdio.c); on a
+; difference sets status $0bad and result = offset. A = 16-bit on entry.
+harness_check_output:
+  jsl loomcc_check_output
+  rep #$30
+  lda.b tcc__r0
+  beq harness_check_done
+  dec a
+  sta.l test_result
+  lda.w #$0bad
+  sta.l test_status
+harness_check_done:
+  rts
 
 ; void loomcc_test_abort(void)
 loomcc_test_abort:
@@ -68,6 +89,10 @@ loomcc_test_exit:
   sta.l test_result
   lda.w #$e817
   sta.l test_status
+  lda.l test_result
+  bne harness_exit_done
+  jsr harness_check_output
+harness_exit_done:
   lda.w #1
   sta.l test_done
 harness_exit_idle:

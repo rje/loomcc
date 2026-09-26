@@ -100,6 +100,9 @@ pub struct Test {
     pub max_frames: Option<u32>,
     /// `loomcc-skip-mode: ir rom host ...`: modes that do not apply.
     pub skip_modes: Vec<String>,
+    /// Expected stdout of a run test (`loomcc-expect-output: FILE` or
+    /// `loomcc-expect-stdout:` lines, each ending in a newline).
+    pub expect_output: Option<Vec<u8>>,
 }
 
 pub fn parse(path: &Path, text: &str) -> Result<Option<Test>, String> {
@@ -121,7 +124,9 @@ pub fn parse(path: &Path, text: &str) -> Result<Option<Test>, String> {
         asm_sources: Vec::new(),
         max_frames: None,
         skip_modes: Vec::new(),
+        expect_output: None,
     };
+    let mut stdout_lines: Option<String> = None;
     let mut expect_lines: Vec<String> = Vec::new();
     let mut have_expect = false;
     let mut int_given = false;
@@ -198,11 +203,26 @@ pub fn parse(path: &Path, text: &str) -> Result<Option<Test>, String> {
             "tcc-sources" => t.tcc_sources.extend(value.split_whitespace().map(String::from)),
             "asm-sources" => t.asm_sources.extend(value.split_whitespace().map(String::from)),
             "skip-mode" => t.skip_modes.extend(value.split(|c: char| c == ',' || c.is_whitespace()).filter(|s| !s.is_empty()).map(String::from)),
+            "expect-stdout" => {
+                let buf = stdout_lines.get_or_insert_with(String::new);
+                buf.push_str(&value);
+                buf.push('\n');
+            }
+            "expect-output" => {
+                let f = path.parent().unwrap().join(value.trim());
+                t.expect_output = Some(std::fs::read(&f).map_err(|e| err(&format!("{}: {}", f.display(), e)))?);
+            }
             "note" | "source" | "licence" | "license" => {}
             other => return Err(err(&format!("unknown directive loomcc-{}", other))),
         }
     }
     let Some(action) = action else { return Ok(None) };
+    if let Some(sl) = stdout_lines {
+        if t.expect_output.is_some() {
+            return Err(format!("{}: both loomcc-expect-stdout and loomcc-expect-output", path.display()));
+        }
+        t.expect_output = Some(sl.into_bytes());
+    }
     t.action = action;
     if action == Action::Run && !int_given {
         return Err(format!("{}: run tests must say `loomcc-int: agnostic` or `loomcc-int: 16`", path.display()));

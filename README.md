@@ -125,6 +125,8 @@ Directives live in comments so every compiler ignores them; each is
 | `loomcc-xfail: <reason>` | loomcc is expected to fail this test |
 | `loomcc-ref: clang, tcc` | the reference tools that apply (default per action, below; empty = none) |
 | `loomcc-ref-diverges: <tool> [code] <reason>` | that reference tool is known to disagree (XFAIL for it); codes are listed in docs/DIVERGENCES.md |
+| `loomcc-expect-stdout: <text>` | run tests: one line of expected printed output (lines joined with newlines, each ending in one) |
+| `loomcc-expect-output: <file>` | run tests: the expected output is this file's bytes |
 | `loomcc-int: agnostic \| 16` | run tests: whether the result is the same with 32-bit int (required for `run`) |
 | `loomcc-skip-mode: ir rom host ...` | modes or references that do not apply |
 | `loomcc-extra-sources: b.c` | more C sources, compiled by the compiler under test and linked in |
@@ -153,6 +155,14 @@ ignored.
 | `host` | host clang `-O1 -fsanitize=undefined -fsanitize-trap=all`, run natively | run tests marked `loomcc-int: agnostic` |
 | `host16` | LLVM clang `--target=msp430-none-elf -emit-llvm`, pointers widened in the data layout, run by `lli -force-interpreter` | run tests (16-bit int semantics on the host) |
 | `tcc-rom` | 816-tcc + 816-opt + wla-65816 + wlalink + loom-emulator, the same harness ROM loomcc's `rom` mode uses | run tests |
+
+Printing: harness ROMs link `harness/rom/stdio.c` (always compiled by
+816-tcc): `printf` (`%d %i %u %x %X %o %c %s %p %%`, width, `-`/`0` flags,
+`l` = 32 bits), `puts` and `putchar` append to a 4 KiB WRAM buffer, and after
+main returns 0 the harness compares it with the expected output, reporting
+the first differing byte. Host runs compare stdout. `ir` mode compares the
+interpreter's stdout, so `--run-ir` must implement `printf`/`puts`/`putchar`
+(it does). host16 cannot run printing tests (UNSUPPORTED).
 
 `harness/include/loomcc-test.h` gives every tool `i8/u8/i16/u16/i32/u32`,
 `STATIC_CHECK(e)` (a negative-array-size static assertion 816-tcc

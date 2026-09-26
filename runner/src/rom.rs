@@ -14,6 +14,44 @@ const DONE_STATUS: i64 = 0x600d;
 const ABORT_STATUS: i64 = 0xdead;
 const EXIT_STATUS: i64 = 0xe817;
 const CHECK_STATUS: i64 = 0xc4ec;
+const OUTPUT_STATUS: i64 = 0x0bad;
+
+/// harness/rom/stdio.c compiled once by 816-tcc (every ROM links it).
+static STDIO_ASM: std::sync::Mutex<Option<String>> = std::sync::Mutex::new(None);
+
+fn stdio_unit(tools: &Tools, dir: &Path, log: &mut String) -> Result<PathBuf, String> {
+    let dst = dir.join("loomcc_stdio.asm");
+    let mut cache = STDIO_ASM.lock().unwrap();
+    if cache.is_none() {
+        let tmp = dir.join("loomcc_stdio_build.asm");
+        tcc_compile(tools, &tools.harness_rom.join("stdio.c"), &tmp, &[], dir, log)?;
+        *cache = Some(std::fs::read_to_string(&tmp).map_err(|e| e.to_string())?);
+    }
+    std::fs::write(&dst, cache.as_ref().unwrap()).map_err(|e| e.to_string())?;
+    Ok(dst)
+}
+
+/// The expected output as data for stdio.c's loomcc_check_output.
+fn expected_unit(dir: &Path, expected: Option<&[u8]>) -> Result<PathBuf, String> {
+    let bytes = expected.unwrap_or(&[]);
+    let mut t = String::from(".include \"hdr.asm\"\n.SECTION \".loomcc_expected\" SUPERFREE\n");
+    t.push_str(&format!("loomcc_expected_check: .db {}\n", if expected.is_some() { 1 } else { 0 }));
+    t.push_str(&format!("loomcc_expected_len: .dw {}\n", bytes.len()));
+    t.push_str("loomcc_expected_out:\n");
+    for chunk in bytes.chunks(16) {
+        t.push_str(".db ");
+        t.push_str(&chunk.iter().map(|b| format!("${:02x}", b)).collect::<Vec<_>>().join(","));
+        t.push('\n');
+    }
+    t.push_str(".db 0\n.ENDS\n");
+    let dst = dir.join("loomcc_expected.asm");
+    std::fs::write(&dst, t).map_err(|e| e.to_string())?;
+    Ok(dst)
+}
+
+fn show(bytes: &[u8]) -> String {
+    bytes.iter().map(|&b| if b == b'\n' { "\\n".to_string() } else if (32..127).contains(&b) { (b as char).to_string() } else { format!("\\x{:02x}", b) }).collect()
+}
 
 pub enum RomOutcome {
     Pass,
@@ -105,7 +143,7 @@ fn read_symbol(sym: &str, name: &str) -> Option<u32> {
 
 /// Assembles `units` (WLA-DX sources already in `dir`) with the harness,
 /// links and runs the ROM.
-pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u32, log: &mut String) -> RomOutcome {
+pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u32, expected: Option<&[u8]>, log: &mut String) -> RomOutcome {
     macro_rules! tryb {
         ($e:expr) => {
             match $e {
@@ -119,6 +157,8 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
     let wla = tools.wla.as_ref().unwrap();
     let mut objs = Vec::new();
     let mut all: Vec<PathBuf> = vec![dir.join("loomcc_harness.asm")];
+    all.push(tryb!(stdio_unit(tools, dir, log)));
+    all.push(tryb!(expected_unit(dir, expected)));
     all.extend(units.iter().cloned());
     for u in &all {
         let obj = u.with_extension("obj");
@@ -132,7 +172,8 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
         if !o.ok() {
             // An assembler error in a compiled unit is the compiler's fault.
             let msg = format!("wla-65816 rejected {}: {}", u.file_name().unwrap().to_string_lossy(), first_lines(&o.stderr, 5));
-            return if u.ends_with("loomcc_harness.asm") { RomOutcome::Broken(msg) } else { RomOutcome::Fail(msg) };
+            let ours = u.file_name().map_or(false, |n| n.to_string_lossy().starts_with("loomcc_"));
+            return if ours { RomOutcome::Broken(msg) } else { RomOutcome::Fail(msg) };
         }
         objs.push(obj);
     }
@@ -157,9 +198,13 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
         return RomOutcome::Fail(format!("wlalink failed: {}", first_lines(&o.stderr, 5)));
     }
     let sym = tryb!(std::fs::read_to_string(dir.join("test.sym")));
-    let (Some(done), Some(status), Some(result)) =
-        (read_symbol(&sym, "test_done"), read_symbol(&sym, "test_status"), read_symbol(&sym, "test_result"))
-    else {
+    let (Some(done), Some(status), Some(result), Some(outlen), Some(diff)) = (
+        read_symbol(&sym, "test_done"),
+        read_symbol(&sym, "test_status"),
+        read_symbol(&sym, "test_result"),
+        read_symbol(&sym, "loomcc_out_len"),
+        read_symbol(&sym, "loomcc_diff"),
+    ) else {
         return RomOutcome::Broken("harness symbols missing from test.sym".into());
     };
     tryb!(std::fs::write(dir.join("script.json"), format!("[{{\"until\":\"done=1\",\"max\":{}}}]", max_frames)));
@@ -172,7 +217,10 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
         "--out".into(),
         "emu".into(),
         "--watches".into(),
-        format!("done:{:06x}:2,status:{:06x}:2,result:{:06x}:s2", done, status, result),
+        format!(
+            "done:{:06x}:2,status:{:06x}:2,result:{:06x}:s2,outlen:{:06x}:2,d0:{:06x}:4,d1:{:06x}:4,d2:{:06x}:4,d3:{:06x}:4",
+            done, status, result, outlen, diff, diff + 4, diff + 8, diff + 12
+        ),
     ];
     // loom-emulator occasionally faults at frame 0 when the machine is busy
     // ("MesenCore frame step advanced from 0 to 0"): retry once.
@@ -188,10 +236,14 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
     let csv = tryb!(std::fs::read_to_string(dir.join("emu/trace.csv")));
     let last = csv.lines().last().unwrap_or("");
     let cols: Vec<i64> = last.split(',').skip(2).filter_map(|v| v.parse().ok()).collect();
-    if cols.len() != 3 {
+    if cols.len() != 8 {
         return RomOutcome::Broken(format!("unreadable trace row `{}`", last));
     }
-    let (d, s, r) = (cols[0], cols[1], cols[2]);
+    let (d, s, r, outlen) = (cols[0], cols[1], cols[2], cols[3]);
+    let mut window = Vec::new();
+    for w in &cols[4..8] {
+        window.extend_from_slice(&(*w as u32).to_le_bytes());
+    }
     let frames = csv.lines().count().saturating_sub(1);
     if d != 1 {
         return RomOutcome::Fail(format!("did not finish within {} frames (status {:04x})", frames, s));
@@ -203,6 +255,20 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
         EXIT_STATUS if r == 0 => RomOutcome::Pass,
         EXIT_STATUS => RomOutcome::Fail(format!("exit({})", r)),
         CHECK_STATUS => RomOutcome::Fail(format!("CHECK failed at line {}", r)),
+        OUTPUT_STATUS => {
+            let at = (r as u16) as usize;
+            let exp = expected.unwrap_or(&[]);
+            let e = &exp[at.min(exp.len())..(at + 16).min(exp.len())];
+            let got_len = (outlen as usize).saturating_sub(at).min(16);
+            RomOutcome::Fail(format!(
+                "output differs at byte {} (printed {} bytes, expected {}): got `{}`, expected `{}`",
+                at,
+                outlen,
+                exp.len(),
+                show(&window[..got_len]),
+                show(e)
+            ))
+        }
         other => RomOutcome::Broken(format!("unknown status {:04x}", other)),
     }
 }

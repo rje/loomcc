@@ -399,7 +399,7 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
                 return Res::Fail("interpreter timed out".into());
             }
             if out.ok() {
-                Res::Pass
+                check_stdout(t, &out.stdout)
             } else {
                 Res::Fail(format!("--run-ir: {} {}", out.describe(), rom::first_lines(&out.stderr, 3)))
             }
@@ -425,10 +425,25 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
             if let Err(e) = add_tcc_and_asm(t, cfg, dir, work, &flags, &mut units, log) {
                 return Res::Unresolved(e);
             }
-            rom_verdict(rom::link_and_run(&cfg.tools, work, &units, t.max_frames.unwrap_or(300), log))
+            if cfg.tools.tcc.is_none() {
+                return Res::Unsupported("the ROM harness needs 816-tcc for its stdio".into());
+            }
+            rom_verdict(rom::link_and_run(&cfg.tools, work, &units, t.max_frames.unwrap_or(300), t.expect_output.as_deref(), log))
         }
         m => Res::Unresolved(format!("unknown mode {}", m)),
     }
+}
+
+/// Compares a run's stdout with the test's expected output, if any.
+fn check_stdout(t: &Test, stdout: &str) -> Res {
+    let Some(exp) = &t.expect_output else { return Res::Pass };
+    let got = stdout.as_bytes();
+    if got == exp.as_slice() {
+        return Res::Pass;
+    }
+    let at = got.iter().zip(exp.iter()).position(|(a, b)| a != b).unwrap_or(got.len().min(exp.len()));
+    let snip = |b: &[u8]| String::from_utf8_lossy(&b[at.min(b.len())..(at + 24).min(b.len())]).replace('\n', "\\n");
+    Res::Fail(format!("output differs at byte {} (printed {}, expected {}): got `{}`, expected `{}`", at, got.len(), exp.len(), snip(got), snip(exp)))
 }
 
 fn rom_flags(t: &Test, cfg: &Config) -> Vec<String> {
@@ -553,7 +568,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             let out = exec::run(&exe, &[], dir, timeout(t, 30));
             rom::log_cmd(log, &out);
             if out.ok() {
-                Res::Pass
+                check_stdout(t, &out.stdout)
             } else {
                 Res::Fail(format!("host run: {} {}{}", out.describe(), rom::first_lines(&out.stdout, 2), rom::first_lines(&out.stderr, 2)))
             }
@@ -562,6 +577,12 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             let clang = need!(&tools.llvm_clang, "LLVM clang");
             let lli = need!(&tools.lli, "lli");
             let mut lls = Vec::new();
+            if t.expect_output.is_some() {
+                // The host's variadic printf cannot read msp430's 16-bit int
+                // arguments, and lli's interpreter crashes on va_arg, so
+                // printing tests have no host16 reference.
+                return Res::Unsupported("host16 cannot run tests that print".into());
+            }
             let sources: Vec<String> = std::iter::once(file.clone()).chain(t.extra_sources.iter().cloned()).chain(t.tcc_sources.iter().cloned()).collect();
             for (n, s) in sources.iter().enumerate() {
                 let ll = work.join(format!("s{}.ll", n));
@@ -619,7 +640,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             let out = exec::run(&lli, &["-force-interpreter".into(), patched.display().to_string()], work, timeout(t, 60));
             rom::log_cmd(log, &out);
             if out.ok() {
-                Res::Pass
+                check_stdout(t, &out.stdout)
             } else {
                 let check = out.stdout.lines().find(|l| l.starts_with("CHECK failed")).map(String::from);
                 Res::Fail(format!("lli: {}: {}", out.describe(), check.unwrap_or_else(|| rom::first_lines(&out.stderr, 1))))
@@ -642,7 +663,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             if let Err(e) = add_tcc_and_asm(t, cfg, dir, work, &flags, &mut units, log) {
                 return Res::Fail(e);
             }
-            match rom::link_and_run(tools, work, &units, t.max_frames.unwrap_or(300), log) {
+            match rom::link_and_run(tools, work, &units, t.max_frames.unwrap_or(300), t.expect_output.as_deref(), log) {
                 RomOutcome::Pass => Res::Pass,
                 RomOutcome::Fail(d) => Res::Fail(d),
                 RomOutcome::Broken(d) => Res::Unresolved(d),
