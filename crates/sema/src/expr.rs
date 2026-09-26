@@ -657,7 +657,7 @@ impl Checker {
         let loc = e.loc;
         let ty = e.ty;
         if self.func.is_none() {
-            self.error(loc, "cannot take a member of a non-lvalue here");
+            // At file scope only the type is ever used (sizeof, typeof).
             return e;
         }
         let lid = self.new_local("", ty, false, loc);

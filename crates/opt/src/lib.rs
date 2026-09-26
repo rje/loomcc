@@ -53,11 +53,14 @@ pub fn optimize_func(f: &mut Func, level: u8) {
 }
 
 pub fn optimize_module(m: &mut Module, opts: &Options) {
-    if opts.level >= 2 && opts.inline {
-        inline::inline_module(m);
-    }
     for f in &mut m.funcs {
         optimize_func(f, opts.level);
+    }
+    if opts.level >= 2 && opts.inline {
+        inline::inline_module(m);
+        for f in &mut m.funcs {
+            optimize_func(f, opts.level);
+        }
     }
     if opts.level >= 1 {
         inline::remove_dead_functions(m);

@@ -32,6 +32,7 @@ assembly that replaced the C in Loom's history, **loomcc** = this compiler.
 | M6f: loads folded into the next instruction's operand (`sbc [dp],y`), no bank copy on pointer increments | 0.41 | 1.36 | 0.52 | 31/31 |
 | M6g: lazy 8-bit accumulator sections (consecutive byte stores share one `sep`) | 0.41 | 1.36 | 0.52 | 31/31 |
 | M6h: range analysis re-folds non-negative signed indexes into indexed modes | 0.40 | 1.35 | 0.51 | 31/31 |
+| M7a: whole-program inlining (small callees; single-call statics) | 0.39 | 1.30 | 0.50 | 31/31 |
 
 (Geometric means. Lower is better; asm/tcc clocks is 0.32 for scale.)
 

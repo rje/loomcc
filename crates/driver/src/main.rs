@@ -96,6 +96,13 @@ fn parse_args() -> Result<Args, String> {
 }
 
 fn main() -> ExitCode {
+    // Deeply nested programs (thousands of case labels, long else-if
+    // chains) recurse deeply in the parser and sema: give them room.
+    let child = std::thread::Builder::new().stack_size(512 << 20).spawn(real_main).expect("spawn compiler thread");
+    child.join().unwrap_or(ExitCode::from(101))
+}
+
+fn real_main() -> ExitCode {
     let args = match parse_args() {
         Ok(a) => a,
         Err(e) => {
