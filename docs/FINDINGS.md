@@ -71,6 +71,16 @@ expansion (`defined.c`) and a directive inside macro arguments
 (`mac-dir-2.c`); both are undefined behaviour that gcc diagnoses, so they are
 quality issues only.
 
+### F25. Re-entrant calls through 816-tcc code corrupt unit locals (rom; build of 2026-09-26 ~08:00)
+
+Test: `t5-snes/interop/reentrant-chain.c`. `unit_step` (loomcc) calls
+`tcc_step` (816-tcc) which calls `unit_step` again, three levels deep; each
+activation keeps a local (`mine`) live across the call. Expected 213 (host,
+host16 and the 816-tcc-only ROM agree); loomcc's ROM fails the CHECK. This is
+the case loomcc PLAN section 8 names: a call into foreign code can re-enter
+the unit, so a function reachable that way cannot keep its locals in one
+static frame (or must save it around external calls).
+
 ### F20. Source files must be UTF-8 (65be77e, still in 1fc1258)
 
 GCC torture `execute/20000227-1.c` has a raw 0xFF byte inside a string

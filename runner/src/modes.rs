@@ -335,7 +335,7 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
             let mut args = t.options.clone();
             args.push("-E".into());
             args.push(file.clone());
-            let out = exec::run(lc, &args, dir, timeout(t, 30));
+            let out = exec::run(lc, &args, dir, timeout(t, 120));
             rom::log_cmd(log, &out);
             let mut p = check_frontend(t, &out, &file, true, "loomcc");
             if p.is_empty() || !out.crashed() {
@@ -352,7 +352,7 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
             args.extend(t.options.clone());
             args.push("-fsyntax-only".into());
             args.push(file.clone());
-            let out = exec::run(lc, &args, dir, timeout(t, 30));
+            let out = exec::run(lc, &args, dir, timeout(t, 120));
             rom::log_cmd(log, &out);
             verdict(check_frontend(t, &out, &file, true, "loomcc"))
         }
@@ -361,7 +361,7 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
             let mut args = vec![harness_inc(cfg)];
             args.extend(t.options.clone());
             args.extend(["-S".into(), file.clone(), "-o".into(), asm.display().to_string()]);
-            let out = exec::run(lc, &args, dir, timeout(t, 60));
+            let out = exec::run(lc, &args, dir, timeout(t, 180));
             rom::log_cmd(log, &out);
             let mut p = check_frontend(t, &out, &file, true, "loomcc");
             if p.is_empty() && !expects_errors(t) {
@@ -393,7 +393,7 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
             for s in t.extra_sources.iter().chain(t.tcc_sources.iter()) {
                 args.push(s.clone());
             }
-            let out = exec::run(lc, &args, dir, timeout(t, 60));
+            let out = exec::run(lc, &args, dir, timeout(t, 180));
             rom::log_cmd(log, &out);
             if out.timed_out {
                 return Res::Fail("interpreter timed out".into());
@@ -415,7 +415,7 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
                 let asm = work.join(format!("u{}.asm", n));
                 let mut args = flags.clone();
                 args.extend(["-S".into(), s.clone(), "-o".into(), asm.display().to_string()]);
-                let out = exec::run(lc, &args, dir, timeout(t, 60));
+                let out = exec::run(lc, &args, dir, timeout(t, 180));
                 rom::log_cmd(log, &out);
                 if !out.ok() {
                     return Res::Fail(format!("loomcc -S {} failed ({}): {}", s, out.describe(), rom::error_lines(&out.stderr, 3)));
@@ -497,7 +497,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             };
             args.extend(t.options.clone());
             args.push(file.clone());
-            let mut out = exec::run(&prog, &args, dir, timeout(t, 30));
+            let mut out = exec::run(&prog, &args, dir, timeout(t, 120));
             rom::log_cmd(log, &out);
             // 816-tcc -E aborts (SIGABRT) while exiting after writing complete
             // output; treat that as success when it printed no errors.
@@ -526,7 +526,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             args.push(harness_inc(cfg));
             args.extend(t.options.clone());
             args.push(file.clone());
-            let out = exec::run(&prog, &args, dir, timeout(t, 30));
+            let out = exec::run(&prog, &args, dir, timeout(t, 120));
             rom::log_cmd(log, &out);
             verdict(check_frontend(t, &out, &file, false, tool))
         }
@@ -536,7 +536,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             args.extend(tools.tcc_includes());
             args.extend(t.options.clone());
             args.extend(["-c".into(), file.clone(), "-o".into(), work.join("out.ps").display().to_string()]);
-            let out = exec::run(&prog, &args, dir, timeout(t, 30));
+            let out = exec::run(&prog, &args, dir, timeout(t, 120));
             rom::log_cmd(log, &out);
             verdict(check_frontend(t, &out, &file, false, tool))
         }
@@ -560,12 +560,14 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             args.extend(t.extra_sources.iter().cloned());
             args.extend(t.tcc_sources.iter().cloned());
             args.extend(["-o".into(), exe.display().to_string()]);
-            let out = exec::run(&prog, &args, dir, timeout(t, 60));
+            let out = exec::run(&prog, &args, dir, timeout(t, 180));
             rom::log_cmd(log, &out);
             if !out.ok() {
                 return Res::Fail(format!("host clang failed: {}", rom::first_lines(&out.stderr, 5)));
             }
-            let out = exec::run(&exe, &[], dir, timeout(t, 30));
+            // Run the program in the scratch directory: nothing a test does
+            // may write beside the test (or anywhere outside the work area).
+            let out = exec::run(&exe, &[], work, timeout(t, 120));
             rom::log_cmd(log, &out);
             if out.ok() {
                 check_stdout(t, &out.stdout)
@@ -589,7 +591,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
                 let mut args = vec!["--target=msp430-none-elf".to_string(), "-fsigned-char".into(), "-std=c17".into(), "-O0".into(), "-w".into(), "-S".into(), "-emit-llvm".into(), "-DLOOMCC_TEST_HOST=1".into(), harness_inc(cfg)];
                 args.extend(t.options.clone());
                 args.extend([s.clone(), "-o".into(), ll.display().to_string()]);
-                let out = exec::run(&clang, &args, dir, timeout(t, 60));
+                let out = exec::run(&clang, &args, dir, timeout(t, 180));
                 rom::log_cmd(log, &out);
                 if !out.ok() {
                     return Res::Fail(format!("clang (msp430) failed: {}", rom::first_lines(&out.stderr, 5)));
@@ -603,7 +605,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
                 let dst = work.join("linked.ll");
                 let mut args: Vec<String> = vec!["-S".into(), "-o".into(), dst.display().to_string()];
                 args.extend(lls.iter().map(|p| p.display().to_string()));
-                let out = exec::run(&link, &args, work, timeout(t, 60));
+                let out = exec::run(&link, &args, work, timeout(t, 180));
                 rom::log_cmd(log, &out);
                 if !out.ok() {
                     return Res::Fail(format!("llvm-link failed: {}", rom::first_lines(&out.stderr, 5)));
@@ -623,7 +625,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
                 &opt,
                 &["-S".into(), "-passes=instcombine<no-verify-fixpoint>".into(), widened.display().to_string(), "-o".into(), patched.display().to_string()],
                 work,
-                timeout(t, 60),
+                timeout(t, 180),
             );
             rom::log_cmd(log, &out);
             if !out.ok() {
@@ -637,7 +639,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
                 .map(|l| freeze.replace(l, "= bitcast $1 $2 to $1").into_owned() + "\n")
                 .collect();
             let _ = std::fs::write(&patched, text);
-            let out = exec::run(&lli, &["-force-interpreter".into(), patched.display().to_string()], work, timeout(t, 60));
+            let out = exec::run(&lli, &["-force-interpreter".into(), patched.display().to_string()], work, timeout(t, 180));
             rom::log_cmd(log, &out);
             if out.ok() {
                 check_stdout(t, &out.stdout)

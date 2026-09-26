@@ -4,3 +4,4 @@
 *.sfc
 *.obj
 .DS_Store
+platform.info

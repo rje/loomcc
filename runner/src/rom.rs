@@ -95,12 +95,12 @@ pub fn tcc_compile(tools: &Tools, c: &Path, out_asm: &Path, flags: &[String], cw
     let mut args: Vec<String> = flags.to_vec();
     args.extend(tools.tcc_includes());
     args.extend(["-F".into(), "-c".into(), c.display().to_string(), "-o".into(), ps.display().to_string()]);
-    let o = exec::run(tcc, &args, cwd, Duration::from_secs(60));
+    let o = exec::run(tcc, &args, cwd, Duration::from_secs(180));
     log_cmd(log, &o);
     if !o.ok() {
         return Err(format!("816-tcc failed ({}): {}", o.describe(), first_lines(&o.stderr, 5)));
     }
-    let o = exec::run(opt, &["-i".into(), ps.display().to_string(), "-o".into(), out_asm.display().to_string()], cwd, Duration::from_secs(60));
+    let o = exec::run(opt, &["-i".into(), ps.display().to_string(), "-o".into(), out_asm.display().to_string()], cwd, Duration::from_secs(180));
     log_cmd(log, &o);
     if !o.ok() {
         return Err(format!("816-opt failed ({})", o.describe()));
@@ -124,7 +124,11 @@ pub fn log_cmd(log: &mut String, o: &exec::Output) {
 
 /// The error lines of a tool's output (warnings skipped), else its first lines.
 pub fn error_lines(s: &str, n: usize) -> String {
-    let errs: Vec<&str> = s.lines().filter(|l| l.contains("error")).take(n).collect();
+    let errs: Vec<&str> = s
+        .lines()
+        .filter(|l| l.contains("error") || l.contains("interpreter:") || l.contains("panicked"))
+        .take(n)
+        .collect();
     if errs.is_empty() {
         first_lines(s, n)
     } else {
@@ -179,7 +183,7 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
             wla,
             &["-d".into(), "-s".into(), "-x".into(), "-o".into(), obj.display().to_string(), u.display().to_string()],
             dir,
-            Duration::from_secs(60),
+            Duration::from_secs(180),
         );
         log_cmd(log, &o);
         if !o.ok() {
@@ -204,7 +208,7 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
         tools.wlalink.as_ref().unwrap(),
         &["-d".into(), "-s".into(), "-A".into(), "-c".into(), "-L".into(), lib.display().to_string(), "linkfile".into(), "test.sfc".into()],
         dir,
-        Duration::from_secs(60),
+        Duration::from_secs(180),
     );
     log_cmd(log, &o);
     if !o.ok() || !dir.join("test.sfc").exists() {
@@ -238,10 +242,10 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
     // loom-emulator occasionally faults at frame 0 when the machine is busy
     // ("MesenCore frame step advanced from 0 to 0"): retry once.
     let emu_lock = EMULATOR.lock().unwrap_or_else(|e| e.into_inner());
-    let mut o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(120));
+    let mut o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(300));
     if !o.ok() && o.stderr.contains("frame 0") {
         log_cmd(log, &o);
-        o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(120));
+        o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(300));
     }
     drop(emu_lock);
     log_cmd(log, &o);

@@ -83,8 +83,10 @@ def main(argv):
     for s in seeds:
         if use_csmith:
             tmp = work / f"csmith-{s}.c"
+            # Csmith writes platform.info into its working directory: keep it
+            # in the scratch directory.
             subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", "csmith", "--seed", str(s), *CSMITH_FLAGS, "-o", str(tmp)], check=True,
-                           capture_output=True)
+                           capture_output=True, cwd=work)
             prog = tmp.read_text()
             extra = [f"-I{CSMITH_DIR}"]
         else:
