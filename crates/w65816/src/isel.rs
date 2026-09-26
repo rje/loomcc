@@ -267,7 +267,19 @@ impl<'a> Gen<'a> {
             Src::Mem(r) => {
                 let addr = self.al.folded[r.0 as usize].clone().unwrap();
                 let keep = mnem != "lda";
+                // A carry set up for adc/sbc must survive the address
+                // preparation (which may shift): move it after.
+                let carry = match self.lines.last() {
+                    Some(Line::Inst { mnem: m @ ("clc" | "sec"), .. }) if matches!(mnem, "adc" | "sbc") => Some(*m),
+                    _ => None,
+                };
+                if carry.is_some() {
+                    self.lines.pop();
+                }
                 let p = self.place(&addr, keep);
+                if let Some(c) = carry {
+                    self.i(c, Mode::Implied);
+                }
                 self.mem_op(mnem, &p, 0);
             }
             Src::X | Src::Y => {
