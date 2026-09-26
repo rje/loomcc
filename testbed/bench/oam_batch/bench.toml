@@ -1,0 +1,11 @@
+name = "oam_batch"
+kind = "pair"
+description = "Mode 1 sprite build: screen position, view cull and OAM staging for a 10-sprite scene, then a two-sprite batch with a rejected duplicate slot."
+unit_labels = ["loom_pvs_oam_batch"]
+helper_labels = []
+
+[provenance]
+loom_commit = "7b4d960"
+c_source = "runtime/src/mode1.c:526-580 at 7b4d960^ (loom_mode1_add_sprites; the loop body verbatim, reading the LoomMode1SpriteBatch descriptor as the host rendition at 7b4d960 mode1.c:548-598 does) + runtime/src/frame-build.c:143-154 (loom_frame_build_reserve_oam) and :202-209 (the submit loop staging each reserved entry) at 7b4d960^; the per-entry stage, which was already oam.asm:loom_pvs_oam_stage on the console at 7b4d960^, is given as its host C rendition (frame-transaction.c:134-158 + runtime-adapter.c:974-1012 at 2e278a7) so the C side is all C"
+asm_source = "runtime/backends/pvsneslib/src/oam.asm:loom_pvs_oam_batch (+ its RAM section and high-table tables) at 7b4d960; changed later (HEAD strides 20-byte sprite records and adds a fast path for unchanged poses); `.BASE $00` / `.BASE $80` added around the RAM section as HEAD has it"
+notes = "The asm checks only slot < 128, duplicates and capacity (count >= 33 across calls until finish); the C validates the full entry (tile, palette, priority, size, flags, x in [-256,255], y in [-64,255]) and checks capacity per frame build before staging. Equal for valid records and pose heights <= 64 (a culled-in sprite taller than 64 can reach y < -64, which the C rejects and the asm writes). The C reserves every sprite and then stages; the asm stages as it goes; the shadow and marks agree, including on the rejected duplicate. The asm's RAM is defined in unit.c for the C variant with the same names. LoomMode1Sprite 18 bytes, LoomMode1SpritePose 12, LoomMode1SpriteBatch 28 on 816-tcc (asserted in loom_oam.h). A genuine bug in the asm at 7b4d960: loom_pvs_oam_batch_accept indexes loom_pvs_oam_current by the slot instead of by loom_pvs_oam_count (current[slot] = slot), fixed later in Loom by 8452f6d (GAME-001); the driver numbers the staged sprites' slots in staging order so both agree, and a scene staging slots out of order would diverge in loom_pvs_oam_current. Batches with more sprites exceed the tcc variant's one-frame budget (about 34 000 master clocks per staged sprite in C)."
