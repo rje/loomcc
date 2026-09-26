@@ -1,0 +1,11 @@
+name = "animation_pass"
+kind = "pair"
+description = "Animation tick: count each playing clip's elapsed ticks and list the players whose frame ran its duration. 9 players over 5 ticks."
+unit_labels = ["loom_pvs_animation_pass"]
+helper_labels = []
+
+[provenance]
+loom_commit = "5184be9"
+c_source = "runtime/src/animation.c:387-420 at 5184be9^ (loom_animation_update's per-player loop up to the due test)"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_animation_pass (+ loom_pvs_animation_bind, the LOOM_ACTOR_* macros and the RAM they use) at 5184be9; unchanged at HEAD (HEAD's copy used)"
+notes = "Where the C advanced a due player inline, the asm (and this C) lists it on `due` for C to advance afterwards; the driver does that advance between ticks (next frame, looping) in both variants. The C reads loom_animation_state directly, so its loom_pvs_animation_bind is empty; bind runs in bench_setup. The loop bound is the u16 count argument rather than scene->player_count."
