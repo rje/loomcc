@@ -116,6 +116,93 @@ line; loomcc reports `<built-in>:0: error: macro name missing`.
 - `lex-errors/backslash-at-eof.c`: a file ending in backslash-newline
   (5.1.1.2p2); silent (clang warns). No crash, which is the main point.
 
+### F9. A parameter may not share a name with a typedef (loomcc working tree, 2025-09-25 23:18 build)
+
+Test: `t2-parse/typedef/param-shadows-typedef.c`.
+
+```c
+typedef char T;
+int f(int T) { return T * 2; }
+```
+
+Expected: accepted; `T` is an ordinary identifier inside `f` (C17 6.2.1:
+the parameter's scope hides the typedef name). loomcc: `error: expected ')'
+before 'T'`. Loom does not do this today, but hooks written by users could.
+
+### F10. Declaration-specifier constraints (same build)
+
+| test | expected | loomcc |
+|---|---|---|
+| `t2-parse/errors/two-types.c` (`int char x;`) | error, 6.7.2p2 | accepted |
+| `t3-sema/constraint/void-object.c` (`void v;`) | error, 6.7p7/6.9.2 (incomplete type) | accepted |
+| `t3-sema/constraint/duplicate-member.c` | error, 6.7.2.1 | accepted |
+| `t3-sema/constraint/flexible-member-not-last.c` | error, 6.7.2.1p3 | accepted |
+| `t3-sema/constraint/bitfield-wider-than-int.c` (`unsigned too_wide : 17;` in a struct; 16-bit int) | error, 6.7.2.1p4 | the struct member is accepted (the file-scope case is rejected) |
+| `t3-sema/constraint/address-of-register.c` (`&r`, `register int r`) | error, 6.5.3.2p1 | accepted |
+| `t3-sema/constraint/zero-array-size.c` (`int a[0];`) | diagnostic, 6.7.6.2p1 | accepted |
+| `t3-sema/constraint/void-pointer-arithmetic.c` (`p + 1`, `void *p`) | diagnostic, 6.5.6p2 | accepted |
+| `t3-sema/consttype/overflow-diagnosed.c` (`int a = 32767 + 1;`) | diagnostic, 6.6p4 | accepted (the other two lines are diagnosed) |
+| `t2-parse/init/empty-braces-error.c` (`int a[2] = {};`) | diagnostic (C17 grammar) | accepted |
+| `t2-parse/stmt/label-at-end-of-block.c` (`end: }`) | diagnostic (C17 grammar; C23 allows it) | accepted |
+| `t2-parse/decl/kr-undeclared-param.c` (`int neg(x) { ... }`) | diagnostic (no implicit int since C99) | accepted |
+
+### F11. Bit-field layout differs from 816-tcc for mixed unit types (same build)
+
+Test: `t3-sema/layout/bitfields-816tcc.c`, line 19:
+`struct P { unsigned char a : 4; unsigned b : 4; };` is 4 bytes in 816-tcc
+(`scripts/tcc-layout.py`: `a` in a char unit at byte 0, `b` in a new 16-bit
+unit at byte 2). loomcc gives another size. The other seven structs in the
+file match.
+
+### F12. Negative pointer offsets read the wrong element (same build, `rom` mode)
+
+Tests: `t4-exec/pointer/arithmetic.c` line 11 (`*(q - 2)` where `q = &a[9]`),
+`t4-exec/array/index-types.c` line 15 (`mid[s8]` with `i8 s8 = -3`,
+`mid = &a[150]`). Expected 7 and 147 (host, host16 and the 816-tcc ROM
+agree). loomcc's ROM computes a different element, so a negative offset is
+probably treated as unsigned (a 16-bit offset added to a 24-bit pointer
+without borrowing from the bank byte, or zero-extended from 8 bits).
+
+### F13. Struct arguments are not copied (same build, `rom` mode)
+
+Test: `t4-exec/struct/pass-by-value.c`, line 10. `sum(struct P p)` does
+`p.x += 100`; afterwards the caller's `a.x` must still be 3. In loomcc's ROM
+it is changed: the callee writes the caller's object.
+
+### F14. Statics with the same name in two units collide (same build, `rom` mode)
+
+Test: `t4-exec/global/static-same-name-two-units.c`, line 9. Both units name
+their `static short hidden` `lcs0_hidden`, so the second unit reads the
+first unit's variable (1, not 2). 816-tcc avoids this with
+`tccs_{WLA_FILENAME}_name`; loomcc needs a per-unit prefix too.
+
+### F15. Not yet supported (tracked, not bugs)
+
+`rom` mode rejects 32-bit multiply, divide and shift, and recursion
+(`recursion is not supported yet (static frames)`): `t4-exec/arith32/*`,
+`t4-exec/call/recursion-*.c`, `mutual-recursion.c`, `misc/fixed-point.c`.
+`--run-ir` does not exist yet, so `ir` results are UNSUPPORTED.
+
+## Design questions
+
+### Q1. Alignment of 32-bit members
+
+`t3-sema/layout/thirty-two-bit-member.c` (XFAIL). 816-tcc aligns its 32-bit
+integer (`long long`) to 4 inside structs (`struct { char c; long long l; }`
+is 8 bytes); loomcc aligns its 32-bit `long` to 2 (6 bytes). Code that
+shares a 32-bit field between the two compilers through a typedef (like
+`loomcc-test.h`'s `i32`) would disagree. Loom has no 32-bit fields today.
+
+### Q2. PVSnesLib's `int32_t` under loomcc
+
+devkitsnes's `stddef.h` (and `stdint.h`) choose `typedef long long int
+int32_t;` when `__65816__` is defined. loomcc defines `__65816__` and makes
+`long long` 64 bits, so `int32_t` would be 64 bits under loomcc with the
+PVSnesLib headers Loom builds with. The same header also typedefs
+`int16_t` twice (`short int`, then `int`), which a conforming compiler must
+reject. loomcc probably needs its own freestanding headers (or `-isystem`
+overrides) rather than devkitsnes's.
+
 ## Fixed
 
 (none yet)
