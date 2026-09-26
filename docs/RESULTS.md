@@ -34,13 +34,14 @@ assembly that replaced the C in Loom's history, **loomcc** = this compiler.
 | M6h: range analysis re-folds non-negative signed indexes into indexed modes | 0.40 | 1.35 | 0.51 | 31/31 |
 | M7a: whole-program inlining (small callees; single-call statics) | 0.39 | 1.30 | 0.50 | 31/31 |
 | M7b: loop-invariant code motion (incl. loads the loop cannot write) and induction-variable strength reduction (`y*width` per row becomes an add) | 0.38 | 1.27 | 0.51 | 31/31 |
+| M7c: branch-free compare results, clean 8-bit values, join-aware layout | 0.38 | 1.27 | 0.50 | 31/31 |
 
 (Geometric means. Lower is better; asm/tcc clocks is 0.32 for scale.)
 
 
 ## Side by side: where the remaining gap comes from
 
-### movement_box_blocked (Loom f0a6cd0): 816-tcc 279,504 clocks, loomcc 163,112, hand asm 95,936
+### movement_box_blocked (Loom f0a6cd0): 816-tcc 279,504 clocks, hand asm 95,936, loomcc 89,628 (M7)
 
 The inner loop, `for (x = first_x; x <= last_x; ++x) if (row[x] != 0) return 1;`:
 
@@ -65,8 +66,8 @@ bcc ++
                               ; freshly built 4-byte pointer, then x++ via the stack
 ```
 
-loomcc (12 instructions per cell): values live in direct page, the compare
-branches directly, the byte is read through `[dp],y`:
+loomcc at M5 (first backend, 12 instructions per cell: direct page, fused
+compare-branch, but the counter reloaded and a jump chain):
 
 ```
 __b12: lda.b $0c        ; x
@@ -84,8 +85,24 @@ __b14: lda.b $0c
        bra __b12
 ```
 
-Hand assembly (5 instructions per cell): the loop counter *is* Y, the loop runs
-in 8-bit accumulator mode, and the exit test falls through:
+loomcc at M7 (7 instructions per cell): the counter lives in Y (X/Y homes),
+the loop is rotated (test at the bottom), and the row multiply is gone from
+the loop (strength reduction turns `y * collision_width` into an add per
+row, and the one remaining multiply uses the CPU multiplier):
+
+```
+__b9:  lda [$00],y      ; row[x]
+       and.w #$ff
+       beq __b10
+       ...              ; return 1
+__b10: iny
+       cpy.b $08        ; x <= last_x
+       bcc __b9
+       beq __b9
+```
+
+Hand assembly (5 instructions per cell): Y as counter too, and the whole loop
+runs in 8-bit accumulator mode so the byte test needs no `and #$ff`:
 
 ```
 loom_pvs_movement_cell:
@@ -101,37 +118,38 @@ loom_pvs_movement_next_cell:
   bra loom_pvs_movement_cell
 ```
 
-The remaining gap, in order of size:
+loomcc now beats the hand code here overall (fewer instructions: its outer
+loop and bounds checks are tighter), while its inner loop still pays the
+`and #$ff` and a two-branch `<=`.
 
-1. **No register allocation to X/Y.** The hand code keeps the induction
-   variable in Y (`iny`, `cpy`); loomcc keeps it in a direct-page word and
-   reloads it (`lda $0c; inc a; sta $0c` + `ldy $0c`).
-2. **No loop optimisation.** The hand code hoists the row multiply out of the
-   loop and strength-reduces it to an add per row; loomcc calls its multiply
-   helper once per row (the C does the multiply there).
-3. **Block layout and jump threading.** `bne solid; bra __b17` then `__b17`
-   jumps to `__b14`: two taken branches per cell that a layout pass removes.
-4. **8-bit regions.** The hand loop reads the byte in 8-bit mode (`lda [r5],y;
-   beq`) instead of `lda; and #$ff; bne`.
-5. **Argument traffic.** The 816-tcc ABI entry copies each stack argument to
-   the static frame and the body copies it again into direct page; the hand
-   code reads its arguments with `lda n,s` where they are.
+### What closed the gap, M5 -> M7 (loomcc/asm clocks 1.76 -> 1.27)
 
-The same five items account for most of the gap in the other pairs
-(player_tick, camera_follow and board_* also pay for copies of pointers that
-the IR does not yet propagate).
+| step | effect |
+|---|---|
+| IR clean-up (copy propagation, def retargeting, jump threading with loop rotation) | 1.76 -> 1.68 |
+| interprocedural direct page: a call clobbers only its callee tree's DP words; arguments written straight into callee homes | 1.66 -> 1.48 (largest single step) |
+| CPU multiplier/divider | 1.48 -> 1.41 |
+| layout, load folding into operands, range analysis | 1.41 -> 1.35 |
+| whole-program inlining | 1.35 -> 1.30 |
+| LICM + strength reduction | 1.30 -> 1.27 |
 
-### Why loomcc is already 1.85x faster than 816-tcc
+### Where the remaining 1.27x comes from
 
-- values in direct page instead of stack reloads (`lda.b $0c` 4 cycles vs
-  `lda n,s` + `sta r0` + reload);
-- compare-and-branch fused (`cmp; bcc`) instead of a 0/1 materialised in X;
-- `a[i].f` as one indexed access (`lda arr+off,x`, `[dp],y`) instead of a
-  `tcc__mul` call and a 4-byte pointer built per access;
-- multiplication by constants as shifts and adds;
-- internal calls write arguments straight into the callee's frame (no
-  pushes, no pops, no frame set-up);
-- `x == 0` as `lda; beq` (2 instructions instead of ~11).
+1. **Algorithmic differences in the pairs.** Several hand routines are not the
+   same algorithm as the C they replaced: oam_batch (2.3x) validates less per
+   entry, board_drop/board_paint (2.1x) fuse the shape paint, the tilemap
+   words and the dirty spans into one pass where the C calls helpers per
+   cell. loomcc executes the C faithfully; no compiler closes these.
+2. **8-bit loops.** Byte loops stay in 16-bit mode with `and #$ff` on each
+   byte read; the hand code switches the whole loop to 8-bit. loomcc's 8-bit
+   sections are local (consecutive byte stores share a `sep`) but do not yet
+   span loops.
+3. **Register pressure at calls to code outside the unit.** A call to
+   816-tcc code or hand assembly clobbers every direct-page scratch word, so
+   values live across it go to the static frame (bank $7E absolute, one
+   cycle more per access and one byte more per instruction).
+4. **Two-branch unsigned `<=`/`>`** (`bcc; beq`) where the hand code arranges
+   the comparison the other way round.
 
 ## External test suite (loomcc-tests)
 
@@ -139,50 +157,51 @@ the IR does not yet propagate).
 |---|---|---|---|---|---|---|---|---|
 | M5 (2026-09-26) | 379/458 | 75/79 | 77/86 | 220/234 | 17/17 | - | - | 767/874 |
 | M6c + correctness fixes (F17, F18, loop, Q1, Q2, diagnostics) | 448/458 | 79/79 | 85/87 | 299/316 | 17/17 | 31/31 | 80/80 | 1039/1068 |
+| M7c (suite has grown to 2422 tests) | 449/460 | 303/309 | 300/303 | 1191/1214 | 17/17 | 39/39 | 80/80 | 2379/2422 |
 
 Remaining t4-exec failures are only the unsupported features (32-bit
 multiply/divide/variable shifts, recursion); t1 failures are `__VA_OPT__`
 details, one deferred-rescan hide-set case, and two mcpp edge diagnostics.
 
-## Current table (M5 + fixes)
+## Current table (M7c)
 
 | bench | kind | equal | tcc bytes | tcc instr | tcc clocks | asm bytes | asm instr | asm clocks | loomcc bytes | loomcc instr | loomcc clocks | loomcc/tcc clocks | loomcc/asm clocks | cstack bytes |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| actor_body_step | pair | yes | 3613 | 5571 | 243808 | 1331 | 2033 | 161492 | 2223 | 3112 | 190292 | 0.78 | 1.18 | 24 |
-| animation_pass | pair | yes | 404 | 6031 | 214404 | 307 | 2913 | 120660 | 304 | 3064 | 107676 | 0.50 | 0.89 | 16 |
-| board_drop | pair | yes | 3733 | 10585 | 246772 | 1011 | 1842 | 51536 | 2344 | 6884 | 175752 | 0.71 | 3.41 | 76 |
-| board_fill | pair | yes | 2477 | 8511 | 222912 | 558 | 2308 | 64244 | 1567 | 4635 | 135636 | 0.61 | 2.11 | 48 |
-| board_fit | pair | yes | 568 | 10404 | 232208 | 346 | 2232 | 66228 | 384 | 6552 | 151776 | 0.65 | 2.29 | 22 |
-| board_paint | pair | yes | 3061 | 7953 | 188976 | 746 | 1381 | 39052 | 1936 | 4940 | 127376 | 0.67 | 3.26 | 64 |
-| body_probe_x | pair | yes | 739 | 6813 | 154716 | 242 | 2082 | 51572 | 495 | 3561 | 90492 | 0.58 | 1.75 | 16 |
-| body_scan_ceiling | pair | yes | 422 | 5533 | 127932 | 186 | 2037 | 48848 | 253 | 2843 | 69520 | 0.54 | 1.42 | 8 |
-| body_scan_floor | pair | yes | 979 | 9451 | 213520 | 301 | 3146 | 75280 | 562 | 4563 | 112772 | 0.53 | 1.50 | 20 |
-| camera_follow | pair | yes | 4021 | 9570 | 239684 | 1436 | 2087 | 66584 | 2575 | 4570 | 136524 | 0.57 | 2.05 | 50 |
-| contact_scan | pair | yes | 802 | 7727 | 195316 | 390 | 2608 | 89748 | 479 | 3462 | 107364 | 0.55 | 1.20 | 38 |
-| display_block | pair | yes | 948 | 4575 | 123584 | 186 | 844 | 27608 | 432 | 1829 | 54640 | 0.44 | 1.98 | 14 |
-| layer_scroll | pair | yes | 1871 | 8555 | 214524 | 506 | 2555 | 77696 | 1392 | 4863 | 144028 | 0.67 | 1.85 | 36 |
-| movement_box_blocked | pair | yes | 375 | 11201 | 279504 | 157 | 3485 | 95936 | 285 | 5760 | 163112 | 0.58 | 1.70 | 18 |
-| oam_batch | pair | yes | 2651 | 9020 | 240604 | 515 | 1496 | 35196 | 1530 | 4645 | 126192 | 0.52 | 3.59 | 34 |
-| oam_finish | pair | yes | 654 | 5320 | 128864 | 181 | 1087 | 24852 | 333 | 2570 | 64608 | 0.50 | 2.60 | 0 |
-| oam_stage | pair | yes | 1292 | 7484 | 186392 | 355 | 1934 | 50832 | 582 | 2973 | 81760 | 0.44 | 1.61 | 4 |
-| player2_position | pair | yes | 287 | 799 | 20512 | 127 | 282 | 11952 | 137 | 349 | 13116 | 0.64 | 1.10 | 8 |
-| player_sprite | pair | yes | 545 | 2928 | 67216 | 236 | 711 | 25288 | 406 | 1189 | 34396 | 0.51 | 1.36 | 30 |
-| player_tick | pair | yes | 8995 | 8135 | 200464 | 2750 | 2606 | 81004 | 5461 | 4115 | 117400 | 0.59 | 1.45 | 58 |
-| scene_trigger_scan | pair | yes | 386 | 8287 | 217380 | 145 | 2300 | 64964 | 229 | 4103 | 111852 | 0.51 | 1.72 | 10 |
-| solid_actor_query | pair | yes | 1749 | 9750 | 230524 | 536 | 3549 | 111652 | 1116 | 4376 | 115152 | 0.50 | 1.03 | 38 |
-| surface_flush | pair | yes | 2040 | 8420 | 217636 | 677 | 1727 | 49360 | 1342 | 4336 | 122116 | 0.56 | 2.47 | 58 |
-| witness_hash | pair | yes | 126 | 8388 | 231036 | 72 | 2310 | 47956 | 100 | 3116 | 84460 | 0.37 | 1.76 | 6 |
-| micro_calls | micro | yes | 872 | 2882 | 80444 | - | - | - | 757 | 1434 | 45188 | 0.56 | - | 20 |
-| micro_index | micro | yes | 840 | 8803 | 220124 | - | - | - | 446 | 4529 | 101564 | 0.46 | - | 8 |
-| micro_loops | micro | yes | 665 | 8637 | 234132 | - | - | - | 444 | 3497 | 90764 | 0.39 | - | 10 |
-| micro_math | micro | yes | 1101 | 6406 | 155716 | - | - | - | 749 | 3168 | 79812 | 0.51 | - | 12 |
-| micro_muldiv | micro | yes | 580 | 7877 | 185940 | - | - | - | 597 | 5326 | 140028 | 0.75 | - | 10 |
-| micro_struct | micro | yes | 1620 | 6123 | 178672 | - | - | - | 952 | 2118 | 55516 | 0.31 | - | 20 |
-| micro_switch | micro | yes | 1180 | 5899 | 140404 | - | - | - | 601 | 2484 | 64684 | 0.46 | - | 6 |
+| actor_body_step | pair | yes | 3613 | 5571 | 243808 | 1331 | 2033 | 161492 | 2112 | 3011 | 188200 | 0.77 | 1.17 | 24 |
+| animation_pass | pair | yes | 404 | 6031 | 214404 | 307 | 2913 | 120660 | 207 | 2479 | 91768 | 0.43 | 0.76 | 16 |
+| board_drop | pair | yes | 3733 | 10585 | 246772 | 1011 | 1842 | 51536 | 1787 | 4839 | 110120 | 0.45 | 2.14 | 54 |
+| board_fill | pair | yes | 2477 | 8511 | 222912 | 558 | 2308 | 64244 | 1057 | 3236 | 90160 | 0.40 | 1.40 | 22 |
+| board_fit | pair | yes | 568 | 10404 | 232208 | 346 | 2232 | 66228 | 325 | 4838 | 97564 | 0.42 | 1.47 | 10 |
+| board_paint | pair | yes | 3061 | 7953 | 188976 | 746 | 1381 | 39052 | 1408 | 3519 | 82672 | 0.44 | 2.12 | 42 |
+| body_probe_x | pair | yes | 739 | 6813 | 154716 | 242 | 2082 | 51572 | 429 | 2930 | 72056 | 0.47 | 1.40 | 14 |
+| body_scan_ceiling | pair | yes | 422 | 5533 | 127932 | 186 | 2037 | 48848 | 215 | 2275 | 54684 | 0.43 | 1.12 | 8 |
+| body_scan_floor | pair | yes | 979 | 9451 | 213520 | 301 | 3146 | 75280 | 512 | 3779 | 92476 | 0.43 | 1.23 | 22 |
+| camera_follow | pair | yes | 4021 | 9570 | 239684 | 1436 | 2087 | 66584 | 2152 | 3348 | 96432 | 0.40 | 1.45 | 28 |
+| contact_scan | pair | yes | 802 | 7727 | 195316 | 390 | 2608 | 89748 | 305 | 2255 | 68188 | 0.35 | 0.76 | 16 |
+| display_block | pair | yes | 948 | 4575 | 123584 | 186 | 844 | 27608 | 363 | 1619 | 47848 | 0.39 | 1.73 | 14 |
+| layer_scroll | pair | yes | 1871 | 8555 | 214524 | 506 | 2555 | 77696 | 788 | 2648 | 75488 | 0.35 | 0.97 | 24 |
+| movement_box_blocked | pair | yes | 375 | 11201 | 279504 | 157 | 3485 | 95936 | 284 | 3175 | 89628 | 0.32 | 0.93 | 18 |
+| oam_batch | pair | yes | 2651 | 9020 | 240604 | 515 | 1496 | 35196 | 1059 | 3188 | 80060 | 0.33 | 2.27 | 4 |
+| oam_finish | pair | yes | 654 | 5320 | 128864 | 181 | 1087 | 24852 | 268 | 1856 | 44904 | 0.35 | 1.81 | 0 |
+| oam_stage | pair | yes | 1292 | 7484 | 186392 | 355 | 1934 | 50832 | 538 | 2736 | 74796 | 0.40 | 1.47 | 4 |
+| player2_position | pair | yes | 287 | 799 | 20512 | 127 | 282 | 11952 | 107 | 269 | 10556 | 0.51 | 0.88 | 8 |
+| player_sprite | pair | yes | 545 | 2928 | 67216 | 236 | 711 | 25288 | 280 | 1026 | 28344 | 0.42 | 1.12 | 30 |
+| player_tick | pair | yes | 8995 | 8135 | 200464 | 2750 | 2606 | 81004 | 5271 | 3523 | 102356 | 0.51 | 1.26 | 46 |
+| scene_trigger_scan | pair | yes | 386 | 8287 | 217380 | 145 | 2300 | 64964 | 173 | 2508 | 67748 | 0.31 | 1.04 | 10 |
+| solid_actor_query | pair | yes | 1749 | 9750 | 230524 | 536 | 3549 | 111652 | 724 | 3101 | 77992 | 0.34 | 0.70 | 26 |
+| surface_flush | pair | yes | 2040 | 8420 | 217636 | 677 | 1727 | 49360 | 915 | 3025 | 78356 | 0.36 | 1.59 | 28 |
+| witness_hash | pair | yes | 126 | 8388 | 231036 | 72 | 2310 | 47956 | 143 | 2366 | 60276 | 0.26 | 1.26 | 6 |
+| micro_calls | micro | yes | 872 | 2882 | 80444 | - | - | - | 498 | 959 | 30596 | 0.38 | - | 20 |
+| micro_index | micro | yes | 840 | 8803 | 220124 | - | - | - | 379 | 2452 | 59104 | 0.27 | - | 8 |
+| micro_loops | micro | yes | 665 | 8637 | 234132 | - | - | - | 265 | 2322 | 57248 | 0.24 | - | 10 |
+| micro_math | micro | yes | 1101 | 6406 | 155716 | - | - | - | 705 | 2505 | 61468 | 0.39 | - | 12 |
+| micro_muldiv | micro | yes | 580 | 7877 | 185940 | - | - | - | 591 | 2137 | 53932 | 0.29 | - | 10 |
+| micro_struct | micro | yes | 1620 | 6123 | 178672 | - | - | - | 746 | 1543 | 44440 | 0.25 | - | 20 |
+| micro_switch | micro | yes | 1180 | 5899 | 140404 | - | - | - | 519 | 2050 | 52864 | 0.38 | - | 6 |
 
 31 benchmarks, 31 with identical result words in every variant.
 
-Geometric means, loomcc relative to 816-tcc (all benchmarks): clocks 0.54x, instructions 0.49x, bytes 0.63x.
-Geometric means, loomcc relative to hand assembly (the 24 pairs): clocks 1.76x, instructions 1.84x, bytes 1.79x.
+Geometric means, loomcc relative to 816-tcc (all benchmarks): clocks 0.38x, instructions 0.35x, bytes 0.50x.
+Geometric means, loomcc relative to hand assembly (the 24 pairs): clocks 1.27x, instructions 1.37x, bytes 1.43x.
 For scale, hand assembly relative to 816-tcc: clocks 0.32x.
-Compiled-stack WRAM: largest single benchmark 76 bytes; sum over all 782 bytes.
+Compiled-stack WRAM: largest single benchmark 54 bytes; sum over all 560 bytes.
