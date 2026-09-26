@@ -14,7 +14,8 @@ on 2026-09-25 are recorded at the end.
 |---|---|---|---|
 | mcpp 2.7.2 validation suite (cpp-test) | BSD-2-Clause (Kiyoshi Matsui) | **vendored**: n_* and e_* converted to T1 tests | `tests/t1-pp/mcpp/` (+ LICENSE, README) by `scripts/import-mcpp.py` |
 | GCC `gcc.c-torture/execute` | GPL-3.0-or-later | **fetched, filtered, wrapped**; never copied | `external/classify-gcc-torture.py`, `external/gcc-torture-execute.list` |
-| GCC `gcc.c-torture/compile`, `gcc.dg/cpp` | GPL-3.0-or-later | fetched; not yet wired (see "Next") | `external/fetched/gcc` |
+| GCC `gcc.c-torture/compile` | GPL-3.0-or-later | **fetched, filtered, wrapped** as compile tests: 512 of 2016 (static filter, then clang -std=c17 -pedantic-errors -Werror=vla at 16-bit int) | `external/classify-gcc-compile.py`, `external/gcc-torture-compile.list` |
+| GCC `gcc.dg/cpp` | GPL-3.0-or-later | **fetched, filtered, wrapped** as preprocess tests: 49 (dg-do preprocess, standard-C options only, dg-error/dg-warning converted to located directives, GNU-only behaviour excluded, clang must agree) | `external/wrap-gcc-cpp.py`, `external/gcc-dg-cpp.list` |
 | c-testsuite (`tests/single-exec`) | harness MIT; individual tests carry their origins' licences (ISC from scc, LGPL-2.1 from tinycc, others) | **fetched, filtered, wrapped** (mixed per-test licences); 163 selected | `external/wrap-suite.py c-testsuite`, `external/c-testsuite.list` |
 | chibicc `test/` | MIT (Rui Ueyama) | evaluated with the same wrapper: 0 of 41 survive (GNU extensions, floating point, and every remaining file fails under 816-tcc's 16-bit int or front end) | `external/chibicc.rejected` |
 | TinyCC `tests/tests2` | LGPL-2.1 | **fetched, filtered, wrapped**, output compared through the harness printf; 32 selected | `external/wrap-suite.py tcc-tests2`, `external/tcc-tests2.list` |
@@ -71,7 +72,14 @@ with
 ./run-tests --refs tcc-rom external/fetched/gcc-wrapped
 ```
 
-They report under the tier `ext-gcc-wrapped`.
+They report under the tier `ext-gcc-wrapped`. Every wrapped suite:
+
+```sh
+./run-tests -j 3 external/fetched/gcc-wrapped external/fetched/gcc-compile-wrapped \
+  external/fetched/gcc-cpp-wrapped external/fetched/wrapped-c-testsuite \
+  external/fetched/wrapped-tcc-tests2 external/fetched/wrapped-llvm-unittests \
+  external/fetched/wrapped-llvm-regression
+```
 
 ## Output-comparing suites (tcc tests2, LLVM, c-testsuite, chibicc)
 
@@ -108,6 +116,5 @@ silently assume 32-bit `int` (they fail under host16).
 
 ## Next
 
-- `gcc.c-torture/compile` as T2/T3 compile-only tests (same filter, `loomcc-do: compile`).
-- `gcc.dg/cpp` as T1 tests: dg-do preprocess with dg-error/dg-final
-  (the same conversion as mcpp, but fetched-and-wrapped, not vendored).
+- `gcc.dg/cpp` tests with dg-final scan patterns (188 skipped now).
+- `gcc.dg` C tests with dg-error lines as T3 constraint tests.
