@@ -477,6 +477,105 @@ impl<'m> Machine<'m> {
                 std::cmp::Ordering::Greater => 1,
             }
         });
+        self.externs.insert("strcpy".into(), |m, a| {
+            let (d, s) = (a[0] as u32, a[1] as u32);
+            let mut k = 0i64;
+            loop {
+                let b = m.read(add_addr(s, k), 1);
+                m.write(add_addr(d, k), 1, b);
+                if b & 0xff == 0 {
+                    break;
+                }
+                k += 1;
+            }
+            a[0]
+        });
+        self.externs.insert("strncpy".into(), |m, a| {
+            let (d, s, n) = (a[0] as u32, a[1] as u32, a[2] as u16 as i64);
+            let mut end = false;
+            for k in 0..n {
+                let b = if end { 0 } else { m.read(add_addr(s, k), 1) & 0xff };
+                if b == 0 {
+                    end = true;
+                }
+                m.write(add_addr(d, k), 1, b);
+            }
+            a[0]
+        });
+        self.externs.insert("strcat".into(), |m, a| {
+            let (d, s) = (a[0] as u32, a[1] as u32);
+            let mut k = m.cstring(d).len() as i64;
+            let mut j = 0i64;
+            loop {
+                let b = m.read(add_addr(s, j), 1) & 0xff;
+                m.write(add_addr(d, k), 1, b);
+                if b == 0 {
+                    break;
+                }
+                k += 1;
+                j += 1;
+            }
+            a[0]
+        });
+        self.externs.insert("strncmp".into(), |m, a| {
+            let (x, y, n) = (a[0] as u32, a[1] as u32, a[2] as u16 as i64);
+            for k in 0..n {
+                let (p, q) = (m.read(add_addr(x, k), 1) & 0xff, m.read(add_addr(y, k), 1) & 0xff);
+                if p != q {
+                    return if p < q { -1 } else { 1 };
+                }
+                if p == 0 {
+                    break;
+                }
+            }
+            0
+        });
+        self.externs.insert("strchr".into(), |m, a| {
+            let (s, c) = (a[0] as u32, a[1] & 0xff);
+            let mut k = 0i64;
+            loop {
+                let b = m.read(add_addr(s, k), 1) & 0xff;
+                if b == c {
+                    return add_addr(s, k) as i64;
+                }
+                if b == 0 {
+                    return 0;
+                }
+                k += 1;
+            }
+        });
+        self.externs.insert("memcmp".into(), |m, a| {
+            let (x, y, n) = (a[0] as u32, a[1] as u32, a[2] as u16 as i64);
+            for k in 0..n {
+                let (p, q) = (m.read(add_addr(x, k), 1) & 0xff, m.read(add_addr(y, k), 1) & 0xff);
+                if p != q {
+                    return if p < q { -1 } else { 1 };
+                }
+            }
+            0
+        });
+        self.externs.insert("memmove".into(), |m, a| {
+            let (d, s, n) = (a[0] as u32, a[1] as u32, a[2] as u16 as u32);
+            let bytes: Vec<i64> = (0..n).map(|k| m.read(add_addr(s, k as i64), 1)).collect();
+            for (k, b) in bytes.into_iter().enumerate() {
+                m.write(add_addr(d, k as i64), 1, b);
+            }
+            a[0]
+        });
+        self.externs.insert("abs".into(), |_, a| {
+            let v = IrTy::I16.sext(a[0]);
+            v.abs()
+        });
+        self.externs.insert("atoi".into(), |m, a| {
+            let s = m.cstring(a[0] as u32);
+            let t = s.trim_start();
+            let (neg, digits) = match t.strip_prefix('-') {
+                Some(r) => (true, r),
+                None => (false, t.strip_prefix('+').unwrap_or(t)),
+            };
+            let n: i64 = digits.chars().take_while(|c| c.is_ascii_digit()).fold(0, |acc, c| acc * 10 + c.to_digit(10).unwrap() as i64);
+            if neg { -n } else { n }
+        });
         self.externs.insert("exit".into(), |m, a| {
             m.exit_requested = Some(IrTy::I16.sext(a.first().copied().unwrap_or(0)));
             0
