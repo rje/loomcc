@@ -88,6 +88,7 @@ different answers depending on whether its operands are constants:
 | `-1 / 2u` | 32767 | 0x7fffffff, truncated to 65535 |
 | `(1 ? -1 : 0u) == 65535u` | 1 | 0 |
 | `(short)(unsigned short)65535u` | -1 | 65535 |
+| `(unsigned short)-1 == 0xffffu` | 1 | 0 (the cast does not truncate) |
 
 Reproduce the folded values directly with the layout probe:
 
@@ -100,6 +101,19 @@ This affects table sizes and `#define`d constants built from unsigned
 arithmetic. Workaround: keep unsigned constant expressions within 16 bits
 explicitly (`(unsigned)(-1)` in place of `-1` mixed with `u` operands), or
 compute them at run time.
+
+## 4. `sizeof` of an array plus an offset is the array's size
+
+Test: `tests/t3-sema/expr/array-decay-in-sizeof-and-ops.c`
+
+```c
+static short a[10];
+sizeof(a + 0)     /* must be sizeof(short *) == 4; 816-tcc says 20 */
+```
+
+`a + 0` is a pointer (the array decays), but 816-tcc keeps the array type
+for the operand of `sizeof`. Only code that takes `sizeof` of such an
+expression is affected (rare; `sizeof(&a[0])` is correct).
 
 ## Also seen (not miscompiles)
 
