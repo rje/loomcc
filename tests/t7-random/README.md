@@ -38,13 +38,18 @@ tests/t7-random/run.py --csmith --seeds 1-200 -j 2
 ```
 
 Flags: `--no-argc --no-longlong --no-math64 --no-bitfields --no-packed-struct
---no-float --max-funcs 4 --max-block-size 3`. The first 100-seed campaign
-flagged two programs (seeds 73 and 106) where loomcc's `ir` and `rom` agreed
-with each other and disagreed with host16. Both were host16 errors, now fixed
-in `harness/host16/fixup.py`: lli ignored `byval` for a global struct passed
-by value (seed 73; `t4-exec/struct/global-passed-by-value.c` pins it), and
-pointer arrays initialised by memcpy were half-copied because clang sized the
-copy for 2-byte pointers (seed 106). Programs include
+--no-float --max-funcs 4 --max-block-size 3`. Campaigns so far (seeds 11-110 and 211-310, 176 programs that host16 could
+run; the others crash or time out in lli): no loomcc disagreement. They
+flagged three host16 errors, all fixed in `harness/host16/fixup.py`: lli
+ignored `byval` for a global struct passed by value (seed 73;
+`t4-exec/struct/global-passed-by-value.c` pins it), pointer arrays
+initialised by memcpy were half-copied because clang sized the copy for
+2-byte pointers (seed 106), and a union initialised from its first member's
+smaller constant was over-copied, reading garbage (seed 278: copy lengths now
+come from a model of the widened layout, the smaller of source and
+destination). Seed 239 has a `func_1` that loomcc compiles to 34,570 bytes,
+more than a 32 KiB LoROM bank, so it cannot link (816-tcc cannot even
+assemble it). Programs include
 `tests/t7-random/csmith/csmith.h` (found first on the include path), which
 sets 16-bit-int limits so that Csmith's own safe-math wrappers
 (`safe_math_16.h`, its safe_math.h without the 64-bit and floating-point

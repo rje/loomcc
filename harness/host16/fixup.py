@@ -44,6 +44,63 @@ def read_type(s, i):
     return m.group(0), i + len(m.group(0))
 
 
+class Layout:
+    """Type sizes under the widened data layout (pointers 8 bytes, 8-aligned;
+    i16/i32/i64 2-aligned as msp430's layout says), so that copy lengths can
+    be recomputed exactly."""
+
+    def __init__(self, text):
+        self.named = {}
+        for m in re.finditer(r"^(%[\w.$\"-]+) = type (.+)$", text, re.M):
+            self.named[m.group(1)] = m.group(2).strip()
+
+    def size_align(self, t):
+        t = t.strip()
+        if t == "ptr":
+            return 8, 8
+        m = re.fullmatch(r"i(\d+)", t)
+        if m:
+            bits = int(m.group(1))
+            size = max(1, (bits + 7) // 8)
+            return size, min(size, 2) if size > 1 else 1
+        if t.startswith("["):
+            m = re.fullmatch(r"\[(\d+) x (.+)\]", t)
+            n, inner = int(m.group(1)), m.group(2)
+            sz, al = self.size_align(inner)
+            return n * sz, al
+        if t.startswith("<{") or t.startswith("{"):
+            packed = t.startswith("<{")
+            body = t[2:-2] if packed else t[1:-1]
+            off, align = 0, 1
+            for f in split_fields(body):
+                sz, al = self.size_align(f)
+                if packed:
+                    al = 1
+                off = (off + al - 1) // al * al + sz
+                align = max(align, al)
+            return (off + align - 1) // align * align, align
+        if t.startswith("%"):
+            return self.size_align(self.named[t])
+        raise ValueError(t)
+
+
+def split_fields(body):
+    fields, depth, cur = [], 0, ""
+    for ch in body:
+        if ch in "[{<":
+            depth += 1
+        elif ch in "]}>":
+            depth -= 1
+        if ch == "," and depth == 0:
+            fields.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    if cur.strip():
+        fields.append(cur.strip())
+    return fields
+
+
 def sizeof(t):
     return f"ptrtoint (ptr getelementptr ({t}, ptr null, i32 1) to i16)"
 
@@ -56,6 +113,7 @@ BYVAL = re.compile(r"ptr (?:noundef )?byval\((.+?)\)(?: align (\d+))? ([%@][\w.$
 
 def pre(text):
     text = text.replace("p:16:16", "p:64:64").replace(" optnone", "")
+    layout = Layout(text)
     globals_ = {}
     for line in text.split("\n"):
         m = GLOBAL.match(line)
@@ -74,14 +132,21 @@ def pre(text):
         if m:
             kind, args = m.group(1), m.group(2)
             ops = re.findall(r"ptr (?:align \d+ )?(%[\w.$\"-]+|@[\w.$\"-]+)", args)
-            typ = None
+            sizes = []
             for op in ops:
                 typ = locals_.get(op) or globals_.get(op)
                 if typ:
-                    break
-            if typ:
+                    try:
+                        sizes.append(layout.size_align(typ)[0])
+                    except (ValueError, KeyError, AttributeError):
+                        pass
+            if sizes:
+                # Whole-object copies only: never more than the smaller of a
+                # typed source and destination (a union initialised from its
+                # first member's constant, a struct copied out of a union).
+                n = min(sizes)
                 line = re.sub(r"(ptr [^,]*, (?:ptr [^,]*|i8 [^,]*), )i16 (\d+)(, i1 )",
-                              lambda mm: f"{mm.group(1)}i16 {sizeof(typ)}{mm.group(3)}", line, count=1)
+                              lambda mm: f"{mm.group(1)}i16 {n}{mm.group(3)}", line, count=1)
         if "byval(" in line and "call " in line:
             pre_lines = []
 

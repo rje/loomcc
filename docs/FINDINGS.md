@@ -91,6 +91,15 @@ high word in `tcc__r0h` (DP $02); loomcc reads only `tcc__r0`. (Passing
 | `t3-sema/constraint/sizeof-void.c` | 6.5.3.4p1 | silent |
 | `t3-sema/expr/pointer-compare-mismatch.c` (`int *` == `char *`) | 6.5.9p2 | silent |
 
+### F28. A function bigger than a ROM bank cannot link (cac2523, rom; low priority)
+
+Csmith seed 239 (`tests/t7-random/run.py --csmith --seeds 239`): loomcc
+compiles `func_1` to 34,570 bytes, and wlalink reports `No room for section
+"lcc.lcsu0_0_func_1" (34570 bytes) in ROM bank 0`. A 32 KiB LoROM bank is
+the hard limit for one SUPERFREE section; loomcc could split huge functions,
+limit inlining into them, or at least say which function is too big.
+816-tcc cannot assemble this program either (its stack offsets overflow).
+
 ### F20. Source files must be UTF-8 (65be77e, still in 1fc1258)
 
 GCC torture `execute/20000227-1.c` has a raw 0xFF byte inside a string
