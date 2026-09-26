@@ -206,7 +206,7 @@ integers; floating point and 64-bit are out of scope (diagnosed).
    and adds the edges so frames stay disjoint. Without the scan, an
    external call is assumed to reach every exported function.
 
-## 5b. Driver interface (stable; loomcc-tests drives it)
+## 5b. Driver interface (stable; loomcc-tests, in tests/, drives it)
 
 ```
 loomcc [-I dir] [-iquote dir] [-isystem dir] [-D n[=v]] [-U n] [-nostdinc] MODE inputs... [-o out]

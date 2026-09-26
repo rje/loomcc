@@ -1,6 +1,18 @@
+# Build output
 /target
 /build
 *.sfc
 *.obj
 *.sym
 !testbed/**/*.sym
+__pycache__/
+.DS_Store
+
+# Scratch and per-run output
+/scratch/
+/tests/scratch/
+/tests/work/
+/tests/platform.info
+
+# Copyleft and other external suites: fetched by tests/external/fetch.sh, never committed
+/tests/external/fetched/

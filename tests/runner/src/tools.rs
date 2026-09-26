@@ -48,7 +48,11 @@ impl Tools {
         let pvs = o
             .pvsneslib
             .or_else(|| std::env::var_os("PVSNESLIB_HOME").map(PathBuf::from))
-            .unwrap_or_else(|| PathBuf::from("/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib"));
+            .unwrap_or_else(|| {
+                // Where Loom installs its toolchain.
+                let home = std::env::var_os("HOME").map(PathBuf::from).unwrap_or_default();
+                home.join("Library/Loom/Toolchains/v0/artifacts/pvsneslib")
+            });
         let pvs = exists(pvs);
         let bin = pvs.as_ref().map(|p| p.join("devkitsnes/bin"));
         let llvm = o
@@ -58,7 +62,11 @@ impl Tools {
         let emulator = o
             .emulator
             .or_else(|| std::env::var_os("LOOM_EMULATOR").map(PathBuf::from))
-            .unwrap_or_else(|| PathBuf::from("/Users/rje/src/rust/loom/target/debug/loom-emulator"));
+            .unwrap_or_else(|| {
+                // A Loom checkout: $LOOM_REPO, else a sibling of the loomcc repository.
+                let loom = std::env::var_os("LOOM_REPO").map(PathBuf::from).unwrap_or_else(|| root.join("../../loom"));
+                loom.join("target/debug/loom-emulator")
+            });
         Tools {
             loomcc,
             clang: o.clang.or_else(|| which("clang")),

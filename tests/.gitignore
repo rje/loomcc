@@ -1,9 +1,0 @@
-/runner/target/
-/external/fetched/
-/work/
-*.sfc
-*.obj
-.DS_Store
-platform.info
-__pycache__/
-/scratch/

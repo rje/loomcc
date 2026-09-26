@@ -1,6 +1,6 @@
 # loomcc-tests
 
-The torture-test suite for [loomcc](../loomcc), the SNES (WDC 65816) C
+The torture-test suite for [loomcc](../README.md), the SNES (WDC 65816) C
 compiler. It proves the compiler phase by phase: preprocessor, parser,
 semantic analysis, IR interpreter, 65816 back end, interop with 816-tcc, and
 Loom's own C. Tests are annotated C files, like GCC's `dg` directives or
@@ -16,15 +16,18 @@ answer is.
 
 ## Quick start
 
+The suite is `tests/` in the loomcc workspace; its runner (`tests/runner`,
+crate `loomcc-tests`) is a workspace member. From the repository root:
+
 ```sh
-cd runner && CARGO_BUILD_JOBS=2 taskpolicy -b nice -n 19 cargo build --offline && cd ..
-./runner/target/debug/loomcc-tests --loomcc ../loomcc/target/debug/loomcc
-./runner/target/debug/loomcc-tests --tier t1 -v            # one tier, every result
-./runner/target/debug/loomcc-tests tests/t1-pp/variadic      # a directory or file
-./runner/target/debug/loomcc-tests --refs-only --tier t1     # check the suite itself against clang/816-tcc
+CARGO_BUILD_JOBS=2 taskpolicy -b nice -n 19 cargo build      # loomcc and the runner
+./target/debug/loomcc-tests                                  # every tier, against target/debug/loomcc
+./target/debug/loomcc-tests --tier t1 -v                     # one tier, every result
+./target/debug/loomcc-tests tests/tests/t1-pp/variadic       # a directory or file
+./target/debug/loomcc-tests --refs-only --tier t1            # check the suite itself against clang/816-tcc
 ```
 
-`./run-tests` does the build and then runs the runner with the same arguments.
+`tests/run-tests` builds loomcc and the runner and then runs the runner with the same arguments.
 
 The runner runs every tool under `taskpolicy -b nice -n 19` (the background
 QoS band: nice alone does not stop Loom's ROM suites starving), uses at most
@@ -36,7 +39,8 @@ scripts under `scripts/`, `external/` and `tests/t7-random/` do the same.
 ```
 loomcc-tests [options] [test paths or directories...]
 
-  --loomcc PATH        loomcc binary (default: $LOOMCC, else ../loomcc/target/debug/loomcc)
+  --loomcc PATH        loomcc binary (default: $LOOMCC, else the workspace's target/debug/loomcc,
+                       else target/release/loomcc)
   --tier LIST          t1,t2,... or all (default all); prefixes match directory names
   --filter TEXT        only tests whose path contains TEXT
   --refs [LIST]        also run the reference tools: all that apply, or a list
@@ -54,7 +58,10 @@ loomcc-tests [options] [test paths or directories...]
   --pvsneslib DIR, --emulator PATH, --llvm-bin DIR, --clang PATH   tool locations
 ```
 
-Environment: `LOOMCC`, `PVSNESLIB_HOME`, `LOOM_EMULATOR`, `LLVM_BIN`.
+Environment: `LOOMCC`, `PVSNESLIB_HOME` (default `~/Library/Loom/Toolchains/v0/artifacts/pvsneslib`),
+`LOOM_EMULATOR` (default `$LOOM_REPO/target/debug/loom-emulator`, with `LOOM_REPO`
+defaulting to a checkout named `loom` beside this repository), `LLVM_BIN`.
+Tests whose tools are missing report UNSUPPORTED.
 
 Exit status: 0 when no result is FAIL, XPASS or UNRESOLVED, 1 otherwise, 2 for
 a usage error.

@@ -21,8 +21,8 @@ use std::sync::{Arc, Mutex};
 const USAGE: &str = "\
 usage: loomcc-tests [options] [test paths or directories...]
 
-  --loomcc PATH        loomcc binary (default: $LOOMCC, else
-                       ../loomcc/target/debug/loomcc beside this repo)
+  --loomcc PATH        loomcc binary (default: $LOOMCC, else the workspace's
+                       target/debug/loomcc, else target/release/loomcc)
   --tier LIST          tiers to run, comma separated: t1,t2,...,t7 or all (default all)
   --filter TEXT        only tests whose path contains TEXT
   --refs [LIST]        also run the reference tools (default list: the
@@ -68,7 +68,7 @@ fn main() {
 }
 
 fn repo_root() -> PathBuf {
-    // runner/ lives one level below the repo root.
+    // runner/ lives one level below the suite's root (tests/ in loomcc).
     let exe_guess = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("..");
     exe_guess.canonicalize().unwrap_or(exe_guess)
 }
@@ -143,7 +143,10 @@ fn real_main() -> Result<i32, String> {
     // The machine runs Loom's ROM suites too: never more than two jobs.
     let jobs = jobs.clamp(1, 2);
     if loomcc.is_none() {
-        let guess = root.join("../loomcc/target/debug/loomcc");
+        // The suite lives in tests/ of the loomcc workspace.
+        let debug = root.join("../target/debug/loomcc");
+        let release = root.join("../target/release/loomcc");
+        let guess = if !debug.exists() && release.exists() { release } else { debug };
         loomcc = Some(guess.canonicalize().unwrap_or(guess));
     }
     let loomcc = loomcc.unwrap();

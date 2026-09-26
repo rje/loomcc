@@ -43,8 +43,15 @@ pub fn run(program: &Path, args: &[String], cwd: &Path, timeout: Duration) -> Ou
     let cmdline = format!("{} {}", program.display(), args.join(" "));
     // Background QoS band (taskpolicy -b) plus nice: the machine also runs
     // Loom's ROM suites, and nice alone does not stop them starving.
-    let mut cmd = Command::new("taskpolicy");
-    cmd.arg("-b").arg("nice").arg("-n").arg("19").arg(program).args(args).current_dir(cwd);
+    // (taskpolicy is macOS-only; elsewhere plain nice.)
+    let mut cmd = if cfg!(target_os = "macos") {
+        let mut c = Command::new("taskpolicy");
+        c.arg("-b").arg("nice");
+        c
+    } else {
+        Command::new("nice")
+    };
+    cmd.arg("-n").arg("19").arg(program).args(args).current_dir(cwd);
     cmd.stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped());
     cmd.env("CARGO_BUILD_JOBS", "2");
     let mut child = match cmd.spawn() {

@@ -154,6 +154,9 @@ loop and bounds checks are tighter), while its inner loop still pays the
 
 ## External test suite (loomcc-tests)
 
+The suite is in [tests/](../tests/README.md) (formerly the separate loomcc-tests
+repository); its findings are in tests/docs/FINDINGS.md.
+
 | run | t1-pp | t2-parse | t3-sema | t4-exec | t5-snes | t6-loom | t7-random | total pass |
 |---|---|---|---|---|---|---|---|---|
 | M5 (2026-09-26) | 379/458 | 75/79 | 77/86 | 220/234 | 17/17 | - | - | 767/874 |
