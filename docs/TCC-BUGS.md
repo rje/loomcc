@@ -109,3 +109,8 @@ compute them at run time.
 - Variable 32-bit (`long long`) shifts need `tcc__ashldi3`, which libtcc
   lacks: a link error, not silent.
 - `816-tcc -E` always ends with SIGABRT after writing its output.
+- A function with more than about 255 bytes of locals and temporaries (816-tcc
+  gives every comparison result its own stack slot) produces
+  `sta n,s` with n > 255, which wla-65816 rejects (`Out of 8-bit range`): a
+  build error, not a miscompile. Seen with a `main` holding ~200 `if`
+  comparisons; the generated tests split their checks into functions.
