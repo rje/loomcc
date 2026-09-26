@@ -105,7 +105,17 @@ fn main() -> ExitCode {
             failed |= diags.iter().any(|d| d.level == loomcc_pp::Level::Error);
             if args.mode == Mode::PrintAst {
                 out.push_str(&loomcc_parse::print::print_unit(&unit));
+                continue;
             }
+            if failed {
+                continue;
+            }
+            let name = input.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+            let (_hir, sdiags) = loomcc_sema::check(&unit, &name, loomcc_sema::types::Layout::snes());
+            for d in &sdiags {
+                eprintln!("{}", pp.sources.render(d));
+            }
+            failed |= sdiags.iter().any(|d| d.level == loomcc_pp::Level::Error);
             continue;
         }
         match args.mode {

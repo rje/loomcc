@@ -13,4 +13,5 @@ path = "src/main.rs"
 [dependencies]
 loomcc-pp = { path = "../pp" }
 loomcc-parse = { path = "../parse" }
+loomcc-sema = { path = "../sema" }
 serde_json = "1"

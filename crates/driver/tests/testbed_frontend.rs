@@ -138,3 +138,93 @@ fn token_equal_to_816_tcc_e() {
     let _ = std::fs::remove_dir_all(std::env::temp_dir().join(format!("loomcc-tcc-inc-{}", std::process::id())));
     assert!(diffs.is_empty(), "differs from 816-tcc -E: {:?}", diffs);
 }
+
+#[test]
+fn every_loom_unit_type_checks() {
+    let mut failures = Vec::new();
+    let mut warnings = 0;
+    for u in units() {
+        let c = loomcc::check(&u.path, &u.options()).unwrap();
+        warnings += c.diags.iter().filter(|d| d.level == loomcc_pp::Level::Warning).count();
+        if c.has_errors() {
+            failures.push(format!("{}:\n{}", u.name(), c.render_all()));
+        }
+    }
+    eprintln!("sema warnings over the testbed: {}", warnings);
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+/// Every file-scope struct/union in every Loom unit has the size and field
+/// offsets 816-tcc gives it (asm reads these structs by offset).
+#[test]
+fn struct_layout_matches_816_tcc() {
+    let tcc = "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/bin/816-tcc";
+    if !Path::new(tcc).exists() {
+        eprintln!("816-tcc not installed; skipping");
+        return;
+    }
+    let dir = std::env::temp_dir().join(format!("loomcc-layout-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let mut checked = std::collections::BTreeSet::new();
+    let mut mismatches = Vec::new();
+    let mut fields_checked = 0;
+    for u in units().into_iter().filter(|u| u.profile == "release") {
+        let c = loomcc::check(&u.path, &u.options()).unwrap();
+        let types = &c.unit.types;
+        let mut exprs = Vec::new();
+        let mut expect = Vec::new();
+        let mut labels = Vec::new();
+        for (tag, ty) in &c.unit.file_tags {
+            let Some(rec) = types.record(*ty) else { continue };
+            if !rec.complete {
+                continue;
+            }
+            let kw = if rec.is_union { "union" } else { "struct" };
+            exprs.push(format!("(unsigned short)sizeof({} {})", kw, tag));
+            expect.push(types.size(*ty));
+            labels.push(format!("sizeof({} {})", kw, tag));
+            for f in &rec.fields {
+                let (Some(name), None) = (&f.name, f.bits) else { continue };
+                exprs.push(format!("(unsigned short)&(({} {}*)0)->{}", kw, tag, name));
+                expect.push(f.offset);
+                labels.push(format!("{} {}.{}", kw, tag, name));
+            }
+        }
+        let key = format!("{}", labels.join(","));
+        if exprs.is_empty() || !checked.insert(key) {
+            continue;
+        }
+        let mut src = std::fs::read_to_string(&u.path).unwrap();
+        src.push_str(&format!("\nconst unsigned short loomcc_layout_probe[] = {{ {} }};\n", exprs.join(", ")));
+        let file = dir.join("probe.c");
+        std::fs::write(&file, src).unwrap();
+        let mut args: Vec<String> = u.include_dirs.iter().map(|d| format!("-I{}", d.display())).collect();
+        for (n, v) in &u.defines {
+            args.push(match v {
+                Some(v) => format!("-D{}={}", n, v),
+                None => format!("-D{}", n),
+            });
+        }
+        let out = Command::new(tcc).args(&args).args(["-F", "-c"]).arg(&file).arg("-o").arg(dir.join("probe.ps")).output().unwrap();
+        assert!(out.status.success(), "816-tcc failed on {}: {}", u.name(), String::from_utf8_lossy(&out.stderr));
+        let asm = std::fs::read_to_string(dir.join("probe.ps")).unwrap();
+        let line = asm.lines().find(|l| l.starts_with("loomcc_layout_probe:")).expect("probe data");
+        let bytes: Vec<u8> = line
+            .split_once(".db")
+            .unwrap()
+            .1
+            .split(',')
+            .map(|b| u8::from_str_radix(b.trim().trim_start_matches('$'), 16).unwrap())
+            .collect();
+        for (i, want) in expect.iter().enumerate() {
+            let got = u16::from_le_bytes([bytes[2 * i], bytes[2 * i + 1]]) as u64;
+            fields_checked += 1;
+            if got != *want {
+                mismatches.push(format!("{}: {} loomcc {} 816-tcc {}", u.name(), labels[i], want, got));
+            }
+        }
+    }
+    std::fs::remove_dir_all(&dir).ok();
+    eprintln!("layout values checked: {}", fields_checked);
+    assert!(mismatches.is_empty(), "{}", mismatches.join("\n"));
+}

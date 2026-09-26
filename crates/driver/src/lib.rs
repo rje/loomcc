@@ -38,3 +38,32 @@ pub fn parse(path: &Path, opts: &Options) -> Result<Parsed, String> {
     let (unit, diags) = loomcc_parse::parse(&pre.tokens);
     Ok(Parsed { pre, unit, diags })
 }
+
+pub struct Checked {
+    pub parsed: Parsed,
+    pub unit: loomcc_sema::hir::Unit,
+    pub diags: Vec<Diag>,
+}
+
+impl Checked {
+    /// Every diagnostic (preprocessor, parser, sema), rendered.
+    pub fn render_all(&self) -> String {
+        let p = &self.parsed;
+        let mut s = p.pre.render(&p.pre.diags);
+        s.push_str(&p.pre.render(&p.diags));
+        s.push_str(&p.pre.render(&self.diags));
+        s
+    }
+
+    pub fn has_errors(&self) -> bool {
+        self.parsed.pre.has_errors()
+            || self.parsed.diags.iter().chain(&self.diags).any(|d| d.level == Level::Error)
+    }
+}
+
+pub fn check(path: &Path, opts: &Options) -> Result<Checked, String> {
+    let parsed = parse(path, opts)?;
+    let name = path.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+    let (unit, diags) = loomcc_sema::check(&parsed.unit, &name, loomcc_sema::types::Layout::snes());
+    Ok(Checked { parsed, unit, diags })
+}
