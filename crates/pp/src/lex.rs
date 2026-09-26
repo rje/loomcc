@@ -195,6 +195,9 @@ pub fn tokenize(text: &str, file: u32, diags: &mut Vec<Diag>) -> Vec<Token> {
                     }
                 }
             } else {
+                if let Some(msg) = bad_ucn(&b[i..j]) {
+                    diags.push(Diag::error(loc, msg));
+                }
                 i = j;
                 kind = TokenKind::Ident;
             }
@@ -358,4 +361,28 @@ mod tests {
         assert!(t[0].bol && !t[1].bol && t[1].space && t[2].bol);
         assert_eq!((t[2].loc.line, t[2].loc.col), (2, 3));
     }
+}
+
+/// Checks the universal character names in an identifier (C17 6.4.3):
+/// `\u` takes four hex digits and `\U` eight; the value may not be a
+/// surrogate, beyond U+10FFFF, or below U+00A0 other than `$`, `@` and `` ` ``.
+fn bad_ucn(word: &[u8]) -> Option<String> {
+    let mut i = 0;
+    while i < word.len() {
+        if word[i] == b'\\' && i + 1 < word.len() && (word[i + 1] == b'u' || word[i + 1] == b'U') {
+            let n = if word[i + 1] == b'u' { 4 } else { 8 };
+            let digits = &word[i + 2..(i + 2 + n).min(word.len())];
+            if digits.len() < n || !digits.iter().all(|c| c.is_ascii_hexdigit()) {
+                return Some("incomplete universal character name".into());
+            }
+            let v = u32::from_str_radix(std::str::from_utf8(digits).unwrap(), 16).unwrap_or(u32::MAX);
+            if (0xD800..=0xDFFF).contains(&v) || v > 0x10FFFF || (v < 0xA0 && !matches!(v, 0x24 | 0x40 | 0x60)) {
+                return Some(format!("universal character name \\U{:08X} does not name a valid character here", v));
+            }
+            i += 2 + n;
+        } else {
+            i += 1;
+        }
+    }
+    None
 }

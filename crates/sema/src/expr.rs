@@ -430,6 +430,10 @@ impl Checker {
     }
 
     fn sizeof(&mut self, ty: Ty, loc: Loc) -> hir::Expr {
+        if self.types.is_void(ty) {
+            // 6.5.3.4p1; GNU gives 1.
+            self.warn(loc, "invalid application of 'sizeof' to a void type");
+        }
         if !self.types.is_complete(ty) && !self.types.is_void(ty) {
             self.error(loc, format!("invalid application of 'sizeof' to an incomplete type '{}'", self.types.display(ty)));
         }
@@ -864,6 +868,16 @@ impl Checker {
                 };
                 if xp || yp {
                     let (x, y) = if xp && yp {
+                        // 6.5.8p2, 6.5.9p2: pointers to compatible types, or
+                        // (equality only) one side void * or a null constant.
+                        let (pa, pb) = (self.types.pointee(x.ty).unwrap(), self.types.pointee(y.ty).unwrap());
+                        let void_side = self.types.is_void(pa) || self.types.is_void(pb);
+                        let equality = matches!(cop, CmpOp::Eq | CmpOp::Ne);
+                        let null_side = self.is_null_constant(&x) || self.is_null_constant(&y);
+                        if !self.types.compatible_unqual(pa, pb) && !(equality && (void_side || null_side)) {
+                            let (a, b) = (self.types.display(x.ty), self.types.display(y.ty));
+                            self.warn(loc, format!("comparison of distinct pointer types ('{}' and '{}')", a, b));
+                        }
                         (x, y)
                     } else if xp {
                         if !self.is_null_constant(&y) && self.types.is_integer(y.ty) {

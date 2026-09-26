@@ -581,6 +581,18 @@ impl Preprocessor {
                         args.clear();
                     }
                     if m.variadic && args.len() == params.len() - 1 {
+                        // C17 6.10.3p4: at least one argument for the `...`
+                        // (C23 and GNU relax this).
+                        // Not for a body written for the empty case: `__VA_OPT__`
+                        // or GNU's `, ## __VA_ARGS__`.
+                        let for_empty = m.body.iter().any(|t| t.is_ident("__VA_OPT__"))
+                            || m.body.windows(2).any(|w| w[0].is_punct(Punct::HashHash) && w[1].is_ident("__VA_ARGS__"));
+                        if params.len() > 1 && !for_empty {
+                            self.diags.push(Diag::warning(
+                                name.loc,
+                                format!("macro \"{}\" requires at least one argument for its '...' in C17", m.name),
+                            ));
+                        }
                         args.push(Vec::new());
                     }
                     if args.len() != params.len() {
@@ -824,6 +836,10 @@ impl Preprocessor {
                 match line.first() {
                     Some(t) if t.is_ident("defined") => self.error(t.loc, "\"defined\" cannot be used as a macro name"),
                     Some(t) if t.kind == TokenKind::Ident => {
+                        // 6.10.8p2: predefined macro names may not be undefined.
+                        if self.macros.get(&*t.text).map_or(false, |m| m.builtin.is_some() || m.name.starts_with("__STDC")) {
+                            self.diags.push(Diag::warning(t.loc, format!("undefining builtin macro \"{}\"", t.text)));
+                        }
                         self.macros.remove(&*t.text);
                     }
                     _ => self.error(name.loc, "macro name missing"),

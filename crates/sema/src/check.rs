@@ -39,6 +39,9 @@ pub struct Checker {
     pub unit_name: String,
     pub interrupt_roots: HashSet<String>,
     pub(crate) kr_names: Vec<String>,
+    /// Tags declared in the most recent function declarator's parameter
+    /// list: a definition's body scope inherits them (6.2.1p4).
+    pub(crate) param_tags: HashMap<String, Ty>,
     pub(crate) register_locals: HashSet<LocalId>,
 }
 
@@ -65,6 +68,7 @@ impl Checker {
             unit_name: unit_name.to_string(),
             interrupt_roots: HashSet::new(),
             kr_names: Vec::new(),
+            param_tags: HashMap::new(),
             register_locals: HashSet::new(),
         };
         // __builtin_va_list: a pointer-sized opaque type.
@@ -195,6 +199,14 @@ impl Checker {
         if specs.quals.is_volatile {
             q |= Q_VOLATILE;
         }
+        if specs.quals.is_restrict {
+            // 6.7.3p2: restrict qualifies only pointers to object types.
+            if !self.types.is_ptr(base) {
+                self.error(specs.loc, format!("restrict requires a pointer type ('{}' is invalid)", self.types.display(base)));
+            } else {
+                q |= Q_RESTRICT;
+            }
+        }
         self.types.with_quals(base, q)
     }
 
@@ -298,6 +310,10 @@ impl Checker {
             }
         }
         if let Some(members) = &s.members {
+            if members.iter().all(|m| !matches!(m, ast::MemberDecl::Field { .. })) {
+                // 6.7.2.1p8: the member list needs a member (empty structs are a GNU extension).
+                self.warn(s.loc, format!("empty {} is a GNU extension", if is_union { "union" } else { "struct" }));
+            }
             let mut fields = Vec::new();
             for m in members {
                 match m {
@@ -397,21 +413,35 @@ impl Checker {
             (None, _) => self.new_enum(None),
         };
         if let Some(vs) = &e.variants {
-            let mut next: i64 = 0;
+            // `None`: the previous enumerator was the largest representable
+            // value, so an implicit successor overflows (6.7.2.2p3).
+            let mut cur: Option<i64> = Some(0);
             for v in vs {
                 if let Some(ve) = &v.value {
                     let x = self.expr(ve);
                     match self.eval_int(&x) {
-                        Some(val) => next = val,
-                        None => self.error(v.loc, "enumerator value is not an integer constant"),
+                        Some(val) => cur = Some(val),
+                        None => {
+                            self.error(v.loc, "enumerator value is not an integer constant");
+                            cur = Some(0);
+                        }
                     }
                 }
+                let Some(next) = cur else {
+                    self.error(v.loc, format!("enumerator value for '{}' overflows", v.name));
+                    self.scopes.last_mut().unwrap().insert(v.name.clone(), Sym::EnumConst(0));
+                    cur = Some(1);
+                    continue;
+                };
                 if next < i16::MIN as i64 || next > i16::MAX as i64 {
                     // C17 requires enumerators to fit in int (16 bits here).
                     self.warn(v.loc, format!("enumerator value {} does not fit in a 16-bit int", next));
                 }
+                if self.scopes.last().unwrap().contains_key(&v.name) {
+                    self.error(v.loc, format!("redefinition of '{}'", v.name));
+                }
                 self.scopes.last_mut().unwrap().insert(v.name.clone(), Sym::EnumConst(next));
-                next += 1;
+                cur = next.checked_add(1);
             }
             if let TyKind::Enum(id) = self.types.kind(ty).clone() {
                 self.types.enums[id.0 as usize].complete = true;
@@ -458,6 +488,9 @@ impl Checker {
                 if self.types.is_func(base) {
                     self.error(d.loc, "array of functions");
                 }
+                if self.types.is_void(base) {
+                    self.error(d.loc, "array has incomplete element type 'void'");
+                }
                 let n = match size {
                     None => None,
                     Some(e) => {
@@ -498,7 +531,11 @@ impl Checker {
                     ptys.push(t);
                     pinfo.push((info.name, t, info.loc));
                 }
+                let tags = self.tags.last().cloned().unwrap_or_default();
                 self.pop_scope();
+                if matches!(inner.kind, DeclaratorKind::Ident(_)) {
+                    self.param_tags = tags;
+                }
                 for n in old_names {
                     // K&R: types come from the declaration list (default int).
                     pinfo.push((Some(n.clone()), Types::INT, d.loc));
@@ -564,6 +601,22 @@ impl Checker {
         GlobalId((self.globals.len() - 1) as u32)
     }
 
+    /// 6.2.2p7: an identifier declared at file scope with both internal and
+    /// external linkage.
+    fn check_linkage(&mut self, name: &str, linkage: Linkage, loc: Loc) {
+        if let Some(Sym::Global(g)) = self.scopes[0].get(name) {
+            let old = self.globals[g.0 as usize].linkage;
+            if old != linkage {
+                let msg = if linkage == Linkage::Internal {
+                    format!("static declaration of '{}' follows non-static declaration", name)
+                } else {
+                    format!("non-static declaration of '{}' follows static declaration", name)
+                };
+                self.error(loc, msg);
+            }
+        }
+    }
+
     fn composite_ok(&self, a: Ty, b: Ty) -> bool {
         // Arrays of the same element type, one of unknown size; functions
         // where one side is unprototyped.
@@ -573,9 +626,21 @@ impl Checker {
         }
     }
 
+    /// The composite type (6.2.7p3), recursing through pointers and array
+    /// elements (`IA *a[]` with `IA5 *a[]` completes the pointed-to array).
     fn composite(&mut self, old: Ty, new: Ty) -> Ty {
+        let q = self.types.quals(old);
         match (self.types.kind(old).clone(), self.types.kind(new).clone()) {
-            (TyKind::Array(_, None), TyKind::Array(_, Some(_))) => new,
+            (TyKind::Array(e1, n1), TyKind::Array(e2, n2)) => {
+                let e = self.composite(e1, e2);
+                let t = self.types.array(e, n1.or(n2));
+                self.types.with_quals(t, q)
+            }
+            (TyKind::Ptr(a), TyKind::Ptr(b)) => {
+                let e = self.composite(a, b);
+                let t = self.types.ptr(e);
+                self.types.with_quals(t, q)
+            }
             (TyKind::Func(f), TyKind::Func(g)) => {
                 if !f.proto && g.proto {
                     new
@@ -607,6 +672,10 @@ impl Checker {
                 continue;
             }
             let is_func = self.types.is_func(info.ty);
+            if self.at_file_scope() && matches!(storage, Some(Storage::Auto) | Some(Storage::Register)) {
+                // 6.9p2.
+                self.error(info.loc, format!("illegal storage class on file-scoped variable '{}'", name));
+            }
             if self.at_file_scope() || storage == Some(Storage::Extern) || (is_func && storage != Some(Storage::Static)) {
                 // File scope, or block-scope extern / function declaration.
                 let linkage = if storage == Some(Storage::Static) {
@@ -631,6 +700,9 @@ impl Checker {
                         _ => Linkage::External,
                     }
                 };
+                if self.at_file_scope() {
+                    self.check_linkage(&name, linkage, info.loc);
+                }
                 let gid = self.declare_global(&name, info.ty, linkage, is_func, info.loc);
                 self.scopes.last_mut().unwrap().insert(name.clone(), Sym::Global(gid));
                 if is_func {
@@ -760,6 +832,7 @@ impl Checker {
                 _ => Linkage::External,
             }
         };
+        self.check_linkage(&name, linkage, info.loc);
         let gid = self.declare_global(&name, info.ty, linkage, true, info.loc);
         self.scopes[0].insert(name.clone(), Sym::Global(gid));
         if self.globals[gid.0 as usize].defined {
@@ -778,6 +851,8 @@ impl Checker {
             labels_used: Vec::new(),
         });
         self.push_scope();
+        let tags = std::mem::take(&mut self.param_tags);
+        self.tags.last_mut().unwrap().extend(tags);
         let mut params = Vec::new();
         for (pname, pty, ploc) in &info.params {
             if self.types.is_void(*pty) {
