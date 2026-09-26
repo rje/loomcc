@@ -1,5 +1,8 @@
 # loomcc results
 
+(`docs/results/<phase>.json` are the benchmark summaries behind the
+progress table; `docs/results/m8/` holds the Cliffside build's records.)
+
 All numbers come from `testbed/harness` (see testbed/bench/README.md): one ROM per
 benchmark and variant, the unit under test called through the 816-tcc ABI by an
 816-tcc-compiled driver, run in loom-emulator (MesenCore).
