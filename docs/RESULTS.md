@@ -193,12 +193,18 @@ held until the tick counter reaches the span's end) and compares:
 |---|---|
 | debug builds: the 108-byte witness `loom_project_debug_state` after every tick (all bytes but `tick_started` at 106) | **813 ticks, 0 differ** |
 | debug builds: the sequence of distinct presented frames | **582 = 582, identical** |
-| release builds: the sequence of distinct presented frames (tick counter from the runtime state) | **all 582 shared images identical and in order**; the 816-tcc trace has one extra trailing image because its run lasted two frames longer |
+| release builds: the sequence of distinct presented frames (tick counter `logical_tick_count` from the runtime state) | **583 = 583, identical** |
 
 Frame-for-frame screenshot equality does not hold and cannot: in the
 debug 816-tcc build 34 ticks take three frames where loomcc takes two, so
 the same image is presented one frame later relative to the tick counter.
 Every image and every witness byte agree once time is measured in ticks.
+
+(Re-verified on the final ROMs after the M8 interop fixes: identical
+results. Q2 is also confirmed under Loom's exact include order and flags:
+`testbed/loom-build/q2-int32.c` includes `<snes.h>`, `<loom/runtime.h>`,
+`<stdint.h>` and `<stddef.h>` and asserts `sizeof(int32_t) == 4`,
+`sizeof(int16_t) == 2`, `sizeof(size_t) == 2`.)
 
 ### Speed (Loom's measure: release ROM, frames 400-1000 of scripts/full-speed/cliffside.json)
 
