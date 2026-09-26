@@ -328,3 +328,25 @@ ends). The same inputs go to all three variants.
     off). devkitsnes's `stdint.h` would make `int32_t` a `long long`
     (64-bit in loomcc) and typedefs `int16_t` twice; loomcc's `int32_t` is
     `long` (32 bits), `int16_t` is `short`.
+- 2026-09-26 (M8):
+  - The whole Cliffside release ROM builds with loomcc (27 C units as one
+    program, Loom's hand assembly unchanged); tick-clock witness identical
+    over 813 ticks; 11,284 -> 7,956 instructions a tick (RESULTS.md M8).
+  - **Callbacks.** With `--asm-callbacks=<file.asm>` (Loom's build passes
+    its hand-written .asm files) only the scanned `jsl` targets may be
+    called back from outside the module. Without it, any exported or
+    address-taken function may be; calls to external code then join those
+    functions into recursive components.
+  - **Recursion and re-entry via frame save.** A call that may re-enter a
+    recursive component (a direct call inside it, or an external/indirect
+    call from one of its members) pushes the members' static frames on the
+    hardware stack and pulls them back afterwards. The calling function's
+    own address-taken slots are not restored (the callee may write them
+    through a pointer: out-parameters, struct results). Limitation: a
+    re-entrant activation that writes the *same* address-taken slot as an
+    outer activation still shares it; a stack-allocated frame for
+    recursive functions would lift this.
+  - **816-tcc 32-bit results** come back in tcc__r0 (low) and tcc__r1 (high,
+    $04), not tcc__r0h as pointers do.
+  - **NMI cloning**: every function reachable from an interrupt root gets a
+    `__nmi` copy with interrupt-private frames and software helpers.

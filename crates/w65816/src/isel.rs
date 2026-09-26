@@ -1998,7 +1998,7 @@ impl<'a> Gen<'a> {
                 (Some(a), Some(b)) if a == b => Some(*a),
                 _ => None,
             };
-            let saved: Vec<(String, u32)> = scc.map(|c| self.mi.scc_members[c].clone()).unwrap_or_default();
+            let saved: Vec<(String, u32)> = scc.map(|c| self.save_set(c)).unwrap_or_default();
             for (name, size) in &saved {
                 let sym = self.mi.frame_symbol(name);
                 for k in (0..size / 2).rev() {
@@ -2035,6 +2035,84 @@ impl<'a> Gen<'a> {
             }
             return;
         }
+        // Code outside the module (or behind a pointer) may call back into
+        // this function's recursive component: save its frames around the
+        // call, as for direct recursion.
+        let saved: Vec<(String, u32)> = match self.mi.scc_of.get(&self.f.name) {
+            Some(&c) => self.save_set(c),
+            None => Vec::new(),
+        };
+        for (name, size) in &saved {
+            let sym = self.mi.frame_symbol(name);
+            for k in (0..size / 2).rev() {
+                self.i("lda", Mode::Abs(Expr::Sym(sym.clone(), 2 * k as i64)));
+                self.i("pha", Mode::Implied);
+            }
+        }
+        self.acc = None;
+        self.gen_abi_call(dst, callee, args, arg_tys, sret);
+        if !saved.is_empty() {
+            self.i("lda", Mode::Dp(0));
+            self.i("sta", Mode::Dp(0x18));
+            self.i("lda", Mode::Dp(2));
+            self.i("sta", Mode::Dp(0x1a));
+            self.i("lda", Mode::Dp(4));
+            self.i("sta", Mode::Dp(0x1c));
+            for (name, size) in saved.iter().rev() {
+                let sym = self.mi.frame_symbol(name);
+                for k in 0..size / 2 {
+                    self.i("pla", Mode::Implied);
+                    self.i("sta", Mode::Abs(Expr::Sym(sym.clone(), 2 * k as i64)));
+                }
+            }
+            // The result was already stored by gen_abi_call; a result homed
+            // in the frame was just overwritten by the restore, so store it
+            // again from the saved registers.
+            self.forget();
+            if let Some(d) = dst {
+                let t = self.f.ty(d);
+                self.i("lda", Mode::Dp(0x18));
+                self.acc = None;
+                self.sta_reg(d, 0);
+                if self.width(t) == 2 {
+                    self.i("lda", Mode::Dp(if t == IrTy::I32 { 0x1c } else { 0x1a }));
+                    self.acc = None;
+                    self.sta_reg(d, 1);
+                    self.acc = None;
+                    self.lda(&Operand::Reg(d), 0);
+                }
+            }
+        }
+    }
+
+    /// Frames saved around a call that may re-enter component `c`. The
+    /// calling function's own address-taken slots are left out: the callee
+    /// may legitimately write them through a pointer (an out-parameter, a
+    /// struct result), and restoring would undo that. (A re-entrant
+    /// activation writing the same slot is the case static frames cannot
+    /// cover; it is documented in PLAN.md.)
+    fn save_set(&self, c: usize) -> Vec<(String, u32)> {
+        let limit = self
+            .f
+            .slots
+            .iter()
+            .enumerate()
+            .filter(|(i, _)| !self.f.param_slots.contains(&Some(SlotId(*i as u32))))
+            .map(|(i, _)| self.al.slot_offsets[i])
+            .min();
+        self.mi.scc_members[c]
+            .iter()
+            .map(|(n, size)| {
+                if *n == self.f.name {
+                    (n.clone(), limit.map_or(*size, |l| l.min(*size) & !1))
+                } else {
+                    (n.clone(), *size)
+                }
+            })
+            .collect()
+    }
+
+    fn gen_abi_call(&mut self, dst: Option<VReg>, callee: &Callee, args: &[Operand], arg_tys: &[IrTy], sret: Option<&Addr>) {
         // 816-tcc ABI: push right to left; a struct goes on the stack whole.
         let kinds: Vec<ParamKind> = match callee {
             Callee::Direct(n) => self.mi.externs.get(n).cloned().unwrap_or_default(),
@@ -2141,7 +2219,8 @@ impl<'a> Gen<'a> {
         if let Some(d) = dst {
             let t = self.f.ty(d);
             for k in 0..self.width(t) {
-                self.i("lda", Mode::Dp(2 * k as u8));
+                // 816-tcc returns a 32-bit integer's high word in tcc__r1.
+                self.i("lda", Mode::Dp(if k == 1 && t == IrTy::I32 { 4 } else { 2 * k as u8 }));
                 self.acc = None;
                 self.sta_reg(d, k);
             }
@@ -2189,16 +2268,21 @@ impl<'a> Gen<'a> {
                                 self.i("tax", Mode::Implied);
                             }
                         }
-                        if exported {
-                            self.i("stx", Mode::Dp(2));
-                        }
                     }
+                    // Both words are read before either result register is
+                    // written (the value may live in $00-$07 itself).
                     self.lda(v, 0);
+                    if self.width(t) == 2 && exported {
+                        // 816-tcc: a pointer's bank in tcc__r0h ($02), a
+                        // 32-bit integer's high word in tcc__r1 ($04).
+                        self.i("sta", Mode::Dp(0));
+                        self.i("stx", Mode::Dp(if t == IrTy::I32 { 4 } else { 2 }));
+                    }
                     if t == IrTy::I8 {
                         // Callers through the 816-tcc ABI read the low byte;
                         // internal callers only the low byte too.
                     }
-                    if exported {
+                    if exported && self.width(t) == 1 {
                         self.i("sta", Mode::Dp(0));
                     }
                 }

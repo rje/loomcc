@@ -50,7 +50,7 @@ pub struct ModuleInfo {
 
 /// Strongly connected components of the direct call graph that contain a
 /// cycle (recursion).
-fn recursive_components(m: &Module) -> Vec<Vec<usize>> {
+fn recursive_components(m: &Module, callbacks: &HashSet<String>) -> Vec<Vec<usize>> {
     let n = m.funcs.len();
     let index: HashMap<&str, usize> = m.funcs.iter().enumerate().map(|(i, f)| (f.name.as_str(), i)).collect();
     let succ: Vec<Vec<usize>> = m
@@ -60,10 +60,16 @@ fn recursive_components(m: &Module) -> Vec<Vec<usize>> {
             let mut v = Vec::new();
             for b in &f.blocks {
                 for i in &b.insts {
-                    if let Inst::Call { callee: Callee::Direct(c), .. } = i {
-                        if let Some(&j) = index.get(c.as_str()) {
-                            v.push(j);
+                    match i {
+                        Inst::Call { callee: Callee::Direct(c), .. } => match index.get(c.as_str()) {
+                            Some(&j) => v.push(j),
+                            // Code outside the module may call back.
+                            None => v.extend(m.funcs.iter().enumerate().filter(|(_, g)| callbacks.contains(&g.name)).map(|(j, _)| j)),
+                        },
+                        Inst::Call { callee: Callee::Indirect(_), .. } => {
+                            v.extend(m.funcs.iter().enumerate().filter(|(_, g)| g.address_taken).map(|(j, _)| j));
                         }
+                        _ => {}
                     }
                 }
             }
@@ -151,13 +157,14 @@ pub struct Options {
     pub tag: String,
     /// Functions that code outside the module (hand assembly) calls back
     /// while one of our functions is active (found by scanning `.asm`
-    /// inputs for `jsl`/`jsr.l` targets).
-    pub callbacks: HashSet<String>,
+    /// inputs for `jsl`/`jsr.l` targets). None: any exported or
+    /// address-taken function may be called back from any external call.
+    pub callbacks: Option<HashSet<String>>,
 }
 
 impl Default for Options {
     fn default() -> Options {
-        Options { rom_base: 0x80, tag: "unit".into(), callbacks: HashSet::new() }
+        Options { rom_base: 0x80, tag: "unit".into(), callbacks: None }
     }
 }
 
@@ -339,7 +346,11 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
     }
 
     // The compiled stack: frames placed by call-graph depth.
-    let (frame_base, cstack_bytes, fe) = place_frames(m, &allocs, &opts.callbacks);
+    let callbacks: HashSet<String> = match &opts.callbacks {
+        Some(c) => c.clone(),
+        None => m.funcs.iter().filter(|f| f.exported || f.address_taken).map(|f| f.name.clone()).collect(),
+    };
+    let (frame_base, cstack_bytes, fe) = place_frames(m, &allocs, &callbacks);
     errors.extend(fe);
 
     let externs = m.extern_funcs.iter().map(|(n, p, _, _)| (n.clone(), p.clone())).collect();
@@ -352,7 +363,7 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
     }
     let mut scc_of = HashMap::new();
     let mut scc_members = Vec::new();
-    for comp in recursive_components(m) {
+    for comp in recursive_components(m, &callbacks) {
         let id = scc_members.len();
         let mut members = Vec::new();
         for &v in &comp {

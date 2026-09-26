@@ -173,6 +173,7 @@ fn real_main() -> ExitCode {
                         }
                     }
                 }
+                let callbacks = if args.asm_callbacks.is_empty() { None } else { Some(callbacks) };
                 let o = loomcc_w65816::compile_module(&m, &loomcc_w65816::Options { tag, callbacks, ..Default::default() });
                 for e in &o.errors {
                     eprintln!("loomcc: error: {}", e);
