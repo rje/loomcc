@@ -1,0 +1,11 @@
+name = "contact_scan"
+kind = "pair"
+description = "Combat's contact query: the first live, awake actor whose hit box covers the player's, from a start slot. Eight actors, four player boxes, every hit walked."
+unit_labels = ["loom_pvs_combat_touch"]
+helper_labels = []
+
+[provenance]
+loom_commit = "925fc3a"
+c_source = "runtime/src/combat.c:120-140 (loom_combat_actor_touches_player) and :447-469 (the head of loom_combat_update's contact loop through the shot check) at 925fc3a^"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_combat_touch at 925fc3a (changed by HEAD: HEAD computes the player's box itself from loom_movement_state and keeps the array pointers in the direct page)"
+notes = "The asm reads the pool through body.asm's bound array pointers (loom_pvs_actor_arr_*), which driver.c defines and binds in bench_setup as Loom's activation does; the C reads loom_actor_pool directly. The C's shot type is loom_combat_state.shot_type, here the argument the asm takes."
