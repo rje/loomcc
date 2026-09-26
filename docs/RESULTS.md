@@ -39,6 +39,7 @@ assembly that replaced the C in Loom's history, **loomcc** = this compiler.
 | M7b: loop-invariant code motion (incl. loads the loop cannot write) and induction-variable strength reduction (`y*width` per row becomes an add) | 0.38 | 1.27 | 0.51 | 31/31 |
 | M7c: branch-free compare results, clean 8-bit values, join-aware layout | 0.38 | 1.27 | 0.50 | 31/31 |
 | M8 + F29/F30 fixes (re-entry saves only the caller's live frame words, by block move; no `n,s` offset past 255) | 0.38 | 1.28 | 0.51 | 31/31 |
+| F34 fix (struct-return pointer and index-register arguments in the call's parallel move) | 0.38 | 1.28 | 0.51 | 31/31 |
 
 (Geometric means. Lower is better; asm/tcc clocks is 0.32 for scale.)
 
