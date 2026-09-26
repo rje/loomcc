@@ -12,7 +12,7 @@ as loomcc's matching mode exists; until then its tests are UNSUPPORTED.
 | T3 semantics | M3 | `syntax` / `syntax` | clang --target=msp430 (16-bit int) and 816-tcc -c; layout pinned to 816-tcc | 300 | 303 (hand-written + generated folding, conversion and 816-tcc layout families) |
 | T4 execute | M4 (ir), M5 (rom) | `run` / `ir`, `rom` | host clang (width-agnostic tests), host16 (msp430 IR under lli), 816-tcc ROM in loom-emulator | 600 | 607 own (half generated, Loom-shaped) + 450 GCC torture + 212 output-compared (c-testsuite, tcc tests2, LLVM), all fetched |
 | T5 SNES-specific | M5-M6 | `run` with `tcc-sources`/`asm-sources` | 816-tcc ROM, hand assembly | 100 | 15 |
-| T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | 31 units (stage 1), 4 differential drivers (stage 2) |
+| T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | 31 units (stage 1), 9 differential drivers (stage 2) |
 | T7 randomised | M4 onwards | generated `run` tests | host16 checksum vs loomcc ir/rom vs 816-tcc ROM | continuous | generator + 40-program corpus |
 
 Counts: `./run-tests --list | cut -d' ' -f1 | sort -u | wc -l`, or the
@@ -229,7 +229,15 @@ at d88b68b (`tests/t6-loom/loom-d88b68b/PROVENANCE`).
   results to `unsigned` before printing (816-tcc bug 5 in docs/TCC-BUGS.md).
   Units so far: game.c (RNG, timers), adventure.c (flags, gates, actions,
   request queue), camera.c (facing sign, auto-scroll step, approach),
-  animation.c (direction selection).
+  animation.c (direction selection), movement.c (the per-tick subpixel
+  step), ui.c (number formatting for project UI patches), mode1.c (scroll
+  clamping, parallax scaling, auto-scroll drift, stream limits), actor.c
+  (direction vectors), scene.c with Loom's own scene.asm (the trigger box
+  scan, C calling the hand-written assembly). `scripts/t6-stubs.py` writes
+  link stubs for symbols a unit references but the driver never reaches
+  (wlalink -d usually drops them, so most drivers need none). A driver's
+  output must fit the harness's 4 KiB buffer; rom-output.py refuses a run
+  that did not finish or filled it.
 - Stage 3 belongs to loomcc's M8: a Loom sample ROM built with loomcc passing
   Loom's own ROM tests.
 

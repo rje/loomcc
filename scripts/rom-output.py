@@ -28,12 +28,19 @@ def main(argv):
     args += ["--refs", mode, "--refs-only"] if mode.startswith("ref:") or mode == "tcc-rom" else ["--modes", mode]
     env = dict(os.environ, LOOMCC_TESTS_DUMP_OUTPUT="1")
     r = subprocess.run(args + [str(test)], env=env, capture_output=True, text=True)
+    if "did not finish" in r.stdout or "loom-emulator failed" in r.stdout:
+        print(r.stdout, file=sys.stderr)
+        print("the ROM did not finish: raise loomcc-max-frames; no output captured", file=sys.stderr)
+        return 1
     dumps = list(work.rglob("output.bin"))
+    data = dumps[0].read_bytes() if dumps else b""
+    if len(data) >= 4096:
+        print("the output filled the 4 KiB harness buffer: print less", file=sys.stderr)
+        return 1
     if not dumps:
         print(r.stdout + r.stderr, file=sys.stderr)
         print("no output captured", file=sys.stderr)
         return 1
-    data = dumps[0].read_bytes()
     if out:
         Path(out).write_bytes(data)
     else:
