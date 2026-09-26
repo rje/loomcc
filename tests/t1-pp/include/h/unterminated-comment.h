@@ -1,0 +1,2 @@
+int before;
+/* never closed
