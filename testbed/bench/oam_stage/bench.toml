@@ -1,0 +1,11 @@
+name = "oam_stage"
+kind = "pair"
+description = "Stage one sprite into the OAM shadow: validate, reject duplicate slots by generation mark, write the low and high tables. Twenty entries, nine rejected."
+unit_labels = ["loom_pvs_oam_stage"]
+helper_labels = []
+
+[provenance]
+loom_commit = "2e278a7"
+c_source = "runtime/backends/pvsneslib/src/frame-transaction.c:134-158 (validation + slot mark, loom_port_oam_stage's host branch) and runtime-adapter.c:974-1012 (the shadow write, loom_pvs_target_prepare_oam's last loop body) at 2e278a7 -- the host C rendition of the same contract; the 2e278a7^ C (array staging, insertion sort, oamClear + pvsneslib oamSet/oamSetEx at commit) was rewritten rather than transliterated and is not isolatable"
+asm_source = "runtime/backends/pvsneslib/src/oam.asm:loom_pvs_oam_stage (+ its RAM section and high-table tables) at 2e278a7 (the routine is unchanged at HEAD); `.BASE $00` / `.BASE $80` added around the RAM section as HEAD has it"
+notes = "The C writes the shadow at stage time and records the slot in loom_pvs_oam_current as the asm does (the host rendition deferred both to commit). The asm's RAM (generation, count, marks, current/previous) is defined in unit.c for the C variant with the same names; the driver initialises it. oamMemory comes from pvsneslib libc.obj on the console and from driver.c on the host."
