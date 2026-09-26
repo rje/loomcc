@@ -15,10 +15,10 @@ on 2026-09-25 are recorded at the end.
 | mcpp 2.7.2 validation suite (cpp-test) | BSD-2-Clause (Kiyoshi Matsui) | **vendored**: n_* and e_* converted to T1 tests | `tests/t1-pp/mcpp/` (+ LICENSE, README) by `scripts/import-mcpp.py` |
 | GCC `gcc.c-torture/execute` | GPL-3.0-or-later | **fetched, filtered, wrapped**; never copied | `external/classify-gcc-torture.py`, `external/gcc-torture-execute.list` |
 | GCC `gcc.c-torture/compile`, `gcc.dg/cpp` | GPL-3.0-or-later | fetched; not yet wired (see "Next") | `external/fetched/gcc` |
-| c-testsuite (`tests/single-exec`) | harness MIT; individual tests carry their origins' licences (ISC from scc, LGPL-2.1 from tinycc, others) | fetched only (mixed per-test licences; loomcc's own testbed already carries a manifest of them) | `external/fetched/c-testsuite` |
-| chibicc `test/` | MIT (Rui Ueyama) | evaluated, not imported: every file relies on `printf`, `sprintf`, `strcmp` via `test/common`, and many assert 32-bit `int`/`long`/pointer sizes | `external/fetched/chibicc` |
-| TinyCC `tests/tests2` | LGPL-2.1 | fetched only: output-compared through `printf` (`.expect` files), needs a libc on the target | `external/fetched/tinycc` |
-| LLVM test-suite `SingleSource/UnitTests`, `Regression/C` | Apache-2.0 WITH LLVM-exception (older files NCSA) | fetched only for now: output-compared through `printf`, much floating point; permissive, so selected files may be vendored later with LICENSE.TXT | `external/fetched/llvm-test-suite` |
+| c-testsuite (`tests/single-exec`) | harness MIT; individual tests carry their origins' licences (ISC from scc, LGPL-2.1 from tinycc, others) | **fetched, filtered, wrapped** (mixed per-test licences); 163 selected | `external/wrap-suite.py c-testsuite`, `external/c-testsuite.list` |
+| chibicc `test/` | MIT (Rui Ueyama) | evaluated with the same wrapper: 0 of 41 survive (GNU extensions, floating point, and every remaining file fails under 816-tcc's 16-bit int or front end) | `external/chibicc.rejected` |
+| TinyCC `tests/tests2` | LGPL-2.1 | **fetched, filtered, wrapped**, output compared through the harness printf; 32 selected | `external/wrap-suite.py tcc-tests2`, `external/tcc-tests2.list` |
+| LLVM test-suite `SingleSource/UnitTests`, `Regression/C` | Apache-2.0 WITH LLVM-exception (older files NCSA) | **fetched, filtered, wrapped** (output compared); 11 + 5 selected; small, so not vendored | `external/wrap-suite.py llvm-unittests / llvm-regression` |
 
 ## mcpp (T1, vendored)
 
@@ -73,6 +73,19 @@ with
 
 They report under the tier `ext-gcc-wrapped`.
 
+## Output-comparing suites (tcc tests2, LLVM, c-testsuite, chibicc)
+
+`external/wrap-suite.py <suite>` writes wrappers into
+`external/fetched/wrapped-<suite>/` that `#include` the original, point
+`loomcc-expect-output` at its expected output (LLVM's trailing `exit 0`
+line removed), and add `-I harness/libc` (a minimal stdio.h/stdlib.h/string.h
+matching the harness printf and PVSnesLib's libc). A wrapper is kept when it
+passes a static filter (as for GCC, but printf/puts/putchar and
+mem*/str* are allowed) and both host clang and the 816-tcc ROM produce the
+expected output. There is no host16 reference for printing tests (lli
+cannot run msp430 varargs), so the 816-tcc ROM is the 16-bit-int filter;
+it is conservative (a test 816-tcc miscompiles is dropped as well).
+
 ## Filters for 16-bit int (why tests drop out)
 
 The biggest groups rejected (see the .rejected file for the exact list):
@@ -98,6 +111,3 @@ silently assume 32-bit `int` (they fail under host16).
 - `gcc.c-torture/compile` as T2/T3 compile-only tests (same filter, `loomcc-do: compile`).
 - `gcc.dg/cpp` as T1 tests: dg-do preprocess with dg-error/dg-final
   (the same conversion as mcpp, but fetched-and-wrapped, not vendored).
-- c-testsuite through the same host16 filter as a T4 source (wrapped, not vendored).
-- A printf shim in the harness ROM (a buffer in WRAM the runner reads) would
-  open tcc tests2, chibicc and LLVM SingleSource, which compare printed output.

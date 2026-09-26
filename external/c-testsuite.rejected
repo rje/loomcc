@@ -1,0 +1,58 @@
+# c-testsuite tests rejected by external/wrap-suite.py, with reasons
+00040.c	library functions
+00041.c	tcc-rom: did not finish within 3600 frames (status 0000)
+00044.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00044.c:8:
+00053.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00053.c:8:
+00078.c	tcc-rom: wla-65816 rejected u0.asm: /private/var/folders/88/vd041fd94pq3m7rsytzk6lnc0000gn/T/loomcc-tests-30495/ext-wrapped-c-testsuite_00078.c/ref_tcc-rom/u0.a
+00081.c	64-bit integers
+00082.c	64-bit integers
+00083.c	64-bit integers
+00098.c	wide/C11 features
+00104.c	includes stdint.h
+00113.c	floating point
+00119.c	floating point
+00123.c	floating point
+00124.c	tcc-rom: loom-emulator failed (exit 2): error: frame 807: Unsupported: MesenCore returned 512x478; Loom supports the 256x224 active frame or Mesen's 256x239 SNE
+00128.c	64-bit integers
+00133.c	64-bit integers
+00134.c	64-bit integers
+00135.c	64-bit integers
+00140.c	floating point
+00145.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00145.c:8:
+00162.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00162.c:8:
+00166.c	tcc-rom: output differs at byte 6 (printed 24 bytes, expected 29): got `14711\n26796\n2679`, expected `342391\n2386092\n2`
+00168.c	tcc-rom: output differs at byte 22 (printed 42 bytes, expected 43): got `-25216\n-30336\n24`, expected `40320\n362880\n362`
+00170.c	64-bit integers
+00171.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00171.c:8:
+00173.c	tcc-rom: output differs at byte 9 (printed 54 bytes, expected 64): got `0\ne: 0\nl: 0\nl: 0`, expected `104\ne: 101\nl: 10`
+00174.c	includes math.h
+00175.c	floating point
+00178.c	floating point
+00179.c	library functions
+00181.c	64-bit integers
+00182.c	64-bit integers
+00186.c	library functions
+00187.c	library functions
+00189.c	library functions
+00191.c	64-bit integers
+00195.c	floating point
+00200.c	floating constants
+00201.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00201.c:8:
+00202.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00202.c:8:
+00203.c	64-bit integers
+00204.c	includes stdarg.h
+00205.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00205.c:8:
+00206.c	pragmas
+00207.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-c-testsuite/00207.c:8:
+00209.c	64-bit integers
+00210.c	64-bit integers
+00211.c	tcc-rom: main returned 9
+00212.c	64-bit integers
+00213.c	64-bit integers
+00214.c	GNU extensions
+00215.c	tcc-rom: wla-65816 rejected u0.asm: /private/var/folders/88/vd041fd94pq3m7rsytzk6lnc0000gn/T/loomcc-tests-30495/ext-wrapped-c-testsuite_00215.c/ref_tcc-rom/u0.a
+00216.c	floating constants
+00217.c	64-bit integers
+00218.c	64-bit integers
+00219.c	64-bit integers
+00220.c	includes wchar.h

@@ -1,0 +1,12 @@
+# llvm-unittests tests selected by external/wrap-suite.py (static filter, host clang and 816-tcc ROM pass)
+2002-04-17-PrintfChar.c
+2002-05-02-CastTest3.c
+2002-05-03-NotTest.c
+2002-08-02-CastTest.c
+2002-08-02-CastTest2.c
+2003-07-08-BitOpsTest.c
+2003-10-13-SwitchTest.c
+2003-10-29-ScalarReplBug.c
+2004-06-20-StaticBitfieldInit.c
+2006-01-29-SimpleIndirectCall.c
+block-byref-test.c

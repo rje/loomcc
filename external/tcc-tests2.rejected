@@ -1,0 +1,106 @@
+# tcc-tests2 tests rejected by external/wrap-suite.py, with reasons
+03_struct.c	GNU extensions
+100_c99array-decls.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/100_c99array-decls.c:8:
+101_cleanup.c	floating point
+102_alignas.c	floating point
+104_inline.c	tcc-rom: wlalink failed: /Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/pvsneslib/lib/LoROM_FastROM/libc.obj: libc_c.asm:7377: _TRY_PUT_LABEL: Label 
+106_versym.c	includes pthread.h
+107_stack_safe.c	floating constants
+108_constructor.c	GNU extensions
+109_float_struct_calling.c	floating point
+110_average.c	floating point
+111_conversion.c	floating point
+112_backtrace.c	library functions
+113_btdll.c	64-bit integers
+114_bound_signal.c	includes pthread.h
+115_bound_setjmp.c	includes setjmp.h
+116_bound_setjmp2.c	includes setjmp.h
+117_builtins.c	GNU extensions
+118_switch.c	includes limits.h
+119_random_stuff.c	includes sys/mman.h
+120_alias.c	GNU extensions
+121_struct_return.c	floating point
+122_vla_reuse.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/122_vla_reuse.c:8:
+123_vla_bug.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/123_vla_bug.c:8:
+124_atomic_counter.c	includes stddef.h
+125_atomic_misc.c	includes stdatomic.h
+126_bound_global.c	tcc-rom: output differs at byte 0 (printed 0 bytes, expected 173): got ``, expected `126_bound_global`
+127_asm_goto.c	GNU extensions
+128_run_atexit.c	library functions
+129_scopes.c	GNU extensions
+131_return_struct_in_reg.c	floating point
+132_bound_test.c	includes float.h
+133_old_func.c	floating point
+134_double_to_signed.c	floating point
+135_func_arg_struct_compare.c	64-bit integers
+136_atomic_gcc_style.c	includes stdatomic.h
+137_funcall_struct_args.c	floating point
+138_arm64_encoding.c	includes stdint.h
+139_arm64_errors.c	GNU extensions
+13_integer_literals.c	tcc-rom: output differs at byte 6 (printed 29 bytes, expected 34): got `14711\n26796\n2679`, expected `342391\n2386092\n2`
+140_arm64_extasm.c	includes stdint.h
+141_riscv_asm.c	floating point
+142_int_conversion.c	64-bit integers
+144_tls.c	includes threads.h
+145_winarm64_interlocked.c	includes windows.h
+146_tls_extern.c	floating point
+148_linker_symbols.c	GNU extensions
+15_recursion.c	tcc-rom: output differs at byte 22 (printed 42 bytes, expected 43): got `-25216\n-30336\n24`, expected `40320\n362880\n362`
+17_enum.c	64-bit integers
+18_include.c	includes 18_include.h
+19_pointer_arithmetic.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/19_pointer_arithmetic.c:8:
+21_char_array.c	tcc-rom: output differs at byte 9 (printed 54 bytes, expected 64): got `0\ne: 0\nl: 0\nl: 0`, expected `104\ne: 101\nl: 10`
+22_floating_point.c	includes math.h
+23_type_coercion.c	floating point
+24_math_library.c	includes math.h
+27_sizeof.c	floating point
+28_strings.c	library functions
+30_hanoi.c	64-bit integers
+31_args.c	tcc-rom: output differs at byte 12 (printed 19 bytes, expected 74): got `-31712\n`, expected `6\narg 1: arg1\nar`
+32_led.c	64-bit integers
+33_ternary_op.c	includes assert.h
+34_array_assignment.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/34_array_assignment.c:8:
+35_sizeof.c	wide/C11 features
+36_array_initialisers.c	tcc-rom: output differs at byte 149 (printed 188 bytes, expected 186): got `-10\n3: 0\n4: 0\n5:`, expected `0\n3: 0\n4: 0\n5: 0`
+37_sprintf.c	library functions
+38_multiple_array_index.c	tcc-rom: output differs at byte 12 (printed 63 bytes, expected 60): got ` \nx=1: 5 6 7 8 \n`, expected `\nx=1: 5 6 7 8\nx=`
+39_typedef.c	GNU extensions
+40_stdio.c	library functions
+42_function_pointer.c	library functions
+44_scoped_declarations.c	64-bit integers
+46_grep.c	includes ctype.h
+49_bracket_evaluation.c	floating point
+55_lshift_type.c	floating constants
+60_errors_and_warnings.c	floating point
+61_integers.c	tcc-rom: output differs at byte 120 (printed 700 bytes, expected 810): got `6385\n(UINT_MAX/2`, expected `073741825\n(UINT_`
+64_macro_nesting.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/64_macro_nesting.c:8:
+67_macro_concat.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/67_macro_concat.c:8:
+70_floating_point_literals.c	floating point
+71_macro_empty_arg.c	tcc-rom: output differs at byte 2 (printed 2 bytes, expected 3): got ``, expected `\n`
+72_long_long_constant.c	64-bit integers
+73_arm64.c	includes stdarg.h
+75_array_in_struct_init.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/75_array_in_struct_init.c:8:
+76_dollars_in_identifiers.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/76_dollars_in_identifiers.c:8:
+77_push_pop_macro.c	pragmas
+78_vla_label.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/78_vla_label.c:8:
+79_vla_continue.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/79_vla_continue.c:8:
+81_types.c	64-bit integers
+82_attribs_position.c	64-bit integers
+83_utf8_in_identifiers.c	floating point
+84_hex-float.c	tcc-rom: main returned 9
+85_asm-outside-function.c	GNU extensions
+86_memory-model.c	64-bit integers
+87_dead_code.c	64-bit integers
+88_codeopt.c	GNU extensions
+89_nocode_wanted.c	GNU extensions
+90_struct-init.c	floating constants
+91_ptr_longlong_arith32.c	64-bit integers
+92_enum_bitfield.c	64-bit integers
+93_integer_promotion.c	64-bit integers
+94_generic.c	floating point
+95_bitfields.c	64-bit integers
+95_bitfields_ms.c	includes 95_bitfields.c
+96_nodata_wanted.c	floating point
+97_utf8_string_literal.c	includes wchar.h
+98_al_ax_extend.c	GNU extensions
+99_fastcall.c	includes assert.h
