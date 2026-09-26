@@ -24,6 +24,7 @@ Families (weighted toward the patterns Loom's C uses):
   t4-exec/gen-loops, gen-aabb, gen-sort, gen-ring, gen-tilemap, gen-minmax,
           gen-outparam               counted loops, box overlap, sprite ordering,
                                      queues, tile lookups, clamps, out-parameters
+  t4-exec/gen-bitpack, gen-fsm, gen-divround, gen-strings, gen-callchain
 
 Do not edit generated files; change this script and rerun it.
 """
@@ -1075,11 +1076,191 @@ def outparam_family():
     return n
 
 
+
+def bitpack_family():
+    """Pack and unpack fields into u16/u32 words with shifts and masks (OAM
+    attributes, tile entries, packed drive keys)."""
+    r = random.Random(101)
+    n = 0
+    for k in range(16):
+        word = "u16" if k % 2 == 0 else "u32"
+        bits = T[word][0]
+        widths, total = [], 0
+        while total < bits:
+            w = r.randint(1, min(8, bits - total))
+            widths.append(w)
+            total += w
+        vals = [r.getrandbits(w) for w in widths]
+        packed, sh = 0, 0
+        for w, v in zip(widths, vals):
+            packed |= v << sh
+            sh += w
+        lines, sh = [], 0
+        for j, (w, v) in enumerate(zip(widths, vals)):
+            m = (1 << w) - 1
+            lines.append(f"  CHECK((u16)((p >> {sh}) & {m}u) == {v});")
+            sh += w
+        pack_expr = " | ".join(f"(({word})f[{j}] << {sum(widths[:j])})" for j in range(len(widths)))
+        wl = lambda v: f"{v}u" if word == "u16" else f"(u32){v}ULL"
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// {len(widths)} fields of widths {widths} packed into a {word} and unpacked.\n"
+                        + ("// loomcc-ref: host host16\n// loomcc-note: no 816-tcc reference for u32: its 32-bit shifts need a helper libtcc lacks.\n" if word == "u32" else "")
+                        + '#include "loomcc-test.h"\n'
+                        f"static const u8 f_rom[{len(widths)}] = {{ {', '.join(map(str, vals))} }};\n"
+                        f"static u8 f[{len(widths)}];\n"
+                        "int main(void) {\n  u8 i;\n"
+                        f"  {word} p;\n  for (i = 0; i < {len(widths)}; i++) f[i] = f_rom[i];\n"
+                        f"  p = ({word})({pack_expr});\n  CHECK(p == {wl(packed)});\n" + "\n".join(lines) + "\n  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-bitpack/bitpack-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def fsm_family():
+    """A ROM transition table (state x input -> next state, action) driven by
+    an input sequence: Loom's generated state machines."""
+    r = random.Random(103)
+    n = 0
+    for k in range(12):
+        ns, ni = r.randint(2, 8), r.randint(2, 5)
+        nxt = [[r.randrange(ns) for _ in range(ni)] for _ in range(ns)]
+        act = [[r.randrange(0, 5) for _ in range(ni)] for _ in range(ns)]
+        seq = [r.randrange(ni) for _ in range(r.randint(5, 40))]
+        s_, score, visits = 0, 0, [0] * ns
+        for x in seq:
+            score = wrap(score + act[s_][x] * (s_ + 1), "u16")
+            s_ = nxt[s_][x]
+            visits[s_] += 1
+        tbl = lambda t: ",\n".join("  { " + ", ".join(map(str, row)) + " }" for row in t)
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// A {ns}-state machine over {ni} inputs from ROM tables, fed {len(seq)} inputs.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"static const u8 next_state[{ns}][{ni}] = {{\n{tbl(nxt)}\n}};\n"
+                        f"static const u8 action[{ns}][{ni}] = {{\n{tbl(act)}\n}};\n"
+                        f"static const u8 inputs[{len(seq)}] = {{ {', '.join(map(str, seq))} }};\n"
+                        f"static u8 visits[{ns}];\n"
+                        "int main(void) {\n  u8 s = 0, i;\n  u16 score = 0;\n"
+                        f"  for (i = 0; i < {len(seq)}; i++) {{\n    u8 x = inputs[i];\n    score = (u16)(score + action[s][x] * (s + 1));\n    s = next_state[s][x];\n    visits[s]++;\n  }}\n"
+                        f"  CHECK(s == {s_});\n  CHECK(score == {score}u);\n"
+                        + "".join(f"  CHECK(visits[{j}] == {v});\n" for j, v in enumerate(visits))
+                        + "  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-fsm/fsm-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def divround_family():
+    """Integer division helpers on s16/u16: floor division and a positive
+    modulo for negative values, rounding to nearest, division by powers of two
+    with a shift (and why that differs for negatives)."""
+    n = 0
+    for t in ["i16", "u16"]:
+        for divisor in [2, 3, 7, 8, 10, 16, 100]:
+            vals = [v for v in VALUES[t]] + ([-7, -8, -9, -15, -16, -17, 5, 9] if t == "i16" else [5, 9, 15, 16, 17])
+            lines = []
+            for a in vals:
+                q = cdiv(a, divisor)
+                rmd = a - q * divisor
+                fl = a // divisor
+                pm = a % divisor
+                near = cdiv(a + (divisor // 2 if a >= 0 else -(divisor // 2)), divisor) if fits(a + divisor // 2, t) and fits(a - divisor // 2, t) else None
+                la = lit(a, t)
+                line = f"  v = {la}; CHECK(v / D == {lit(q, t)}); CHECK(v % D == {lit(rmd, t)}); CHECK(floor_div(v) == {lit(fl, t)}); CHECK(pos_mod(v) == {lit(pm, t)});"
+                if near is not None:
+                    line += f" CHECK(round_div(v) == {lit(near, t)});"
+                if divisor & (divisor - 1) == 0:
+                    line += f" CHECK((v >> {divisor.bit_length() - 1}) == {lit(a >> (divisor.bit_length() - 1), t)});"
+                lines.append(line)
+            src = HEADER + (f"// loomcc-do: run\n// loomcc-int: 16\n// {t} divided by {divisor}: C's truncating / and %, floor division, a\n"
+                            "// positive modulo and round-to-nearest built on them, and >> for powers of two.\n"
+                            '#include "loomcc-test.h"\n'
+                            f"#define D (({t}){divisor})\nstatic volatile {t} v;\n"
+                            f"static {t} floor_div({t} a) {{ {t} q = ({t})(a / D); if ((a % D) != 0 && (a < 0)) q--; return q; }}\n"
+                            f"static {t} pos_mod({t} a) {{ {t} m = ({t})(a % D); if (m < 0) m = ({t})(m + D); return m; }}\n"
+                            f"static {t} round_div({t} a) {{ return ({t})((a >= 0 ? a + D / 2 : a - D / 2) / D); }}\n"
+                            "int main(void) {\n" + "\n".join(lines) + "\n  return 0;\n}\n")
+            write(ROOT / f"t4-exec/gen-divround/div-{t}-{divisor}.c", src)
+            n += 1
+    return n
+
+
+def strings_family():
+    """String handling on ROM text without libc: length, compare, find, bounded
+    copy into a WRAM buffer, reversal and number formatting (Loom's UI text)."""
+    r = random.Random(107)
+    words = ["", "a", "loom", "snes", "Cliffside", "hello world", "0123456789", "The quick brown fox", "x" * 40]
+    n = 0
+    for k in range(12):
+        a, b = r.choice(words), r.choice(words)
+        num = r.randrange(0, 65536)
+        cmp = (a > b) - (a < b)
+        ch = r.choice("aeoxl ")
+        idx = a.find(ch)
+        cap = r.randint(1, 16)
+        copied = a[:cap - 1]
+        esc = lambda s: s.replace("\\", "\\\\").replace('"', '\\"')
+        src = HEADER + ("// loomcc-do: run\n// loomcc-int: agnostic\n// ROM strings: length, compare, find, bounded copy, reverse, u16 to decimal.\n"
+                        '#include "loomcc-test.h"\n'
+                        f'static const char A[] = "{esc(a)}";\nstatic const char B[] = "{esc(b)}";\nstatic char buf[24];\n'
+                        "static u16 slen(const char *s) { const char *p = s; while (*p) p++; return (u16)(p - s); }\n"
+                        "static i8 scmp(const char *x, const char *y) { while (*x && *x == *y) { x++; y++; } return (i8)((u8)*x > (u8)*y ? 1 : (u8)*x < (u8)*y ? -1 : 0); }\n"
+                        "static i16 sfind(const char *s, char c) { i16 i; for (i = 0; s[i]; i++) if (s[i] == c) return i; return -1; }\n"
+                        "static void scopy(char *d, const char *s, u8 cap) { u8 i = 0; if (!cap) return; while (s[i] && i + 1 < cap) { d[i] = s[i]; i++; } d[i] = 0; }\n"
+                        "static void utoa(u16 v, char *d) { char t[6]; u8 n = 0; do { t[n++] = (char)('0' + v % 10); v /= 10; } while (v); while (n) *d++ = t[--n]; *d = 0; }\n"
+                        "int main(void) {\n"
+                        f"  CHECK(slen(A) == {len(a)} && slen(B) == {len(b)});\n"
+                        f"  CHECK(scmp(A, B) == {cmp});\n  CHECK(scmp(A, A) == 0);\n"
+                        f"  CHECK(sfind(A, '{ch}') == {idx});\n"
+                        f"  scopy(buf, A, {cap});\n  CHECK(slen(buf) == {len(copied)} && scmp(buf, \"{esc(copied)}\") == 0);\n"
+                        f"  utoa({num}u, buf);\n  CHECK(scmp(buf, \"{num}\") == 0);\n"
+                        "  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-strings/strings-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def callchain_family():
+    """Chains of distinct functions with mixed-width arguments and live values
+    across calls (no recursion): argument slots of 1, 2 and 4 bytes."""
+    r = random.Random(109)
+    n = 0
+    for k in range(10):
+        depth = r.randint(2, 7)
+        types = [r.sample(["u8", "i8", "u16", "i16", "i32"], r.randint(1, 4)) for _ in range(depth)]
+        funcs, calls = [], []
+        # f_j(params) = sum(params) + f_{j+1}(params transformed), last returns sum
+        for j in range(depth - 1, -1, -1):
+            ps = ", ".join(f"{t} a{i}" for i, t in enumerate(types[j]))
+            ssum = " + ".join(f"(i32)a{i}" for i in range(len(types[j])))
+            if j == depth - 1:
+                body = f"return {ssum};"
+            else:
+                nxt = types[j + 1]
+                args = ", ".join(f"({t})(a0 + {i + 1})" for i, t in enumerate(nxt))
+                body = f"i32 keep = {ssum}; i32 rest = f{j + 1}({args}); return keep + keep + rest;"
+            funcs.append(f"static i32 f{j}({ps}) {{ {body} }}")
+        # model
+        def f(j, args):
+            s = sum(args)
+            if j == depth - 1:
+                return s
+            nxt = types[j + 1]
+            a = [wrap(args[0] + i + 1, t) for i, t in enumerate(nxt)]
+            return s * 2 + f(j + 1, a)
+        init = [wrap(r.randrange(-300, 300), t) for t in types[0]]
+        res = wrap(f(0, init), "i32")
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// A chain of {depth} calls with argument types {types}.\n"
+                        '#include "loomcc-test.h"\n' + "\n".join(funcs) + "\n"
+                        f"int main(void) {{\n  CHECK(f0({', '.join(f'({t})({v})' for t, v in zip(types[0], init))}) == (i32){res}LL);\n  return 0;\n}}\n")
+        write(ROOT / f"t4-exec/gen-callchain/chain-{k:02d}.c", src)
+        n += 1
+    return n
+
+
 if __name__ == "__main__":
     total = (arith_family() + arith_family(["u32", "i32"], SMALL + ["u32", "i32"], "32") + soa_family() + switch_family() + romwalk_family()
              + declarator_family() + declarator_family(29, 40, True, "gen-declarator-qualified") + precedence_family() + conversion_family()
              + layout_family() + designator_family() + truncation_family()
              + flags_family() + lut_family() + subpixel_family() + dispatch_family()
              + loops_family() + aabb_family() + sort_family() + ring_family() + tilemap_family()
-             + minmax_family() + outparam_family())
+             + minmax_family() + outparam_family() + bitpack_family() + fsm_family() + divround_family()
+             + strings_family() + callchain_family())
     print(f"wrote {total} generated tests")
