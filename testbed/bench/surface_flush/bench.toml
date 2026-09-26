@@ -1,0 +1,11 @@
+name = "surface_flush"
+kind = "pair"
+description = "Surface flush: walk the dirty tilemap rows from the cursor and write one VRAM DMA job per run into the frame build within the tick's job and byte budget. Two ticks over Stack's two surfaces."
+unit_labels = ["loom_pvs_surface_flush"]
+helper_labels = ["tcc__mul", "tcc__udiv"]
+
+[provenance]
+loom_commit = "e239e1c"
+c_source = "runtime/src/surface.c:341-417 at e239e1c^ (the row walk of loom_surface_build_frame) with runtime/src/frame-build.c:158-174 at e239e1c^ (loom_frame_build_add_dma), taking the LoomSurfaceFlush record surface.c fills at e239e1c"
+asm_source = "runtime/backends/pvsneslib/src/board.asm:loom_pvs_surface_flush (+ loom_pvs_flush_spec, loom_pvs_board_mul) at e239e1c (unchanged at HEAD)"
+notes = "The scene, the dirty-span tables, the surface state and the frame build's free job slots come from the record instead of statics; the walk's results go back into it (in the parent they stayed in loom_surface_state). add_dma's frame-open and null checks are left out; its capacity check is job_room. On a full job list the asm checks the room before the byte budget and still writes the cursor back; the inputs never fill the list. .BASE LOOM_ROM_BASE is written .BASE $80."
