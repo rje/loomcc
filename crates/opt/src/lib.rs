@@ -9,6 +9,7 @@ pub mod dce;
 pub mod fold;
 pub mod inline;
 pub mod licm;
+pub mod range;
 
 use loomcc_ir::*;
 
@@ -38,6 +39,7 @@ pub fn optimize_func(f: &mut Func, level: u8) {
         copy::retarget_defs(f);
         copy::propagate_local(f);
         copy::retarget_defs(f);
+        range::refold_signed_indexes(f);
         dce::dce(f);
         if level >= 2 {
             licm::hoist_invariants(f);

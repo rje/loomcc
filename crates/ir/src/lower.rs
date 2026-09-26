@@ -200,6 +200,7 @@ impl<'a> Lowerer<'a> {
             interrupt: hf.interrupt,
             variadic: hf.variadic,
             address_taken: g.address_taken,
+            signed: Vec::new(),
         };
         Lowerer {
             u,
@@ -291,6 +292,9 @@ impl<'a> Lowerer<'a> {
             let _ = pi;
             if let Some(it) = ir_ty(self.types(), l.ty) {
                 let r = self.vreg(it);
+                if self.types().is_signed(l.ty) {
+                    self.f.signed[r.0 as usize] = true;
+                }
                 self.f.params.push(ParamKind::Scalar(it));
                 self.f.param_regs.push(Some(r));
                 self.f.param_slots.push(None);
@@ -350,7 +354,10 @@ impl<'a> Lowerer<'a> {
                 let s = self.slot(it.size(), it.size().min(2), &l.name.clone());
                 Home::Slot(s)
             } else {
-                Home::Reg(self.vreg(it))
+                let signed = self.types().is_signed(l.ty);
+                let r = self.vreg(it);
+                self.f.signed[r.0 as usize] = signed;
+                Home::Reg(r)
             }
         } else {
             let size = self.types().size(l.ty) as u32;
@@ -717,6 +724,7 @@ impl<'a> Lowerer<'a> {
                     }
                 }
                 let d = self.vreg(it);
+                self.f.signed[d.0 as usize] = signed;
                 self.emit(Inst::Bin { op: bop, dst: d, a: x, b: y });
                 Operand::Reg(d)
             }

@@ -1,0 +1,5862 @@
+{
+  "actor_body_step": {
+    "host": {
+      "bench": "actor_body_step",
+      "variant": "host",
+      "out": [
+        137,
+        127,
+        260,
+        7075,
+        26,
+        191,
+        258,
+        14159,
+        104,
+        157,
+        516,
+        38384,
+        69,
+        98,
+        512,
+        44606,
+        251,
+        191,
+        256,
+        54396,
+        149,
+        60,
+        0,
+        7362
+      ]
+    },
+    "tcc": {
+      "bench": "actor_body_step",
+      "variant": "tcc",
+      "out": [
+        137,
+        127,
+        260,
+        7075,
+        26,
+        191,
+        258,
+        14159,
+        104,
+        157,
+        516,
+        38384,
+        69,
+        98,
+        512,
+        44606,
+        251,
+        191,
+        256,
+        54396,
+        149,
+        60,
+        0,
+        7362
+      ],
+      "code_bytes": 3613,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_actor_bodytext_0x0": 3613
+      },
+      "unit_instructions": 5571,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 5571,
+      "non_harness_instructions": 10190,
+      "labels": {
+        "loom_pvs_actor_body": 5571,
+        "loom_pvs_body_scan_floor": 2410,
+        "tccs_driver.asm_column_solid": 867,
+        "loom_pvs_body_scan_ceiling": 731,
+        "loom_pvs_body_probe_x": 556,
+        "bench_run": 55
+      },
+      "latch": {
+        "h0": 67,
+        "v0": 225,
+        "h1": 100,
+        "v1": 142
+      },
+      "elapsed_master_clocks": 244288,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/actor_body_step/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 243808
+    },
+    "asm": {
+      "bench": "actor_body_step",
+      "variant": "asm",
+      "out": [
+        137,
+        127,
+        260,
+        7075,
+        26,
+        191,
+        258,
+        14159,
+        104,
+        157,
+        516,
+        38384,
+        69,
+        98,
+        512,
+        44606,
+        251,
+        191,
+        256,
+        54396,
+        149,
+        60,
+        0,
+        7362
+      ],
+      "code_bytes": 1331,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 1331
+      },
+      "unit_instructions": 2033,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2033,
+      "non_harness_instructions": 6652,
+      "labels": {
+        "loom_pvs_body_scan_floor": 2410,
+        "tccs_driver.asm_column_solid": 867,
+        "loom_pvs_body_scan_ceiling": 731,
+        "loom_pvs_body_probe_x": 556,
+        "loom_pvs_actor_body": 384,
+        "loom_pvs_actor_store_vy": 237,
+        "loom_pvs_actor_x_done": 215,
+        "loom_pvs_actor_pointers": 170,
+        "loom_pvs_actor_store_vx": 165,
+        "loom_pvs_actor_fall": 138,
+        "loom_pvs_actor_s8": 99,
+        "loom_pvs_actor_advance_back": 88,
+        "loom_pvs_body_cell": 87,
+        "loom_pvs_actor_advance": 72,
+        "loom_pvs_actor_velocity_x": 65,
+        "loom_pvs_actor_gravity": 60,
+        "bench_run": 55,
+        "loom_pvs_actor_phase": 54,
+        "loom_pvs_actor_rise": 50,
+        "loom_pvs_actor_x_store": 42,
+        "loom_pvs_actor_friction": 39,
+        "loom_pvs_actor_advance_done": 36,
+        "loom_pvs_body_grid": 18,
+        "loom_pvs_actor_jump": 14
+      },
+      "latch": {
+        "h0": 67,
+        "v0": 225,
+        "h1": 322,
+        "v1": 81
+      },
+      "elapsed_master_clocks": 161972,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/actor_body_step/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 161492
+    },
+    "loomcc": {
+      "bench": "actor_body_step",
+      "variant": "loomcc",
+      "out": [
+        137,
+        127,
+        260,
+        7075,
+        26,
+        191,
+        258,
+        14159,
+        104,
+        157,
+        516,
+        38384,
+        69,
+        98,
+        512,
+        44606,
+        251,
+        191,
+        256,
+        54396,
+        149,
+        60,
+        0,
+        7362
+      ],
+      "code_bytes": 2179,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_pvs_actor_body": 2179
+      },
+      "unit_instructions": 3026,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3026,
+      "non_harness_instructions": 7645,
+      "labels": {
+        "lcb_loom_pvs_actor_body": 2978,
+        "loom_pvs_body_scan_floor": 2410,
+        "tccs_driver.asm_column_solid": 867,
+        "loom_pvs_body_scan_ceiling": 731,
+        "loom_pvs_body_probe_x": 556,
+        "bench_run": 55,
+        "loom_pvs_actor_body": 48
+      },
+      "latch": {
+        "h0": 67,
+        "v0": 225,
+        "h1": 316,
+        "v1": 101
+      },
+      "elapsed_master_clocks": 189228,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/actor_body_step/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 188748
+    },
+    "equal": true
+  },
+  "animation_pass": {
+    "host": {
+      "bench": "animation_pass",
+      "variant": "host",
+      "out": [
+        3,
+        12598,
+        0,
+        0,
+        1,
+        23,
+        2,
+        515,
+        2,
+        533,
+        257,
+        1280,
+        261,
+        513,
+        513,
+        0,
+        260,
+        2,
+        256
+      ]
+    },
+    "tcc": {
+      "bench": "animation_pass",
+      "variant": "tcc",
+      "out": [
+        3,
+        12598,
+        0,
+        0,
+        1,
+        23,
+        2,
+        515,
+        2,
+        533,
+        257,
+        1280,
+        261,
+        513,
+        513,
+        0,
+        260,
+        2,
+        256
+      ],
+      "code_bytes": 404,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_animation_bindtext_0x0": 1,
+        ".loom_pvs_animation_passtext_0x1": 403
+      },
+      "unit_instructions": 6031,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 6031,
+      "non_harness_instructions": 8460,
+      "labels": {
+        "loom_pvs_animation_pass": 6031,
+        "tccs_driver.asm_advance": 1213,
+        "tcc__mul": 1120,
+        "bench_run": 96
+      },
+      "latch": {
+        "h0": 58,
+        "v0": 225,
+        "h1": 242,
+        "v1": 120
+      },
+      "elapsed_master_clocks": 214884,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/animation_pass/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 214404
+    },
+    "asm": {
+      "bench": "animation_pass",
+      "variant": "asm",
+      "out": [
+        3,
+        12598,
+        0,
+        0,
+        1,
+        23,
+        2,
+        515,
+        2,
+        533,
+        257,
+        1280,
+        261,
+        513,
+        513,
+        0,
+        260,
+        2,
+        256
+      ],
+      "code_bytes": 307,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 307
+      },
+      "unit_instructions": 2913,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2913,
+      "non_harness_instructions": 4222,
+      "labels": {
+        "loom_pvs_anim_loop": 2658,
+        "tccs_driver.asm_advance": 1213,
+        "loom_pvs_anim_next": 180,
+        "bench_run": 96,
+        "loom_pvs_animation_pass": 55,
+        "loom_pvs_anim_done": 20
+      },
+      "latch": {
+        "h0": 66,
+        "v0": 225,
+        "h1": 2,
+        "v1": 52
+      },
+      "elapsed_master_clocks": 121140,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/animation_pass/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 120660
+    },
+    "loomcc": {
+      "bench": "animation_pass",
+      "variant": "loomcc",
+      "out": [
+        3,
+        12598,
+        0,
+        0,
+        1,
+        23,
+        2,
+        515,
+        2,
+        533,
+        257,
+        1280,
+        261,
+        513,
+        513,
+        0,
+        260,
+        2,
+        256
+      ],
+      "code_bytes": 207,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_pvs_animation_bind": 33,
+        "lcc.loom_pvs_animation_pass": 174
+      },
+      "unit_instructions": 2479,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2479,
+      "non_harness_instructions": 3788,
+      "labels": {
+        "lcb_loom_pvs_animation_pass": 2449,
+        "tccs_driver.asm_advance": 1213,
+        "bench_run": 96,
+        "loom_pvs_animation_pass": 30
+      },
+      "latch": {
+        "h0": 62,
+        "v0": 225,
+        "h1": 277,
+        "v1": 30
+      },
+      "elapsed_master_clocks": 92248,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/animation_pass/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 91768
+    },
+    "equal": true
+  },
+  "board_drop": {
+    "host": {
+      "bench": "board_drop",
+      "variant": "host",
+      "out": [
+        65390,
+        40519,
+        27063,
+        13620,
+        3,
+        48601,
+        0,
+        48761,
+        1,
+        5,
+        5,
+        5,
+        5
+      ]
+    },
+    "tcc": {
+      "bench": "board_drop",
+      "variant": "tcc",
+      "out": [
+        65390,
+        40519,
+        27063,
+        13620,
+        3,
+        48601,
+        0,
+        48761,
+        1,
+        5,
+        5,
+        5,
+        5
+      ],
+      "code_bytes": 3733,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_board_droptext_0x8": 191,
+        ".tccs_unit.asm_loom_board_celltext_0x3": 92,
+        ".tccs_unit.asm_loom_board_draw_celltext_0x4": 819,
+        ".tccs_unit.asm_loom_board_fitstext_0x7": 476,
+        ".tccs_unit.asm_loom_board_paint_shapetext_0x6": 502,
+        ".tccs_unit.asm_loom_board_settext_0x5": 496,
+        ".tccs_unit.asm_loom_surface_dirtytext_0x0": 903,
+        ".tccs_unit.asm_loom_surface_marktext_0x2": 167,
+        ".tccs_unit.asm_loom_surface_rowtext_0x1": 87
+      },
+      "unit_instructions": 9537,
+      "helper_instructions": 1048,
+      "unit_and_helper_instructions": 10585,
+      "non_harness_instructions": 10599,
+      "labels": {
+        "tccs_unit.asm_loom_board_paint_shape": 3080,
+        "tccs_unit.asm_loom_board_fits": 2069,
+        "tccs_unit.asm_loom_board_draw_cell": 1760,
+        "tcc__mul": 1048,
+        "tccs_unit.asm_loom_board_cell": 736,
+        "tccs_unit.asm_loom_board_set": 684,
+        "tccs_unit.asm_loom_surface_dirty": 594,
+        "tccs_unit.asm_loom_surface_mark": 308,
+        "tccs_unit.asm_loom_surface_row": 176,
+        "loom_pvs_board_drop": 130,
+        "bench_run": 14
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 156,
+        "v1": 144
+      },
+      "elapsed_master_clocks": 247252,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_drop/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 246772
+    },
+    "asm": {
+      "bench": "board_drop",
+      "variant": "asm",
+      "out": [
+        65390,
+        40519,
+        27063,
+        13620,
+        3,
+        48601,
+        0,
+        48761,
+        1,
+        5,
+        5,
+        5,
+        5
+      ],
+      "code_bytes": 1011,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.board.code": 1011
+      },
+      "unit_instructions": 1842,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1842,
+      "non_harness_instructions": 1856,
+      "labels": {
+        "loom_pvs_board_mul": 342,
+        "loom_pvs_board_paint_col": 272,
+        "loom_pvs_board_draw_sub": 236,
+        "loom_pvs_board_paint_next": 232,
+        "loom_pvs_board_fits_col": 182,
+        "loom_pvs_board_fits_next": 146,
+        "loom_pvs_board_paint_row": 88,
+        "loom_pvs_board_fits_row": 66,
+        "loom_pvs_board_draw": 52,
+        "loom_pvs_board_drop": 49,
+        "loom_pvs_board_load": 49,
+        "loom_pvs_board_dirty": 44,
+        "loom_pvs_board_dirty_widen": 30,
+        "loom_pvs_board_move_from": 28,
+        "loom_pvs_board_rehash": 16,
+        "bench_run": 14,
+        "loom_pvs_board_fits_core": 4,
+        "loom_pvs_board_paint_core": 4,
+        "loom_pvs_board_fits_no": 2
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 110,
+        "v1": 1
+      },
+      "elapsed_master_clocks": 52016,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_drop/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 51536
+    },
+    "loomcc": {
+      "bench": "board_drop",
+      "variant": "loomcc",
+      "out": [
+        65390,
+        40519,
+        27063,
+        13620,
+        3,
+        48601,
+        0,
+        48761,
+        1,
+        5,
+        5,
+        5,
+        5
+      ],
+      "code_bytes": 1826,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_board_cell": 53,
+        "lcc.lcsunit_raw_0_loom_board_draw_cell": 345,
+        "lcc.lcsunit_raw_0_loom_board_fits": 187,
+        "lcc.lcsunit_raw_0_loom_board_paint_shape": 209,
+        "lcc.lcsunit_raw_0_loom_board_set": 209,
+        "lcc.lcsunit_raw_0_loom_surface_dirty": 440,
+        "lcc.lcsunit_raw_0_loom_surface_mark": 69,
+        "lcc.lcsunit_raw_0_loom_surface_row": 46,
+        "lcc.loom_pvs_board_drop": 177,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 5367,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 5367,
+      "non_harness_instructions": 5381,
+      "labels": {
+        "lcb_lcsunit_raw_0_loom_board_paint_shape": 1814,
+        "lcb_lcsunit_raw_0_loom_board_fits": 1158,
+        "lcb_lcsunit_raw_0_loom_board_draw_cell": 664,
+        "lcc_mul16_unit_raw": 528,
+        "lcb_lcsunit_raw_0_loom_board_cell": 400,
+        "lcb_lcsunit_raw_0_loom_surface_dirty": 278,
+        "lcb_lcsunit_raw_0_loom_board_set": 236,
+        "lcb_lcsunit_raw_0_loom_surface_mark": 112,
+        "lcb_lcsunit_raw_0_loom_surface_row": 92,
+        "lcb_loom_pvs_board_drop": 73,
+        "bench_run": 14,
+        "loom_pvs_board_drop": 12
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 225,
+        "v1": 55
+      },
+      "elapsed_master_clocks": 126132,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_drop/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 125652
+    },
+    "equal": true
+  },
+  "board_fill": {
+    "host": {
+      "bench": "board_fill",
+      "variant": "host",
+      "out": [
+        18949,
+        51717,
+        16519,
+        45035,
+        8,
+        4660,
+        0,
+        27205,
+        16901,
+        16519,
+        45035,
+        8,
+        17185,
+        0,
+        9216,
+        10243,
+        0,
+        3,
+        0,
+        3
+      ]
+    },
+    "tcc": {
+      "bench": "board_fill",
+      "variant": "tcc",
+      "out": [
+        18949,
+        51717,
+        16519,
+        45035,
+        8,
+        4660,
+        0,
+        27205,
+        16901,
+        16519,
+        45035,
+        8,
+        17185,
+        0,
+        9216,
+        10243,
+        0,
+        3,
+        0,
+        3
+      ],
+      "code_bytes": 2477,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_board_filltext_0x5": 226,
+        ".tccs_unit.asm_loom_board_celltext_0x3": 92,
+        ".tccs_unit.asm_loom_board_redraw_rowstext_0x4": 1002,
+        ".tccs_unit.asm_loom_surface_dirtytext_0x0": 903,
+        ".tccs_unit.asm_loom_surface_marktext_0x2": 167,
+        ".tccs_unit.asm_loom_surface_rowtext_0x1": 87
+      },
+      "unit_instructions": 6959,
+      "helper_instructions": 1552,
+      "unit_and_helper_instructions": 8511,
+      "non_harness_instructions": 8528,
+      "labels": {
+        "tccs_unit.asm_loom_board_redraw_rows": 4525,
+        "tcc__mul": 1552,
+        "tccs_unit.asm_loom_surface_dirty": 816,
+        "loom_pvs_board_fill": 590,
+        "tccs_unit.asm_loom_board_cell": 552,
+        "tccs_unit.asm_loom_surface_mark": 300,
+        "tccs_unit.asm_loom_surface_row": 176,
+        "bench_run": 17
+      },
+      "latch": {
+        "h0": 65,
+        "v0": 225,
+        "h1": 330,
+        "v1": 126
+      },
+      "elapsed_master_clocks": 223392,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_fill/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 222912
+    },
+    "asm": {
+      "bench": "board_fill",
+      "variant": "asm",
+      "out": [
+        18949,
+        51717,
+        16519,
+        45035,
+        8,
+        4660,
+        0,
+        27205,
+        16901,
+        16519,
+        45035,
+        8,
+        17185,
+        0,
+        9216,
+        10243,
+        0,
+        3,
+        0,
+        3
+      ],
+      "code_bytes": 558,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.board.code": 558
+      },
+      "unit_instructions": 2308,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2308,
+      "non_harness_instructions": 2325,
+      "labels": {
+        "loom_pvs_board_draw_sub": 788,
+        "loom_pvs_board_mul": 720,
+        "loom_pvs_fill_cell": 229,
+        "loom_pvs_board_dirty_widen": 207,
+        "loom_pvs_board_draw": 130,
+        "loom_pvs_board_dirty": 102,
+        "loom_pvs_board_load": 98,
+        "loom_pvs_board_fill": 28,
+        "bench_run": 17,
+        "loom_pvs_fill_row": 6
+      },
+      "latch": {
+        "h0": 65,
+        "v0": 225,
+        "h1": 219,
+        "v1": 10
+      },
+      "elapsed_master_clocks": 64724,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_fill/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 64244
+    },
+    "loomcc": {
+      "bench": "board_fill",
+      "variant": "loomcc",
+      "out": [
+        18949,
+        51717,
+        16519,
+        45035,
+        8,
+        4660,
+        0,
+        27205,
+        16901,
+        16519,
+        45035,
+        8,
+        17185,
+        0,
+        9216,
+        10243,
+        0,
+        3,
+        0,
+        3
+      ],
+      "code_bytes": 1201,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_board_cell": 53,
+        "lcc.lcsunit_raw_0_loom_board_redraw_rows": 395,
+        "lcc.lcsunit_raw_0_loom_surface_dirty": 440,
+        "lcc.lcsunit_raw_0_loom_surface_mark": 69,
+        "lcc.lcsunit_raw_0_loom_surface_row": 46,
+        "lcc.loom_pvs_board_fill": 107,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 3696,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3696,
+      "non_harness_instructions": 3713,
+      "labels": {
+        "lcb_lcsunit_raw_0_loom_board_redraw_rows": 1649,
+        "lcc_mul16_unit_raw": 912,
+        "lcb_lcsunit_raw_0_loom_surface_dirty": 395,
+        "lcb_lcsunit_raw_0_loom_board_cell": 300,
+        "lcb_loom_pvs_board_fill": 224,
+        "lcb_lcsunit_raw_0_loom_surface_mark": 112,
+        "lcb_lcsunit_raw_0_loom_surface_row": 92,
+        "bench_run": 17,
+        "loom_pvs_board_fill": 12
+      },
+      "latch": {
+        "h0": 65,
+        "v0": 225,
+        "h1": 296,
+        "v1": 38
+      },
+      "elapsed_master_clocks": 103224,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_fill/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 102744
+    },
+    "equal": true
+  },
+  "board_fit": {
+    "host": {
+      "bench": "board_fit",
+      "variant": "host",
+      "out": [
+        75,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ]
+    },
+    "tcc": {
+      "bench": "board_fit",
+      "variant": "tcc",
+      "out": [
+        75,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "code_bytes": 568,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_board_fitstext_0x1": 476,
+        ".tccs_unit.asm_loom_board_celltext_0x0": 92
+      },
+      "unit_instructions": 9796,
+      "helper_instructions": 608,
+      "unit_and_helper_instructions": 10404,
+      "non_harness_instructions": 10489,
+      "labels": {
+        "loom_pvs_board_fits": 8922,
+        "tccs_unit.asm_loom_board_cell": 874,
+        "tcc__mul": 608,
+        "bench_run": 85
+      },
+      "latch": {
+        "h0": 63,
+        "v0": 225,
+        "h1": 265,
+        "v1": 133
+      },
+      "elapsed_master_clocks": 232688,
+      "profile_frames": [
+        4,
+        5
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_fit/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 232208
+    },
+    "asm": {
+      "bench": "board_fit",
+      "variant": "asm",
+      "out": [
+        75,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "code_bytes": 346,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.board.code": 346
+      },
+      "unit_instructions": 2232,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2232,
+      "non_harness_instructions": 2317,
+      "labels": {
+        "loom_pvs_board_fits_col": 820,
+        "loom_pvs_board_fits_next": 562,
+        "loom_pvs_board_load": 343,
+        "loom_pvs_board_fits_row": 215,
+        "loom_pvs_board_mul": 153,
+        "loom_pvs_board_fits": 119,
+        "bench_run": 85,
+        "loom_pvs_board_fits_core": 14,
+        "loom_pvs_board_fits_no": 6
+      },
+      "latch": {
+        "h0": 63,
+        "v0": 225,
+        "h1": 31,
+        "v1": 12
+      },
+      "elapsed_master_clocks": 66708,
+      "profile_frames": [
+        4,
+        5
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_fit/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 66228
+    },
+    "loomcc": {
+      "bench": "board_fit",
+      "variant": "loomcc",
+      "out": [
+        75,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "code_bytes": 358,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_board_cell": 53,
+        "lcc.loom_pvs_board_fits": 214,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 5615,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 5615,
+      "non_harness_instructions": 5700,
+      "labels": {
+        "lcb_loom_pvs_board_fits": 4842,
+        "lcb_lcsunit_raw_0_loom_board_cell": 475,
+        "lcc_mul16_unit_raw": 228,
+        "bench_run": 85,
+        "loom_pvs_board_fits": 70
+      },
+      "latch": {
+        "h0": 63,
+        "v0": 225,
+        "h1": 330,
+        "v1": 50
+      },
+      "elapsed_master_clocks": 119736,
+      "profile_frames": [
+        4,
+        5
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_fit/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 119256
+    },
+    "equal": true
+  },
+  "board_paint": {
+    "host": {
+      "bench": "board_paint",
+      "variant": "host",
+      "out": [
+        33030,
+        34383,
+        10670,
+        22608,
+        6,
+        53065,
+        1,
+        53065,
+        255,
+        0,
+        4,
+        7,
+        255,
+        0
+      ]
+    },
+    "tcc": {
+      "bench": "board_paint",
+      "variant": "tcc",
+      "out": [
+        33030,
+        34383,
+        10670,
+        22608,
+        6,
+        53065,
+        1,
+        53065,
+        255,
+        0,
+        4,
+        7,
+        255,
+        0
+      ],
+      "code_bytes": 3061,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_board_painttext_0x6": 497,
+        ".tccs_unit.asm_loom_board_celltext_0x3": 92,
+        ".tccs_unit.asm_loom_board_draw_celltext_0x4": 819,
+        ".tccs_unit.asm_loom_board_settext_0x5": 496,
+        ".tccs_unit.asm_loom_surface_dirtytext_0x0": 903,
+        ".tccs_unit.asm_loom_surface_marktext_0x2": 167,
+        ".tccs_unit.asm_loom_surface_rowtext_0x1": 87
+      },
+      "unit_instructions": 6975,
+      "helper_instructions": 978,
+      "unit_and_helper_instructions": 7953,
+      "non_harness_instructions": 7976,
+      "labels": {
+        "loom_pvs_board_paint": 3358,
+        "tccs_unit.asm_loom_board_draw_cell": 1320,
+        "tcc__mul": 978,
+        "tccs_unit.asm_loom_board_set": 824,
+        "tccs_unit.asm_loom_surface_dirty": 650,
+        "tccs_unit.asm_loom_board_cell": 460,
+        "tccs_unit.asm_loom_surface_mark": 231,
+        "tccs_unit.asm_loom_surface_row": 132,
+        "bench_run": 23
+      },
+      "latch": {
+        "h0": 61,
+        "v0": 225,
+        "h1": 26,
+        "v1": 102
+      },
+      "elapsed_master_clocks": 189456,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_paint/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 188976
+    },
+    "asm": {
+      "bench": "board_paint",
+      "variant": "asm",
+      "out": [
+        33030,
+        34383,
+        10670,
+        22608,
+        6,
+        53065,
+        1,
+        53065,
+        255,
+        0,
+        4,
+        7,
+        255,
+        0
+      ],
+      "code_bytes": 746,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.board.code": 746
+      },
+      "unit_instructions": 1381,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1381,
+      "non_harness_instructions": 1404,
+      "labels": {
+        "loom_pvs_board_paint_col": 301,
+        "loom_pvs_board_paint_next": 232,
+        "loom_pvs_board_mul": 216,
+        "loom_pvs_board_draw_sub": 177,
+        "loom_pvs_board_load": 98,
+        "loom_pvs_board_paint_row": 80,
+        "loom_pvs_board_rehash_add": 66,
+        "loom_pvs_board_dirty_widen": 51,
+        "loom_pvs_board_draw": 39,
+        "loom_pvs_board_rehash": 39,
+        "loom_pvs_board_paint": 38,
+        "loom_pvs_board_dirty": 28,
+        "bench_run": 23,
+        "loom_pvs_board_rehash_done": 12,
+        "loom_pvs_board_paint_core": 4
+      },
+      "latch": {
+        "h0": 61,
+        "v0": 225,
+        "h1": 55,
+        "v1": 254
+      },
+      "elapsed_master_clocks": 39532,
+      "profile_frames": [
+        7,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_paint/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 39052
+    },
+    "loomcc": {
+      "bench": "board_paint",
+      "variant": "loomcc",
+      "out": [
+        33030,
+        34383,
+        10670,
+        22608,
+        6,
+        53065,
+        1,
+        53065,
+        255,
+        0,
+        4,
+        7,
+        255,
+        0
+      ],
+      "code_bytes": 1487,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_board_cell": 53,
+        "lcc.lcsunit_raw_0_loom_board_draw_cell": 345,
+        "lcc.lcsunit_raw_0_loom_board_set": 209,
+        "lcc.lcsunit_raw_0_loom_surface_dirty": 440,
+        "lcc.lcsunit_raw_0_loom_surface_mark": 69,
+        "lcc.lcsunit_raw_0_loom_surface_row": 46,
+        "lcc.loom_pvs_board_paint": 234,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 3876,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3876,
+      "non_harness_instructions": 3899,
+      "labels": {
+        "lcb_loom_pvs_board_paint": 1892,
+        "lcb_lcsunit_raw_0_loom_board_draw_cell": 498,
+        "lcc_mul16_unit_raw": 444,
+        "lcb_lcsunit_raw_0_loom_surface_dirty": 309,
+        "lcb_lcsunit_raw_0_loom_board_set": 306,
+        "lcb_lcsunit_raw_0_loom_board_cell": 250,
+        "lcb_lcsunit_raw_0_loom_surface_mark": 84,
+        "lcb_lcsunit_raw_0_loom_surface_row": 69,
+        "loom_pvs_board_paint": 24,
+        "bench_run": 23
+      },
+      "latch": {
+        "h0": 61,
+        "v0": 225,
+        "h1": 38,
+        "v1": 32
+      },
+      "elapsed_master_clocks": 94024,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/board_paint/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 93544
+    },
+    "equal": true
+  },
+  "body_probe_x": {
+    "host": {
+      "bench": "body_probe_x",
+      "variant": "host",
+      "out": [
+        101,
+        80,
+        127,
+        368,
+        15,
+        288,
+        32767,
+        224,
+        65532,
+        101,
+        32767,
+        32767
+      ]
+    },
+    "tcc": {
+      "bench": "body_probe_x",
+      "variant": "tcc",
+      "out": [
+        101,
+        80,
+        127,
+        368,
+        15,
+        288,
+        32767,
+        224,
+        65532,
+        101,
+        32767,
+        32767
+      ],
+      "code_bytes": 739,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_movement_column_solidtext_0x0": 325,
+        ".loom_pvs_body_probe_xtext_0x1": 414
+      },
+      "unit_instructions": 6813,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 6813,
+      "non_harness_instructions": 6946,
+      "labels": {
+        "loom_movement_column_solid": 4330,
+        "loom_pvs_body_probe_x": 2483,
+        "bench_run": 133
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 335,
+        "v1": 76
+      },
+      "elapsed_master_clocks": 155196,
+      "profile_frames": [
+        6,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_probe_x/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 154716
+    },
+    "asm": {
+      "bench": "body_probe_x",
+      "variant": "asm",
+      "out": [
+        101,
+        80,
+        127,
+        368,
+        15,
+        288,
+        32767,
+        224,
+        65532,
+        101,
+        32767,
+        32767
+      ],
+      "code_bytes": 242,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 242
+      },
+      "unit_instructions": 2082,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2082,
+      "non_harness_instructions": 2215,
+      "labels": {
+        "loom_pvs_body_cell": 850,
+        "loom_pvs_body_probe_x_column": 573,
+        "loom_pvs_body_probe_x": 180,
+        "bench_run": 133,
+        "loom_pvs_body_probe_x_right_test": 122,
+        "loom_pvs_body_probe_x_right_loop": 107,
+        "loom_pvs_body_grid": 72,
+        "loom_pvs_body_probe_x_left_loop": 68,
+        "loom_pvs_body_probe_x_hit": 36,
+        "loom_pvs_body_probe_x_column_clear": 26,
+        "loom_pvs_body_probe_x_column_solid": 18,
+        "loom_pvs_body_probe_x_left": 12,
+        "loom_pvs_body_probe_x_none": 12,
+        "loom_pvs_body_cell_solid": 6
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 124,
+        "v1": 1
+      },
+      "elapsed_master_clocks": 52052,
+      "profile_frames": [
+        6,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_probe_x/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 51572
+    },
+    "loomcc": {
+      "bench": "body_probe_x",
+      "variant": "loomcc",
+      "out": [
+        101,
+        80,
+        127,
+        368,
+        15,
+        288,
+        32767,
+        224,
+        65532,
+        101,
+        32767,
+        32767
+      ],
+      "code_bytes": 416,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_movement_column_solid": 157,
+        "lcc.loom_pvs_body_probe_x": 259
+      },
+      "unit_instructions": 2883,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2883,
+      "non_harness_instructions": 3016,
+      "labels": {
+        "lcb_loom_movement_column_solid": 1716,
+        "lcb_loom_pvs_body_probe_x": 1071,
+        "bench_run": 133,
+        "loom_pvs_body_probe_x": 96
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 194,
+        "v1": 15
+      },
+      "elapsed_master_clocks": 71428,
+      "profile_frames": [
+        6,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_probe_x/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 70948
+    },
+    "equal": true
+  },
+  "body_scan_ceiling": {
+    "host": {
+      "bench": "body_scan_ceiling",
+      "variant": "host",
+      "out": [
+        64,
+        65535,
+        65535,
+        16,
+        96,
+        144,
+        65535,
+        65535,
+        64,
+        64,
+        144
+      ]
+    },
+    "tcc": {
+      "bench": "body_scan_ceiling",
+      "variant": "tcc",
+      "out": [
+        64,
+        65535,
+        65535,
+        16,
+        96,
+        144,
+        65535,
+        65535,
+        64,
+        64,
+        144
+      ],
+      "code_bytes": 422,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_body_scan_ceilingtext_0x0": 422
+      },
+      "unit_instructions": 5533,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 5533,
+      "non_harness_instructions": 5655,
+      "labels": {
+        "loom_pvs_body_scan_ceiling": 5533,
+        "bench_run": 122
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 118,
+        "v1": 57
+      },
+      "elapsed_master_clocks": 128412,
+      "profile_frames": [
+        6,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_scan_ceiling/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 127932
+    },
+    "asm": {
+      "bench": "body_scan_ceiling",
+      "variant": "asm",
+      "out": [
+        64,
+        65535,
+        65535,
+        16,
+        96,
+        144,
+        65535,
+        65535,
+        64,
+        64,
+        144
+      ],
+      "code_bytes": 186,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 186
+      },
+      "unit_instructions": 2037,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2037,
+      "non_harness_instructions": 2159,
+      "labels": {
+        "loom_pvs_body_cell": 877,
+        "loom_pvs_body_scan_ceiling_column": 579,
+        "loom_pvs_body_scan_ceiling_row": 248,
+        "bench_run": 122,
+        "loom_pvs_body_scan_ceiling": 121,
+        "loom_pvs_body_scan_ceiling_next": 85,
+        "loom_pvs_body_grid": 66,
+        "loom_pvs_body_scan_ceiling_hit": 42,
+        "loom_pvs_body_scan_ceiling_none": 16,
+        "loom_pvs_body_cell_solid": 3
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 125,
+        "v1": 261
+      },
+      "elapsed_master_clocks": 49328,
+      "profile_frames": [
+        6,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_scan_ceiling/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 48848
+    },
+    "loomcc": {
+      "bench": "body_scan_ceiling",
+      "variant": "loomcc",
+      "out": [
+        64,
+        65535,
+        65535,
+        16,
+        96,
+        144,
+        65535,
+        65535,
+        64,
+        64,
+        144
+      ],
+      "code_bytes": 205,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_pvs_body_scan_ceiling": 205
+      },
+      "unit_instructions": 2361,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2361,
+      "non_harness_instructions": 2483,
+      "labels": {
+        "lcb_loom_pvs_body_scan_ceiling": 2273,
+        "bench_run": 122,
+        "loom_pvs_body_scan_ceiling": 88
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 282,
+        "v1": 5
+      },
+      "elapsed_master_clocks": 58140,
+      "profile_frames": [
+        6,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_scan_ceiling/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 57660
+    },
+    "equal": true
+  },
+  "body_scan_floor": {
+    "host": {
+      "bench": "body_scan_floor",
+      "variant": "host",
+      "out": [
+        207,
+        65535,
+        111,
+        65535,
+        167,
+        164,
+        65535,
+        175,
+        65535,
+        47,
+        223,
+        95,
+        151,
+        65535
+      ]
+    },
+    "tcc": {
+      "bench": "body_scan_floor",
+      "variant": "tcc",
+      "out": [
+        207,
+        65535,
+        111,
+        65535,
+        167,
+        164,
+        65535,
+        175,
+        65535,
+        47,
+        223,
+        95,
+        151,
+        65535
+      ],
+      "code_bytes": 979,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_movement_floor_in_celltext_0x0": 100,
+        ".loom_pvs_body_scan_floortext_0x1": 879
+      },
+      "unit_instructions": 9451,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 9451,
+      "non_harness_instructions": 9620,
+      "labels": {
+        "loom_pvs_body_scan_floor": 9326,
+        "bench_run": 169,
+        "loom_movement_floor_in_cell": 125
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 32,
+        "v1": 120
+      },
+      "elapsed_master_clocks": 214000,
+      "profile_frames": [
+        6,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_scan_floor/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 213520
+    },
+    "asm": {
+      "bench": "body_scan_floor",
+      "variant": "asm",
+      "out": [
+        207,
+        65535,
+        111,
+        65535,
+        167,
+        164,
+        65535,
+        175,
+        65535,
+        47,
+        223,
+        95,
+        151,
+        65535
+      ],
+      "code_bytes": 301,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 301
+      },
+      "unit_instructions": 3146,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3146,
+      "non_harness_instructions": 3315,
+      "labels": {
+        "loom_pvs_body_cell": 1530,
+        "loom_pvs_body_scan_floor_column": 509,
+        "loom_pvs_body_scan_floor_row": 415,
+        "loom_pvs_body_scan_floor": 252,
+        "bench_run": 169,
+        "loom_pvs_body_scan_floor_column_next": 120,
+        "loom_pvs_body_scan_floor_next": 85,
+        "loom_pvs_body_grid": 84,
+        "loom_pvs_body_scan_floor_slope": 61,
+        "loom_pvs_body_scan_floor_lip": 30,
+        "loom_pvs_body_scan_floor_slope_right": 24,
+        "loom_pvs_body_scan_floor_none": 20,
+        "loom_pvs_body_cell_solid": 12,
+        "loom_pvs_body_scan_floor_slope_left": 4
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 254,
+        "v1": 18
+      },
+      "elapsed_master_clocks": 75760,
+      "profile_frames": [
+        6,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_scan_floor/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 75280
+    },
+    "loomcc": {
+      "bench": "body_scan_floor",
+      "variant": "loomcc",
+      "out": [
+        207,
+        65535,
+        111,
+        65535,
+        167,
+        164,
+        65535,
+        175,
+        65535,
+        47,
+        223,
+        95,
+        151,
+        65535
+      ],
+      "code_bytes": 468,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_movement_floor_in_cell": 65,
+        "lcc.loom_pvs_body_scan_floor": 403
+      },
+      "unit_instructions": 3811,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3811,
+      "non_harness_instructions": 3980,
+      "labels": {
+        "lcb_loom_pvs_body_scan_floor": 3613,
+        "bench_run": 169,
+        "loom_pvs_body_scan_floor": 140,
+        "lcb_loom_movement_floor_in_cell": 58
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 223,
+        "v1": 31
+      },
+      "elapsed_master_clocks": 93368,
+      "profile_frames": [
+        6,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/body_scan_floor/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 92888
+    },
+    "equal": true
+  },
+  "camera_follow": {
+    "host": {
+      "bench": "camera_follow",
+      "variant": "host",
+      "out": [
+        32,
+        15,
+        29,
+        15,
+        512,
+        224,
+        512,
+        223,
+        512,
+        104,
+        272,
+        38,
+        64,
+        65,
+        64,
+        65,
+        4,
+        4,
+        128,
+        64,
+        7,
+        64,
+        65
+      ]
+    },
+    "tcc": {
+      "bench": "camera_follow",
+      "variant": "tcc",
+      "out": [
+        32,
+        15,
+        29,
+        15,
+        512,
+        224,
+        512,
+        223,
+        512,
+        104,
+        272,
+        38,
+        64,
+        65,
+        64,
+        65,
+        4,
+        4,
+        128,
+        64,
+        7,
+        64,
+        65
+      ],
+      "code_bytes": 4021,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_mode1_camera_xtext_0x4": 7,
+        ".loom_mode1_camera_ytext_0x5": 7,
+        ".loom_mode1_set_cameratext_0x1": 284,
+        ".loom_mode1_sprite_positiontext_0x3": 257,
+        ".loom_pvs_camera_updatetext_0xb": 5,
+        ".tccs_unit.asm_loom_camera_active_settingstext_0x6": 420,
+        ".tccs_unit.asm_loom_camera_applytext_0xa": 1714,
+        ".tccs_unit.asm_loom_camera_approachtext_0x9": 181,
+        ".tccs_unit.asm_loom_camera_auto_steptext_0x7": 258,
+        ".tccs_unit.asm_loom_camera_axis_goaltext_0x8": 683,
+        ".tccs_unit.asm_loom_mode1_clamptext_0x0": 75,
+        ".tccs_unit.asm_loom_mode1_sprite_indextext_0x2": 130
+      },
+      "unit_instructions": 8223,
+      "helper_instructions": 1347,
+      "unit_and_helper_instructions": 9570,
+      "non_harness_instructions": 9742,
+      "labels": {
+        "tccs_unit.asm_loom_camera_apply": 3940,
+        "tccs_unit.asm_loom_camera_axis_goal": 1050,
+        "loom_mode1_sprite_position": 855,
+        "loom_mode1_set_camera": 796,
+        "tcc__udiv1": 681,
+        "tccs_unit.asm_loom_mode1_sprite_index": 437,
+        "tccs_unit.asm_loom_mode1_clamp": 412,
+        "tccs_unit.asm_loom_camera_active_settings": 323,
+        "tcc__mul": 293,
+        "tcc__udiv": 245,
+        "tccs_unit.asm_loom_camera_approach": 189,
+        "tccs_unit.asm_loom_camera_auto_step": 163,
+        "bench_run": 146,
+        "tcc__div": 128,
+        "tccs_driver.asm_bounds": 26,
+        "loom_mode1_camera_x": 21,
+        "loom_mode1_camera_y": 21,
+        "loom_pvs_camera_update": 16
+      },
+      "latch": {
+        "h0": 65,
+        "v0": 225,
+        "h1": 90,
+        "v1": 139
+      },
+      "elapsed_master_clocks": 240164,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/camera_follow/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 239684
+    },
+    "asm": {
+      "bench": "camera_follow",
+      "variant": "asm",
+      "out": [
+        32,
+        15,
+        29,
+        15,
+        512,
+        224,
+        512,
+        223,
+        512,
+        104,
+        272,
+        38,
+        64,
+        65,
+        64,
+        65,
+        4,
+        4,
+        128,
+        64,
+        7,
+        64,
+        65
+      ],
+      "code_bytes": 1436,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 1436
+      },
+      "unit_instructions": 2087,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2087,
+      "non_harness_instructions": 2259,
+      "labels": {
+        "loom_pvs_camera_update": 371,
+        "loom_pvs_cam_set": 361,
+        "loom_pvs_cam_y": 224,
+        "loom_pvs_player_udiv": 208,
+        "loom_pvs_cam_clamp": 201,
+        "loom_pvs_player_umul": 174,
+        "loom_pvs_cam_settings_done": 164,
+        "bench_run": 146,
+        "loom_pvs_cam_dead_zone": 130,
+        "loom_pvs_camera_axis_goal": 72,
+        "loom_pvs_cam_region": 52,
+        "loom_pvs_camera_approach": 42,
+        "loom_pvs_camera_auto": 42,
+        "loom_pvs_cam_screens": 30,
+        "tccs_driver.asm_bounds": 26,
+        "loom_pvs_cam_region_next": 8,
+        "loom_pvs_camera_half": 8
+      },
+      "latch": {
+        "h0": 65,
+        "v0": 225,
+        "h1": 122,
+        "v1": 12
+      },
+      "elapsed_master_clocks": 67064,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/camera_follow/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 66584
+    },
+    "loomcc": {
+      "bench": "camera_follow",
+      "variant": "loomcc",
+      "out": [
+        32,
+        15,
+        29,
+        15,
+        512,
+        224,
+        512,
+        223,
+        512,
+        104,
+        272,
+        38,
+        64,
+        65,
+        64,
+        65,
+        4,
+        4,
+        128,
+        64,
+        7,
+        64,
+        65
+      ],
+      "code_bytes": 2184,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_camera_active_settings": 167,
+        "lcc.lcsunit_raw_0_loom_camera_apply": 922,
+        "lcc.lcsunit_raw_0_loom_camera_approach": 80,
+        "lcc.lcsunit_raw_0_loom_camera_auto_step": 137,
+        "lcc.lcsunit_raw_0_loom_camera_axis_goal": 214,
+        "lcc.lcsunit_raw_0_loom_mode1_clamp": 33,
+        "lcc.lcsunit_raw_0_loom_mode1_sprite_index": 49,
+        "lcc.loom_mode1_camera_x": 7,
+        "lcc.loom_mode1_camera_y": 7,
+        "lcc.loom_mode1_set_camera": 210,
+        "lcc.loom_mode1_sprite_position": 141,
+        "lcc.loom_pvs_camera_update": 10,
+        "lcc_divs16_unit_raw": 54,
+        "lcc_divu16_unit_raw": 62,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 3559,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3559,
+      "non_harness_instructions": 3731,
+      "labels": {
+        "lcb_lcsunit_raw_0_loom_camera_apply": 1282,
+        "lcb_loom_mode1_set_camera": 503,
+        "lcb_loom_mode1_sprite_position": 340,
+        "lcb_lcsunit_raw_0_loom_camera_axis_goal": 311,
+        "lcc_divu16_unit_raw_loop": 196,
+        "lcb_lcsunit_raw_0_loom_mode1_clamp": 168,
+        "bench_run": 146,
+        "lcb_lcsunit_raw_0_loom_mode1_sprite_index": 127,
+        "lcb_lcsunit_raw_0_loom_camera_active_settings": 124,
+        "lcc_divu16_unit_raw_skip": 105,
+        "lcb_lcsunit_raw_0_loom_camera_approach": 72,
+        "lcb_lcsunit_raw_0_loom_camera_auto_step": 68,
+        "loom_pvs_camera_update": 32,
+        "lcc_mul16_unit_raw": 30,
+        "lcc_divs16_unit_raw": 28,
+        "lcc_mul16_unit_raw_a": 26,
+        "tccs_driver.asm_bounds": 26,
+        "lcc_divs16_unit_raw_b": 24,
+        "lcc_divu16_unit_raw": 23,
+        "loom_mode1_camera_x": 21,
+        "loom_mode1_camera_y": 21,
+        "lcc_divs16_unit_raw_a": 12,
+        "lcc_divu16_unit_raw_soft": 12,
+        "lcc_mul16_unit_raw_wide": 12,
+        "lcc_divs16_unit_raw_qpos": 8,
+        "lcc_divs16_unit_raw_rpos": 8,
+        "lcc_mul16_unit_raw_b": 6
+      },
+      "latch": {
+        "h0": 65,
+        "v0": 225,
+        "h1": 262,
+        "v1": 39
+      },
+      "elapsed_master_clocks": 104452,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/camera_follow/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 103972
+    },
+    "equal": true
+  },
+  "contact_scan": {
+    "host": {
+      "bench": "contact_scan",
+      "variant": "host",
+      "out": [
+        1,
+        0,
+        5056,
+        2,
+        2,
+        11815,
+        1,
+        7,
+        16985,
+        0,
+        65535,
+        35745
+      ]
+    },
+    "tcc": {
+      "bench": "contact_scan",
+      "variant": "tcc",
+      "out": [
+        1,
+        0,
+        5056,
+        2,
+        2,
+        11815,
+        1,
+        7,
+        16985,
+        0,
+        65535,
+        35745
+      ],
+      "code_bytes": 802,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_combat_touchtext_0x1": 528,
+        ".tccs_unit.asm_loom_combat_actor_touches_playertext_0x0": 274
+      },
+      "unit_instructions": 7727,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 7727,
+      "non_harness_instructions": 8169,
+      "labels": {
+        "loom_pvs_combat_touch": 5582,
+        "tccs_unit.asm_loom_combat_actor_touches_player": 2145,
+        "bench_run": 442
+      },
+      "latch": {
+        "h0": 61,
+        "v0": 225,
+        "h1": 247,
+        "v1": 106
+      },
+      "elapsed_master_clocks": 195796,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/contact_scan/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 195316
+    },
+    "asm": {
+      "bench": "contact_scan",
+      "variant": "asm",
+      "out": [
+        1,
+        0,
+        5056,
+        2,
+        2,
+        11815,
+        1,
+        7,
+        16985,
+        0,
+        65535,
+        35745
+      ],
+      "code_bytes": 390,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 390
+      },
+      "unit_instructions": 2608,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2608,
+      "non_harness_instructions": 3050,
+      "labels": {
+        "loom_pvs_touch_loop": 2320,
+        "bench_run": 442,
+        "loom_pvs_combat_touch": 144,
+        "loom_pvs_touch_next": 112,
+        "loom_pvs_touch_hit": 16,
+        "loom_pvs_touch_none": 16
+      },
+      "latch": {
+        "h0": 61,
+        "v0": 225,
+        "h1": 112,
+        "v1": 29
+      },
+      "elapsed_master_clocks": 90228,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/contact_scan/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 89748
+    },
+    "loomcc": {
+      "bench": "contact_scan",
+      "variant": "loomcc",
+      "out": [
+        1,
+        0,
+        5056,
+        2,
+        2,
+        11815,
+        1,
+        7,
+        16985,
+        0,
+        65535,
+        35745
+      ],
+      "code_bytes": 343,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_combat_actor_touches_player": 102,
+        "lcc.loom_pvs_combat_touch": 241
+      },
+      "unit_instructions": 2636,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2636,
+      "non_harness_instructions": 3078,
+      "labels": {
+        "lcb_loom_pvs_combat_touch": 1763,
+        "lcb_lcsunit_raw_0_loom_combat_actor_touches_player": 745,
+        "bench_run": 442,
+        "loom_pvs_combat_touch": 128
+      },
+      "latch": {
+        "h0": 61,
+        "v0": 225,
+        "h1": 41,
+        "v1": 22
+      },
+      "elapsed_master_clocks": 80396,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/contact_scan/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 79916
+    },
+    "equal": true
+  },
+  "display_block": {
+    "host": {
+      "bench": "display_block",
+      "variant": "host",
+      "out": [
+        7,
+        7,
+        3,
+        0,
+        4,
+        3,
+        3,
+        0,
+        5,
+        5,
+        0,
+        4,
+        32336,
+        31462,
+        47859,
+        24376,
+        28304,
+        15712,
+        15669,
+        63646,
+        28464,
+        31231,
+        41519,
+        32820,
+        3863,
+        3,
+        2,
+        7
+      ]
+    },
+    "tcc": {
+      "bench": "display_block",
+      "variant": "tcc",
+      "out": [
+        7,
+        7,
+        3,
+        0,
+        4,
+        3,
+        3,
+        0,
+        5,
+        5,
+        0,
+        4,
+        32336,
+        31462,
+        47859,
+        24376,
+        28304,
+        15712,
+        15669,
+        63646,
+        28464,
+        31231,
+        41519,
+        32820,
+        3863,
+        3,
+        2,
+        7
+      ],
+      "code_bytes": 948,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_mode1_displaytext_0x0": 948
+      },
+      "unit_instructions": 4575,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 4575,
+      "non_harness_instructions": 4960,
+      "labels": {
+        "loom_pvs_mode1_display": 4575,
+        "memcpy": 216,
+        "bench_run": 169
+      },
+      "latch": {
+        "h0": 66,
+        "v0": 225,
+        "h1": 51,
+        "v1": 54
+      },
+      "elapsed_master_clocks": 124064,
+      "profile_frames": [
+        4,
+        5
+      ],
+      "rom": "/private/tmp/lccb/rng2/display_block/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 123584
+    },
+    "asm": {
+      "bench": "display_block",
+      "variant": "asm",
+      "out": [
+        7,
+        7,
+        3,
+        0,
+        4,
+        3,
+        3,
+        0,
+        5,
+        5,
+        0,
+        4,
+        32336,
+        31462,
+        47859,
+        24376,
+        28304,
+        15712,
+        15669,
+        63646,
+        28464,
+        31231,
+        41519,
+        32820,
+        3863,
+        3,
+        2,
+        7
+      ],
+      "code_bytes": 186,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.mode1.display.code": 186
+      },
+      "unit_instructions": 844,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 844,
+      "non_harness_instructions": 1013,
+      "labels": {
+        "loom_pvs_mode1_display": 784,
+        "bench_run": 169,
+        "loom_pvs_mode1_display_done": 60
+      },
+      "latch": {
+        "h0": 66,
+        "v0": 225,
+        "h1": 268,
+        "v1": 245
+      },
+      "elapsed_master_clocks": 28088,
+      "profile_frames": [
+        4,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/display_block/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 27608
+    },
+    "loomcc": {
+      "bench": "display_block",
+      "variant": "loomcc",
+      "out": [
+        7,
+        7,
+        3,
+        0,
+        4,
+        3,
+        3,
+        0,
+        5,
+        5,
+        0,
+        4,
+        32336,
+        31462,
+        47859,
+        24376,
+        28304,
+        15712,
+        15669,
+        63646,
+        28464,
+        31231,
+        41519,
+        32820,
+        3863,
+        3,
+        2,
+        7
+      ],
+      "code_bytes": 387,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_pvs_mode1_display": 387
+      },
+      "unit_instructions": 1604,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1604,
+      "non_harness_instructions": 1773,
+      "labels": {
+        "lcb_loom_pvs_mode1_display": 1436,
+        "bench_run": 169,
+        "loom_pvs_mode1_display": 168
+      },
+      "latch": {
+        "h0": 66,
+        "v0": 225,
+        "h1": 235,
+        "v1": 260
+      },
+      "elapsed_master_clocks": 48416,
+      "profile_frames": [
+        4,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/display_block/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 47936
+    },
+    "equal": true
+  },
+  "layer_scroll": {
+    "host": {
+      "bench": "layer_scroll",
+      "variant": "host",
+      "out": [
+        3,
+        3,
+        3,
+        1,
+        1,
+        0,
+        65535,
+        3,
+        35951,
+        15527,
+        19289,
+        49198,
+        27723,
+        31900,
+        19727,
+        21785,
+        46899,
+        400,
+        200,
+        150,
+        0,
+        20,
+        65523,
+        65535,
+        1277
+      ]
+    },
+    "tcc": {
+      "bench": "layer_scroll",
+      "variant": "tcc",
+      "out": [
+        3,
+        3,
+        3,
+        1,
+        1,
+        0,
+        65535,
+        3,
+        35951,
+        15527,
+        19289,
+        49198,
+        27723,
+        31900,
+        19727,
+        21785,
+        46899,
+        400,
+        200,
+        150,
+        0,
+        20,
+        65523,
+        65535,
+        1277
+      ],
+      "code_bytes": 1862,
+      "rodata_bytes": 9,
+      "sections": {
+        ".loom_pvs_mode1_scrolltext_0x1": 1485,
+        ".rodata": 9,
+        ".tccs_unit.asm_loom_mode1_scaledtext_0x0": 377
+      },
+      "unit_instructions": 7256,
+      "helper_instructions": 1299,
+      "unit_and_helper_instructions": 8555,
+      "non_harness_instructions": 8684,
+      "labels": {
+        "loom_pvs_mode1_scroll": 4986,
+        "tccs_unit.asm_loom_mode1_scaled": 2270,
+        "tcc__mul": 593,
+        "tcc__udiv1": 525,
+        "tcc__udiv": 181,
+        "bench_run": 129
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 278,
+        "v1": 120
+      },
+      "elapsed_master_clocks": 215004,
+      "profile_frames": [
+        4,
+        5
+      ],
+      "rom": "/private/tmp/lccb/rng2/layer_scroll/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 214524
+    },
+    "asm": {
+      "bench": "layer_scroll",
+      "variant": "asm",
+      "out": [
+        3,
+        3,
+        3,
+        1,
+        1,
+        0,
+        65535,
+        3,
+        35951,
+        15527,
+        19289,
+        49198,
+        27723,
+        31900,
+        19727,
+        21785,
+        46899,
+        400,
+        200,
+        150,
+        0,
+        20,
+        65523,
+        65535,
+        1277
+      ],
+      "code_bytes": 506,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.mode1.scroll.code": 506
+      },
+      "unit_instructions": 2555,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2555,
+      "non_harness_instructions": 2684,
+      "labels": {
+        "loom_pvs_scroll_layer": 725,
+        "loom_pvs_scroll_divide": 687,
+        "loom_pvs_scroll_scaled": 372,
+        "loom_pvs_mode1_scroll": 334,
+        "loom_pvs_scroll_cache": 325,
+        "bench_run": 129,
+        "loom_pvs_scroll_sign": 64,
+        "loom_pvs_scroll_compute": 48
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 171,
+        "v1": 20
+      },
+      "elapsed_master_clocks": 78176,
+      "profile_frames": [
+        4,
+        5
+      ],
+      "rom": "/private/tmp/lccb/rng2/layer_scroll/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 77696
+    },
+    "loomcc": {
+      "bench": "layer_scroll",
+      "variant": "loomcc",
+      "out": [
+        3,
+        3,
+        3,
+        1,
+        1,
+        0,
+        65535,
+        3,
+        35951,
+        15527,
+        19289,
+        49198,
+        27723,
+        31900,
+        19727,
+        21785,
+        46899,
+        400,
+        200,
+        150,
+        0,
+        20,
+        65523,
+        65535,
+        1277
+      ],
+      "code_bytes": 777,
+      "rodata_bytes": 9,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_mode1_scaled": 166,
+        "lcc.loom_pvs_mode1_scroll": 458,
+        "lcc.rodata.unit_raw": 9,
+        "lcc_divu16_unit_raw": 62,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 2633,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2633,
+      "non_harness_instructions": 2762,
+      "labels": {
+        "lcb_loom_pvs_mode1_scroll": 1445,
+        "lcb_lcsunit_raw_0_loom_mode1_scaled": 829,
+        "loom_pvs_mode1_scroll": 144,
+        "bench_run": 129,
+        "lcc_mul16_unit_raw": 87,
+        "lcc_divu16_unit_raw": 68,
+        "lcc_mul16_unit_raw_wide": 45,
+        "lcc_mul16_unit_raw_b": 9,
+        "lcc_mul16_unit_raw_a": 6
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 236,
+        "v1": 18
+      },
+      "elapsed_master_clocks": 75708,
+      "profile_frames": [
+        4,
+        5
+      ],
+      "rom": "/private/tmp/lccb/rng2/layer_scroll/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 75228
+    },
+    "equal": true
+  },
+  "micro_calls": {
+    "host": {
+      "bench": "micro_calls",
+      "variant": "host",
+      "out": [
+        488,
+        48,
+        11415,
+        27107,
+        190,
+        239,
+        50536,
+        15239,
+        13324
+      ]
+    },
+    "tcc": {
+      "bench": "micro_calls",
+      "variant": "tcc",
+      "out": [
+        488,
+        48,
+        11415,
+        27107,
+        190,
+        239,
+        50536,
+        15239,
+        13324
+      ],
+      "code_bytes": 856,
+      "rodata_bytes": 16,
+      "sections": {
+        ".chaintext_0x3": 68,
+        ".many_argstext_0x4": 175,
+        ".minmaxtext_0x6": 295,
+        ".rodata": 16,
+        ".run_hookstext_0xb": 148,
+        ".splittext_0x5": 34,
+        ".tccs_unit.asm_hook_dbltext_0x8": 6,
+        ".tccs_unit.asm_hook_inctext_0x7": 7,
+        ".tccs_unit.asm_hook_negtext_0x9": 14,
+        ".tccs_unit.asm_hook_swaptext_0xa": 21,
+        ".tccs_unit.asm_leaf_addtext_0x0": 14,
+        ".tccs_unit.asm_leaf_twicetext_0x1": 17,
+        ".tccs_unit.asm_midtext_0x2": 57
+      },
+      "unit_instructions": 2726,
+      "helper_instructions": 156,
+      "unit_and_helper_instructions": 2882,
+      "non_harness_instructions": 3003,
+      "labels": {
+        "minmax": 1115,
+        "run_hooks": 761,
+        "many_args": 336,
+        "tccs_unit.asm_mid": 186,
+        "tcc__jsl_ind_r9": 156,
+        "bench_run": 121,
+        "tccs_unit.asm_leaf_add": 96,
+        "chain": 78,
+        "tccs_unit.asm_leaf_twice": 60,
+        "tccs_unit.asm_hook_swap": 33,
+        "split": 17,
+        "tccs_unit.asm_hook_dbl": 16,
+        "tccs_unit.asm_hook_neg": 16,
+        "tccs_unit.asm_hook_inc": 12
+      },
+      "latch": {
+        "h0": 62,
+        "v0": 225,
+        "h1": 174,
+        "v1": 22
+      },
+      "elapsed_master_clocks": 80924,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_calls/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 80444
+    },
+    "loomcc": {
+      "bench": "micro_calls",
+      "variant": "loomcc",
+      "out": [
+        488,
+        48,
+        11415,
+        27107,
+        190,
+        239,
+        50536,
+        15239,
+        13324
+      ],
+      "code_bytes": 508,
+      "rodata_bytes": 16,
+      "sections": {
+        "lcc.chain": 49,
+        "lcc.lcsunit_raw_0_hook_dbl": 10,
+        "lcc.lcsunit_raw_0_hook_inc": 10,
+        "lcc.lcsunit_raw_0_hook_neg": 13,
+        "lcc.lcsunit_raw_0_hook_swap": 23,
+        "lcc.lcsunit_raw_0_leaf_add": 6,
+        "lcc.lcsunit_raw_0_leaf_twice": 9,
+        "lcc.lcsunit_raw_0_mid": 22,
+        "lcc.many_args": 126,
+        "lcc.minmax": 102,
+        "lcc.rodata.unit_raw": 16,
+        "lcc.run_hooks": 99,
+        "lcc.split": 36,
+        "lcc_jslr10_unit_raw": 3
+      },
+      "unit_instructions": 1116,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1116,
+      "non_harness_instructions": 1237,
+      "labels": {
+        "lcb_run_hooks": 354,
+        "lcb_minmax": 306,
+        "bench_run": 121,
+        "lcb_many_args": 102,
+        "lcb_lcsunit_raw_0_mid": 54,
+        "lcb_lcsunit_raw_0_leaf_add": 48,
+        "many_args": 40,
+        "lcb_chain": 36,
+        "lcb_lcsunit_raw_0_hook_swap": 30,
+        "lcb_lcsunit_raw_0_leaf_twice": 24,
+        "lcb_lcsunit_raw_0_hook_dbl": 16,
+        "minmax": 14,
+        "lcb_lcsunit_raw_0_hook_inc": 12,
+        "lcc_jslr10_unit_raw": 12,
+        "lcb_lcsunit_raw_0_hook_neg": 10,
+        "split": 10,
+        "chain": 8,
+        "lcb_split": 8,
+        "lcsunit_raw_0_hook_dbl": 8,
+        "run_hooks": 8,
+        "lcsunit_raw_0_hook_inc": 6,
+        "lcsunit_raw_0_hook_swap": 6,
+        "lcsunit_raw_0_hook_neg": 4
+      },
+      "latch": {
+        "h0": 62,
+        "v0": 225,
+        "h1": 35,
+        "v1": 251
+      },
+      "elapsed_master_clocks": 35356,
+      "profile_frames": [
+        2,
+        2
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_calls/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 34876
+    },
+    "equal": true
+  },
+  "micro_index": {
+    "host": {
+      "bench": "micro_index",
+      "variant": "host",
+      "out": [
+        180,
+        62,
+        3,
+        8,
+        15,
+        24,
+        35,
+        35,
+        4,
+        6,
+        3,
+        51518,
+        824,
+        20003,
+        3
+      ]
+    },
+    "tcc": {
+      "bench": "micro_index",
+      "variant": "tcc",
+      "out": [
+        180,
+        62,
+        3,
+        8,
+        15,
+        24,
+        35,
+        35,
+        4,
+        6,
+        3,
+        51518,
+        824,
+        20003,
+        3
+      ],
+      "code_bytes": 832,
+      "rodata_bytes": 8,
+      "sections": {
+        ".cost_sweeptext_0x1": 310,
+        ".histogramtext_0x2": 144,
+        ".map_weighttext_0x0": 212,
+        ".reverse_u16text_0x3": 166,
+        ".rodata": 8
+      },
+      "unit_instructions": 8803,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 8803,
+      "non_harness_instructions": 8833,
+      "labels": {
+        "map_weight": 3788,
+        "cost_sweep": 3307,
+        "histogram": 987,
+        "reverse_u16": 721,
+        "bench_run": 30
+      },
+      "latch": {
+        "h0": 66,
+        "v0": 225,
+        "h1": 316,
+        "v1": 124
+      },
+      "elapsed_master_clocks": 220604,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_index/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 220124
+    },
+    "loomcc": {
+      "bench": "micro_index",
+      "variant": "loomcc",
+      "out": [
+        180,
+        62,
+        3,
+        8,
+        15,
+        24,
+        35,
+        35,
+        4,
+        6,
+        3,
+        51518,
+        824,
+        20003,
+        3
+      ],
+      "code_bytes": 366,
+      "rodata_bytes": 8,
+      "sections": {
+        "lcc.cost_sweep": 155,
+        "lcc.histogram": 59,
+        "lcc.map_weight": 93,
+        "lcc.reverse_u16": 59,
+        "lcc.rodata.unit_raw": 8
+      },
+      "unit_instructions": 3928,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3928,
+      "non_harness_instructions": 3958,
+      "labels": {
+        "cost_sweep": 1934,
+        "lcb_map_weight": 1304,
+        "lcb_histogram": 404,
+        "lcb_reverse_u16": 266,
+        "bench_run": 30,
+        "map_weight": 16,
+        "histogram": 2,
+        "reverse_u16": 2
+      },
+      "latch": {
+        "h0": 66,
+        "v0": 225,
+        "h1": 202,
+        "v1": 26
+      },
+      "elapsed_master_clocks": 86476,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_index/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 85996
+    },
+    "equal": true
+  },
+  "micro_loops": {
+    "host": {
+      "bench": "micro_loops",
+      "variant": "host",
+      "out": [
+        52848,
+        4660,
+        248,
+        53425,
+        29293,
+        90,
+        231,
+        58,
+        90
+      ]
+    },
+    "tcc": {
+      "bench": "micro_loops",
+      "variant": "tcc",
+      "out": [
+        52848,
+        4660,
+        248,
+        53425,
+        29293,
+        90,
+        231,
+        58,
+        90
+      ],
+      "code_bytes": 665,
+      "rodata_bytes": 0,
+      "sections": {
+        ".copy_u8text_0x4": 117,
+        ".fill_u16text_0x3": 62,
+        ".fill_u8text_0x2": 101,
+        ".nestedtext_0x5": 160,
+        ".sum_u16text_0x0": 114,
+        ".sum_u8text_0x1": 111
+      },
+      "unit_instructions": 8637,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 8637,
+      "non_harness_instructions": 8698,
+      "labels": {
+        "nested": 1996,
+        "sum_u8": 1706,
+        "fill_u8": 1627,
+        "sum_u16": 1408,
+        "copy_u8": 1179,
+        "fill_u16": 721,
+        "bench_run": 61
+      },
+      "latch": {
+        "h0": 58,
+        "v0": 225,
+        "h1": 59,
+        "v1": 135
+      },
+      "elapsed_master_clocks": 234612,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_loops/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 234132
+    },
+    "loomcc": {
+      "bench": "micro_loops",
+      "variant": "loomcc",
+      "out": [
+        52848,
+        4660,
+        248,
+        53425,
+        29293,
+        90,
+        231,
+        58,
+        90
+      ],
+      "code_bytes": 263,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.copy_u8": 41,
+        "lcc.fill_u16": 40,
+        "lcc.fill_u8": 37,
+        "lcc.nested": 49,
+        "lcc.sum_u16": 45,
+        "lcc.sum_u8": 51
+      },
+      "unit_instructions": 2351,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2351,
+      "non_harness_instructions": 2412,
+      "labels": {
+        "lcb_sum_u8": 646,
+        "lcb_nested": 503,
+        "lcb_sum_u16": 391,
+        "lcb_fill_u16": 313,
+        "lcb_fill_u8": 284,
+        "lcb_copy_u8": 172,
+        "bench_run": 61,
+        "copy_u8": 10,
+        "fill_u16": 8,
+        "fill_u8": 8,
+        "sum_u16": 6,
+        "sum_u8": 6,
+        "nested": 4
+      },
+      "latch": {
+        "h0": 58,
+        "v0": 225,
+        "h1": 249,
+        "v1": 5
+      },
+      "elapsed_master_clocks": 58052,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_loops/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 57572
+    },
+    "equal": true
+  },
+  "micro_math": {
+    "host": {
+      "bench": "micro_math",
+      "variant": "host",
+      "out": [
+        227,
+        0,
+        35,
+        134,
+        41,
+        198,
+        188,
+        454,
+        14151,
+        13,
+        1,
+        43904,
+        255,
+        120,
+        65252,
+        0
+      ]
+    },
+    "tcc": {
+      "bench": "micro_math",
+      "variant": "tcc",
+      "out": [
+        227,
+        0,
+        35,
+        134,
+        41,
+        198,
+        188,
+        454,
+        14151,
+        13,
+        1,
+        43904,
+        255,
+        120,
+        65252,
+        0
+      ],
+      "code_bytes": 1101,
+      "rodata_bytes": 0,
+      "sections": {
+        ".abs_diff_sumtext_0x4": 179,
+        ".compare_mixtext_0x1": 375,
+        ".lfsrtext_0x2": 121,
+        ".popcounttext_0x3": 63,
+        ".sat_add_u8text_0x5": 86,
+        ".step_axistext_0x0": 173,
+        ".sum_s8text_0x6": 104
+      },
+      "unit_instructions": 6406,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 6406,
+      "non_harness_instructions": 6588,
+      "labels": {
+        "lfsr": 2568,
+        "abs_diff_sum": 1144,
+        "sum_s8": 953,
+        "compare_mix": 940,
+        "step_axis": 418,
+        "popcount": 304,
+        "bench_run": 182,
+        "sat_add_u8": 79
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 244,
+        "v1": 77
+      },
+      "elapsed_master_clocks": 156196,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_math/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 155716
+    },
+    "loomcc": {
+      "bench": "micro_math",
+      "variant": "loomcc",
+      "out": [
+        227,
+        0,
+        35,
+        134,
+        41,
+        198,
+        188,
+        454,
+        14151,
+        13,
+        1,
+        43904,
+        255,
+        120,
+        65252,
+        0
+      ],
+      "code_bytes": 694,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.abs_diff_sum": 77,
+        "lcc.compare_mix": 285,
+        "lcc.lfsr": 74,
+        "lcc.popcount": 28,
+        "lcc.sat_add_u8": 49,
+        "lcc.step_axis": 121,
+        "lcc.sum_s8": 60
+      },
+      "unit_instructions": 2553,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2553,
+      "non_harness_instructions": 2735,
+      "labels": {
+        "lcb_lfsr": 967,
+        "lcb_sum_s8": 512,
+        "lcb_abs_diff_sum": 383,
+        "lcb_compare_mix": 296,
+        "bench_run": 182,
+        "lcb_step_axis": 149,
+        "lcb_popcount": 110,
+        "step_axis": 48,
+        "lcb_sat_add_u8": 32,
+        "compare_mix": 24,
+        "abs_diff_sum": 10,
+        "sat_add_u8": 8,
+        "sum_s8": 6,
+        "lfsr": 4,
+        "popcount": 4
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 329,
+        "v1": 8
+      },
+      "elapsed_master_clocks": 62420,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_math/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 61940
+    },
+    "equal": true
+  },
+  "micro_muldiv": {
+    "host": {
+      "bench": "micro_muldiv",
+      "variant": "host",
+      "out": [
+        714,
+        29200,
+        55552,
+        60001,
+        24464,
+        21518,
+        58,
+        64952,
+        455,
+        60000,
+        7,
+        5,
+        61763,
+        61777,
+        24880
+      ]
+    },
+    "tcc": {
+      "bench": "micro_muldiv",
+      "variant": "tcc",
+      "out": [
+        714,
+        29200,
+        55552,
+        60001,
+        24464,
+        21518,
+        58,
+        64952,
+        455,
+        60000,
+        7,
+        5,
+        61763,
+        61777,
+        24880
+      ],
+      "code_bytes": 580,
+      "rodata_bytes": 0,
+      "sections": {
+        ".div_consttext_0x3": 149,
+        ".div_signed_consttext_0x4": 57,
+        ".div_var_signedtext_0x6": 50,
+        ".div_vartext_0x5": 50,
+        ".mul_consttext_0x0": 104,
+        ".mul_signedtext_0x2": 21,
+        ".mul_var_sumtext_0x1": 149
+      },
+      "unit_instructions": 1194,
+      "helper_instructions": 6683,
+      "unit_and_helper_instructions": 7877,
+      "non_harness_instructions": 8000,
+      "labels": {
+        "tcc__udiv1": 4157,
+        "tcc__udiv": 1416,
+        "tcc__mul": 822,
+        "mul_var_sum": 512,
+        "div_const": 324,
+        "tcc__div": 288,
+        "mul_const": 128,
+        "bench_run": 123,
+        "div_var": 78,
+        "div_var_signed": 78,
+        "div_signed_const": 54,
+        "mul_signed": 20
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 293,
+        "v1": 99
+      },
+      "elapsed_master_clocks": 186420,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_muldiv/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 185940
+    },
+    "loomcc": {
+      "bench": "micro_muldiv",
+      "variant": "loomcc",
+      "out": [
+        714,
+        29200,
+        55552,
+        60001,
+        24464,
+        21518,
+        58,
+        64952,
+        455,
+        60000,
+        7,
+        5,
+        61763,
+        61777,
+        24880
+      ],
+      "code_bytes": 593,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.div_const": 86,
+        "lcc.div_signed_const": 55,
+        "lcc.div_var": 43,
+        "lcc.div_var_signed": 43,
+        "lcc.mul_const": 73,
+        "lcc.mul_signed": 19,
+        "lcc.mul_var_sum": 67,
+        "lcc_divs16_unit_raw": 54,
+        "lcc_divu16_unit_raw": 62,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 2166,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2166,
+      "non_harness_instructions": 2289,
+      "labels": {
+        "lcc_divu16_unit_raw": 518,
+        "lcc_divu16_unit_raw_loop": 260,
+        "lcb_mul_var_sum": 159,
+        "lcb_div_const": 145,
+        "lcc_divu16_unit_raw_skip": 140,
+        "lcc_mul16_unit_raw_wide": 126,
+        "bench_run": 123,
+        "lcc_mul16_unit_raw_a": 106,
+        "lcc_mul16_unit_raw": 93,
+        "lcb_mul_const": 92,
+        "lcc_divs16_unit_raw_b": 84,
+        "lcc_divs16_unit_raw": 82,
+        "lcb_div_var": 57,
+        "lcb_div_var_signed": 57,
+        "lcb_div_signed_const": 46,
+        "lcc_divs16_unit_raw_rpos": 44,
+        "lcc_divs16_unit_raw_a": 38,
+        "lcc_mul16_unit_raw_b": 27,
+        "lcc_divu16_unit_raw_soft": 16,
+        "div_var": 12,
+        "div_var_signed": 12,
+        "lcb_mul_signed": 10,
+        "mul_var_sum": 10,
+        "lcc_divs16_unit_raw_qpos": 8,
+        "mul_const": 8,
+        "mul_signed": 8,
+        "div_const": 4,
+        "div_signed_const": 4
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 184,
+        "v1": 3
+      },
+      "elapsed_master_clocks": 55040,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_muldiv/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 54560
+    },
+    "equal": true
+  },
+  "micro_struct": {
+    "host": {
+      "bench": "micro_struct",
+      "variant": "host",
+      "out": [
+        6,
+        424,
+        765,
+        29134,
+        12207,
+        65531,
+        20,
+        40,
+        90,
+        65531,
+        65528,
+        70,
+        90
+      ]
+    },
+    "tcc": {
+      "bench": "micro_struct",
+      "variant": "tcc",
+      "out": [
+        6,
+        424,
+        765,
+        29134,
+        12207,
+        65531,
+        20,
+        40,
+        90,
+        65531,
+        65528,
+        70,
+        90
+      ],
+      "code_bytes": 1620,
+      "rodata_bytes": 0,
+      "sections": {
+        ".actors_scoretext_0x1": 275,
+        ".actors_steptext_0x0": 802,
+        ".box_uniontext_0x3": 403,
+        ".list_sumtext_0x2": 140
+      },
+      "unit_instructions": 3684,
+      "helper_instructions": 2439,
+      "unit_and_helper_instructions": 6123,
+      "non_harness_instructions": 6219,
+      "labels": {
+        "tcc__mul": 2331,
+        "actors_step": 1778,
+        "actors_score": 842,
+        "list_sum": 717,
+        "box_union": 347,
+        "memcpy": 108,
+        "bench_run": 96
+      },
+      "latch": {
+        "h0": 60,
+        "v0": 225,
+        "h1": 177,
+        "v1": 94
+      },
+      "elapsed_master_clocks": 179152,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_struct/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 178672
+    },
+    "loomcc": {
+      "bench": "micro_struct",
+      "variant": "loomcc",
+      "out": [
+        6,
+        424,
+        765,
+        29134,
+        12207,
+        65531,
+        20,
+        40,
+        90,
+        65531,
+        65528,
+        70,
+        90
+      ],
+      "code_bytes": 837,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.actors_score": 142,
+        "lcc.actors_step": 390,
+        "lcc.box_union": 219,
+        "lcc.list_sum": 86
+      },
+      "unit_instructions": 1857,
+      "helper_instructions": 36,
+      "unit_and_helper_instructions": 1893,
+      "non_harness_instructions": 1989,
+      "labels": {
+        "lcb_actors_step": 1001,
+        "lcb_list_sum": 358,
+        "lcb_actors_score": 307,
+        "lcb_box_union": 151,
+        "bench_run": 96,
+        "memcpy": 36,
+        "box_union": 24,
+        "actors_score": 6,
+        "actors_step": 6,
+        "list_sum": 4
+      },
+      "latch": {
+        "h0": 60,
+        "v0": 225,
+        "h1": 229,
+        "v1": 261
+      },
+      "elapsed_master_clocks": 49780,
+      "profile_frames": [
+        3,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_struct/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 49300
+    },
+    "equal": true
+  },
+  "micro_switch": {
+    "host": {
+      "bench": "micro_switch",
+      "variant": "host",
+      "out": [
+        33327,
+        21168,
+        10435
+      ]
+    },
+    "tcc": {
+      "bench": "micro_switch",
+      "variant": "tcc",
+      "out": [
+        33327,
+        21168,
+        10435
+      ],
+      "code_bytes": 1180,
+      "rodata_bytes": 0,
+      "sections": {
+        ".densetext_0x0": 361,
+        ".sparsetext_0x1": 169,
+        ".tokenstext_0x2": 650
+      },
+      "unit_instructions": 5899,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 5899,
+      "non_harness_instructions": 6170,
+      "labels": {
+        "tokens": 4910,
+        "sparse": 496,
+        "dense": 493,
+        "bench_run": 271
+      },
+      "latch": {
+        "h0": 59,
+        "v0": 225,
+        "h1": 157,
+        "v1": 66
+      },
+      "elapsed_master_clocks": 140884,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_switch/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 140404
+    },
+    "loomcc": {
+      "bench": "micro_switch",
+      "variant": "loomcc",
+      "out": [
+        33327,
+        21168,
+        10435
+      ],
+      "code_bytes": 519,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.dense": 160,
+        "lcc.sparse": 102,
+        "lcc.tokens": 257
+      },
+      "unit_instructions": 2038,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2038,
+      "non_harness_instructions": 2309,
+      "labels": {
+        "lcb_tokens": 1517,
+        "lcb_sparse": 272,
+        "bench_run": 271,
+        "lcb_dense": 133,
+        "dense": 78,
+        "sparse": 32,
+        "tokens": 6
+      },
+      "latch": {
+        "h0": 59,
+        "v0": 225,
+        "h1": 42,
+        "v1": 2
+      },
+      "elapsed_master_clocks": 53128,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/micro_switch/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 52648
+    },
+    "equal": true
+  },
+  "movement_box_blocked": {
+    "host": {
+      "bench": "movement_box_blocked",
+      "variant": "host",
+      "out": [
+        32752,
+        50,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    "tcc": {
+      "bench": "movement_box_blocked",
+      "variant": "tcc",
+      "out": [
+        32752,
+        50,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "code_bytes": 375,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_movement_box_blockedtext_0x0": 375
+      },
+      "unit_instructions": 9943,
+      "helper_instructions": 1258,
+      "unit_and_helper_instructions": 11201,
+      "non_harness_instructions": 11634,
+      "labels": {
+        "loom_pvs_movement_box_blocked": 9943,
+        "tcc__mul": 1258,
+        "bench_run": 433
+      },
+      "latch": {
+        "h0": 68,
+        "v0": 225,
+        "h1": 159,
+        "v1": 168
+      },
+      "elapsed_master_clocks": 279984,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/movement_box_blocked/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 279504
+    },
+    "asm": {
+      "bench": "movement_box_blocked",
+      "variant": "asm",
+      "out": [
+        32752,
+        50,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "code_bytes": 157,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.movement.code": 157
+      },
+      "unit_instructions": 2745,
+      "helper_instructions": 740,
+      "unit_and_helper_instructions": 3485,
+      "non_harness_instructions": 3918,
+      "labels": {
+        "loom_pvs_movement_setup": 780,
+        "tcc__mul": 740,
+        "loom_pvs_movement_cell": 457,
+        "bench_run": 433,
+        "loom_pvs_movement_read": 284,
+        "loom_pvs_movement_next_cell": 254,
+        "loom_pvs_movement_row_next": 240,
+        "loom_pvs_movement_box_blocked": 230,
+        "loom_pvs_movement_row": 218,
+        "loom_pvs_movement_skip_right": 84,
+        "loom_pvs_movement_solid": 70,
+        "loom_pvs_movement_row_scan": 68,
+        "loom_pvs_movement_clear": 40,
+        "loom_pvs_movement_skip_bottom": 20
+      },
+      "latch": {
+        "h0": 68,
+        "v0": 225,
+        "h1": 302,
+        "v1": 33
+      },
+      "elapsed_master_clocks": 96416,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/movement_box_blocked/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 95936
+    },
+    "loomcc": {
+      "bench": "movement_box_blocked",
+      "variant": "loomcc",
+      "out": [
+        32752,
+        50,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "code_bytes": 271,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_pvs_movement_box_blocked": 180,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 3211,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3211,
+      "non_harness_instructions": 3644,
+      "labels": {
+        "lcb_loom_pvs_movement_box_blocked": 2371,
+        "bench_run": 433,
+        "loom_pvs_movement_box_blocked": 432,
+        "lcc_mul16_unit_raw": 408
+      },
+      "latch": {
+        "h0": 68,
+        "v0": 225,
+        "h1": 50,
+        "v1": 30
+      },
+      "elapsed_master_clocks": 91316,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/movement_box_blocked/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 90836
+    },
+    "equal": true
+  },
+  "oam_batch": {
+    "host": {
+      "bench": "oam_batch",
+      "variant": "host",
+      "out": [
+        0,
+        3,
+        7,
+        2,
+        50009,
+        40634,
+        17935,
+        65424,
+        65424,
+        65424,
+        30705,
+        11296,
+        8192,
+        514,
+        25120,
+        24228,
+        63296,
+        16106,
+        44480,
+        40082,
+        4088,
+        64880,
+        39464,
+        14402,
+        65530,
+        20017,
+        34923,
+        49829,
+        64735,
+        13849,
+        28755
+      ]
+    },
+    "tcc": {
+      "bench": "oam_batch",
+      "variant": "tcc",
+      "out": [
+        0,
+        3,
+        7,
+        2,
+        50009,
+        40634,
+        17935,
+        65424,
+        65424,
+        65424,
+        30705,
+        11296,
+        8192,
+        514,
+        25120,
+        24228,
+        63296,
+        16106,
+        44480,
+        40082,
+        4088,
+        64880,
+        39464,
+        14402,
+        65530,
+        20017,
+        34923,
+        49829,
+        64735,
+        13849,
+        28755
+      ],
+      "code_bytes": 2639,
+      "rodata_bytes": 12,
+      "sections": {
+        ".loom_pvs_oam_batchtext_0x2": 1223,
+        ".rodata": 12,
+        ".tccs_unit.asm_loom_frame_build_reserve_oamtext_0x0": 136,
+        ".tccs_unit.asm_loom_oam_stagetext_0x1": 1280
+      },
+      "unit_instructions": 9020,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 9020,
+      "non_harness_instructions": 9555,
+      "labels": {
+        "loom_pvs_oam_batch": 4473,
+        "tccs_unit.asm_loom_oam_stage": 4075,
+        "tcc__mul": 512,
+        "tccs_unit.asm_loom_frame_build_reserve_oam": 472,
+        "bench_run": 23
+      },
+      "latch": {
+        "h0": 59,
+        "v0": 225,
+        "h1": 314,
+        "v1": 139
+      },
+      "elapsed_master_clocks": 241084,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_batch/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 240604
+    },
+    "asm": {
+      "bench": "oam_batch",
+      "variant": "asm",
+      "out": [
+        0,
+        3,
+        7,
+        2,
+        50009,
+        40634,
+        17935,
+        65424,
+        65424,
+        65424,
+        30705,
+        11296,
+        8192,
+        514,
+        25120,
+        24228,
+        63296,
+        16106,
+        44480,
+        40082,
+        4088,
+        64880,
+        39464,
+        14402,
+        65530,
+        20017,
+        34923,
+        49829,
+        64735,
+        13849,
+        28755
+      ],
+      "code_bytes": 515,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.oam.code": 503,
+        "loom.pvs.oam.tables": 12
+      },
+      "unit_instructions": 1496,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1496,
+      "non_harness_instructions": 1519,
+      "labels": {
+        "loom_pvs_oam_batch_accept": 528,
+        "loom_pvs_oam_batch_visible": 247,
+        "loom_pvs_oam_batch_x_ok": 205,
+        "loom_pvs_oam_batch_stage": 122,
+        "loom_pvs_oam_batch_next": 121,
+        "loom_pvs_oam_batch": 96,
+        "loom_pvs_oam_batch_body": 73,
+        "loom_pvs_oam_batch_loop": 40,
+        "loom_pvs_oam_batch_x_positive": 30,
+        "bench_run": 23,
+        "loom_pvs_oam_batch_small": 14,
+        "loom_pvs_oam_batch_y_ok": 8,
+        "loom_pvs_oam_batch_invalid": 5,
+        "loom_pvs_oam_batch_done": 4,
+        "loom_pvs_oam_batch_skip": 3
+      },
+      "latch": {
+        "h0": 59,
+        "v0": 225,
+        "h1": 112,
+        "v1": 251
+      },
+      "elapsed_master_clocks": 35676,
+      "profile_frames": [
+        7,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_batch/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 35196
+    },
+    "loomcc": {
+      "bench": "oam_batch",
+      "variant": "loomcc",
+      "out": [
+        0,
+        3,
+        7,
+        2,
+        50009,
+        40634,
+        17935,
+        65424,
+        65424,
+        65424,
+        30705,
+        11296,
+        8192,
+        514,
+        25120,
+        24228,
+        63296,
+        16106,
+        44480,
+        40082,
+        4088,
+        64880,
+        39464,
+        14402,
+        65530,
+        20017,
+        34923,
+        49829,
+        64735,
+        13849,
+        28755
+      ],
+      "code_bytes": 1060,
+      "rodata_bytes": 12,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_frame_build_reserve_oam": 62,
+        "lcc.lcsunit_raw_0_loom_oam_stage": 512,
+        "lcc.loom_pvs_oam_batch": 486,
+        "lcc.rodata.unit_raw": 12
+      },
+      "unit_instructions": 3315,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3315,
+      "non_harness_instructions": 3338,
+      "labels": {
+        "lcb_loom_pvs_oam_batch": 1648,
+        "lcb_lcsunit_raw_0_loom_oam_stage": 1451,
+        "lcb_lcsunit_raw_0_loom_frame_build_reserve_oam": 208,
+        "bench_run": 23,
+        "loom_pvs_oam_batch": 8
+      },
+      "latch": {
+        "h0": 59,
+        "v0": 225,
+        "h1": 260,
+        "v1": 25
+      },
+      "elapsed_master_clocks": 85372,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_batch/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 84892
+    },
+    "equal": true
+  },
+  "oam_finish": {
+    "host": {
+      "bench": "oam_finish",
+      "variant": "host",
+      "out": [
+        0,
+        29,
+        9,
+        1012,
+        30325,
+        47596,
+        10301,
+        62132,
+        58215,
+        25433,
+        25963,
+        61440,
+        18451,
+        4423
+      ]
+    },
+    "tcc": {
+      "bench": "oam_finish",
+      "variant": "tcc",
+      "out": [
+        0,
+        29,
+        9,
+        1012,
+        30325,
+        47596,
+        10301,
+        62132,
+        58215,
+        25433,
+        25963,
+        61440,
+        18451,
+        4423
+      ],
+      "code_bytes": 646,
+      "rodata_bytes": 8,
+      "sections": {
+        ".loom_pvs_oam_finishtext_0x0": 646,
+        ".rodata": 8
+      },
+      "unit_instructions": 5320,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 5320,
+      "non_harness_instructions": 5322,
+      "labels": {
+        "loom_pvs_oam_finish": 5320,
+        "bench_run": 2
+      },
+      "latch": {
+        "h0": 60,
+        "v0": 225,
+        "h1": 1,
+        "v1": 58
+      },
+      "elapsed_master_clocks": 129344,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_finish/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 128864
+    },
+    "asm": {
+      "bench": "oam_finish",
+      "variant": "asm",
+      "out": [
+        0,
+        29,
+        9,
+        1012,
+        30325,
+        47596,
+        10301,
+        62132,
+        58215,
+        25433,
+        25963,
+        61440,
+        18451,
+        4423
+      ],
+      "code_bytes": 181,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.oam.code": 169,
+        "loom.pvs.oam.tables": 12
+      },
+      "unit_instructions": 1087,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1087,
+      "non_harness_instructions": 1089,
+      "labels": {
+        "loom_pvs_oam_finish_hide_loop": 738,
+        "loom_pvs_oam_finish_copy_loop": 234,
+        "loom_pvs_oam_finish_hide_next": 96,
+        "loom_pvs_oam_finish_copy_done": 8,
+        "loom_pvs_oam_finish": 6,
+        "loom_pvs_oam_finish_hide_done": 5,
+        "bench_run": 2
+      },
+      "latch": {
+        "h0": 60,
+        "v0": 225,
+        "h1": 255,
+        "v1": 243
+      },
+      "elapsed_master_clocks": 25332,
+      "profile_frames": [
+        7,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_finish/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 24852
+    },
+    "loomcc": {
+      "bench": "oam_finish",
+      "variant": "loomcc",
+      "out": [
+        0,
+        29,
+        9,
+        1012,
+        30325,
+        47596,
+        10301,
+        62132,
+        58215,
+        25433,
+        25963,
+        61440,
+        18451,
+        4423
+      ],
+      "code_bytes": 260,
+      "rodata_bytes": 8,
+      "sections": {
+        "lcc.loom_pvs_oam_finish": 260,
+        "lcc.rodata.unit_raw": 8
+      },
+      "unit_instructions": 1856,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1856,
+      "non_harness_instructions": 1858,
+      "labels": {
+        "loom_pvs_oam_finish": 1856,
+        "bench_run": 2
+      },
+      "latch": {
+        "h0": 60,
+        "v0": 225,
+        "h1": 153,
+        "v1": 258
+      },
+      "elapsed_master_clocks": 45384,
+      "profile_frames": [
+        7,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_finish/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 44904
+    },
+    "equal": true
+  },
+  "oam_stage": {
+    "host": {
+      "bench": "oam_stage",
+      "variant": "host",
+      "out": [
+        0,
+        0,
+        0,
+        771,
+        771,
+        771,
+        771,
+        3,
+        0,
+        0,
+        11,
+        5,
+        58567,
+        60949,
+        42316,
+        19958,
+        21914,
+        19641,
+        62296,
+        16628,
+        25122,
+        57343,
+        51199,
+        19596,
+        21894
+      ]
+    },
+    "tcc": {
+      "bench": "oam_stage",
+      "variant": "tcc",
+      "out": [
+        0,
+        0,
+        0,
+        771,
+        771,
+        771,
+        771,
+        3,
+        0,
+        0,
+        11,
+        5,
+        58567,
+        60949,
+        42316,
+        19958,
+        21914,
+        19641,
+        62296,
+        16628,
+        25122,
+        57343,
+        51199,
+        19596,
+        21894
+      ],
+      "code_bytes": 1280,
+      "rodata_bytes": 12,
+      "sections": {
+        ".loom_pvs_oam_stagetext_0x0": 1280,
+        ".rodata": 12
+      },
+      "unit_instructions": 7484,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 7484,
+      "non_harness_instructions": 7705,
+      "labels": {
+        "loom_pvs_oam_stage": 7484,
+        "bench_run": 221
+      },
+      "latch": {
+        "h0": 57,
+        "v0": 225,
+        "h1": 58,
+        "v1": 100
+      },
+      "elapsed_master_clocks": 186872,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_stage/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 186392
+    },
+    "asm": {
+      "bench": "oam_stage",
+      "variant": "asm",
+      "out": [
+        0,
+        0,
+        0,
+        771,
+        771,
+        771,
+        771,
+        3,
+        0,
+        0,
+        11,
+        5,
+        58567,
+        60949,
+        42316,
+        19958,
+        21914,
+        19641,
+        62296,
+        16628,
+        25122,
+        57343,
+        51199,
+        19596,
+        21894
+      ],
+      "code_bytes": 355,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.oam.code": 343,
+        "loom.pvs.oam.tables": 12
+      },
+      "unit_instructions": 1934,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1934,
+      "non_harness_instructions": 2155,
+      "labels": {
+        "loom_pvs_oam_stage_accept": 928,
+        "loom_pvs_oam_stage": 836,
+        "bench_run": 221,
+        "loom_pvs_oam_stage_small": 77,
+        "loom_pvs_oam_stage_x_positive": 48,
+        "loom_pvs_oam_stage_invalid": 45
+      },
+      "latch": {
+        "h0": 57,
+        "v0": 225,
+        "h1": 268,
+        "v1": 0
+      },
+      "elapsed_master_clocks": 51312,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_stage/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 50832
+    },
+    "loomcc": {
+      "bench": "oam_stage",
+      "variant": "loomcc",
+      "out": [
+        0,
+        0,
+        0,
+        771,
+        771,
+        771,
+        771,
+        3,
+        0,
+        0,
+        11,
+        5,
+        58567,
+        60949,
+        42316,
+        19958,
+        21914,
+        19641,
+        62296,
+        16628,
+        25122,
+        57343,
+        51199,
+        19596,
+        21894
+      ],
+      "code_bytes": 526,
+      "rodata_bytes": 12,
+      "sections": {
+        "lcc.loom_pvs_oam_stage": 526,
+        "lcc.rodata.unit_raw": 12
+      },
+      "unit_instructions": 2736,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2736,
+      "non_harness_instructions": 2957,
+      "labels": {
+        "lcb_loom_pvs_oam_stage": 2656,
+        "bench_run": 221,
+        "loom_pvs_oam_stage": 80
+      },
+      "latch": {
+        "h0": 57,
+        "v0": 225,
+        "h1": 121,
+        "v1": 18
+      },
+      "elapsed_master_clocks": 75276,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/oam_stage/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 74796
+    },
+    "equal": true
+  },
+  "player2_position": {
+    "host": {
+      "bench": "player2_position",
+      "variant": "host",
+      "out": [
+        20740,
+        23130,
+        23130,
+        65496,
+        200,
+        23130,
+        23130,
+        23130,
+        23130,
+        133,
+        523,
+        23130,
+        23130,
+        873,
+        64999,
+        947,
+        64893
+      ]
+    },
+    "tcc": {
+      "bench": "player2_position",
+      "variant": "tcc",
+      "out": [
+        20740,
+        23130,
+        23130,
+        65496,
+        200,
+        23130,
+        23130,
+        23130,
+        23130,
+        133,
+        523,
+        23130,
+        23130,
+        873,
+        64999,
+        947,
+        64893
+      ],
+      "code_bytes": 287,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_actor_controller_positiontext_0x0": 287
+      },
+      "unit_instructions": 799,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 799,
+      "non_harness_instructions": 936,
+      "labels": {
+        "loom_actor_controller_position": 799,
+        "bench_run": 137
+      },
+      "latch": {
+        "h0": 68,
+        "v0": 225,
+        "h1": 201,
+        "v1": 240
+      },
+      "elapsed_master_clocks": 20992,
+      "profile_frames": [
+        3,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/player2_position/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 20512
+    },
+    "asm": {
+      "bench": "player2_position",
+      "variant": "asm",
+      "out": [
+        20740,
+        23130,
+        23130,
+        65496,
+        200,
+        23130,
+        23130,
+        23130,
+        23130,
+        133,
+        523,
+        23130,
+        23130,
+        873,
+        64999,
+        947,
+        64893
+      ],
+      "code_bytes": 127,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 127
+      },
+      "unit_instructions": 282,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 282,
+      "non_harness_instructions": 419,
+      "labels": {
+        "loom_actor_controller_position": 270,
+        "bench_run": 137,
+        "loom_pvs_controller_none": 12
+      },
+      "latch": {
+        "h0": 68,
+        "v0": 225,
+        "h1": 107,
+        "v1": 234
+      },
+      "elapsed_master_clocks": 12432,
+      "profile_frames": [
+        3,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/player2_position/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 11952
+    },
+    "loomcc": {
+      "bench": "player2_position",
+      "variant": "loomcc",
+      "out": [
+        20740,
+        23130,
+        23130,
+        65496,
+        200,
+        23130,
+        23130,
+        23130,
+        23130,
+        133,
+        523,
+        23130,
+        23130,
+        873,
+        64999,
+        947,
+        64893
+      ],
+      "code_bytes": 107,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_actor_controller_position": 107
+      },
+      "unit_instructions": 269,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 269,
+      "non_harness_instructions": 406,
+      "labels": {
+        "lcb_loom_actor_controller_position": 205,
+        "bench_run": 137,
+        "loom_actor_controller_position": 64
+      },
+      "latch": {
+        "h0": 68,
+        "v0": 225,
+        "h1": 99,
+        "v1": 233
+      },
+      "elapsed_master_clocks": 11036,
+      "profile_frames": [
+        3,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/player2_position/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 10556
+    },
+    "equal": true
+  },
+  "player_sprite": {
+    "host": {
+      "bench": "player_sprite",
+      "variant": "host",
+      "out": [
+        49,
+        49,
+        49,
+        65528,
+        296,
+        296,
+        511,
+        128,
+        264,
+        265,
+        1000,
+        1000,
+        268,
+        269,
+        170,
+        170,
+        170,
+        96,
+        160,
+        160,
+        65520,
+        128,
+        520,
+        521,
+        200,
+        200,
+        524,
+        525
+      ]
+    },
+    "tcc": {
+      "bench": "player_sprite",
+      "variant": "tcc",
+      "out": [
+        49,
+        49,
+        49,
+        65528,
+        296,
+        296,
+        511,
+        128,
+        264,
+        265,
+        1000,
+        1000,
+        268,
+        269,
+        170,
+        170,
+        170,
+        96,
+        160,
+        160,
+        65520,
+        128,
+        520,
+        521,
+        200,
+        200,
+        524,
+        525
+      ],
+      "code_bytes": 545,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_mode1_bindtext_0x0": 1,
+        ".loom_pvs_player_spritetext_0x2": 414,
+        ".tccs_unit.asm_loom_mode1_sprite_indextext_0x1": 130
+      },
+      "unit_instructions": 2928,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2928,
+      "non_harness_instructions": 3061,
+      "labels": {
+        "loom_pvs_player_sprite": 2276,
+        "tccs_unit.asm_loom_mode1_sprite_index": 652,
+        "bench_run": 133
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 279,
+        "v1": 12
+      },
+      "elapsed_master_clocks": 67696,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/player_sprite/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 67216
+    },
+    "asm": {
+      "bench": "player_sprite",
+      "variant": "asm",
+      "out": [
+        49,
+        49,
+        49,
+        65528,
+        296,
+        296,
+        511,
+        128,
+        264,
+        265,
+        1000,
+        1000,
+        268,
+        269,
+        170,
+        170,
+        170,
+        96,
+        160,
+        160,
+        65520,
+        128,
+        520,
+        521,
+        200,
+        200,
+        524,
+        525
+      ],
+      "code_bytes": 236,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 236
+      },
+      "unit_instructions": 711,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 711,
+      "non_harness_instructions": 844,
+      "labels": {
+        "loom_pvs_place_sprite": 473,
+        "loom_pvs_player_sprite": 238,
+        "bench_run": 133
+      },
+      "latch": {
+        "h0": 58,
+        "v0": 225,
+        "h1": 21,
+        "v1": 244
+      },
+      "elapsed_master_clocks": 25768,
+      "profile_frames": [
+        3,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/player_sprite/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 25288
+    },
+    "loomcc": {
+      "bench": "player_sprite",
+      "variant": "loomcc",
+      "out": [
+        49,
+        49,
+        49,
+        65528,
+        296,
+        296,
+        511,
+        128,
+        264,
+        265,
+        1000,
+        1000,
+        268,
+        269,
+        170,
+        170,
+        170,
+        96,
+        160,
+        160,
+        65520,
+        128,
+        520,
+        521,
+        200,
+        200,
+        524,
+        525
+      ],
+      "code_bytes": 282,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_mode1_sprite_index": 49,
+        "lcc.loom_pvs_mode1_bind": 61,
+        "lcc.loom_pvs_player_sprite": 172
+      },
+      "unit_instructions": 1078,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1078,
+      "non_harness_instructions": 1211,
+      "labels": {
+        "lcb_loom_pvs_player_sprite": 815,
+        "lcb_lcsunit_raw_0_loom_mode1_sprite_index": 191,
+        "bench_run": 133,
+        "loom_pvs_player_sprite": 72
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 249,
+        "v1": 247
+      },
+      "elapsed_master_clocks": 30728,
+      "profile_frames": [
+        3,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/player_sprite/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 30248
+    },
+    "equal": true
+  },
+  "player_tick": {
+    "host": {
+      "bench": "player_tick",
+      "variant": "host",
+      "out": [
+        153,
+        192,
+        704,
+        0,
+        40961,
+        42917,
+        42,
+        185,
+        576,
+        64240,
+        8224,
+        19752,
+        73,
+        136,
+        244,
+        0,
+        0,
+        10303
+      ]
+    },
+    "tcc": {
+      "bench": "player_tick",
+      "variant": "tcc",
+      "out": [
+        153,
+        192,
+        704,
+        0,
+        40961,
+        42917,
+        42,
+        185,
+        576,
+        64240,
+        8224,
+        19752,
+        73,
+        136,
+        244,
+        0,
+        0,
+        10303
+      ],
+      "code_bytes": 8995,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_movement_column_solidtext_0x2": 325,
+        ".loom_movement_floor_in_celltext_0x0": 100,
+        ".loom_pvs_player_ticktext_0x3": 7948,
+        ".tccs_unit.asm_loom_movement_slope_feettext_0x1": 622
+      },
+      "unit_instructions": 7958,
+      "helper_instructions": 177,
+      "unit_and_helper_instructions": 8135,
+      "non_harness_instructions": 8415,
+      "labels": {
+        "loom_pvs_player_tick": 6504,
+        "loom_movement_column_solid": 1156,
+        "tccs_unit.asm_loom_movement_slope_feet": 298,
+        "tccs_driver.asm_put": 111,
+        "bench_run": 103,
+        "tcc__udiv1": 99,
+        "memcpy": 54,
+        "tcc__mul": 44,
+        "tcc__udiv": 34,
+        "loom_generated_actor_blocks_box": 9,
+        "loom_generated_actor_floor_below": 3
+      },
+      "latch": {
+        "h0": 60,
+        "v0": 225,
+        "h1": 169,
+        "v1": 110
+      },
+      "elapsed_master_clocks": 200944,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/player_tick/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 200464
+    },
+    "asm": {
+      "bench": "player_tick",
+      "variant": "asm",
+      "out": [
+        153,
+        192,
+        704,
+        0,
+        40961,
+        42917,
+        42,
+        185,
+        576,
+        64240,
+        8224,
+        19752,
+        73,
+        136,
+        244,
+        0,
+        0,
+        10303
+      ],
+      "code_bytes": 2750,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 2750
+      },
+      "unit_instructions": 2606,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2606,
+      "non_harness_instructions": 2874,
+      "labels": {
+        "loom_pvs_tight_cell": 600,
+        "loom_pvs_player_tick": 299,
+        "loom_pvs_tight_probe_column": 172,
+        "loom_pvs_player_x": 151,
+        "tccs_driver.asm_put": 111,
+        "loom_pvs_player_udiv": 108,
+        "bench_run": 103,
+        "loom_pvs_tight_probe_right_loop": 95,
+        "loom_pvs_tight_ceiling_column": 94,
+        "loom_pvs_player_umul": 89,
+        "loom_pvs_tight_advance": 83,
+        "loom_pvs_player_jump": 68,
+        "loom_pvs_player_x_done": 64,
+        "loom_pvs_player_tail": 57,
+        "memcpy": 54,
+        "loom_pvs_player_jump_counters": 53,
+        "loom_pvs_player_h_gain": 49,
+        "loom_pvs_tight_floor_column": 49,
+        "loom_pvs_player_gravity": 48,
+        "loom_pvs_tight_advance_back": 42,
+        "loom_pvs_player_h_clamp": 39,
+        "loom_pvs_player_rise": 36,
+        "loom_pvs_tight_ceiling_row": 35,
+        "loom_pvs_player_h": 34,
+        "loom_pvs_player_slope_feet": 32,
+        "loom_pvs_tight_floor_row": 30,
+        "loom_pvs_player_x_store": 27,
+        "loom_pvs_tight_probe_x": 27,
+        "loom_pvs_player_snap": 24,
+        "loom_pvs_player_fall": 22,
+        "loom_pvs_player_jump_scale": 21,
+        "loom_pvs_player_dash_check": 15,
+        "loom_pvs_player_h_facing": 15,
+        "loom_pvs_player_jump_go": 15,
+        "loom_pvs_player_x_probe": 15,
+        "loom_pvs_tight_advance_done": 12,
+        "loom_pvs_tight_scan_ceiling": 12,
+        "loom_pvs_tight_ceiling_next": 10,
+        "loom_pvs_tight_floor_column_next": 10,
+        "loom_pvs_tight_probe_none": 9,
+        "loom_pvs_tight_probe_column_clear": 8,
+        "loom_pvs_player_free": 6,
+        "loom_pvs_tight_scan_floor": 6,
+        "loom_pvs_tight_floor_next": 5,
+        "loom_pvs_player_cut_done": 4,
+        "loom_pvs_tight_ceiling_hit": 4,
+        "loom_pvs_tight_floor_lip": 4,
+        "loom_pvs_player_dash_drain": 3,
+        "loom_pvs_player_h_skid": 2,
+        "loom_pvs_tight_ceiling_done": 2,
+        "loom_pvs_player_h_accel": 1
+      },
+      "latch": {
+        "h0": 60,
+        "v0": 225,
+        "h1": 312,
+        "v1": 22
+      },
+      "elapsed_master_clocks": 81484,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/player_tick/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 81004
+    },
+    "loomcc": {
+      "bench": "player_tick",
+      "variant": "loomcc",
+      "out": [
+        153,
+        192,
+        704,
+        0,
+        40961,
+        42917,
+        42,
+        185,
+        576,
+        64240,
+        8224,
+        19752,
+        73,
+        136,
+        244,
+        0,
+        0,
+        10303
+      ],
+      "code_bytes": 5210,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_movement_slope_feet": 236,
+        "lcc.loom_movement_column_solid": 157,
+        "lcc.loom_movement_floor_in_cell": 65,
+        "lcc.loom_pvs_player_tick": 4599,
+        "lcc_divu16_unit_raw": 62,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 3561,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3561,
+      "non_harness_instructions": 3841,
+      "labels": {
+        "lcb_loom_pvs_player_tick": 2946,
+        "lcb_loom_movement_column_solid": 464,
+        "tccs_driver.asm_put": 111,
+        "lcb_lcsunit_raw_0_loom_movement_slope_feet": 110,
+        "bench_run": 103,
+        "memcpy": 54,
+        "lcc_divu16_unit_raw": 17,
+        "lcc_mul16_unit_raw": 12,
+        "loom_pvs_player_tick": 12,
+        "loom_generated_actor_blocks_box": 9,
+        "loom_generated_actor_floor_below": 3
+      },
+      "latch": {
+        "h0": 60,
+        "v0": 225,
+        "h1": 186,
+        "v1": 39
+      },
+      "elapsed_master_clocks": 104168,
+      "profile_frames": [
+        5,
+        6
+      ],
+      "rom": "/private/tmp/lccb/rng2/player_tick/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 103688
+    },
+    "equal": true
+  },
+  "scene_trigger_scan": {
+    "host": {
+      "bench": "scene_trigger_scan",
+      "variant": "host",
+      "out": [
+        0,
+        1,
+        16,
+        448,
+        0,
+        32,
+        512,
+        256,
+        0
+      ]
+    },
+    "tcc": {
+      "bench": "scene_trigger_scan",
+      "variant": "tcc",
+      "out": [
+        0,
+        1,
+        16,
+        448,
+        0,
+        32,
+        512,
+        256,
+        0
+      ],
+      "code_bytes": 386,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_scene_intersect_masktext_0x0": 386
+      },
+      "unit_instructions": 8287,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 8287,
+      "non_harness_instructions": 8423,
+      "labels": {
+        "loom_pvs_scene_intersect_mask": 8287,
+        "bench_run": 136
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 310,
+        "v1": 122
+      },
+      "elapsed_master_clocks": 217860,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/scene_trigger_scan/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 217380
+    },
+    "asm": {
+      "bench": "scene_trigger_scan",
+      "variant": "asm",
+      "out": [
+        0,
+        1,
+        16,
+        448,
+        0,
+        32,
+        512,
+        256,
+        0
+      ],
+      "code_bytes": 145,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.scene.code": 145
+      },
+      "unit_instructions": 2300,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2300,
+      "non_harness_instructions": 2436,
+      "labels": {
+        "loom_pvs_scene_intersect_loop": 1461,
+        "loom_pvs_scene_intersect_next": 560,
+        "loom_pvs_scene_intersect_mask": 261,
+        "bench_run": 136,
+        "loom_pvs_scene_intersect_done": 18
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 57,
+        "v1": 11
+      },
+      "elapsed_master_clocks": 65444,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/scene_trigger_scan/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 64964
+    },
+    "loomcc": {
+      "bench": "scene_trigger_scan",
+      "variant": "loomcc",
+      "out": [
+        0,
+        1,
+        16,
+        448,
+        0,
+        32,
+        512,
+        256,
+        0
+      ],
+      "code_bytes": 171,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_pvs_scene_intersect_mask": 171
+      },
+      "unit_instructions": 3201,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3201,
+      "non_harness_instructions": 3337,
+      "labels": {
+        "lcb_loom_pvs_scene_intersect_mask": 3111,
+        "bench_run": 136,
+        "loom_pvs_scene_intersect_mask": 90
+      },
+      "latch": {
+        "h0": 64,
+        "v0": 225,
+        "h1": 209,
+        "v1": 27
+      },
+      "elapsed_master_clocks": 87876,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/scene_trigger_scan/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 87396
+    },
+    "equal": true
+  },
+  "solid_actor_query": {
+    "host": {
+      "bench": "solid_actor_query",
+      "variant": "host",
+      "out": [
+        3,
+        107,
+        1,
+        131,
+        4,
+        159,
+        255,
+        159,
+        255,
+        159,
+        1,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    "tcc": {
+      "bench": "solid_actor_query",
+      "variant": "tcc",
+      "out": [
+        3,
+        107,
+        1,
+        131,
+        4,
+        159,
+        255,
+        159,
+        255,
+        159,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "code_bytes": 1749,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_actor_blocks_boxtext_0x2": 740,
+        ".loom_actor_floor_belowtext_0x1": 884,
+        ".loom_generated_actor_blocks_boxtext_0x3": 23,
+        ".loom_generated_actor_floor_belowtext_0x4": 39,
+        ".loom_mode1_visibility_tabletext_0x0": 11,
+        ".loom_movement_actor_block_probetext_0x6": 23,
+        ".loom_movement_actor_floor_probetext_0x5": 29
+      },
+      "unit_instructions": 9750,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 9750,
+      "non_harness_instructions": 9871,
+      "labels": {
+        "loom_actor_floor_below": 5408,
+        "loom_actor_blocks_box": 3957,
+        "bench_run": 121,
+        "loom_generated_actor_floor_below": 115,
+        "loom_movement_actor_floor_probe": 80,
+        "loom_generated_actor_blocks_box": 70,
+        "loom_movement_actor_block_probe": 70,
+        "loom_mode1_visibility_table": 50
+      },
+      "latch": {
+        "h0": 58,
+        "v0": 225,
+        "h1": 180,
+        "v1": 132
+      },
+      "elapsed_master_clocks": 231004,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/solid_actor_query/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 230524
+    },
+    "asm": {
+      "bench": "solid_actor_query",
+      "variant": "asm",
+      "out": [
+        3,
+        107,
+        1,
+        131,
+        4,
+        159,
+        255,
+        159,
+        255,
+        159,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "code_bytes": 536,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.body.code": 536
+      },
+      "unit_instructions": 3549,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3549,
+      "non_harness_instructions": 3670,
+      "labels": {
+        "loom_pvs_solid_next_take": 2472,
+        "loom_pvs_solid_next": 310,
+        "loom_pvs_solid_floor_loop": 292,
+        "loom_pvs_solid_wall_loop": 247,
+        "bench_run": 121,
+        "loom_movement_actor_block_probe": 70,
+        "loom_movement_actor_floor_probe": 70,
+        "loom_pvs_solid_floor_done": 32,
+        "loom_pvs_solid_floor": 25,
+        "loom_pvs_solid_next_none": 16,
+        "loom_pvs_solid_wall": 15
+      },
+      "latch": {
+        "h0": 58,
+        "v0": 225,
+        "h1": 129,
+        "v1": 45
+      },
+      "elapsed_master_clocks": 112132,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/solid_actor_query/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 111652
+    },
+    "loomcc": {
+      "bench": "solid_actor_query",
+      "variant": "loomcc",
+      "out": [
+        3,
+        107,
+        1,
+        131,
+        4,
+        159,
+        255,
+        159,
+        255,
+        159,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "code_bytes": 801,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_actor_blocks_box": 282,
+        "lcc.loom_actor_floor_below": 354,
+        "lcc.loom_generated_actor_blocks_box": 39,
+        "lcc.loom_generated_actor_floor_below": 53,
+        "lcc.loom_mode1_visibility_table": 11,
+        "lcc.loom_movement_actor_block_probe": 26,
+        "lcc.loom_movement_actor_floor_probe": 36
+      },
+      "unit_instructions": 3493,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3493,
+      "non_harness_instructions": 3614,
+      "labels": {
+        "lcb_loom_actor_floor_below": 1856,
+        "lcb_loom_actor_blocks_box": 1327,
+        "bench_run": 121,
+        "lcb_loom_generated_actor_floor_below": 65,
+        "lcb_loom_generated_actor_blocks_box": 55,
+        "loom_mode1_visibility_table": 50,
+        "lcb_loom_movement_actor_floor_probe": 40,
+        "loom_movement_actor_block_probe": 40,
+        "loom_movement_actor_floor_probe": 40,
+        "lcb_loom_movement_actor_block_probe": 20
+      },
+      "latch": {
+        "h0": 58,
+        "v0": 225,
+        "h1": 170,
+        "v1": 29
+      },
+      "elapsed_master_clocks": 90472,
+      "profile_frames": [
+        2,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/solid_actor_query/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 89992
+    },
+    "equal": true
+  },
+  "surface_flush": {
+    "host": {
+      "bench": "surface_flush",
+      "variant": "host",
+      "out": [
+        0,
+        0,
+        4,
+        18,
+        3,
+        50,
+        24,
+        0,
+        18,
+        16389,
+        12,
+        19763,
+        54149,
+        41283,
+        44378,
+        36869,
+        42044,
+        33183,
+        40762,
+        41041,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548
+      ]
+    },
+    "tcc": {
+      "bench": "surface_flush",
+      "variant": "tcc",
+      "out": [
+        0,
+        0,
+        4,
+        18,
+        3,
+        50,
+        24,
+        0,
+        18,
+        16389,
+        12,
+        19763,
+        54149,
+        41283,
+        44378,
+        36869,
+        42044,
+        33183,
+        40762,
+        41041,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548
+      ],
+      "code_bytes": 2040,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_surface_flushtext_0x1": 1878,
+        ".tccs_unit.asm_loom_frame_build_add_dmatext_0x0": 162
+      },
+      "unit_instructions": 7492,
+      "helper_instructions": 928,
+      "unit_and_helper_instructions": 8420,
+      "non_harness_instructions": 8584,
+      "labels": {
+        "loom_pvs_surface_flush": 6939,
+        "tcc__mul": 928,
+        "tccs_unit.asm_loom_frame_build_add_dma": 553,
+        "memcpy": 126,
+        "bench_run": 38
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 38,
+        "v1": 123
+      },
+      "elapsed_master_clocks": 218116,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/surface_flush/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 217636
+    },
+    "asm": {
+      "bench": "surface_flush",
+      "variant": "asm",
+      "out": [
+        0,
+        0,
+        4,
+        18,
+        3,
+        50,
+        24,
+        0,
+        18,
+        16389,
+        12,
+        19763,
+        54149,
+        41283,
+        44378,
+        36869,
+        42044,
+        33183,
+        40762,
+        41041,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548
+      ],
+      "code_bytes": 677,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.board.code": 677
+      },
+      "unit_instructions": 1727,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 1727,
+      "non_harness_instructions": 1765,
+      "labels": {
+        "loom_pvs_flush_loop": 1172,
+        "loom_pvs_surface_flush": 150,
+        "loom_pvs_flush_next": 144,
+        "loom_pvs_board_mul": 117,
+        "loom_pvs_flush_spec": 108,
+        "bench_run": 38,
+        "loom_pvs_flush_exit": 34,
+        "loom_pvs_flush_done": 2
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 253,
+        "v1": 261
+      },
+      "elapsed_master_clocks": 49840,
+      "profile_frames": [
+        3,
+        3
+      ],
+      "rom": "/private/tmp/lccb/rng2/surface_flush/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 49360
+    },
+    "loomcc": {
+      "bench": "surface_flush",
+      "variant": "loomcc",
+      "out": [
+        0,
+        0,
+        4,
+        18,
+        3,
+        50,
+        24,
+        0,
+        18,
+        16389,
+        12,
+        19763,
+        54149,
+        41283,
+        44378,
+        36869,
+        42044,
+        33183,
+        40762,
+        41041,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548,
+        26548
+      ],
+      "code_bytes": 967,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.lcsunit_raw_0_loom_frame_build_add_dma": 86,
+        "lcc.loom_pvs_surface_flush": 790,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 3155,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 3155,
+      "non_harness_instructions": 3193,
+      "labels": {
+        "lcb_loom_pvs_surface_flush": 2566,
+        "lcb_lcsunit_raw_0_loom_frame_build_add_dma": 497,
+        "lcc_mul16_unit_raw": 84,
+        "bench_run": 38,
+        "loom_pvs_surface_flush": 8
+      },
+      "latch": {
+        "h0": 69,
+        "v0": 225,
+        "h1": 30,
+        "v1": 25
+      },
+      "elapsed_master_clocks": 84412,
+      "profile_frames": [
+        3,
+        4
+      ],
+      "rom": "/private/tmp/lccb/rng2/surface_flush/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 83932
+    },
+    "equal": true
+  },
+  "witness_hash": {
+    "host": {
+      "bench": "witness_hash",
+      "variant": "host",
+      "out": [
+        12493,
+        1654
+      ]
+    },
+    "tcc": {
+      "bench": "witness_hash",
+      "variant": "tcc",
+      "out": [
+        12493,
+        1654
+      ],
+      "code_bytes": 126,
+      "rodata_bytes": 0,
+      "sections": {
+        ".loom_pvs_board_hashtext_0x0": 126
+      },
+      "unit_instructions": 4384,
+      "helper_instructions": 4004,
+      "unit_and_helper_instructions": 8388,
+      "non_harness_instructions": 8409,
+      "labels": {
+        "loom_pvs_board_hash": 4384,
+        "tcc__mul": 4004,
+        "bench_run": 21
+      },
+      "latch": {
+        "h0": 63,
+        "v0": 225,
+        "h1": 313,
+        "v1": 132
+      },
+      "elapsed_master_clocks": 231516,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/witness_hash/tcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 231036
+    },
+    "asm": {
+      "bench": "witness_hash",
+      "variant": "asm",
+      "out": [
+        12493,
+        1654
+      ],
+      "code_bytes": 72,
+      "rodata_bytes": 0,
+      "sections": {
+        "loom.pvs.board.code": 72
+      },
+      "unit_instructions": 2310,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2310,
+      "non_harness_instructions": 2331,
+      "labels": {
+        "loom_pvs_board_hash": 2310,
+        "bench_run": 21
+      },
+      "latch": {
+        "h0": 63,
+        "v0": 225,
+        "h1": 237,
+        "v1": 260
+      },
+      "elapsed_master_clocks": 48436,
+      "profile_frames": [
+        7,
+        7
+      ],
+      "rom": "/private/tmp/lccb/rng2/witness_hash/asm/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 47956
+    },
+    "loomcc": {
+      "bench": "witness_hash",
+      "variant": "loomcc",
+      "out": [
+        12493,
+        1654
+      ],
+      "code_bytes": 143,
+      "rodata_bytes": 0,
+      "sections": {
+        "lcc.loom_pvs_board_hash": 52,
+        "lcc_mul16_unit_raw": 91
+      },
+      "unit_instructions": 2366,
+      "helper_instructions": 0,
+      "unit_and_helper_instructions": 2366,
+      "non_harness_instructions": 2387,
+      "labels": {
+        "lcb_loom_pvs_board_hash": 1274,
+        "lcc_mul16_unit_raw": 1080,
+        "bench_run": 21,
+        "loom_pvs_board_hash": 12
+      },
+      "latch": {
+        "h0": 63,
+        "v0": 225,
+        "h1": 248,
+        "v1": 7
+      },
+      "elapsed_master_clocks": 60756,
+      "profile_frames": [
+        7,
+        8
+      ],
+      "rom": "/private/tmp/lccb/rng2/witness_hash/loomcc/build/bench.sfc",
+      "harness_overhead_master_clocks": 480,
+      "net_master_clocks": 60276
+    },
+    "equal": true
+  }
+}

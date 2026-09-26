@@ -84,6 +84,10 @@ pub struct Gen<'a> {
     cur_block: usize,
     /// Emission order of blocks.
     order: Vec<usize>,
+    /// The CPU's accumulator is 8-bit at this point of the emitted code.
+    m8: bool,
+    /// Inside an explicit 8-bit section.
+    in8: bool,
 }
 
 fn w(n: i64) -> Expr {
@@ -108,10 +112,53 @@ impl<'a> Gen<'a> {
             errors: Vec::new(),
             cur_block: 0,
             order: Vec::new(),
+            m8: false,
+            in8: false,
+        }
+    }
+
+    /// Enters an explicit 8-bit accumulator section (emits `sep #$20` only
+    /// when the CPU is in 16-bit mode).
+    fn begin8(&mut self) {
+        if !self.m8 {
+            self.lines.push(Line::Inst { mnem: "sep", mode: Mode::Imm(Expr::Num(0x20)), wide_imm: false });
+            self.m8 = true;
+        }
+        self.in8 = true;
+    }
+
+    /// Leaves the section; the switch back to 16-bit is emitted lazily, before
+    /// the next instruction that depends on the accumulator width, a branch,
+    /// a label or a call.
+    fn end8(&mut self) {
+        self.in8 = false;
+    }
+
+    fn ensure16(&mut self) {
+        if self.m8 && !self.in8 {
+            self.lines.push(Line::Inst { mnem: "rep", mode: Mode::Imm(Expr::Num(0x20)), wide_imm: false });
+            self.m8 = false;
         }
     }
 
     fn i(&mut self, mnem: &'static str, mode: Mode) {
+        let index_only = matches!(mnem, "ldx" | "ldy" | "stx" | "sty" | "inx" | "iny" | "dex" | "dey" | "cpx" | "cpy" | "txy" | "tyx" | "clc" | "sec" | "nop" | "phx" | "phy" | "plx" | "ply");
+        if self.m8 && !self.in8 && !index_only {
+            self.ensure16();
+        }
+        if self.in8 && !index_only {
+            if let Mode::Imm(Expr::Num(n)) = mode {
+                if !matches!(mnem, "sep" | "rep") {
+                    self.lines.push(Line::Inst { mnem, mode: Mode::Imm(Expr::Num(n & 0xff)), wide_imm: false });
+                    return;
+                }
+            }
+            if let Mode::Imm(_) = mode {
+                if !matches!(mnem, "sep" | "rep") {
+                    self.errors.push(format!("internal: symbolic immediate for {} in 8-bit mode", mnem));
+                }
+            }
+        }
         // N and Z stop reflecting A after an instruction that sets them from
         // something else.
         if matches!(mnem, "ldx" | "ldy" | "inx" | "iny" | "dex" | "dey" | "cpx" | "cpy" | "tax" | "tay" | "txy" | "tyx" | "plx" | "ply" | "cmp" | "bit" | "inc" | "dec" | "asl" | "lsr" | "rol" | "ror" | "tsb" | "trb")
@@ -123,10 +170,16 @@ impl<'a> Gen<'a> {
     }
 
     fn i8(&mut self, mnem: &'static str, mode: Mode) {
+        if self.m8 && !self.in8 && !matches!(mnem, "sep" | "rep") {
+            self.ensure16();
+        }
         self.lines.push(Line::Inst { mnem, mode, wide_imm: false });
     }
 
     fn label(&mut self, l: String) {
+        if !self.in8 {
+            self.ensure16();
+        }
         self.lines.push(Line::Label(l));
     }
 
@@ -620,9 +673,9 @@ impl<'a> Gen<'a> {
                 }
                 let place = self.place(addr, false);
                 if t == IrTy::I8 && *volatile {
-                    self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+                    self.begin8();
                     self.mem_op("lda", &place, 0);
-                    self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+                    self.end8();
                     self.acc = None;
                     self.flags_a = false;
                     self.sta_reg(*dst, 0);
@@ -1424,15 +1477,28 @@ impl<'a> Gen<'a> {
         let n = self.width(ty);
         if ty == IrTy::I8 {
             if src.imm() == Some(0) && !matches!(place, Place::Long(_) | Place::LongX(_) | Place::IndY(_) | Place::Ind(_)) {
-                self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+                self.begin8();
                 self.mem_op("stz", &place, 0);
-                self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+                self.end8();
                 return;
             }
-            self.lda(src, 0);
-            self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+            if src_in_a || self.acc == Self::val_of(src, 0) && self.acc.is_some() {
+                self.begin8();
+            } else {
+                // Load the byte in 8-bit mode too, so consecutive byte
+                // stores share one `sep`.
+                self.begin8();
+                let s = self.src(src, 0);
+                match s {
+                    Src::Imm(Expr::Num(n)) => self.i("lda", Mode::Imm(Expr::Num(n & 0xff))),
+                    Src::X => self.i("txa", Mode::Implied),
+                    Src::Y => self.i("tya", Mode::Implied),
+                    other => self.op_src("lda", &other),
+                }
+                self.acc = None;
+            }
             self.mem_op("sta", &place, 0);
-            self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+            self.end8();
             let _ = volatile;
             return;
         }
@@ -1593,12 +1659,12 @@ impl<'a> Gen<'a> {
         }
         if size % 2 == 1 {
             self.i("ldy", Mode::Imm(w((size - 1) as i64)));
-            self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+            self.begin8();
             if copy {
                 self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
             }
             self.i("sta", Mode::DpIndLongY(SCRATCH_PTR));
-            self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+            self.end8();
         }
         self.forget();
     }
@@ -1833,10 +1899,10 @@ impl<'a> Gen<'a> {
                 while k < n {
                     self.i("ldy", Mode::Imm(w(k as i64)));
                     if n - k == 1 {
-                        self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+                        self.begin8();
                         self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
                         self.i("sta", Mode::Sr((k + 1) as u8));
-                        self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+                        self.end8();
                     } else {
                         self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
                         self.i("sta", Mode::Sr((k + 1) as u8));
@@ -1851,9 +1917,9 @@ impl<'a> Gen<'a> {
             match t {
                 IrTy::I8 => {
                     self.lda(a, 0);
-                    self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+                    self.begin8();
                     self.i("pha", Mode::Implied);
-                    self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+                    self.end8();
                     pushed += 1;
                 }
                 _ => {
@@ -2072,14 +2138,14 @@ impl<'a> Gen<'a> {
                         self.i("sta", Mode::Dp(SCRATCH_WORD));
                         self.acc = None;
                         self.lda(&b, 0);
-                        self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+                        self.begin8();
                         self.i("sec", Mode::Implied);
                         self.i("sbc", Mode::Dp(SCRATCH_WORD));
                         let skip = self.fresh();
                         self.i("bvc", Mode::Label(skip.clone()));
                         self.i8("eor", Mode::Imm(Expr::Num(0x80)));
                         self.label(skip);
-                        self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+                        self.end8();
                         self.acc = None;
                         self.flags_a = false;
                         self.emit_cc_branch(if cc == Cond::GtS { Cond::LtS } else { Cond::GeS }, &lt, &lf);
@@ -2091,7 +2157,7 @@ impl<'a> Gen<'a> {
         }
         if eight {
             self.lda(&a, 0);
-            self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+            self.begin8();
             if cc.is_signed() {
                 self.signed_cmp8(&b);
             } else {
@@ -2100,7 +2166,7 @@ impl<'a> Gen<'a> {
                     s => self.op_src("cmp", &s),
                 }
             }
-            self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+            self.end8();
             self.flags_a = false;
             self.emit_cc_branch(cc, &lt, &lf);
             return;
@@ -2368,6 +2434,7 @@ impl<'a> Gen<'a> {
             // Table labels are code-bank addresses (jmp (abs,x) reads the
             // program bank).
             for chunk in entries.chunks(8) {
+                self.ensure16();
                 self.lines.push(Line::Data(format!("  .dw {}", chunk.join(", ")), 2 * chunk.len() as u32));
             }
             self.forget();

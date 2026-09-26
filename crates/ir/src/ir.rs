@@ -554,12 +554,20 @@ pub struct Func {
     pub variadic: bool,
     /// Its address is taken (reachable through a function pointer).
     pub address_taken: bool,
+    /// Registers that hold values of a signed C type, where arithmetic
+    /// overflow is undefined (used by range analysis).
+    pub signed: Vec<bool>,
 }
 
 impl Func {
     pub fn new_vreg(&mut self, ty: IrTy) -> VReg {
         self.vregs.push(ty);
+        self.signed.push(false);
         VReg((self.vregs.len() - 1) as u32)
+    }
+
+    pub fn is_signed(&self, r: VReg) -> bool {
+        self.signed.get(r.0 as usize).copied().unwrap_or(false)
     }
 
     pub fn ty(&self, r: VReg) -> IrTy {
