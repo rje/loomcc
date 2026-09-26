@@ -1,0 +1,11 @@
+name = "player2_position"
+kind = "pair"
+description = "The second player's position query: the controller slot's x and y through two out-pointers while it is alive and joined. 8 queries over a 32-slot actor pool."
+unit_labels = ["loom_actor_controller_position"]
+helper_labels = []
+
+[provenance]
+loom_commit = "a937adb"
+c_source = "runtime/src/actor.c:239-253 at a937adb^ (loom_actor_controller_position), with LoomActorPool from include/loom/actor.h:306-366"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_actor_controller_position at a937adb (unchanged at HEAD)"
+notes = "The asm does not test loom_actor_pool.initialized (the slot is only valid once the pool is bound); the driver keeps the pool initialized. The asm reads the pool through body.asm's bound array pointers (loom_pvs_actor_arr_alive/behavior_a/x/y, asm RAM set by loom_pvs_actor_bind_pass); here they are driver globals the setup points at the pool's arrays. bench_run stores the controller slot (a driver global) before each call. LOOM_ACTOR_CAPACITY is pools.h's default, 32."
