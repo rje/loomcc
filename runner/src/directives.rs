@@ -103,7 +103,7 @@ pub struct Test {
 }
 
 pub fn parse(path: &Path, text: &str) -> Result<Option<Test>, String> {
-    let re = Regex::new(r"(?://|/\*)\s*loomcc-([a-z0-9-]+)(?:@(\S+?))?(?:\s*:\s?(.*?))?\s*(?:\*/\s*)?$").unwrap();
+    let re = Regex::new(r"(?://|/\*)\s*loomcc-([a-z0-9-]+)(?:@([^\s:]+(?::[+-]?\d+)?))?(?:\s*:\s?(.*?))?\s*(?:\*/\s*)?$").unwrap();
     let mut action = None;
     let mut t = Test {
         action: Action::Preprocess,

@@ -181,8 +181,20 @@ pub fn check_diags(expected: &[ExpectedDiag], actual: &[Diag], test_file: &str, 
             }
         }
     }
+    // Lines that carry an expected diagnostic: follow-on errors there are
+    // tolerated (a cascade), anywhere else they are unexpected.
+    let expected_lines: Vec<(Option<String>, u32)> = expected
+        .iter()
+        .filter_map(|e| match &e.line {
+            DiagLine::At(f, l) => Some((f.clone(), *l)),
+            DiagLine::Anywhere => None,
+        })
+        .collect();
     for (i, d) in actual.iter().enumerate() {
         if used[i] {
+            continue;
+        }
+        if expected_lines.iter().any(|(f, l)| d.line == Some(*l) && same_file(&d.file, f, test_file)) {
             continue;
         }
         let unexpected = match d.kind {
