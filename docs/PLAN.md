@@ -7,13 +7,13 @@ as loomcc's matching mode exists; until then its tests are UNSUPPORTED.
 
 | tier | loomcc milestone | action / mode | oracle | target | now |
 |---|---|---|---|---|---|
-| T1 preprocessor | M1 | `preprocess` / `E` | the C standard's text and examples; clang -E -P and 816-tcc -E as cross-checks | 400 | see README summary |
-| T2 lexing and parsing | M2 | `syntax` / `syntax` | clang --target=msp430 -fsyntax-only, 816-tcc -c | 300 | seeded |
-| T3 semantics | M3 | `syntax` / `syntax` | clang --target=msp430 (16-bit int) and 816-tcc -c; layout pinned to 816-tcc | 300 | seeded |
-| T4 execute | M4 (ir), M5 (rom) | `run` / `ir`, `rom` | host clang (width-agnostic tests), host16 (msp430 IR under lli), 816-tcc ROM in loom-emulator | 600 | growing |
-| T5 SNES-specific | M5-M6 | `run` with `tcc-sources`/`asm-sources`, `compile` | 816-tcc ROM, hand assembly | 100 | planned |
-| T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | planned |
-| T7 randomised | M4 onwards | generated `run` tests | host / host16 / interpreter / tcc-rom differential | continuous | planned |
+| T1 preprocessor | M1 | `preprocess` / `E` | the C standard's text and examples; clang -E -P and 816-tcc -E as cross-checks; mcpp's validation suite | 400 | 458 (392 own + 66 mcpp) |
+| T2 lexing and parsing | M2 | `syntax` / `syntax` | clang --target=msp430 -fsyntax-only, 816-tcc -c | 300 | 79 (seeded) |
+| T3 semantics | M3 | `syntax` / `syntax` | clang --target=msp430 (16-bit int) and 816-tcc -c; layout pinned to 816-tcc | 300 | 87 (seeded) |
+| T4 execute | M4 (ir), M5 (rom) | `run` / `ir`, `rom` | host clang (width-agnostic tests), host16 (msp430 IR under lli), 816-tcc ROM in loom-emulator | 600 | 155 own + 450 GCC torture (fetched) |
+| T5 SNES-specific | M5-M6 | `run` with `tcc-sources`/`asm-sources` | 816-tcc ROM, hand assembly | 100 | 9 (seeded) |
+| T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | 31 units (stage 1) |
+| T7 randomised | M4 onwards | generated `run` tests | host16 checksum vs loomcc ir/rom vs 816-tcc ROM | continuous | generator + 40-program corpus |
 
 Counts: `./run-tests --list | cut -d' ' -f1 | sort -u | wc -l`, or the
 per-tier table of any run.
@@ -77,7 +77,7 @@ Directories:
 | `std` | the standard's examples, verbatim |
 | `lex-errors` | unterminated literals and comments, UB that must not crash |
 
-Target 400; at the first checkpoint 392 tests.
+Target 400; at the first checkpoint 392 own tests plus 66 imported from mcpp.
 
 Not tested on purpose: directives inside macro arguments (undefined),
 `defined` produced by macro expansion (undefined), `#include_next` and other
@@ -190,7 +190,7 @@ BSS), volatile.
 Target 600: grow by area, driven by what loomcc's backend does (every
 addressing mode, every compare-and-branch idiom, 8-bit regions).
 
-## T5: SNES-specific (planned)
+## T5: SNES-specific (seeded)
 
 - 8-bit/16-bit mode transitions: functions that work on `u8` data between
   16-bit calls; results must survive `sep/rep` regions (checked through
@@ -213,7 +213,7 @@ addressing mode, every compare-and-branch idiom, 8-bit regions).
 Oracle: the same programs built entirely with 816-tcc (`tcc-rom`) and,
 for asm interop, hand-computed expectations.
 
-## T6: Loom-realistic (planned)
+## T6: Loom-realistic (stage 1 running)
 
 Loom's runtime C, generated C and hooks, copied from /Users/rje/src/rust/loom
 with the source path and commit in each file's header (`loomcc-source`).
@@ -225,27 +225,17 @@ tables) with inputs and compare to the same functions built by 816-tcc
 (`tcc-rom`) and by host16. Stage 3 belongs to loomcc's M8: a Loom sample ROM
 built with loomcc passing Loom's own ROM tests.
 
-## T7: randomised differential testing (planned)
+## T7: randomised differential testing (running)
 
-Generator: YARPGen v1 (C mode) or Csmith, restricted to loomcc's subset:
-no floating point, no `long long` in the back end, 16-bit-safe constants,
-no bit-fields wider than 16, bounded recursion, no libc beyond a checksum
-function. Csmith's `--no-longlong --no-float --no-bitfields --max-funcs`
-style options, or a filtering pass over YARPGen output. Neither is installed
-here yet; `tests/t7-random/README` will hold the exact command lines and
-seeds.
-
-Each program prints nothing; it folds its globals into a 16-bit checksum and
-returns `checksum == EXPECTED ? 0 : 1`, where EXPECTED comes from host16
-(the 16-bit-int host oracle). The differential matrix is host16, loomcc
-`--run-ir`, loomcc `rom`, `tcc-rom` (when 816-tcc handles the program), and,
-for generator modes that emit width-agnostic code, native host.
-
-Failures are reduced with cvise (preferred) or C-Reduce, using an
-interestingness test that keeps host16 and tcc-rom agreeing and loomcc
-disagreeing, and rejects programs clang's UBSan flags on the host. Neither
-reducer is installed yet (`brew install cvise`); a reduced case becomes a
-permanent T4 test named after its seed.
+`tests/t7-random/gen.py` generates UB-free self-checking programs in
+loomcc's subset (8/16/32-bit integers, arrays, calls, loops, `if`,
+`switch`; `--narrow` for 8/16-bit only); `tests/t7-random/run.py` computes
+each program's checksum with host16, then runs loomcc (`ir`, `rom`) and the
+816-tcc ROM, and reports LIKELY LOOMCC BUGs. See tests/t7-random/README.md,
+including the Csmith/YARPGen configuration and the cvise interestingness test
+for when those tools are installed (they are not on this machine yet). The
+first campaign (60 `--narrow` seeds) found no loomcc disagreement; 40 of the
+programs are kept in `tests/t7-random/corpus`.
 
 ## Maintenance
 
