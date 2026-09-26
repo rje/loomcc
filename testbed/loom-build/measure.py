@@ -65,7 +65,7 @@ def wait_for_quiet(limit=None):
     deadline when the machine is saturated by other work (NoFrame at frame 0
     or mid-run). Wait for the load to fall instead of burning retries."""
     import time
-    limit = limit or max(4, (os.cpu_count() or 8) // 2)
+    limit = limit or (os.cpu_count() or 8)
     waited = 0
     while os.getloadavg()[0] > limit:
         if waited % 600 == 0:
