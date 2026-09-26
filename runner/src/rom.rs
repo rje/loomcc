@@ -163,22 +163,24 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
         return RomOutcome::Broken("harness symbols missing from test.sym".into());
     };
     tryb!(std::fs::write(dir.join("script.json"), format!("[{{\"until\":\"done=1\",\"max\":{}}}]", max_frames)));
-    let o = exec::run(
-        tools.emulator.as_ref().unwrap(),
-        &[
-            "trace".into(),
-            "--rom".into(),
-            "test.sfc".into(),
-            "--script".into(),
-            "script.json".into(),
-            "--out".into(),
-            "emu".into(),
-            "--watches".into(),
-            format!("done:{:06x}:2,status:{:06x}:2,result:{:06x}:s2", done, status, result),
-        ],
-        dir,
-        Duration::from_secs(120),
-    );
+    let emu_args: Vec<String> = vec![
+        "trace".into(),
+        "--rom".into(),
+        "test.sfc".into(),
+        "--script".into(),
+        "script.json".into(),
+        "--out".into(),
+        "emu".into(),
+        "--watches".into(),
+        format!("done:{:06x}:2,status:{:06x}:2,result:{:06x}:s2", done, status, result),
+    ];
+    // loom-emulator occasionally faults at frame 0 when the machine is busy
+    // ("MesenCore frame step advanced from 0 to 0"): retry once.
+    let mut o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(120));
+    if !o.ok() && o.stderr.contains("frame 0") {
+        log_cmd(log, &o);
+        o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(120));
+    }
     log_cmd(log, &o);
     if !o.ok() {
         return RomOutcome::Broken(format!("loom-emulator failed ({}): {}", o.describe(), first_lines(&o.stderr, 5)));

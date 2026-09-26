@@ -236,7 +236,15 @@ fn real_main() -> Result<i32, String> {
         };
         let probes = modes::probe_loomcc(&cfg, &needed);
         let line: Vec<String> = probes.iter().map(|(m, ok)| format!("{} {}", m, if *ok { "yes" } else { "no" })).collect();
-        println!("loomcc: {}", cfg.tools.loomcc.display());
+        // The binary under test changes while the other agent works: say
+        // which build this run saw.
+        let built = std::fs::metadata(&cfg.tools.loomcc)
+            .and_then(|m| m.modified())
+            .ok()
+            .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+            .map(|d| format!(" (built {} UTC)", utc(d.as_secs())))
+            .unwrap_or_default();
+        println!("loomcc: {}{}", cfg.tools.loomcc.display(), built);
         println!("loomcc modes: {}", if line.is_empty() { "none needed".into() } else { line.join(", ") });
         modes::set_probes(probes);
     }
@@ -305,3 +313,20 @@ fn parse_xfail_list(p: &Path) -> Result<Vec<(String, Option<String>, String)>, S
 }
 
 pub type Counts = BTreeMap<Status, usize>;
+
+/// `YYYY-MM-DD HH:MM` for a Unix time (UTC), without a date library.
+fn utc(secs: u64) -> String {
+    let days = (secs / 86400) as i64;
+    let rem = secs % 86400;
+    // Howard Hinnant's civil_from_days.
+    let z = days + 719468;
+    let era = z.div_euclid(146097);
+    let doe = z.rem_euclid(146097);
+    let yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let d = doy - (153 * mp + 2) / 5 + 1;
+    let m = if mp < 10 { mp + 3 } else { mp - 9 };
+    let y = yoe + era * 400 + if m <= 2 { 1 } else { 0 };
+    format!("{:04}-{:02}-{:02} {:02}:{:02}", y, m, d, rem / 3600, rem % 3600 / 60)
+}

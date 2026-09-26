@@ -108,6 +108,7 @@ generator. Codes:
 | `tcc-long16` | `long` is 16 bits (loomcc: 32); `long long` is 32 | every test using `long`; the harness maps `i32` to `long long` for 816-tcc |
 | `tcc-fold-host-int` | the constant folder does `unsigned int` arithmetic in 32 bits: `-1 + 0u != 65535u`, `-1 / 2u` folds to 0x7fffffff, `(i16)(u16)65535u` folds to 65535, while the same operations at run time are 16-bit | **real code**: a constant expression and the same expression on variables can disagree in 816-tcc builds |
 | `tcc-deref-call-spill` | `(*f)(a, b)` through a function pointer local: after pushing the arguments 816-tcc stores `f` into its stack slot with an S-relative offset that ignores the pushes, overwriting an argument, then calls through a garbage bank | **real code**: calls written `(*fp)(...)` can crash 816-tcc builds (plain `fp(...)` is fine) |
+| `tcc-for-empty-cond` | `for (init;; step)` with no condition but a step expression: 816-tcc emits `__local_0: __local_1: jmp __local_0` before the body, so the loop spins forever without running the body (`for (;;)` without a step and `while (1)` are fine) | **real code**: hangs 816-tcc builds |
 | `tcc-no-llshift` | variable 32-bit shifts call `tcc__ashldi3`, which PVSnesLib's libtcc does not provide (link error) | 32-bit shifts by a variable |
 | `tcc-crash` | 816-tcc crashes on `sizeof (x += 1)` | |
 | `tcc-no-for-decl` | no declarations in `for (...)` (C99) | tests keep loop counters at block scope for 816-tcc's sake |
@@ -753,6 +754,13 @@ deliberately calls abort()
 816-tcc folds (i16)(u16)65535u to 65535, not -1
 
 - `t4-exec/arith16/const-cast-fold.c`
+
+### `tcc-for-empty-cond` (tcc-rom, 2 tests)
+
+816-tcc compiles for (;; step) with no condition into a jump to itself (the body never runs)
+
+- `t4-exec/algo/state-machine.c`
+- `t4-exec/control/for-empty-condition.c`
 
 ### `tcc-long16` (tcc-rom, 1 test)
 
