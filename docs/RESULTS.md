@@ -167,9 +167,11 @@ repository); its findings are in tests/docs/FINDINGS.md.
 | M7c (suite has grown to 2422 tests) | 449/460 | 303/309 | 300/303 | 1191/1214 | 17/17 | 39/39 | 80/80 | 2379/2422 |
 | M8 (recursion, 32-bit ops, re-entry through foreign code) | 449/460 | 303/309 | 300/303 | **1210/1216** (0 fail, 6 xfail) | **32/33** (0 fail, 1 xfail) | 39/39 | 80/80 | 2413/2440 |
 | M8 + F29/F30 (suite now 2473 tests; 3 unresolved are the suite's own unfinished t6 tests) | 449/460 | 303/309 | 300/307 | **1212/1218** (0 fail) | **47/48** (0 fail) | 48/51 | 80/80 | 2439/2473 |
+| F34 (suite merged into this repo as tests/; 2475 tests) | 449/460 | 303/309 | 300/307 | **1214/1220** (0 fail, 6 xfail) | **47/48** (0 fail, 1 xfail) | **51/51** | 80/80 | 2444/2475 |
 
-Since M8 no execution test fails (t4-exec, t5-snes, t6-loom, t7-random);
-remaining failures are front-end diagnostics: t1 failures are `__VA_OPT__`
+Since M8 no execution test fails (t4-exec, t5-snes, t6-loom, t7-random).
+The 22 failures after F34 are open front-end findings (F3, F4, F23, F27,
+F31's two crashes on an enumerator of LLONG_MAX, F32, F33). Earlier notes: t1 failures are `__VA_OPT__`
 details, one deferred-rescan hide-set case, and two mcpp edge diagnostics.
 
 ## M8: Cliffside built with loomcc (2026-09-26)
