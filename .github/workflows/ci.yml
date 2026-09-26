@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: build and test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      # No 816-tcc/PVSnesLib or Loom emulator on the runners: the tests that
+      # need them skip. An empty directory keeps them from finding a stray one.
+      PVSNESLIB_HOME: ${{ github.workspace }}/.no-pvsneslib
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: mkdir -p "$PVSNESLIB_HOME"
+      - run: cargo build --workspace --all-targets
+      - run: cargo test --workspace
