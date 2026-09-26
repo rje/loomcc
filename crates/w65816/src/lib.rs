@@ -24,6 +24,10 @@ pub struct FuncInfo {
     pub sret_offset: Option<u32>,
     pub ret: Option<IrTy>,
     pub has_abi_entry: bool,
+    /// Where each scalar parameter lives in the callee (callers write it
+    /// there); None for aggregates (their frame slot).
+    pub param_homes: Vec<Option<alloc::Home>>,
+    pub sret_home: Option<alloc::Home>,
 }
 
 pub struct ModuleInfo {
@@ -100,7 +104,84 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
     }
 
     // Allocation per function.
-    let allocs: Vec<Alloc> = m.funcs.iter().map(|f| allocate(f, DP_POOL, true)).collect();
+    // Allocate callees before callers so a call clobbers only its callee
+    // tree's direct-page words.
+    let index: HashMap<&str, usize> = m.funcs.iter().enumerate().map(|(i, f)| (f.name.as_str(), i)).collect();
+    let callees: Vec<Vec<Option<usize>>> = m
+        .funcs
+        .iter()
+        .map(|f| {
+            let mut v = Vec::new();
+            for b in &f.blocks {
+                for i in &b.insts {
+                    if let Inst::Call { callee, .. } = i {
+                        v.push(match callee {
+                            Callee::Direct(n) => index.get(n.as_str()).copied(),
+                            Callee::Indirect(_) => None,
+                        });
+                    }
+                }
+            }
+            v
+        })
+        .collect();
+    let mut post = Vec::new();
+    let mut state = vec![0u8; m.funcs.len()];
+    fn visit(v: usize, callees: &[Vec<Option<usize>>], state: &mut [u8], post: &mut Vec<usize>) {
+        state[v] = 1;
+        for c in callees[v].iter().flatten() {
+            if state[*c] == 0 {
+                visit(*c, callees, state, post);
+            }
+        }
+        state[v] = 2;
+        post.push(v);
+    }
+    for v in 0..m.funcs.len() {
+        if state[v] == 0 {
+            visit(v, &callees, &mut state, &mut post);
+        }
+    }
+    let all_dp: Vec<u8> = DP_POOL.to_vec();
+    let mut trans: Vec<Option<Vec<u8>>> = vec![None; m.funcs.len()];
+    let mut allocs_opt: Vec<Option<Alloc>> = (0..m.funcs.len()).map(|_| None).collect();
+    for &v in &post {
+        let clobber = |c: &Callee| -> Vec<u8> {
+            match c {
+                Callee::Direct(n) => match index.get(n.as_str()) {
+                    Some(&j) => trans[j].clone().unwrap_or_else(|| all_dp.clone()),
+                    None => all_dp.clone(),
+                },
+                Callee::Indirect(_) => all_dp.clone(),
+            }
+        };
+        let a = allocate(&m.funcs[v], DP_POOL, &clobber);
+        let mut t = a.dp_used.clone();
+        for c in &callees[v] {
+            let words = match c {
+                Some(j) => trans[*j].clone().unwrap_or_else(|| all_dp.clone()),
+                None => all_dp.clone(),
+            };
+            for w in words {
+                if !t.contains(&w) {
+                    t.push(w);
+                }
+            }
+        }
+        trans[v] = Some(t);
+        allocs_opt[v] = Some(a);
+    }
+    let allocs: Vec<Alloc> = allocs_opt.into_iter().map(|a| a.unwrap()).collect();
+    if std::env::var_os("LOOMCC_DEBUG_ALLOC").is_some() {
+        for (f, a) in m.funcs.iter().zip(&allocs) {
+            eprintln!("{}", loomcc_ir::print_func(f));
+            for (i, h) in a.homes.iter().enumerate() {
+                if *h != alloc::Home::None || a.forwarded[i] {
+                    eprintln!("  %{} {:?}{}", i, h, if a.forwarded[i] { " fwd" } else { "" });
+                }
+            }
+        }
+    }
 
     let mut funcs = HashMap::new();
     for (f, a) in m.funcs.iter().zip(&allocs) {
@@ -114,6 +195,8 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
                 sret_offset: a.sret_offset,
                 ret: f.ret,
                 has_abi_entry: f.exported || f.address_taken || f.name == "main",
+                param_homes: f.param_regs.iter().map(|r| r.map(|r| a.homes[r.0 as usize])).collect(),
+                sret_home: f.sret_reg.map(|r| a.homes[r.0 as usize]),
             },
         );
     }

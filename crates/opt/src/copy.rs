@@ -55,14 +55,104 @@ fn fits(f: &Func, o: &Operand, t: IrTy) -> bool {
     }
 }
 
+/// Immediate dominators (iterative, Cooper-Harvey-Kennedy style).
+pub fn dominators(f: &Func) -> Vec<Option<usize>> {
+    let n = f.blocks.len();
+    // Reverse postorder.
+    let mut order = Vec::new();
+    let mut seen = vec![false; n];
+    fn dfs(b: usize, f: &Func, seen: &mut [bool], order: &mut Vec<usize>) {
+        seen[b] = true;
+        for s in f.blocks[b].term.succs() {
+            if !seen[s.0 as usize] {
+                dfs(s.0 as usize, f, seen, order);
+            }
+        }
+        order.push(b);
+    }
+    dfs(0, f, &mut seen, &mut order);
+    order.reverse();
+    let mut rpo = vec![usize::MAX; n];
+    for (i, &b) in order.iter().enumerate() {
+        rpo[b] = i;
+    }
+    let preds = f.preds();
+    let mut idom: Vec<Option<usize>> = vec![None; n];
+    idom[0] = Some(0);
+    let mut changed = true;
+    while changed {
+        changed = false;
+        for &b in order.iter().skip(1) {
+            let mut new: Option<usize> = None;
+            for p in &preds[b] {
+                let p = p.0 as usize;
+                if idom[p].is_none() {
+                    continue;
+                }
+                new = Some(match new {
+                    None => p,
+                    Some(mut a) => {
+                        let mut c = p;
+                        while a != c {
+                            while rpo[a] > rpo[c] {
+                                a = idom[a].unwrap();
+                            }
+                            while rpo[c] > rpo[a] {
+                                c = idom[c].unwrap();
+                            }
+                        }
+                        a
+                    }
+                });
+            }
+            if new != idom[b] {
+                idom[b] = new;
+                changed = true;
+            }
+        }
+    }
+    idom
+}
+
+pub fn dominates(idom: &[Option<usize>], a: usize, mut b: usize) -> bool {
+    loop {
+        if a == b {
+            return true;
+        }
+        match idom[b] {
+            Some(p) if p != b => b = p,
+            _ => return false,
+        }
+    }
+}
+
+/// Does the (single) definition of `d` at (block, index) dominate every use?
+fn def_dominates_uses(f: &Func, idom: &[Option<usize>], d: VReg, db: usize, di: usize) -> bool {
+    for (bi, b) in f.blocks.iter().enumerate() {
+        for (k, i) in b.insts.iter().enumerate() {
+            if i.uses().contains(&d) {
+                let ok = if bi == db { k > di } else { dominates(idom, db, bi) };
+                if !ok {
+                    return false;
+                }
+            }
+        }
+        if b.term.uses().contains(&d) && !dominates(idom, db, bi) {
+            return false;
+        }
+    }
+    true
+}
+
 pub fn propagate(f: &mut Func) {
-    // Global: single-definition copies of constants or of single-definition
-    // registers.
+    // Global: single-definition copies of constants, or of single-definition
+    // registers when the copy dominates every use.
     loop {
         let defs = def_counts(f);
+        let idom = dominators(f);
         let mut found = None;
-        'outer: for b in &f.blocks {
-            for i in &b.insts {
+        'outer: for (bi, b) in f.blocks.iter().enumerate() {
+            for (k, i) in b.insts.iter().enumerate() {
                 if let Inst::Mov { dst, src } = i {
                     if defs[dst.0 as usize] != 1 {
                         continue;
@@ -70,7 +160,7 @@ pub fn propagate(f: &mut Func) {
                     let t = f.ty(*dst);
                     let ok = match src {
                         Operand::Imm(_) | Operand::Global(..) | Operand::Slot(..) => true,
-                        Operand::Reg(s) => defs[s.0 as usize] == 1 && s != dst,
+                        Operand::Reg(s) => defs[s.0 as usize] == 1 && s != dst && def_dominates_uses(f, &idom, *dst, bi, k),
                     };
                     if ok && fits(f, src, t) {
                         let src = match src {

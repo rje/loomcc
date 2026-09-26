@@ -23,6 +23,77 @@ pub enum Home {
     Dp(u8),
     /// Byte offset in the function's static frame.
     Frame(u32),
+    /// The X index register (8/16-bit values only).
+    X,
+    /// The Y index register.
+    Y,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum IdxReg {
+    X,
+    Y,
+}
+
+/// Does the code generator use `r` while emitting `inst`, other than to
+/// read or write `v` (the candidate living in `r`) as its own index?
+/// Must agree with isel.rs; when in doubt, say yes.
+pub fn inst_uses_reg(f: &Func, inst: &Inst, r: IdxReg, v: VReg) -> bool {
+    let addr_uses = |a: &Addr, width2: bool| -> bool {
+        match &a.base {
+            Base::Reg(_) => {
+                let neg = a.offset < 0 || a.offset >= 0x8000;
+                match r {
+                    IdxReg::Y => match a.index {
+                        None => !neg && (a.offset != 0 || width2),
+                        Some((i, s)) => !(i == v && s == 1 && a.offset == 0 && !width2),
+                    },
+                    // Staging a pointer that is not in direct page keeps a
+                    // forwarded index in X; a wide load through a pointer
+                    // may use X to avoid overwriting its own pointer.
+                    IdxReg::X => width2 || a.index.map_or(false, |(i, _)| i != v),
+                }
+            }
+            _ => match r {
+                IdxReg::X => match a.index {
+                    None => false,
+                    Some((i, s)) => !(i == v && s == 1),
+                },
+                IdxReg::Y => false,
+            },
+        }
+    };
+    let w2 = |t: IrTy| matches!(t, IrTy::I32 | IrTy::Ptr);
+    match inst {
+        Inst::Call { .. } | Inst::Memcpy { .. } | Inst::Memset { .. } => true,
+        Inst::Load { dst, addr, .. } => addr_uses(addr, w2(f.ty(*dst))),
+        Inst::Store { addr, ty, .. } => addr_uses(addr, w2(*ty)),
+        Inst::Lea { .. } => false,
+        Inst::Bin { op, a, b, dst } => {
+            let t = f.ty(*dst);
+            match op {
+                BinOp::Shl | BinOp::ShrS | BinOp::ShrU => b.imm().is_none() && r == IdxReg::Y,
+                BinOp::Mul => a.imm().is_none() && b.imm().is_none() && r == IdxReg::X || t == IrTy::I32,
+                BinOp::DivU | BinOp::RemU | BinOp::DivS | BinOp::RemS => {
+                    let pow2 = b.imm().map_or(false, |k| {
+                        let k = k & 0xffff;
+                        k != 0 && k & (k - 1) == 0
+                    });
+                    !(pow2 && matches!(op, BinOp::DivU | BinOp::RemU | BinOp::DivS)) && r == IdxReg::X || t == IrTy::I32
+                }
+                _ => t == IrTy::I32 && false,
+            }
+        }
+        _ => false,
+    }
+}
+
+pub fn term_uses_reg(f: &Func, t: &Term, r: IdxReg) -> bool {
+    match t {
+        Term::Switch { .. } => r == IdxReg::X,
+        Term::Ret(Some(_)) => r == IdxReg::X && f.ret.map_or(false, |t| matches!(t, IrTy::I32 | IrTy::Ptr)),
+        _ => false,
+    }
 }
 
 pub struct Alloc {
@@ -93,7 +164,9 @@ fn defines_in_a(f: &Func, inst: &Inst) -> bool {
     }
 }
 
-pub fn allocate(f: &Func, dp_allowed: &[u8], call_clobbers_all: bool) -> Alloc {
+/// `clobber` gives the direct-page words a call may overwrite (its callee
+/// tree's words; everything for code outside the module).
+pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8>) -> Alloc {
     let n = f.vregs.len();
     let uses = use_counts(f);
     let defs = def_counts(f);
@@ -140,6 +213,7 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], call_clobbers_all: bool) -> Alloc {
         }
     };
     let mut cross_call = vec![false; n];
+    let mut forbid: Vec<Vec<u8>> = vec![Vec::new(); n];
     let weights = loop_weight(f);
     let mut score = vec![0u64; n];
     for (bi, b) in f.blocks.iter().enumerate() {
@@ -168,10 +242,16 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], call_clobbers_all: bool) -> Alloc {
                     }
                 }
             }
-            if matches!(inst, Inst::Call { .. }) && call_clobbers_all {
+            if let Inst::Call { callee, .. } = inst {
+                let words = clobber(callee);
                 for o in after[k].iter() {
                     if Some(VReg(o)) != inst.def() {
                         cross_call[o as usize] = true;
+                        for &wd in &words {
+                            if !forbid[o as usize].contains(&wd) {
+                                forbid[o as usize].push(wd);
+                            }
+                        }
                     }
                 }
             }
@@ -189,6 +269,60 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], call_clobbers_all: bool) -> Alloc {
         for &b in &entry_live[i + 1..] {
             if needs[a as usize] && needs[b as usize] {
                 add_edge(a, b, &mut adj);
+            }
+        }
+    }
+
+    // 2b. Index-register homes: loop counters and indexes that X or Y can
+    // hold across their whole live range.
+    let mut homes = vec![Home::None; n];
+    {
+        let mut index_use = vec![(0u64, 0u64); n]; // (score as Y, score as X)
+        for (bi, b) in f.blocks.iter().enumerate() {
+            for inst in &b.insts {
+                let addr = match inst {
+                    Inst::Load { addr, .. } | Inst::Store { addr, .. } => Some(addr),
+                    _ => None,
+                };
+                if let Some(a) = addr {
+                    if let Some((i, 1)) = a.index {
+                        let wgt = weights[bi] as u64;
+                        match a.base {
+                            Base::Reg(_) => index_use[i.0 as usize].0 += wgt,
+                            _ => index_use[i.0 as usize].1 += wgt,
+                        }
+                    }
+                }
+                // Counters: v = v +/- 1.
+                if let Inst::Bin { op: BinOp::Add | BinOp::Sub, dst, a: Operand::Reg(x), b: Operand::Imm(k) } = inst {
+                    if dst == x && (k & 0xffff == 1 || k & 0xffff == 0xffff) {
+                        index_use[dst.0 as usize].0 += weights[bi] as u64;
+                        index_use[dst.0 as usize].1 += weights[bi] as u64;
+                    }
+                }
+            }
+        }
+        let mut in_reg: Vec<(u32, IdxReg)> = Vec::new();
+        for reg in [IdxReg::Y, IdxReg::X] {
+            let mut cands: Vec<u32> = (0..n as u32)
+                .filter(|&v| needs[v as usize] && matches!(f.ty(VReg(v)), IrTy::I8 | IrTy::I16) && !cross_call[v as usize])
+                .filter(|&v| {
+                    let (y, x) = index_use[v as usize];
+                    if reg == IdxReg::Y { y > 0 } else { x > 0 || y > 0 }
+                })
+                .filter(|&v| homes[v as usize] == Home::None)
+                .collect();
+            cands.sort_by_key(|&v| {
+                let (y, x) = index_use[v as usize];
+                std::cmp::Reverse(if reg == IdxReg::Y { y * 2 + x } else { x * 2 + y })
+            });
+            for v in cands {
+                let clash = in_reg.iter().any(|&(o, r2)| r2 == reg && adj[v as usize].contains(&o));
+                if clash || !reg_free(f, &lv, VReg(v), reg) {
+                    continue;
+                }
+                homes[v as usize] = if reg == IdxReg::X { Home::X } else { Home::Y };
+                in_reg.push((v, reg));
             }
         }
     }
@@ -219,16 +353,18 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], call_clobbers_all: bool) -> Alloc {
         let b = bases[i as usize] as u64;
         std::cmp::Reverse((b << 40) + score[i as usize])
     });
-    let mut homes = vec![Home::None; n];
     let mut dp_used: Vec<u8> = Vec::new();
     for &v in &order {
+        if matches!(homes[v as usize], Home::X | Home::Y) {
+            continue;
+        }
         let t = f.ty(VReg(v));
         let w = words(t);
         let param_slot = f.param_regs.iter().position(|r| *r == Some(VReg(v)));
-        if !cross_call[v as usize] {
+        {
             // Try direct page.
             // Precise: a neighbour's words.
-            let mut busy: Vec<u8> = Vec::new();
+            let mut busy: Vec<u8> = forbid[v as usize].clone();
             for &o in &adj[v as usize] {
                 if let Home::Dp(d) = homes[o as usize] {
                     busy.push(d);
@@ -285,11 +421,12 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], call_clobbers_all: bool) -> Alloc {
         homes[v as usize] = Home::Frame(cand);
         off = off.max(cand + w * 2);
     }
-    // Parameters placed in DP are copied from their slot at entry.
+    // Parameters placed in DP or an index register are copied from their
+    // slot at entry.
     let mut param_copies = Vec::new();
     for (pi, r) in f.param_regs.iter().enumerate() {
         if let Some(r) = r {
-            if let Home::Dp(_) = homes[r.0 as usize] {
+            if let Home::Dp(_) | Home::X | Home::Y = homes[r.0 as usize] {
                 param_copies.push((param_offsets[pi], homes[r.0 as usize], f.ty(*r)));
             }
         }
@@ -314,4 +451,32 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], call_clobbers_all: bool) -> Alloc {
     }
     let frame_size = off.div_ceil(2) * 2;
     Alloc { homes, forwarded, uses, param_offsets, sret_offset, slot_offsets, frame_size, dp_used, param_copies }
+}
+
+/// Can `v` live in `reg` from its definitions to its last uses?
+fn reg_free(f: &Func, lv: &Liveness, v: VReg, reg: IdxReg) -> bool {
+    for (bi, b) in f.blocks.iter().enumerate() {
+        let after = live_after(f, lv, bi);
+        for (k, inst) in b.insts.iter().enumerate() {
+            let used = inst.uses().contains(&v);
+            let live_out = after[k].get(v.0);
+            let defd = inst.def() == Some(v);
+            let live_in = used || (live_out && !defd);
+            if !live_in && !live_out && !defd {
+                continue;
+            }
+            if live_in && inst_uses_reg(f, inst, reg, v) {
+                return false;
+            }
+            // Wide (32-bit/pointer) results written through X.
+            if defd && live_in && matches!(inst, Inst::Call { .. }) {
+                return false;
+            }
+        }
+        let t_live = b.term.uses().contains(&v) || lv.live_out[bi].get(v.0);
+        if t_live && term_uses_reg(f, &b.term, reg) {
+            return false;
+        }
+    }
+    true
 }

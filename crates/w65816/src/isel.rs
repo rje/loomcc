@@ -6,6 +6,10 @@
 //! to drop redundant loads.
 
 use crate::alloc::*;
+
+/// Where an index-register value is parked for an operation that needs it in
+/// memory.
+const XY_SPILL: u8 = 0x18;
 use crate::asm::{Expr, Line, Mode};
 use crate::ModuleInfo;
 use loomcc_ir::*;
@@ -27,6 +31,9 @@ enum Src {
     Long(Expr),
     /// The value is in A (a forwarded register).
     InA,
+    /// The value lives in an index register.
+    X,
+    Y,
 }
 
 /// Where a memory access goes after address preparation.
@@ -98,6 +105,13 @@ impl<'a> Gen<'a> {
     }
 
     fn i(&mut self, mnem: &'static str, mode: Mode) {
+        // N and Z stop reflecting A after an instruction that sets them from
+        // something else.
+        if matches!(mnem, "ldx" | "ldy" | "inx" | "iny" | "dex" | "dey" | "cpx" | "cpy" | "tax" | "tay" | "txy" | "tyx" | "plx" | "ply" | "cmp" | "bit" | "inc" | "dec" | "asl" | "lsr" | "rol" | "ror" | "tsb" | "trb")
+            && !matches!(mode, Mode::Acc)
+        {
+            self.flags_a = false;
+        }
         self.lines.push(Line::inst(mnem, mode));
     }
 
@@ -150,6 +164,8 @@ impl<'a> Gen<'a> {
                 match self.home(*r) {
                     Home::Dp(d) => Src::Dp(d + 2 * k as u8),
                     Home::Frame(off) => Src::Abs(self.frame_expr(off + 2 * k)),
+                    Home::X => Src::X,
+                    Home::Y => Src::Y,
                     Home::None => Src::Imm(Expr::Num(0)),
                 }
             }
@@ -185,6 +201,11 @@ impl<'a> Gen<'a> {
             Src::Abs(e) => self.i(mnem, Mode::Abs(e.clone())),
             Src::Long(e) => self.i(mnem, Mode::Long(e.clone())),
             Src::InA => self.errors.push(format!("{}: internal: {} with operand in A", self.f.name, mnem)),
+            Src::X | Src::Y => {
+                // Through the scratch word.
+                self.i(if *s == Src::X { "stx" } else { "sty" }, Mode::Dp(XY_SPILL));
+                self.i(mnem, Mode::Dp(XY_SPILL));
+            }
         }
     }
 
@@ -195,6 +216,12 @@ impl<'a> Gen<'a> {
             return;
         }
         let s = self.src(o, k);
+        if s == Src::X || s == Src::Y {
+            self.i(if s == Src::X { "txa" } else { "tya" }, Mode::Implied);
+            self.acc = v;
+            self.flags_a = true;
+            return;
+        }
         if s == Src::InA {
             // Must already be in A.
             if self.acc != v {
@@ -221,6 +248,8 @@ impl<'a> Gen<'a> {
         }
         let s = self.src(o, 0);
         match &s {
+            Src::X => return,
+            Src::Y => self.i("tyx", Mode::Implied),
             Src::InA => self.i("tax", Mode::Implied),
             Src::Long(_) => {
                 self.lda(o, 0);
@@ -244,6 +273,8 @@ impl<'a> Gen<'a> {
         }
         let s = self.src(o, 0);
         match &s {
+            Src::Y => return,
+            Src::X => self.i("txy", Mode::Implied),
             Src::InA => self.i("tay", Mode::Implied),
             Src::Long(_) => {
                 self.lda(o, 0);
@@ -281,6 +312,8 @@ impl<'a> Gen<'a> {
                 let e = self.frame_expr(off + 2 * k);
                 self.i("sta", Mode::Abs(e));
             }
+            Home::X => self.i("tax", Mode::Implied),
+            Home::Y => self.i("tay", Mode::Implied),
             Home::None => {}
         }
         // Any cached copy of the register's old value is stale.
@@ -308,6 +341,8 @@ impl<'a> Gen<'a> {
                 let e = self.frame_expr(off + 2 * k);
                 self.i("stz", Mode::Abs(e));
             }
+            Home::X => self.i("ldx", Mode::Imm(w(0))),
+            Home::Y => self.i("ldy", Mode::Imm(w(0))),
             Home::None => {}
         }
         self.invalidate_reg(r);
@@ -320,6 +355,8 @@ impl<'a> Gen<'a> {
                 let e = self.frame_expr(off + 2 * k);
                 self.i("stx", Mode::Abs(e));
             }
+            Home::X => {}
+            Home::Y => self.i("txy", Mode::Implied),
             Home::None => {}
         }
         self.invalidate_reg(r);
@@ -346,16 +383,6 @@ impl<'a> Gen<'a> {
             self.abi_prologue();
         }
         self.label(info.body_label.clone());
-        // Parameters homed in direct page.
-        for (slot_off, home, ty) in self.al.param_copies.clone() {
-            if let Home::Dp(d) = home {
-                for k in 0..self.width(ty) {
-                    let e = self.frame_expr(slot_off + 2 * k);
-                    self.i("lda", Mode::Abs(e));
-                    self.i("sta", Mode::Dp(d + 2 * k as u8));
-                }
-            }
-        }
         self.forget();
         let order = self.order.clone();
         for (pos, &b) in order.iter().enumerate() {
@@ -388,16 +415,14 @@ impl<'a> Gen<'a> {
     /// 816-tcc ABI entry: stack arguments into the parameter slots.
     fn abi_prologue(&mut self) {
         let mut so = 4u32;
-        let info = self.mi.funcs.get(&self.f.name).unwrap();
-        if let Some(sro) = self.al.sret_offset {
+        if let Some(r) = self.f.sret_reg {
+            let h = self.home(r);
             for k in 0..2 {
                 self.i("lda", Mode::Sr((so + 2 * k) as u8));
-                let e = self.frame_expr(sro + 2 * k);
-                self.i("sta", Mode::Abs(e));
+                self.a_to_home(h, k);
             }
             so += 4;
         }
-        let _ = info;
         for (pi, p) in self.f.params.iter().enumerate() {
             let po = self.al.param_offsets[pi];
             match p {
@@ -407,12 +432,15 @@ impl<'a> Gen<'a> {
                         IrTy::I16 => 2,
                         _ => 4,
                     };
+                    let h = self.f.param_regs[pi].map(|r| self.home(r)).unwrap_or(Home::None);
                     for k in 0..self.width(*t) {
+                        if h == Home::None {
+                            break;
+                        }
                         // An 8-bit argument is one stack byte; reading a word
                         // picks up a harmless neighbour byte.
                         self.i("lda", Mode::Sr((so + 2 * k) as u8));
-                        let e = self.frame_expr(po + 2 * k);
-                        self.i("sta", Mode::Abs(e));
+                        self.a_to_home(h, k);
                     }
                     so += n;
                 }
@@ -427,6 +455,20 @@ impl<'a> Gen<'a> {
                     so += n;
                 }
             }
+        }
+    }
+
+    /// Stores A into word k of a home in this function's frame/DP/X/Y.
+    fn a_to_home(&mut self, h: Home, k: u32) {
+        match h {
+            Home::Dp(d) => self.i("sta", Mode::Dp(d + 2 * k as u8)),
+            Home::Frame(o) => {
+                let e = self.frame_expr(o + 2 * k);
+                self.i("sta", Mode::Abs(e));
+            }
+            Home::X => self.i("tax", Mode::Implied),
+            Home::Y => self.i("tay", Mode::Implied),
+            Home::None => {}
         }
     }
 
@@ -461,6 +503,32 @@ impl<'a> Gen<'a> {
                     return; // dead
                 }
                 let t = self.f.ty(*dst);
+                if matches!(self.home(*dst), Home::X | Home::Y) && !self.fwd(src) {
+                    match self.src(src, 0) {
+                        Src::Imm(e) | Src::Abs(e) | Src::Long(e) if !matches!(self.src(src, 0), Src::Long(_)) => {
+                            let m = if self.home(*dst) == Home::X { "ldx" } else { "ldy" };
+                            match self.src(src, 0) {
+                                Src::Imm(_) => self.i(m, Mode::Imm(e)),
+                                _ => self.i(m, Mode::Abs(e)),
+                            }
+                            self.invalidate_reg(*dst);
+                            return;
+                        }
+                        Src::Dp(d) => {
+                            let m = if self.home(*dst) == Home::X { "ldx" } else { "ldy" };
+                            self.i(m, Mode::Dp(d));
+                            self.invalidate_reg(*dst);
+                            return;
+                        }
+                        _ => {}
+                    }
+                }
+                if let (Src::X | Src::Y, Home::Dp(d)) = (self.src(src, 0), self.home(*dst)) {
+                    let m = if self.src(src, 0) == Src::X { "stx" } else { "sty" };
+                    self.i(m, Mode::Dp(d));
+                    self.invalidate_reg(*dst);
+                    return;
+                }
                 for k in 0..self.width(t) {
                     if self.src(src, k) == Src::Imm(Expr::Num(0)) && !self.al.forwarded[dst.0 as usize] && self.home(*dst) != Home::None {
                         self.stz_reg(*dst, k);
@@ -618,6 +686,27 @@ impl<'a> Gen<'a> {
             return self.gen_bin32(op, dst, a, b);
         }
         let narrow = t == IrTy::I8;
+        // v = v +/- small constant with v in X or Y: inx/iny, dex/dey.
+        if let (Home::X | Home::Y, Operand::Reg(x), Some(k)) = (self.home(dst), a, b.imm()) {
+            if *x == dst && matches!(op, BinOp::Add | BinOp::Sub) {
+                let k = k & 0xffff;
+                let delta: i64 = if op == BinOp::Add { if k >= 0x8000 { k - 0x10000 } else { k } } else if k >= 0x8000 { 0x10000 - k } else { -k };
+                if delta.abs() <= 3 {
+                    let xr = self.home(dst) == Home::X;
+                    let m = match (xr, delta > 0) {
+                        (true, true) => "inx",
+                        (true, false) => "dex",
+                        (false, true) => "iny",
+                        (false, false) => "dey",
+                    };
+                    for _ in 0..delta.abs() {
+                        self.i(m, Mode::Implied);
+                    }
+                    self.invalidate_reg(dst);
+                    return;
+                }
+            }
+        }
         let (mut a, mut b) = (a.clone(), b.clone());
         if self.fwd(&b) && !self.fwd(&a) && op.commutative() {
             std::mem::swap(&mut a, &mut b);
@@ -899,7 +988,7 @@ impl<'a> Gen<'a> {
         } else {
             // The multiplicand must be addressable for the adds.
             let s = match self.src(a, 0) {
-                Src::InA | Src::Long(_) => {
+                Src::InA | Src::Long(_) | Src::X | Src::Y => {
                     self.i("sta", Mode::Dp(SCRATCH_WORD));
                     Src::Dp(SCRATCH_WORD)
                 }
@@ -1504,54 +1593,171 @@ impl<'a> Gen<'a> {
         self.acc = None;
     }
 
+    /// Writes a call's arguments into the callee's parameter homes: frame
+    /// words first, then direct-page words in an order that never overwrites
+    /// a word another argument still has to be read from, index registers
+    /// last.
+    fn pass_internal_args(&mut self, info: &crate::FuncInfo, args: &[Operand], sret: Option<&Addr>) {
+        let callee_frame = |o: u32| Expr::Sym(info.frame_sym.clone(), o as i64);
+        // (target home, source operand, words)
+        let mut dp_moves: Vec<(u8, Operand, u32)> = Vec::new();
+        let mut xy_moves: Vec<(Home, Operand)> = Vec::new();
+        for (i, a) in args.iter().enumerate() {
+            let Some(p) = info.params.get(i) else { break };
+            match p {
+                ParamKind::Scalar(t) => {
+                    let words = self.width(*t);
+                    match info.param_homes[i] {
+                        Some(Home::Frame(o)) => {
+                            for k in 0..words {
+                                if self.src(a, k) == Src::Imm(Expr::Num(0)) {
+                                    self.i("stz", Mode::Abs(callee_frame(o + 2 * k)));
+                                } else {
+                                    self.lda(a, k);
+                                    self.i("sta", Mode::Abs(callee_frame(o + 2 * k)));
+                                }
+                            }
+                        }
+                        Some(Home::Dp(d)) => dp_moves.push((d, a.clone(), words)),
+                        Some(h @ (Home::X | Home::Y)) => xy_moves.push((h, a.clone())),
+                        _ => {}
+                    }
+                }
+                ParamKind::Aggregate(n) => {
+                    let po = info.param_offsets[i];
+                    let addr = match a {
+                        Operand::Reg(r) => Addr { base: Base::Reg(*r), offset: 0, index: None },
+                        Operand::Global(g, o) => Addr { base: Base::Global(g.clone()), offset: *o, index: None },
+                        Operand::Slot(s, o) => Addr { base: Base::Slot(*s), offset: *o, index: None },
+                        Operand::Imm(v) => Addr { base: Base::Abs(*v as u32), offset: 0, index: None },
+                    };
+                    self.addr_to_dp(&addr, SCRATCH_PTR2);
+                    let mut k = 0;
+                    while k < *n {
+                        self.i("ldy", Mode::Imm(w(k as i64)));
+                        self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
+                        self.i("sta", Mode::Abs(callee_frame(po + k)));
+                        k += 2;
+                    }
+                    self.forget();
+                }
+            }
+        }
+        if let Some(sa) = sret {
+            self.addr_to_dp(sa, SCRATCH_PTR);
+            match info.sret_home {
+                Some(Home::Dp(d)) => {
+                    for k in 0..2u8 {
+                        self.i("lda", Mode::Dp(SCRATCH_PTR + 2 * k));
+                        self.i("sta", Mode::Dp(d + 2 * k));
+                    }
+                }
+                Some(Home::Frame(o)) => {
+                    for k in 0..2u32 {
+                        self.i("lda", Mode::Dp(SCRATCH_PTR + 2 * k as u8));
+                        self.i("sta", Mode::Abs(callee_frame(o + 2 * k)));
+                    }
+                }
+                _ => {}
+            }
+        }
+        // Direct-page targets: parallel move.
+        let reads = |o: &Operand, g: &Self| -> Vec<u8> {
+            match o {
+                Operand::Reg(r) => match g.home(*r) {
+                    Home::Dp(d) => {
+                        if g.width(g.f.ty(*r)) == 2 {
+                            vec![d, d + 2]
+                        } else {
+                            vec![d]
+                        }
+                    }
+                    _ => vec![],
+                },
+                _ => vec![],
+            }
+        };
+        let mut pending = dp_moves;
+        let mut stash: Vec<(u8, u32)> = Vec::new(); // pushed on the stack: (target, words)
+        while !pending.is_empty() {
+            let pos = pending.iter().position(|(d, _, words)| {
+                let targets: Vec<u8> = (0..*words).map(|k| d + 2 * k as u8).collect();
+                pending.iter().all(|(d2, src, _)| {
+                    let _ = d2;
+                    reads(src, self).iter().all(|r| !targets.contains(r))
+                        || reads(src, self) == targets && *d2 == *d
+                })
+            });
+            match pos {
+                Some(p) => {
+                    let (d, src, words) = pending.remove(p);
+                    for k in 0..words {
+                        if self.src(&src, k) == Src::Dp(d + 2 * k as u8) {
+                            continue;
+                        }
+                        if self.src(&src, k) == Src::Imm(Expr::Num(0)) {
+                            self.i("stz", Mode::Dp(d + 2 * k as u8));
+                            continue;
+                        }
+                        self.lda(&src, k);
+                        self.i("sta", Mode::Dp(d + 2 * k as u8));
+                        self.acc = None;
+                    }
+                }
+                None => {
+                    // A cycle: park one source on the stack.
+                    let (d, src, words) = pending.remove(0);
+                    for k in (0..words).rev() {
+                        self.lda(&src, k);
+                        self.i("pha", Mode::Implied);
+                    }
+                    stash.push((d, words));
+                }
+            }
+        }
+        for (d, words) in stash.into_iter().rev() {
+            for k in 0..words {
+                self.i("pla", Mode::Implied);
+                self.i("sta", Mode::Dp(d + 2 * k as u8));
+            }
+            self.acc = None;
+        }
+        // Index registers last (X and Y may swap).
+        let xs = xy_moves.iter().find(|m| m.0 == Home::X).map(|m| m.1.clone());
+        let ys = xy_moves.iter().find(|m| m.0 == Home::Y).map(|m| m.1.clone());
+        let src_is = |o: &Option<Operand>, g: &Self, want: Src| o.as_ref().map_or(false, |o| g.src(o, 0) == want);
+        if src_is(&xs, self, Src::Y) && src_is(&ys, self, Src::X) {
+            self.i("txa", Mode::Implied);
+            self.i("tyx", Mode::Implied);
+            self.i("tay", Mode::Implied);
+            self.acc = None;
+        } else if src_is(&ys, self, Src::X) {
+            // Y first reads X before X is overwritten.
+            if let Some(y) = &ys {
+                self.ldy(y);
+            }
+            if let Some(x) = &xs {
+                self.ldx(x);
+            }
+        } else {
+            if let Some(x) = &xs {
+                self.ldx(x);
+            }
+            if let Some(y) = &ys {
+                self.ldy(y);
+            }
+        }
+        self.xv = None;
+        self.yv = None;
+    }
+
     fn gen_call(&mut self, dst: Option<VReg>, callee: &Callee, args: &[Operand], arg_tys: &[IrTy], sret: Option<&Addr>) {
         let internal = match callee {
             Callee::Direct(n) => self.mi.funcs.get(n).cloned(),
             Callee::Indirect(_) => None,
         };
         if let Some(info) = internal {
-            // Arguments straight into the callee's parameter slots.
-            for (i, a) in args.iter().enumerate() {
-                let Some(p) = info.params.get(i) else { break };
-                let po = info.param_offsets[i];
-                match p {
-                    ParamKind::Scalar(t) => {
-                        for k in 0..self.width(*t) {
-                            let e = Expr::Sym(info.frame_sym.clone(), (po + 2 * k) as i64);
-                            if self.src(a, k) == Src::Imm(Expr::Num(0)) {
-                                self.i("stz", Mode::Abs(e));
-                            } else {
-                                self.lda(a, k);
-                                self.i("sta", Mode::Abs(e));
-                            }
-                        }
-                    }
-                    ParamKind::Aggregate(n) => {
-                        let addr = match a {
-                            Operand::Reg(r) => Addr { base: Base::Reg(*r), offset: 0, index: None },
-                            Operand::Global(g, o) => Addr { base: Base::Global(g.clone()), offset: *o, index: None },
-                            Operand::Slot(s, o) => Addr { base: Base::Slot(*s), offset: *o, index: None },
-                            Operand::Imm(v) => Addr { base: Base::Abs(*v as u32), offset: 0, index: None },
-                        };
-                        self.addr_to_dp(&addr, SCRATCH_PTR2);
-                        let mut k = 0;
-                        while k < *n {
-                            self.i("ldy", Mode::Imm(w(k as i64)));
-                            self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
-                            self.i("sta", Mode::Abs(Expr::Sym(info.frame_sym.clone(), (po + k) as i64)));
-                            k += 2;
-                        }
-                        self.forget();
-                    }
-                }
-            }
-            if let (Some(sa), Some(so)) = (sret, info.sret_offset) {
-                self.addr_to_dp(sa, SCRATCH_PTR);
-                for k in 0..2 {
-                    self.i("lda", Mode::Dp(SCRATCH_PTR + 2 * k as u8));
-                    self.i("sta", Mode::Abs(Expr::Sym(info.frame_sym.clone(), (so + 2 * k) as i64)));
-                }
-            }
+            self.pass_internal_args(&info, args, sret);
             self.i("jsl", Mode::Label(info.body_label.clone()));
             self.forget();
             if let Some(d) = dst {
@@ -1904,7 +2110,24 @@ impl<'a> Gen<'a> {
             self.signed_fix_and_branch(c2, &lt, &lf);
             return;
         }
-        // Unsigned and equality.
+        // Unsigned and equality; an index-register operand compares with
+        // cpx/cpy.
+        if let (Src::X | Src::Y, false) = (self.src(&a, 0), self.fwd(&b)) {
+            let bs = self.src(&b, 0);
+            if matches!(bs, Src::Imm(_) | Src::Dp(_) | Src::Abs(_)) {
+                let m = if self.src(&a, 0) == Src::X { "cpx" } else { "cpy" };
+                if let (Some(k), Cond::GtU | Cond::LeU) = (bi, cc) {
+                    if k < 0xffff {
+                        self.i(m, Mode::Imm(w(k + 1)));
+                        self.emit_cc_branch(if cc == Cond::GtU { Cond::GeU } else { Cond::LtU }, &lt, &lf);
+                        return;
+                    }
+                }
+                self.op_src(m, &bs);
+                self.emit_cc_branch(cc, &lt, &lf);
+                return;
+            }
+        }
         self.lda(&a, 0);
         if let (Some(k), Cond::GtU | Cond::LeU) = (bi, cc) {
             if k < 0xffff {

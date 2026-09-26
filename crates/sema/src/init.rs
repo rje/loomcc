@@ -205,7 +205,11 @@ impl Checker {
                 }
             }
             ExprKind::Comma(_, _) => None,
-            ExprKind::AddrOf(inner) => self.eval_addr(inner).map(|(g, o)| Addr(g, o)),
+            ExprKind::AddrOf(inner) => match self.eval_addr(inner) {
+                Some((g, o)) => Some(Addr(g, o)),
+                // `&((T *)0)->m`: an absolute address (the offsetof idiom).
+                None => self.eval_abs_addr(inner).map(Int),
+            },
             ExprKind::PtrAdd(p, i, scale) => {
                 let pv = self.eval_const(p)?;
                 let iv = self.eval_int(i)?;
@@ -229,6 +233,18 @@ impl Checker {
             ConstVal::Int(v) => Some(v != 0),
             ConstVal::Float(f) => Some(f != 0.0),
             ConstVal::Addr(..) => Some(true),
+        }
+    }
+
+    /// The address of an lvalue based on a constant integer pointer.
+    fn eval_abs_addr(&self, e: &hir::Expr) -> Option<i64> {
+        match &e.kind {
+            ExprKind::Member(inner, off) => self.eval_abs_addr(inner).map(|a| a + *off as i64),
+            ExprKind::Deref(p) => match self.eval_const(p)? {
+                ConstVal::Int(x) => Some(x),
+                _ => None,
+            },
+            _ => None,
         }
     }
 

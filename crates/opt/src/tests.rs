@@ -24,6 +24,10 @@ fn run(m: &loomcc_ir::Module) -> (Result<i64, String>, String) {
 }
 
 pub const PROGRAMS: &[&str] = &[
+    r#"static const short data[] = { 1, 2, 5, 9 };
+    static int increasing(const short *x, int n) { int i, seen = 0; short prev;
+      for (i = 0; i < n; i++) { short cur = x[i]; if (seen && cur <= prev) return 0; prev = cur; seen = 1; } return 1; }
+    int main(void) { return increasing(data, 4) * 4 + increasing(data, 2) * 2 + increasing(data, 0); }"#,
     r#"int printf(const char *, ...);
     int main(void) { int a = 30000, b = 30000; unsigned u = 65535u; unsigned char c = 250; signed char s = -3;
       printf("%d %u %d %d %d\n", a + b, u + 1u, c + 10, s >> 1, (int)(unsigned char)(c + 10)); return (a + b) < 0; }"#,
