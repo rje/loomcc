@@ -1,0 +1,11 @@
+name = "body_probe_x"
+kind = "pair"
+description = "Platformer body wall probe along X: the first solid column between the edge and edge + delta over a row range. 12 probes over a 24x14 room."
+unit_labels = ["loom_pvs_body_probe_x"]
+helper_labels = []
+
+[provenance]
+loom_commit = "c027cfd"
+c_source = "runtime/src/movement.c:722-744 at c027cfd^ (the X-probe loop in loom_movement_platformer_tick; actor.c:618-639 is the same loop for actor bodies) plus loom_movement_column_solid (movement.c:446-458) and LOOM_MOVEMENT_CELL_AT (include/loom/movement.h:205-218)"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_body_probe_x (+ loom_pvs_body_probe_x_column, loom_pvs_body_cell, loom_pvs_body_grid, LOOM_SIGNED_CMP) at c027cfd (unchanged at HEAD)"
+notes = "The loop bound right+delta / left+delta is written edge+delta (edge is right moving right, left moving left); the hit's break becomes return probe and no hit returns 0x7fff, the asm's interface. The C's column scan is a called function (loom_movement_column_solid, counted as unit); the asm's is a local jsr routine. loom_movement_grid and the cells are driver state."
