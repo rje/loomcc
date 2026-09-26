@@ -41,8 +41,10 @@ impl Output {
 
 pub fn run(program: &Path, args: &[String], cwd: &Path, timeout: Duration) -> Output {
     let cmdline = format!("{} {}", program.display(), args.join(" "));
-    let mut cmd = Command::new("nice");
-    cmd.arg("-n").arg("19").arg(program).args(args).current_dir(cwd);
+    // Background QoS band (taskpolicy -b) plus nice: the machine also runs
+    // Loom's ROM suites, and nice alone does not stop them starving.
+    let mut cmd = Command::new("taskpolicy");
+    cmd.arg("-b").arg("nice").arg("-n").arg("19").arg(program).args(args).current_dir(cwd);
     cmd.stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped());
     cmd.env("CARGO_BUILD_JOBS", "2");
     let mut child = match cmd.spawn() {

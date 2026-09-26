@@ -90,7 +90,7 @@ sys.exit(0 if " 1 FAIL" in r.stdout and "not supported" not in r.stdout else 1)
     if first.returncode != 0:
         print("the program is not interesting to begin with (loomcc agrees with host16, or host16 rejects it)")
         return 1
-    subprocess.run(["nice", "-n", "19", "creduce", "--n", "2", str(check), "prog.c"], cwd=work)
+    subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", "creduce", "--n", "2", str(check), "prog.c"], cwd=work)
     ck = host16_checksum(work / "prog.c", work, extra)
     header = (f"// loomcc-do: run\n// loomcc-int: 16\n// loomcc-options: -DEXPECTED={ck}u"
               + (" -I%ROOT%/tests/t7-random/csmith" if csmith else "") + "\n"

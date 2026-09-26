@@ -15,8 +15,8 @@ sparse() { # sparse <url> <dir> <path>...
     echo "$dir: already fetched ($(git -C "$dest/$dir" rev-parse --short HEAD))"
     return
   fi
-  nice -n 19 git clone -q --depth 1 --filter=blob:none --sparse "$url" "$dest/$dir"
-  nice -n 19 git -C "$dest/$dir" sparse-checkout set --no-cone "$@"
+  taskpolicy -b nice -n 19 git clone -q --depth 1 --filter=blob:none --sparse "$url" "$dest/$dir"
+  taskpolicy -b nice -n 19 git -C "$dest/$dir" sparse-checkout set --no-cone "$@"
   echo "$dir: $(git -C "$dest/$dir" rev-parse HEAD)"
 }
 

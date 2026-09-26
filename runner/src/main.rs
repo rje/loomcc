@@ -31,7 +31,7 @@ usage: loomcc-tests [options] [test paths or directories...]
   --no-loomcc          same as --refs-only
   --modes LIST         loomcc modes to run: E,syntax,S,ir,rom (default: all that apply)
   --xfail-list FILE    extra expected failures: lines `path [mode] # reason`
-  -j N                 parallel jobs (default 2)
+  -j N                 parallel jobs (default 2, at most 2; one loom-emulator at a time)
   -v                   print every result, not only the unexpected ones
   -vv                  also print command lines and tool output for failures
   --json FILE          write every result as JSON lines
@@ -140,7 +140,8 @@ fn real_main() -> Result<i32, String> {
             _ => paths.push(a.into()),
         }
     }
-    let jobs = jobs.max(1);
+    // The machine runs Loom's ROM suites too: never more than two jobs.
+    let jobs = jobs.clamp(1, 2);
     if loomcc.is_none() {
         let guess = root.join("../loomcc/target/debug/loomcc");
         loomcc = Some(guess.canonicalize().unwrap_or(guess));

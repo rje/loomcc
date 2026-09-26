@@ -16,6 +16,9 @@ const EXIT_STATUS: i64 = 0xe817;
 const CHECK_STATUS: i64 = 0xc4ec;
 const OUTPUT_STATUS: i64 = 0x0bad;
 
+/// At most one loom-emulator process at a time, whatever -j is.
+static EMULATOR: std::sync::Mutex<()> = std::sync::Mutex::new(());
+
 /// harness/rom/stdio.c compiled once by 816-tcc (every ROM links it).
 static STDIO_ASM: std::sync::Mutex<Option<String>> = std::sync::Mutex::new(None);
 
@@ -234,11 +237,13 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
     ];
     // loom-emulator occasionally faults at frame 0 when the machine is busy
     // ("MesenCore frame step advanced from 0 to 0"): retry once.
+    let emu_lock = EMULATOR.lock().unwrap_or_else(|e| e.into_inner());
     let mut o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(120));
     if !o.ok() && o.stderr.contains("frame 0") {
         log_cmd(log, &o);
         o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(120));
     }
+    drop(emu_lock);
     log_cmd(log, &o);
     if !o.ok() {
         return RomOutcome::Broken(format!("loom-emulator failed ({}): {}", o.describe(), first_lines(&o.stderr, 5)));
@@ -259,7 +264,10 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
                 "--watches".into(),
                 format!("done:{:06x}:2,len:{:06x}:2,{}", done, outlen, watches.join(",")),
             ];
-            let d = exec::run(tools.emulator.as_ref().unwrap(), &args, dir, Duration::from_secs(300));
+            let d = {
+                let _one = EMULATOR.lock().unwrap_or_else(|e| e.into_inner());
+                exec::run(tools.emulator.as_ref().unwrap(), &args, dir, Duration::from_secs(300))
+            };
             log_cmd(log, &d);
             if let Ok(csv) = std::fs::read_to_string(dir.join("emu-dump/trace.csv")) {
                 let last: Vec<i64> = csv.lines().last().unwrap_or("").split(',').skip(2).filter_map(|v| v.parse().ok()).collect();

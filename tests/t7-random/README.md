@@ -11,7 +11,7 @@ a 16-bit checksum.
 `run.py` drives a campaign:
 
 ```sh
-tests/t7-random/run.py --seeds 1-500 --narrow -j 3            # 8/16-bit only
+tests/t7-random/run.py --seeds 1-500 --narrow -j 2            # 8/16-bit only
 tests/t7-random/run.py --seeds 1-200 --stmts 20                # with 32-bit types
 tests/t7-random/run.py --seeds 1-50 --dir tests/t7-random/corpus --narrow   # keep as tests
 ```
@@ -34,7 +34,7 @@ tests (their 816-tcc failures are declared `tcc-t7`).
 `run.py --csmith` generates with Csmith 2.3.0 (`brew install csmith`):
 
 ```sh
-tests/t7-random/run.py --csmith --seeds 1-200 -j 3
+tests/t7-random/run.py --csmith --seeds 1-200 -j 2
 ```
 
 Flags: `--no-argc --no-longlong --no-math64 --no-bitfields --no-packed-struct
@@ -58,4 +58,5 @@ header and `EXPECTED` from host16, ready to become a T4 test.
 
 It was checked with a deliberately broken loomcc (a wrapper that makes
 `--run-ir` fail on any program containing `^`): a 330-line generated
-program reduced to a few lines around one `^`.
+program reduced to 18 lines (one `^`, plus the checksum scaffolding) in
+about ten minutes.

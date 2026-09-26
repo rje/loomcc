@@ -17,7 +17,7 @@ answer is.
 ## Quick start
 
 ```sh
-cd runner && CARGO_BUILD_JOBS=2 nice -n 19 cargo build --offline && cd ..
+cd runner && CARGO_BUILD_JOBS=2 taskpolicy -b nice -n 19 cargo build --offline && cd ..
 ./runner/target/debug/loomcc-tests --loomcc ../loomcc/target/debug/loomcc
 ./runner/target/debug/loomcc-tests --tier t1 -v            # one tier, every result
 ./runner/target/debug/loomcc-tests tests/t1-pp/variadic      # a directory or file
@@ -26,8 +26,10 @@ cd runner && CARGO_BUILD_JOBS=2 nice -n 19 cargo build --offline && cd ..
 
 `./run-tests` does the build and then runs the runner with the same arguments.
 
-The runner runs every tool under `nice -n 19` and defaults to two jobs
-(`-j 2`); the machine also runs long ROM suites that must not starve.
+The runner runs every tool under `taskpolicy -b nice -n 19` (the background
+QoS band: nice alone does not stop Loom's ROM suites starving), uses at most
+two jobs (`-j 2`), and runs at most one loom-emulator process at a time. The
+scripts under `scripts/`, `external/` and `tests/t7-random/` do the same.
 
 ## Command line (stable)
 

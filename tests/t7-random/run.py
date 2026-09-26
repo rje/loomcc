@@ -38,19 +38,19 @@ CSMITH_FLAGS = ["--no-argc", "--no-longlong", "--no-math64", "--no-bitfields", "
 
 def host16_checksum(src, work, extra=()):
     ll = work / (src.stem + ".ll")
-    r = subprocess.run(["nice", "-n", "19", str(LLVM / "clang"), "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-O0",
+    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "clang"), "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-O0",
                         "-w", "-S", "-emit-llvm", "-DLOOMCC_T7_PRINT=1", f"-I{HARNESS}", *extra, str(src), "-o", str(ll)],
                        capture_output=True, text=True)
     if r.returncode:
         raise RuntimeError("clang: " + r.stderr[-500:])
     ll.write_text(ll.read_text().replace("p:16:16", "p:64:64").replace(" optnone", ""))
     opt = work / (src.stem + ".opt.ll")
-    r = subprocess.run(["nice", "-n", "19", str(LLVM / "opt"), "-S", "-passes=instcombine<no-verify-fixpoint>", str(ll), "-o", str(opt)],
+    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "opt"), "-S", "-passes=instcombine<no-verify-fixpoint>", str(ll), "-o", str(opt)],
                        capture_output=True, text=True)
     if r.returncode:
         raise RuntimeError("opt: " + r.stderr[-500:])
     opt.write_text(re.sub(r"= freeze (\S+) (.+)$", r"= bitcast \1 \2 to \1", opt.read_text(), flags=re.M))
-    r = subprocess.run(["nice", "-n", "19", str(LLVM / "lli"), "-force-interpreter", str(opt)], capture_output=True, text=True, timeout=120)
+    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "lli"), "-force-interpreter", str(opt)], capture_output=True, text=True, timeout=120)
     if r.returncode:
         raise RuntimeError(f"lli exit {r.returncode}: " + r.stderr[-300:])
     last = r.stdout.split()[-1]
@@ -83,7 +83,7 @@ def main(argv):
     for s in seeds:
         if use_csmith:
             tmp = work / f"csmith-{s}.c"
-            subprocess.run(["nice", "-n", "19", "csmith", "--seed", str(s), *CSMITH_FLAGS, "-o", str(tmp)], check=True,
+            subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", "csmith", "--seed", str(s), *CSMITH_FLAGS, "-o", str(tmp)], check=True,
                            capture_output=True)
             prog = tmp.read_text()
             extra = [f"-I{CSMITH_DIR}"]

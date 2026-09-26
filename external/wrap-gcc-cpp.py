@@ -80,7 +80,7 @@ def main():
         w.write_text("// loomcc-do: preprocess\n// loomcc-ref: clang\n"
                      f"// loomcc-source: GCC gcc/testsuite/gcc.dg/cpp/{src.name} (GPL-3.0-or-later; fetched, not vendored)\n"
                      + "\n".join(directives) + ("\n" if directives else "") + f'#include "{src}"\n')
-        r = subprocess.run(["nice", "-n", "19", "clang", "-E", "-P", "-std=c17", "-w", w.name], cwd=OUT, capture_output=True, text=True)
+        r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", "clang", "-E", "-P", "-std=c17", "-w", w.name], cwd=OUT, capture_output=True, text=True)
         if not directives:
             if r.returncode:
                 rejected[src.name] = "clang rejects it"
@@ -90,7 +90,7 @@ def main():
         selected.append(w)
     # Keep only the wrappers whose clang reference agrees (diagnostic lines).
     js = OUT / "_refs.json"
-    subprocess.run([str(ROOT / "run-tests"), "--refs-only", "-j", "3", "--json", str(js), str(OUT)], stdout=subprocess.DEVNULL)
+    subprocess.run([str(ROOT / "run-tests"), "--refs-only", "-j", "2", "--json", str(js), str(OUT)], stdout=subprocess.DEVNULL)
     import json
     for line in js.read_text().splitlines():
         r = json.loads(line)

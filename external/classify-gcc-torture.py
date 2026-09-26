@@ -97,7 +97,7 @@ def host16(path):
     work = WRAP / "_host16"
     work.mkdir(parents=True, exist_ok=True)
     ll = work / (path.stem + ".ll")
-    r = subprocess.run(["nice", "-n", "19", str(LLVM / "clang"), "--target=msp430-none-elf", "-fsigned-char", "-std=gnu17",
+    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "clang"), "--target=msp430-none-elf", "-fsigned-char", "-std=gnu17",
                         "-O0", "-w", "-S", "-emit-llvm", "-D__builtin_abort=abort", "-D__builtin_exit=exit", "-D__attribute__(x)=",
                         str(path), "-o", str(ll)], capture_output=True, text=True)
     if r.returncode != 0:
@@ -105,14 +105,14 @@ def host16(path):
     text = ll.read_text().replace("p:16:16", "p:64:64").replace(" optnone", "")
     ll.write_text(text)
     opt = work / (path.stem + ".opt.ll")
-    r = subprocess.run(["nice", "-n", "19", str(LLVM / "opt"), "-S", "-passes=instcombine<no-verify-fixpoint>", str(ll), "-o", str(opt)],
+    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "opt"), "-S", "-passes=instcombine<no-verify-fixpoint>", str(ll), "-o", str(opt)],
                        capture_output=True, text=True)
     if r.returncode != 0:
         return "opt fails"
     text = re.sub(r"= freeze (\S+) (.+)$", r"= bitcast \1 \2 to \1", opt.read_text(), flags=re.M)
     opt.write_text(text)
     try:
-        r = subprocess.run(["nice", "-n", "19", str(LLVM / "lli"), "-force-interpreter", str(opt)], capture_output=True, text=True, timeout=60)
+        r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "lli"), "-force-interpreter", str(opt)], capture_output=True, text=True, timeout=60)
     except subprocess.TimeoutExpired:
         return "host16 timeout"
     return None if r.returncode == 0 else f"fails at 16-bit int (lli exit {r.returncode})"

@@ -112,7 +112,7 @@ def main(argv):
         candidates.append(w)
     print(f"{name}: {len(candidates)} of {len(suites()[name])} pass the static filter")
     js = out / "_refs.json"
-    subprocess.run([str(ROOT / "run-tests"), "--refs-only", "--refs", "host,tcc-rom", "-j", "3", "--json", str(js), str(out)],
+    subprocess.run([str(ROOT / "run-tests"), "--refs-only", "--refs", "host,tcc-rom", "-j", "2", "--json", str(js), str(out)],
                    stdout=subprocess.DEVNULL)
     status = {}
     for line in js.read_text().splitlines():

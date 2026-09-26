@@ -26,7 +26,7 @@ spec.loader.exec_module(cg)
 
 
 def clang16(p):
-    r = subprocess.run(["nice", "-n", "19", "clang", "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-pedantic-errors", "-Werror=vla", "-fsyntax-only",
+    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", "clang", "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-pedantic-errors", "-Werror=vla", "-fsyntax-only",
                         "-D__builtin_abort=abort", "-D__attribute__(x)=", str(p)], capture_output=True, text=True)
     return None if r.returncode == 0 else "clang (16-bit int) rejects it: " + (r.stderr.strip().splitlines() or ["?"])[0][-100:]
 

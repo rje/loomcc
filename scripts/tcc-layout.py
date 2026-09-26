@@ -33,7 +33,7 @@ def main(argv):
         src.write_text("#include <stddef.h>\n" + prelude + "\nconst unsigned short probe[] = {\n"
                        + ",\n".join(f"  (unsigned short)({e})" for e in exprs) + "\n};\n")
         out = Path(d) / "probe.ps"
-        r = subprocess.run(["nice", "-n", "19", str(TCC), f"-I{PVS / 'devkitsnes/include'}", f"-I{HARNESS}",
+        r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(TCC), f"-I{PVS / 'devkitsnes/include'}", f"-I{HARNESS}",
                             "-c", str(src), "-o", str(out)], capture_output=True, text=True)
         if r.returncode != 0:
             print(r.stdout + r.stderr, file=sys.stderr)

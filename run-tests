@@ -1,5 +1,5 @@
 #!/bin/sh
 # Builds the runner (quietly, niced, two jobs) and runs it with the given arguments.
 here=$(cd "$(dirname "$0")" && pwd)
-(cd "$here/runner" && CARGO_BUILD_JOBS=2 nice -n 19 cargo build --offline -q) || exit 2
+(cd "$here/runner" && CARGO_BUILD_JOBS=2 taskpolicy -b nice -n 19 cargo build --offline -q) || exit 2
 exec "$here/runner/target/debug/loomcc-tests" "$@"
