@@ -1396,16 +1396,19 @@ impl<'a> Lowerer<'a> {
         let sig = self.types().sig(fty).unwrap().clone();
         let mut ops = Vec::new();
         let mut arg_tys = Vec::new();
+        let mut arg_kinds = Vec::new();
         for a in args {
             if self.types().is_record(a.ty) {
                 let addr = self.agg_addr(a);
                 let v = self.addr_value(addr);
                 ops.push(v);
                 arg_tys.push(IrTy::Ptr);
+                arg_kinds.push(ParamKind::Aggregate(self.types().size(a.ty) as u32));
             } else {
                 let it = self.ity(a.ty, a.loc);
                 ops.push(self.value(a));
                 arg_tys.push(it);
+                arg_kinds.push(ParamKind::Scalar(it));
             }
         }
         let c = match &callee.kind {
@@ -1430,7 +1433,7 @@ impl<'a> Lowerer<'a> {
             None
         };
         let dst = ret.map(|t| self.vreg(t));
-        self.emit(Inst::Call { dst, callee: c, args: ops, arg_tys, sret });
+        self.emit(Inst::Call { dst, callee: c, args: ops, arg_tys, arg_kinds, sret });
         dst.map(Operand::Reg)
     }
 

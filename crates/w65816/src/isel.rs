@@ -10,6 +10,10 @@ use crate::alloc::*;
 /// Where an index-register value is parked for an operation that needs it in
 /// memory.
 const XY_SPILL: u8 = 0x18;
+
+/// The most frame bytes one call site saves on the hardware stack (Loom's
+/// whole stack is 7,632 bytes).
+const SAVE_CAP: u32 = 1024;
 use crate::asm::{Expr, Line, Mode};
 use crate::ModuleInfo;
 use loomcc_ir::*;
@@ -85,6 +89,11 @@ pub struct Gen<'a> {
     pub errors: Vec<String>,
     /// Current block index (for fall-through decisions).
     cur_block: usize,
+    /// IR block and instruction being emitted.
+    cur_bi: usize,
+    /// Argument kinds of the call being emitted.
+    call_kinds: Vec<ParamKind>,
+    cur_k: usize,
     /// Emission order of blocks.
     order: Vec<usize>,
     /// The CPU's accumulator is 8-bit at this point of the emitted code.
@@ -114,6 +123,9 @@ impl<'a> Gen<'a> {
             helpers: BTreeSet::new(),
             errors: Vec::new(),
             cur_block: 0,
+            cur_bi: 0,
+            call_kinds: Vec::new(),
+            cur_k: 0,
             order: Vec::new(),
             m8: false,
             in8: false,
@@ -478,7 +490,9 @@ impl<'a> Gen<'a> {
             }
             self.forget();
             let block = &f.blocks[b];
-            for inst in &block.insts {
+            self.cur_bi = b;
+            for (k, inst) in block.insts.iter().enumerate() {
+                self.cur_k = k;
                 self.gen_inst(inst);
             }
             let before = self.errors.len();
@@ -498,11 +512,37 @@ impl<'a> Gen<'a> {
 
     /// 816-tcc ABI entry: stack arguments into the parameter slots.
     fn abi_prologue(&mut self) {
+        // Arguments start at 4,s. Stack-relative offsets are 8 bits: when
+        // the argument area reaches past 255, read it through a long pointer
+        // to the stack instead ($1c: S, bank 0).
+        let mut total = if self.f.sret_reg.is_some() { 4 } else { 0 };
+        for p in &self.f.params {
+            total += match p {
+                ParamKind::Scalar(IrTy::I8) => 1,
+                ParamKind::Scalar(IrTy::I16) => 2,
+                ParamKind::Scalar(_) => 4,
+                ParamKind::Aggregate(n) => *n,
+            };
+        }
+        let far = 4 + total + 1 > 255;
+        if far {
+            self.i("tsc", Mode::Implied);
+            self.i("sta", Mode::Dp(SCRATCH_PTR));
+            self.i("stz", Mode::Dp(SCRATCH_PTR + 2));
+        }
+        let read = |g: &mut Self, off: u32| {
+            if far {
+                g.i("ldy", Mode::Imm(w(off as i64)));
+                g.i("lda", Mode::DpIndLongY(SCRATCH_PTR));
+            } else {
+                g.i("lda", Mode::Sr(off as u8));
+            }
+        };
         let mut so = 4u32;
         if let Some(r) = self.f.sret_reg {
             let h = self.home(r);
             for k in 0..2 {
-                self.i("lda", Mode::Sr((so + 2 * k) as u8));
+                read(self, so + 2 * k);
                 self.a_to_home(h, k);
             }
             so += 4;
@@ -523,7 +563,7 @@ impl<'a> Gen<'a> {
                         }
                         // An 8-bit argument is one stack byte; reading a word
                         // picks up a harmless neighbour byte.
-                        self.i("lda", Mode::Sr((so + 2 * k) as u8));
+                        read(self, so + 2 * k);
                         self.a_to_home(h, k);
                     }
                     so += n;
@@ -531,7 +571,7 @@ impl<'a> Gen<'a> {
                 ParamKind::Aggregate(n) => {
                     let mut k = 0;
                     while k < *n {
-                        self.i("lda", Mode::Sr((so + k) as u8));
+                        read(self, so + k);
                         let e = self.frame_expr(po + k);
                         self.i("sta", Mode::Abs(e));
                         k += 2;
@@ -539,6 +579,9 @@ impl<'a> Gen<'a> {
                     so += n;
                 }
             }
+        }
+        if far {
+            self.yv = None;
         }
     }
 
@@ -752,7 +795,10 @@ impl<'a> Gen<'a> {
                 }
                 self.gen_lea_into(addr, *dst);
             }
-            Inst::Call { dst, callee, args, arg_tys, sret } => self.gen_call(*dst, callee, args, arg_tys, sret.as_ref()),
+            Inst::Call { dst, callee, args, arg_tys, arg_kinds, sret } => {
+                self.call_kinds = arg_kinds.clone();
+                self.gen_call(*dst, callee, args, arg_tys, sret.as_ref())
+            }
             Inst::Memcpy { dst, src, size } => self.gen_memcpy(dst, src, *size),
             Inst::Memset { dst, val, size } => self.gen_memset(dst, *val, *size),
         }
@@ -1998,27 +2044,17 @@ impl<'a> Gen<'a> {
                 (Some(a), Some(b)) if a == b => Some(*a),
                 _ => None,
             };
-            let saved: Vec<(String, u32)> = scc.map(|c| self.save_set(c)).unwrap_or_default();
-            for (name, size) in &saved {
-                let sym = self.mi.frame_symbol(name);
-                for k in (0..size / 2).rev() {
-                    self.i("lda", Mode::Abs(Expr::Sym(sym.clone(), 2 * k as i64)));
-                    self.i("pha", Mode::Implied);
-                }
+            let saved = scc.and_then(|_| self.save_range(dst));
+            if let Some(r) = saved {
+                self.emit_save(r);
             }
             self.acc = None;
             self.pass_internal_args(&info, args, sret);
             self.i("jsl", Mode::Label(info.body_label.clone()));
-            if !saved.is_empty() {
+            if let Some(r) = saved {
                 self.i("sta", Mode::Dp(0x18));
                 self.i("stx", Mode::Dp(0x1a));
-                for (name, size) in saved.iter().rev() {
-                    let sym = self.mi.frame_symbol(name);
-                    for k in 0..size / 2 {
-                        self.i("pla", Mode::Implied);
-                        self.i("sta", Mode::Abs(Expr::Sym(sym.clone(), 2 * k as i64)));
-                    }
-                }
+                self.emit_restore(r);
                 self.i("lda", Mode::Dp(0x18));
                 self.i("ldx", Mode::Dp(0x1a));
             }
@@ -2038,33 +2074,24 @@ impl<'a> Gen<'a> {
         // Code outside the module (or behind a pointer) may call back into
         // this function's recursive component: save its frames around the
         // call, as for direct recursion.
-        let saved: Vec<(String, u32)> = match self.mi.scc_of.get(&self.f.name) {
-            Some(&c) => self.save_set(c),
-            None => Vec::new(),
+        let saved = match (self.mi.scc_of.get(&self.f.name), callee) {
+            (Some(_), Callee::Direct(n)) if !crate::may_call_back(n) => None,
+            (Some(_), _) => self.save_range(dst),
+            (None, _) => None,
         };
-        for (name, size) in &saved {
-            let sym = self.mi.frame_symbol(name);
-            for k in (0..size / 2).rev() {
-                self.i("lda", Mode::Abs(Expr::Sym(sym.clone(), 2 * k as i64)));
-                self.i("pha", Mode::Implied);
-            }
+        if let Some(r) = saved {
+            self.emit_save(r);
         }
         self.acc = None;
         self.gen_abi_call(dst, callee, args, arg_tys, sret);
-        if !saved.is_empty() {
+        if let Some(r) = saved {
             self.i("lda", Mode::Dp(0));
             self.i("sta", Mode::Dp(0x18));
             self.i("lda", Mode::Dp(2));
             self.i("sta", Mode::Dp(0x1a));
             self.i("lda", Mode::Dp(4));
             self.i("sta", Mode::Dp(0x1c));
-            for (name, size) in saved.iter().rev() {
-                let sym = self.mi.frame_symbol(name);
-                for k in 0..size / 2 {
-                    self.i("pla", Mode::Implied);
-                    self.i("sta", Mode::Abs(Expr::Sym(sym.clone(), 2 * k as i64)));
-                }
-            }
+            self.emit_restore(r);
             // The result was already stored by gen_abi_call; a result homed
             // in the frame was just overwritten by the restore, so store it
             // again from the saved registers.
@@ -2085,39 +2112,94 @@ impl<'a> Gen<'a> {
         }
     }
 
-    /// Frames saved around a call that may re-enter component `c`. The
-    /// calling function's own address-taken slots are left out: the callee
-    /// may legitimately write them through a pointer (an out-parameter, a
-    /// struct result), and restoring would undo that. (A re-entrant
-    /// activation writing the same slot is the case static frames cannot
-    /// cover; it is documented in PLAN.md.)
-    fn save_set(&self, c: usize) -> Vec<(String, u32)> {
-        let limit = self
-            .f
-            .slots
-            .iter()
-            .enumerate()
-            .filter(|(i, _)| !self.f.param_slots.contains(&Some(SlotId(*i as u32))))
-            .map(|(i, _)| self.al.slot_offsets[i])
-            .min();
-        self.mi.scc_members[c]
-            .iter()
-            .map(|(n, size)| {
-                if *n == self.f.name {
-                    (n.clone(), limit.map_or(*size, |l| l.min(*size) & !1))
-                } else {
-                    (n.clone(), *size)
-                }
-            })
-            .collect()
+    /// The part of this function's static frame to save around a call that
+    /// may re-enter its recursive component: the frame words of values live
+    /// across the call. Every active member of a component saves its own
+    /// frame at its own re-entering call sites, so the caller's frame is all
+    /// that needs saving here. Address-taken slots are left out: the callee
+    /// may write them through a pointer (out-parameters, struct results) and
+    /// restoring would undo that (the one case static frames cannot cover:
+    /// see PLAN.md). Returns (offset, bytes).
+    fn save_range(&mut self, dst: Option<VReg>) -> Option<(u32, u32)> {
+        let lv = crate::analysis::liveness(self.f);
+        let after = crate::analysis::live_after(self.f, &lv, self.cur_bi);
+        let live = &after[self.cur_k];
+        let (mut lo, mut hi) = (u32::MAX, 0u32);
+        for v in live.iter() {
+            if Some(VReg(v)) == dst {
+                continue;
+            }
+            if let Home::Frame(o) = self.al.homes[v as usize] {
+                lo = lo.min(o);
+                hi = hi.max(o + 2 * self.width(self.f.ty(VReg(v))));
+            }
+        }
+        if hi == 0 {
+            return None;
+        }
+        let n = hi - lo;
+        if n > SAVE_CAP {
+            self.errors.push(format!(
+                "{} bytes of frame are live across a call that may re-enter this function; the save on the hardware stack is limited to {} bytes",
+                n, SAVE_CAP
+            ));
+            return None;
+        }
+        Some((lo, n))
+    }
+
+    /// Saves frame bytes [lo, lo+n) on the hardware stack: pushes for a few
+    /// words, a block move for more.
+    fn emit_save(&mut self, (lo, n): (u32, u32)) {
+        if n <= 16 {
+            for k in (0..n / 2).rev() {
+                self.i("lda", Mode::Abs(self.frame_expr(lo + 2 * k)));
+                self.i("pha", Mode::Implied);
+            }
+        } else {
+            self.i("tsc", Mode::Implied);
+            self.i("sec", Mode::Implied);
+            self.i("sbc", Mode::Imm(w(n as i64)));
+            self.i("tcs", Mode::Implied);
+            self.i("inc", Mode::Acc);
+            self.i("tay", Mode::Implied);
+            self.i("ldx", Mode::Imm(self.frame_expr(lo)));
+            self.i("lda", Mode::Imm(w(n as i64 - 1)));
+            self.i("phb", Mode::Implied);
+            self.i("mvn", Mode::Move(Expr::Num(0x7e), Expr::Num(0x00)));
+            self.i("plb", Mode::Implied);
+        }
+        self.forget();
+    }
+
+    fn emit_restore(&mut self, (lo, n): (u32, u32)) {
+        if n <= 16 {
+            for k in 0..n / 2 {
+                self.i("pla", Mode::Implied);
+                self.i("sta", Mode::Abs(self.frame_expr(lo + 2 * k)));
+            }
+        } else {
+            self.i("tsc", Mode::Implied);
+            self.i("inc", Mode::Acc);
+            self.i("tax", Mode::Implied);
+            self.i("ldy", Mode::Imm(self.frame_expr(lo)));
+            self.i("lda", Mode::Imm(w(n as i64 - 1)));
+            self.i("phb", Mode::Implied);
+            self.i("mvn", Mode::Move(Expr::Num(0x00), Expr::Num(0x7e)));
+            self.i("plb", Mode::Implied);
+            self.i("tsc", Mode::Implied);
+            self.i("clc", Mode::Implied);
+            self.i("adc", Mode::Imm(w(n as i64)));
+            self.i("tcs", Mode::Implied);
+        }
+        self.forget();
     }
 
     fn gen_abi_call(&mut self, dst: Option<VReg>, callee: &Callee, args: &[Operand], arg_tys: &[IrTy], sret: Option<&Addr>) {
         // 816-tcc ABI: push right to left; a struct goes on the stack whole.
-        let kinds: Vec<ParamKind> = match callee {
-            Callee::Direct(n) => self.mi.externs.get(n).cloned().unwrap_or_default(),
-            Callee::Indirect(_) => Vec::new(),
-        };
+        // The call's own argument kinds (from the callee's type) cover
+        // indirect calls too.
+        let kinds: Vec<ParamKind> = self.call_kinds.clone();
         let mut pushed = 0u32;
         for (i, a) in args.iter().enumerate().rev() {
             if let Some(ParamKind::Aggregate(n)) = kinds.get(i) {
@@ -2133,17 +2215,22 @@ impl<'a> Gen<'a> {
                 self.i("sec", Mode::Implied);
                 self.i("sbc", Mode::Imm(w(n as i64)));
                 self.i("tcs", Mode::Implied);
+                // Copy into the reserved area through a long pointer to it
+                // ($1c: S+1, bank 0): `sta n,s` offsets stop at 255.
+                self.i("inc", Mode::Acc);
+                self.i("sta", Mode::Dp(SCRATCH_PTR));
+                self.i("stz", Mode::Dp(SCRATCH_PTR + 2));
                 let mut k = 0;
                 while k < n {
                     self.i("ldy", Mode::Imm(w(k as i64)));
                     if n - k == 1 {
                         self.begin8();
                         self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
-                        self.i("sta", Mode::Sr((k + 1) as u8));
+                        self.i("sta", Mode::DpIndLongY(SCRATCH_PTR));
                         self.end8();
                     } else {
                         self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
-                        self.i("sta", Mode::Sr((k + 1) as u8));
+                        self.i("sta", Mode::DpIndLongY(SCRATCH_PTR));
                     }
                     k += 2;
                 }

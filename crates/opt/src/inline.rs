@@ -196,7 +196,8 @@ pub fn inline_call(f: &mut Func, bi: usize, k: usize, g: &Func) {
                 Inst::Load { dst, addr, volatile } => Inst::Load { dst: r(*dst), addr: map_addr(addr), volatile: *volatile },
                 Inst::Store { addr, src, ty, volatile } => Inst::Store { addr: map_addr(addr), src: map_op(src), ty: *ty, volatile: *volatile },
                 Inst::Lea { dst, addr } => Inst::Lea { dst: r(*dst), addr: map_addr(addr) },
-                Inst::Call { dst, callee, args, arg_tys, sret } => Inst::Call {
+                Inst::Call { dst, callee, args, arg_tys, arg_kinds, sret } => Inst::Call {
+                    arg_kinds: arg_kinds.clone(),
                     dst: dst.map(r),
                     callee: match callee {
                         Callee::Direct(n) => Callee::Direct(n.clone()),

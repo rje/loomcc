@@ -64,6 +64,7 @@ fn recursive_components(m: &Module, callbacks: &HashSet<String>) -> Vec<Vec<usiz
                         Inst::Call { callee: Callee::Direct(c), .. } => match index.get(c.as_str()) {
                             Some(&j) => v.push(j),
                             // Code outside the module may call back.
+                            None if !may_call_back(c) => {}
                             None => v.extend(m.funcs.iter().enumerate().filter(|(_, g)| callbacks.contains(&g.name)).map(|(j, _)| j)),
                         },
                         Inst::Call { callee: Callee::Indirect(_), .. } => {
@@ -173,6 +174,17 @@ pub struct Output {
     pub errors: Vec<String>,
     /// Bytes of compiled stack (static frames) this module reserves.
     pub cstack_bytes: u32,
+}
+
+/// Library functions that never call back into the program: calls to them
+/// need no protection against re-entry.
+pub fn may_call_back(name: &str) -> bool {
+    !matches!(
+        name,
+        "printf" | "sprintf" | "snprintf" | "fprintf" | "puts" | "putchar" | "memcpy" | "memmove" | "memset" | "memcmp"
+            | "strlen" | "strcpy" | "strncpy" | "strcat" | "strcmp" | "strncmp" | "strchr" | "abs" | "atoi" | "malloc"
+            | "free" | "calloc" | "exit" | "abort" | "rand" | "srand"
+    )
 }
 
 pub(crate) fn interp_add(base: u32, delta: i64) -> u32 {
@@ -534,6 +546,7 @@ fn place_frames(m: &Module, allocs: &[Alloc], callbacks: &HashSet<String>) -> (H
                             Some(&j) => {
                                 succ[i].insert(j);
                             }
+                            None if !may_call_back(name) => {}
                             None => {
                                 // External code may call back into the
                                 // functions named as callbacks.

@@ -294,7 +294,7 @@ pub enum Inst {
     Lea { dst: VReg, addr: Addr },
     /// Call; aggregate results are written through a hidden pointer passed as
     /// `sret`.
-    Call { dst: Option<VReg>, callee: Callee, args: Vec<Operand>, arg_tys: Vec<IrTy>, sret: Option<Addr> },
+    Call { dst: Option<VReg>, callee: Callee, args: Vec<Operand>, arg_tys: Vec<IrTy>, arg_kinds: Vec<ParamKind>, sret: Option<Addr> },
     Memcpy { dst: Addr, src: Addr, size: u32 },
     Memset { dst: Addr, val: u8, size: u32 },
 }
