@@ -13,6 +13,9 @@ Families (weighted toward the patterns Loom's C uses):
   t4-exec/gen-soa/*.c                struct-of-arrays state indexed by u8
   t4-exec/gen-switch/*.c             switch on small enums, dense to sparse
   t4-exec/gen-romwalk/*.c            pointer walks over const ROM tables
+  t2-parse/gen-declarator/*.c        random declarators, abstract and typedef twins
+  t2-parse/gen-precedence/*.c        random expressions with minimal parentheses
+  t3-sema/gen-conversions/*.c        the type of T1 op T2 for every integer pair
 
 Do not edit generated files; change this script and rerun it.
 """
@@ -362,6 +365,209 @@ int main(void) {{
     return n
 
 
+
+
+# ---------------------------------------------------------------- T2 families
+
+BASES = [("char", "1"), ("short", "sizeof(short)"), ("int", "sizeof(int)"), ("long", "sizeof(long)"),
+         ("unsigned char", "1"), ("unsigned", "sizeof(unsigned)"), ("signed char", "1"), ("unsigned short", "sizeof(short)")]
+DIMS = [2, 3, 5, 7, 11]
+
+
+def gen_type(r, depth):
+    """A random derived type: ('base', name, size) | ('ptr', t) | ('arr', n, t) | ('fn', t)."""
+    if depth == 0 or r.random() < 0.2:
+        b = r.choice(BASES)
+        return ("base", b[0], b[1])
+    k = r.random()
+    inner = gen_type(r, depth - 1)
+    if k < 0.45:
+        return ("ptr", inner)
+    if k < 0.75:
+        if inner[0] == "fn":
+            return ("ptr", inner)
+        return ("arr", r.choice(DIMS), inner)
+    if inner[0] in ("fn", "arr"):
+        return ("ptr", inner)
+    return ("fn", inner)
+
+
+def declarator(t, inner):
+    """C declarator text for type t around `inner` (a name or empty)."""
+    kind = t[0]
+    if kind == "base":
+        return t[1], inner
+    if kind == "ptr":
+        sub = t[1]
+        s = "*" + inner
+        if sub[0] in ("arr", "fn"):
+            s = "(" + s + ")"
+        return declarator(sub, s)
+    if kind == "arr":
+        return declarator(t[2], f"{inner}[{t[1]}]")
+    return declarator(t[1], f"{inner}(void)")
+
+
+def decl(t, name):
+    base, d = declarator(t, name)
+    return f"{base} {d}".rstrip()
+
+
+def size_of(t):
+    """A C expression for sizeof(t) built from basic sizes (layout-independent)."""
+    kind = t[0]
+    if kind == "base":
+        return t[2]
+    if kind == "ptr":
+        return "sizeof(void (*)(void))" if t[1][0] == "fn" else "sizeof(void *)"
+    if kind == "arr":
+        return f"{t[1]} * ({size_of(t[2])})"
+    raise ValueError("function")
+
+
+def walk(t, expr):
+    """(expression, type) pairs reached by *, [1] and calls from expr."""
+    out = []
+    while True:
+        if t[0] != "fn":
+            out.append((expr, t))
+        if t[0] == "ptr":
+            expr, t = f"(*{expr})", t[1]
+        elif t[0] == "arr":
+            expr, t = f"{expr}[1]", t[2]
+        elif t[0] == "fn":
+            expr, t = f"{expr}()", t[1]
+        else:
+            return out
+
+
+def declarator_family():
+    r = random.Random(23)
+    n = 0
+    for k in range(60):
+        lines, checks = [], []
+        for j in range(8):
+            t = gen_type(r, r.randint(2, 5))
+            if t[0] == "fn":
+                t = ("ptr", t)
+            name = f"v{j}"
+            lines.append(f"extern {decl(t, name)};")
+            lines.append(f"typedef {decl(t, f'T{j}')};")
+            for expr, st in walk(t, name):
+                if st[0] == "ptr" and st[1][0] == "base" and False:
+                    pass
+                if st[0] == "fn":
+                    continue
+                checks.append(f"STATIC_CHECK(sizeof({expr}) == {size_of(st)});")
+            abstract = decl(t, "").strip()
+            checks.append(f"STATIC_CHECK(sizeof({abstract}) == sizeof({name}));")
+            checks.append(f"STATIC_CHECK(sizeof(T{j}) == sizeof({name}));")
+        src = HEADER + ("// loomcc-do: syntax\n"
+                        "// Random declarators, their abstract-declarator and typedef twins, and the\n"
+                        "// types reached through *, [] and () (sizes relative to the basic types).\n"
+                        '#include "loomcc-test.h"\n' + "\n".join(lines) + "\n" + "\n".join(checks) + "\n")
+        write(ROOT / f"t2-parse/gen-declarator/decl-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+PREC = [("*", 13), ("/", 13), ("%", 13), ("+", 12), ("-", 12), ("<<", 11), (">>", 11), ("<", 10), (">", 10),
+        ("<=", 10), (">=", 10), ("==", 9), ("!=", 9), ("&", 8), ("^", 7), ("|", 6), ("&&", 5), ("||", 4)]
+
+
+def gen_expr(r, depth):
+    """(text, value, precedence) of a random int expression with no overflow at 16 bits."""
+    if depth == 0 or r.random() < 0.25:
+        v = r.randrange(0, 40)
+        return str(v), v, 100
+    k = r.random()
+    if k < 0.12:
+        t, v, p = gen_expr(r, depth - 1)
+        op = r.choice(["-", "~", "!"])
+        t = f"{op} {t}" if p >= 14 else f"{op}({t})"   # the space keeps `- -5` from becoming `--5`
+        v = {"-": -v, "~": ~v, "!": int(not v)}[op]
+        if not fits(v, "i16"):
+            return gen_expr(r, depth)
+        return t, v, 14
+    if k < 0.2:
+        c, cv, cp = gen_expr(r, depth - 1)
+        a, av, ap = gen_expr(r, depth - 1)
+        b, bv, bp = gen_expr(r, depth - 1)
+        c = c if cp > 3 else f"({c})"
+        a = a if ap > 3 else f"({a})"
+        b = b if bp >= 3 else f"({b})"
+        return f"{c} ? {a} : {b}", (av if cv else bv), 3
+    op, prec = r.choice(PREC)
+    a, av, ap = gen_expr(r, depth - 1)
+    b, bv, bp = gen_expr(r, depth - 1)
+    if op in ("/", "%") and bv == 0:
+        return gen_expr(r, depth)
+    if op in ("<<", ">>") and not (0 <= bv < 15):
+        return gen_expr(r, depth)
+    if op == "<<" and (av < 0 or not fits(av << bv, "i16")):
+        return gen_expr(r, depth)
+    # Parenthesise only where precedence (left associativity) needs it; add
+    # an occasional redundant pair.
+    a = a if ap >= prec else f"({a})"
+    b = b if bp > prec else f"({b})"
+    if r.random() < 0.1:
+        a = f"({a})"
+    if op == "/" or op == "%":
+        q = cdiv(av, bv)
+        v = q if op == "/" else av - q * bv
+    elif op == ">>":
+        v = av >> bv
+    elif op == "<<":
+        v = av << bv
+    else:
+        v = {"*": av * bv, "+": av + bv, "-": av - bv, "<": int(av < bv), ">": int(av > bv), "<=": int(av <= bv),
+             ">=": int(av >= bv), "==": int(av == bv), "!=": int(av != bv), "&": av & bv, "^": av ^ bv, "|": av | bv,
+             "&&": int(bool(av) and bool(bv)), "||": int(bool(av) or bool(bv))}[op]
+    if not fits(v, "i16"):
+        return gen_expr(r, depth)
+    return f"{a} {op} {b}", v, prec
+
+
+def precedence_family():
+    r = random.Random(31)
+    n = 0
+    for k in range(40):
+        checks = []
+        for _ in range(25):
+            t, v, _p = gen_expr(r, r.randint(2, 5))
+            checks.append(f"STATIC_CHECK(({t}) == {lit(v, 'i16')});")
+        src = HEADER + ("// loomcc-do: syntax\n"
+                        "// Random int expressions with the minimum of parentheses: C's precedence and\n"
+                        "// associativity decide the value (no expression overflows 16 bits).\n"
+                        '#include "loomcc-test.h"\n' + "\n".join(checks) + "\n")
+        write(ROOT / f"t2-parse/gen-precedence/prec-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def conversion_family():
+    n = 0
+    TYPES6 = ["u8", "i8", "u16", "i16", "u32", "i32"]
+    for ta in TYPES6:
+        checks = []
+        for tb in TYPES6:
+            rt = usual(ta, tb)
+            bits, signed = T[rt]
+            checks.append(f"STATIC_CHECK(sizeof(({ta})0 + ({tb})0) == {bits // 8});")
+            checks.append(f"STATIC_CHECK(((({ta})0 + ({tb})0) - 1 < 0) == {int(signed)});")
+        pa = promote(ta)
+        checks.append(f"STATIC_CHECK(sizeof(+({ta})0) == {T[pa][0] // 8});")
+        checks.append(f"STATIC_CHECK((-({ta})1 < 0) == {int(T[pa][1])});")
+        checks.append(f"STATIC_CHECK(sizeof(({ta})0 << 1) == {T[pa][0] // 8});")
+        src = HEADER + (f"// loomcc-do: syntax\n// The type of {ta} op T for every integer type T, at 16-bit int and 32-bit\n"
+                        "// long: integer promotions and the usual arithmetic conversions (6.3.1).\n"
+                        '#include "loomcc-test.h"\n' + "\n".join(checks) + "\n")
+        write(ROOT / f"t3-sema/gen-conversions/usual-{ta}.c", src)
+        n += 1
+    return n
+
+
 if __name__ == "__main__":
-    total = arith_family() + soa_family() + switch_family() + romwalk_family()
+    total = (arith_family() + soa_family() + switch_family() + romwalk_family()
+             + declarator_family() + precedence_family() + conversion_family())
     print(f"wrote {total} generated tests")
