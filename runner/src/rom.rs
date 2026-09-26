@@ -239,12 +239,18 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
             done, status, result, outlen, diff, diff + 4, diff + 8, diff + 12
         ),
     ];
-    // loom-emulator occasionally faults at frame 0 when the machine is busy
-    // ("MesenCore frame step advanced from 0 to 0"): retry once.
+    // Under background QoS a busy machine can starve MesenCore's own
+    // 5-second frame watchdog ("NoFrame", "frame step advanced from 0 to 0",
+    // a half-drawn 256x240 frame): retry any MesenCore error, pausing between
+    // attempts, before calling the run broken.
     let emu_lock = EMULATOR.lock().unwrap_or_else(|e| e.into_inner());
     let mut o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(300));
-    if !o.ok() && o.stderr.contains("frame 0") {
+    for attempt in 1..=3 {
+        if o.ok() || !o.stderr.contains("MesenCore") {
+            break;
+        }
         log_cmd(log, &o);
+        std::thread::sleep(Duration::from_secs(2 * attempt));
         o = exec::run(tools.emulator.as_ref().unwrap(), &emu_args, dir, Duration::from_secs(300));
     }
     drop(emu_lock);

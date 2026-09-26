@@ -36,10 +36,11 @@ CSMITH_FLAGS = ["--no-argc", "--no-longlong", "--no-math64", "--no-bitfields", "
                 "--max-funcs", "4", "--max-block-size", "3", "--quiet", "--concise"]
 
 
-def host16_checksum(src, work, extra=()):
+def host16_checksum(src, work, extra=(), init=None):
     ll = work / (src.stem + ".ll")
     r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "clang"), "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-O0",
-                        "-w", "-S", "-emit-llvm", "-DLOOMCC_T7_PRINT=1", f"-I{HARNESS}", *extra, str(src), "-o", str(ll)],
+                        "-w", "-S", "-emit-llvm", "-DLOOMCC_T7_PRINT=1", f"-I{HARNESS}", *extra,
+                        *([f"-ftrivial-auto-var-init={init}"] if init else []), str(src), "-o", str(ll)],
                        capture_output=True, text=True)
     if r.returncode:
         raise RuntimeError("clang: " + r.stderr[-500:])

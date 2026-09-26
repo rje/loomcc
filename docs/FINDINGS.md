@@ -5,7 +5,7 @@ what loomcc did, with the loomcc commit it was seen at. Entries move to
 "Fixed" with the commit that fixed them; tests are never edited to match
 loomcc. The runner prints the build time of the loomcc binary it ran.
 
-Latest full run: loomcc 1fc1258 (build of 2026-09-26 07:14 UTC).
+Latest full run: loomcc cac2523 (build of 2026-09-26 09:06 UTC): 2434 results, 2399 PASS, 21 FAIL.
 
 ## Open
 
@@ -44,20 +44,6 @@ Loom's C does not use it: low priority.
 - `va-opt-stringize.c`: `#__VA_OPT__(...)` must stringize the replacement
   (`H3(, 0)` gives `""`); loomcc leaves `#` in the output.
 
-### F21. A member of a struct rvalue is rejected (1fc1258)
-
-Test: `t3-sema/expr/member-of-rvalue-struct.c` (found by GCC torture
-`compile/20011106-2.c`). `(c ? a : b).v`, `get().v` and `(a = b).c` are
-valid expressions: 6.5.2.3p3 only says the result is not an lvalue. loomcc:
-`cannot take a member of a non-lvalue`.
-
-### F22. Stack overflow on many consecutive case labels (1fc1258)
-
-Test: `t2-parse/stmt/many-consecutive-labels.c` (2000 labels on one
-statement; GCC torture `compile/limits-caselabels.c` has 10000). loomcc is
-killed by a signal, presumably recursing once per label. Labels should be
-parsed iteratively.
-
 ### F23. Preprocessor diagnostics still missing (1fc1258)
 
 | test | rule | loomcc |
@@ -81,6 +67,30 @@ the case loomcc PLAN section 8 names: a call into foreign code can re-enter
 the unit, so a function reachable that way cannot keep its locals in one
 static frame (or must save it around external calls).
 
+### F26. 32-bit results from 816-tcc functions lose their high word (cac2523, rom)
+
+Tests: `t5-snes/interop/i32-across-abi.c` (line 12),
+`t5-snes/interop/shared-struct-array.c` (line 17). Calling an 816-tcc
+function that returns a 32-bit integer (its `long long`, loomcc's `long`):
+`tcc_i32_add(100000, -30000)` comes back as 4464 (70000 & 0xffff),
+`tcc_u32_mix(7, 0x12345678, -1)` as 0x567e. The 816-tcc ABI returns the
+high word in `tcc__r0h` (DP $02); loomcc reads only `tcc__r0`. (Passing
+32-bit arguments to 816-tcc and returning 32-bit results to it both work:
+`tcc_calls_scale(-70000)` gives the right value.)
+
+### F27. Constraint violations found by the new T2/T3 tests (cac2523)
+
+| test | rule | loomcc |
+|---|---|---|
+| `t2-parse/errors/array-of-void.c` (`void a[3];`) | 6.7.6.2p1 | accepted |
+| `t2-parse/errors/auto-at-file-scope.c`, `register-at-file-scope.c` | 6.9p2 | accepted |
+| `t2-parse/errors/empty-struct.c` (`struct Empty { };`) | 6.7.2.1p8 (syntax: a member is required) | accepted |
+| `t2-parse/errors/enum-member-repeated.c` (`enum E { A, B, A };`) | 6.7.1 (redeclaration) | accepted |
+| `t2-parse/errors/restrict-on-non-pointer.c` (`restrict int x;`) | 6.7.3p2 | accepted |
+| `t3-sema/constraint/redeclare-different-linkage.c` (`int x; static int x;`) | 6.2.2p7 (undefined; clang errors) | silent |
+| `t3-sema/constraint/sizeof-void.c` | 6.5.3.4p1 | silent |
+| `t3-sema/expr/pointer-compare-mismatch.c` (`int *` == `char *`) | 6.5.9p2 | silent |
+
 ### F20. Source files must be UTF-8 (65be77e, still in 1fc1258)
 
 GCC torture `execute/20000227-1.c` has a raw 0xFF byte inside a string
@@ -97,7 +107,7 @@ external suites) call `strcpy`: the ROM links PVSnesLib's libc and passes;
 implements printf/puts/putchar; it would need the mem*/str* functions
 PVSnesLib provides as well (harness/libc/string.h lists them).
 
-### F15. Not yet supported (tracked, not bugs)
+### F15. Not yet supported (tracked, not bugs) - done in cac2523
 
 `rom` mode rejects 32-bit multiply, divide, remainder and variable shifts,
 and recursion (`recursion is not supported yet (static frames)`):
@@ -142,5 +152,11 @@ headers win for Loom units is worth checking in the driver.
 - **F18 the offsetof idiom not folded (Loom's actor.c did not compile)**:
   fixed in 1fc1258; all 31 T6 units compile and assemble.
 - **F19 a loop-carried variable assigned late**: fixed in 1fc1258 (or 9fd0628).
+- **F15 32-bit multiply/divide/shift and recursion in `rom`**: implemented in
+  cac2523; every T4 test passes in `rom` (the remaining UNRESOLVED results
+  were emulator starvation, now retried).
+- **F21 member of a struct rvalue**: fixed in 83ca7a1.
+- **F22 stack overflow on many case labels**: fixed by 83ca7a1 (driver on a
+  deep-recursion-safe thread).
 - **Q1 32-bit member alignment**: loomcc now aligns 32-bit members to 4
   like 816-tcc (1fc1258); `t3-sema/layout/thirty-two-bit-member.c` passes.

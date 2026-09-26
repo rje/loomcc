@@ -9,7 +9,9 @@ interestingness test keeps a candidate only when
 1. clang --target=msp430 (16-bit int) accepts it with the warnings that
    usually mean C-Reduce introduced undefined behaviour made errors
    (uninitialised use, missing return, implicit declarations, ...);
-2. host16 runs it to completion and gives a checksum C;
+2. host16 runs it to completion and gives the same checksum C whether
+   uninitialised locals start as zeros or as a pattern (a read of an
+   uninitialised local is the UB C-Reduce most often introduces);
 3. loomcc (the chosen mode) run with -DEXPECTED=C fails, i.e. it still
    disagrees with host16.
 
@@ -34,7 +36,8 @@ UB_WARNINGS = ["-Werror=uninitialized", "-Werror=sometimes-uninitialized", "-Wer
                "-Werror=implicit-function-declaration", "-Werror=implicit-int", "-Werror=array-bounds",
                "-Werror=division-by-zero", "-Werror=shift-count-overflow", "-Werror=shift-count-negative",
                "-Werror=int-conversion", "-Werror=incompatible-pointer-types", "-Werror=unsequenced",
-               "-Werror=format-insufficient-args", "-Werror=format"]
+               "-Werror=format-insufficient-args", "-Werror=format", "-Werror=c23-extensions",
+               "-Werror=gnu-empty-initializer", "-Werror=missing-braces", "-Werror=empty-body"]
 # Scaffolding a candidate must keep (else C-Reduce "reduces" the checksum away).
 KEEP_GEN = [r'#include "loomcc-test.h"', r'printf("%u\n", (unsigned)checksum());', r"return checksum() != EXPECTED;"]
 KEEP_CSMITH = [r'#include "csmith.h"', r"platform_main_end("]
@@ -76,7 +79,11 @@ r = subprocess.run(["clang", "--target=msp430-none-elf", "-fsigned-char", "-std=
 if r.returncode:
     sys.exit(1)
 try:
-    ck = host16_checksum(p, Path("."), extra)
+    # Reading an uninitialised local is undefined: the checksum must not
+    # depend on what uninitialised automatic storage holds.
+    ck = host16_checksum(p, Path("."), extra, "zero")
+    if host16_checksum(p, Path("."), extra, "pattern") != ck:
+        sys.exit(1)
 except Exception:
     sys.exit(1)
 t = Path("cand.c")
