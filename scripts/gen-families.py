@@ -25,6 +25,8 @@ Families (weighted toward the patterns Loom's C uses):
           gen-outparam               counted loops, box overlap, sprite ordering,
                                      queues, tile lookups, clamps, out-parameters
   t4-exec/gen-bitpack, gen-fsm, gen-divround, gen-strings, gen-callchain
+  t4-exec/gen-pressure, gen-bigframe, gen-nested   many live values, large frames,
+                                     a[i].b[j].c indexing
 
 Do not edit generated files; change this script and rerun it.
 """
@@ -1255,6 +1257,85 @@ def callchain_family():
     return n
 
 
+
+def pressure_family():
+    """Many values live at once across a loop and a call: more than the 65816
+    has registers or the direct page has scratch words."""
+    r = random.Random(113)
+    n = 0
+    for k in range(15):
+        nv = r.randint(8, 28)
+        t = r.choice(["u8", "i16", "u16", "i8"])
+        init = [wrap(r.randrange(-500, 500), t) for _ in range(nv)]
+        steps = r.randint(1, 6)
+        coef = [r.randrange(1, 4) for _ in range(nv)]
+        vals = list(init)
+        for _ in range(steps):
+            vals = [wrap(vals[j] + coef[j] * (vals[(j + 1) % nv] & 7), t) for j in range(nv)]
+        total = wrap(sum(vals), "u16")
+        decl = "\n".join(f"  {t} v{j} = ({t})({init[j]});" for j in range(nv))
+        upd = "\n".join(f"    n{j} = ({t})(v{j} + {coef[j]} * (v{(j + 1) % nv} & 7));" for j in range(nv))
+        cp = " ".join(f"v{j} = n{j};" for j in range(nv))
+        ndecl = ", ".join(f"n{j}" for j in range(nv))
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// {nv} live {t} locals updated together {steps} times, with a call in the loop.\n"
+                        '#include "loomcc-test.h"\n'
+                        "static volatile u8 sink;\nstatic void touch(u8 x) { sink = x; }\n"
+                        f"int main(void) {{\n{decl}\n  {t} {ndecl};\n  u8 s;\n  u16 total;\n"
+                        f"  for (s = 0; s < {steps}; s++) {{\n{upd}\n    touch(s);\n    {cp}\n  }}\n"
+                        f"  total = (u16)({' + '.join(f'(u16)v{j}' for j in range(nv))});\n"
+                        f"  CHECK(total == {total}u);\n  CHECK(v0 == ({t})({vals[0]}) && v{nv - 1} == ({t})({vals[-1]}));\n  return 0;\n}}\n")
+        write(ROOT / f"t4-exec/gen-pressure/pressure-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def bigframe_family():
+    """Local arrays from a few bytes to over 256 bytes (past 8-bit stack
+    offsets) and several arrays in one frame."""
+    n = 0
+    for k, sizes in enumerate([[4], [40], [130], [200, 70], [300], [16, 16, 16, 16], [500], [255, 2], [256], [90, 90, 90]]):
+        decl = "\n".join(f"  u8 a{j}[{sz}];" for j, sz in enumerate(sizes))
+        fill = "\n".join(f"  for (i = 0; i < {sz}; i++) a{j}[i] = (u8)(i * {j + 3} + {j});" for j, sz in enumerate(sizes))
+        exp = [sum(((i * (j + 3) + j) & 0xff) for i in range(sz)) & 0xffff for j, sz in enumerate(sizes)]
+        sums = "\n".join(f"  s = 0; for (i = 0; i < {sz}; i++) s = (u16)(s + a{j}[i]); CHECK(s == {e}u); CHECK(a{j}[{sz - 1}] == {((sz - 1) * (j + 3) + j) & 0xff});"
+                         for j, (sz, e) in enumerate(zip(sizes, exp)))
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// Local arrays of {sizes} bytes in one frame.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"static void work(void) {{\n{decl}\n  u16 i, s;\n{fill}\n{sums}\n}}\n"
+                        "int main(void) { work(); return 0; }\n")
+        write(ROOT / f"t4-exec/gen-bigframe/frame-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def nested_index_family():
+    """a[i].b[j].c: arrays of structs containing arrays of structs, indexed by
+    u8 and u16 values (Loom's scene and animation data)."""
+    r = random.Random(127)
+    n = 0
+    for k in range(15):
+        no, ni = r.randint(2, 9), r.randint(1, 6)
+        inner_t, outer_t = r.choice(["u8", "i16", "u16"]), r.choice(["u8", "i8", "i16"])
+        data = [[(wrap(r.getrandbits(16), inner_t), wrap(r.getrandbits(16), "u8")) for _ in range(ni)] for _ in range(no)]
+        tags = [wrap(r.getrandbits(16), outer_t) for _ in range(no)]
+        probes = [(r.randrange(no), r.randrange(ni)) for _ in range(16)]
+        total = wrap(sum(v for row in data for v, _ in row), "u16")
+        init = ",\n".join("  { " + str(tags[i]) + ", { " + ", ".join(f"{{ {v}, {f} }}" for v, f in data[i]) + " } }" for i in range(no))
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// {no} outer records, each with {ni} inner records, in ROM and copied to WRAM.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"typedef struct {{ {inner_t} v; u8 f; }} In;\ntypedef struct {{ {outer_t} tag; In in[{ni}]; }} Out;\n"
+                        f"static const Out rom[{no}] = {{\n{init}\n}};\nstatic Out ram[{no}];\nstatic volatile u8 vi, vj;\n"
+                        "int main(void) {\n  u8 i, j;\n  u16 total = 0;\n"
+                        f"  for (i = 0; i < {no}; i++) ram[i] = rom[i];\n"
+                        f"  for (i = 0; i < {no}; i++) for (j = 0; j < {ni}; j++) total = (u16)(total + (u16)ram[i].in[j].v);\n"
+                        f"  CHECK(total == {total}u);\n"
+                        + "".join(f"  vi = {a}; vj = {b}; CHECK(ram[vi].in[vj].v == ({inner_t})({data[a][b][0]}) && rom[vi].in[vj].f == {data[a][b][1]} && ram[vi].tag == ({outer_t})({tags[a]}));\n" for a, b in probes)
+                        + "  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-nested/nested-{k:02d}.c", src)
+        n += 1
+    return n
+
+
 if __name__ == "__main__":
     total = (arith_family() + arith_family(["u32", "i32"], SMALL + ["u32", "i32"], "32") + soa_family() + switch_family() + romwalk_family()
              + declarator_family() + declarator_family(29, 40, True, "gen-declarator-qualified") + precedence_family() + conversion_family()
@@ -1262,5 +1343,5 @@ if __name__ == "__main__":
              + flags_family() + lut_family() + subpixel_family() + dispatch_family()
              + loops_family() + aabb_family() + sort_family() + ring_family() + tilemap_family()
              + minmax_family() + outparam_family() + bitpack_family() + fsm_family() + divround_family()
-             + strings_family() + callchain_family())
+             + strings_family() + callchain_family() + pressure_family() + bigframe_family() + nested_index_family())
     print(f"wrote {total} generated tests")
