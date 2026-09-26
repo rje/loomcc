@@ -1,0 +1,11 @@
+name = "solid_actor_query"
+kind = "pair"
+description = "The pool's solid-actor queries: the highest visible solid actor top under a box (a floor) and whether a solid actor covers a box (a wall). Eight actors, five solid; five queries of each."
+unit_labels = ["loom_movement_actor_floor_probe", "loom_movement_actor_block_probe"]
+helper_labels = []
+
+[provenance]
+loom_commit = "ea4e3af"
+c_source = "runtime/src/movement.c:48-60 (the shims), crates/loom-app/src/generate/output.rs:6128-6131 (the generated hooks), runtime/src/actor.c:1480-1534 and 1560-1604 (loom_actor_floor_below, loom_actor_blocks_box), runtime/src/mode1.c:1663-1666 (loom_mode1_visibility_table) at ea4e3af^"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_solid_next, loom_pvs_solid_floor, loom_pvs_solid_wall at ea4e3af (unchanged at HEAD), behind two small 816-tcc ABI entries written for the bench (they store the box in loom_pvs_sq_* and jsr, as body.asm's loom_pvs_probe_actor_floor/_wall do)"
+notes = "The asm is reached from asm in Loom (jsr, box in RAM); the ABI glue adds about a dozen instructions a call to the asm side. The asm reads the pool and Mode 1's visibility table through driver-bound pointers; the C reads loom_actor_pool and a cut-down Mode 1 state (just the visibility table). The asm takes the count from loom_movement_solid_actors (the pool's mirrored solid_count) and does not check the pool's initialized flag; the driver keeps both consistent."
