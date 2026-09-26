@@ -1,0 +1,11 @@
+name = "board_fit"
+kind = "pair"
+description = "Falling-piece fit test: is every cell of a 4x4 shape on the board and empty? 7 tetromino probes of a 10x20 board."
+unit_labels = ["loom_pvs_board_fits"]
+helper_labels = ["tcc__mul"]
+
+[provenance]
+loom_commit = "e239e1c"
+c_source = "runtime/src/board.c:264-296 at e239e1c^ (loom_board_fits, with loom_board_cell 118-122), taking the LoomBoardPaint record instead of a board index"
+asm_source = "runtime/backends/pvsneslib/src/board.asm:loom_pvs_board_fits (+ loom_pvs_board_fits_core, loom_pvs_board_load, loom_pvs_board_mul) at e239e1c (unchanged at HEAD)"
+notes = "The asm multiplies on the CPU's $4202/$4203 multiplier (row * width, both under 256); the C uses tcc__mul. The spec lookup (loom_board_spec) and paint binding are outside both. .BASE LOOM_ROM_BASE is written .BASE $80."
