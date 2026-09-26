@@ -27,6 +27,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "external/fetched/mcpp/cpp-test/test-t"
 DST = ROOT / "tests/t1-pp/mcpp"
+# Expected errors that are implementation choices here: `$` in identifiers
+# is accepted (t1-pp/lex/dollar-identifier.c), so THIS$AND$THAT is a name.
+NOT_ERRORS = {("e_18_4.c", 30): "`$` is an identifier character for loomcc (implementation-defined)"}
 # Tests whose subject only exists before C99 (e.g. #if overflow of long).
 C90_ONLY = {"e_14_10.c"}
 SOURCE_NOTE = "mcpp 2.7.2 cpp-test/test-t/{name} (BSD-2-Clause, see LICENSE in this directory)"
@@ -74,7 +77,9 @@ def main():
                 for m in DG_ERROR.finditer(line):
                     n_err += 1
                     at = m.group(2)
-                    if at is None:
+                    if at is None and (name, i + 1) in NOT_ERRORS:
+                        tail.append(f"// loomcc-note: line {i + 1} is not an error here: " + NOT_ERRORS[(name, i + 1)])
+                    elif at is None:
                         out_lines[i] = out_lines[i] + " // loomcc-error"
                     elif at == "0":
                         tail.append("// loomcc-error@*")

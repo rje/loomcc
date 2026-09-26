@@ -27,11 +27,12 @@
         character.
 */
 /*  From ISO 9899:1990 / Corrigendum 1. */
-#define THIS$AND$THAT(a, b)     ((a) + (b))     /* { dg-error "ISO C requires whitespace after the macro name| '\\$' in identifier| No space between macro name" } */ // loomcc-error
+#define THIS$AND$THAT(a, b)     ((a) + (b))     /* { dg-error "ISO C requires whitespace after the macro name| '\\$' in identifier| No space between macro name" } */
 /* Note: the following definition is legal (object-like macro).
 #define THIS $AND$THAT(a, b)    ((a) + (b))
 */
 
 // loomcc-do: preprocess
 // loomcc-source: mcpp 2.7.2 cpp-test/test-t/e_18_4.c (BSD-2-Clause, see LICENSE in this directory)
+// loomcc-note: line 30 is not an error here: `$` is an identifier character for loomcc (implementation-defined)
 // loomcc-ref-diverges: tcc [tcc-mcpp] 816-tcc fails this mcpp test: missing error at e_18_4.c:8 (directive line 8)

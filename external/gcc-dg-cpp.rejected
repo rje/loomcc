@@ -1,0 +1,267 @@
+# gcc.dg/cpp preprocess tests not wrapped, and why
+19940712-1.c	dg diagnostic form not converted
+19951025-1.c	dg diagnostic form not converted
+19990228-1.c	options, requirements or dg-final checks
+20000129-1.c	dg diagnostic form not converted
+20000209-1.c	dg diagnostic form not converted
+20000419-1.c	GNU-only behaviour or a system header
+20000519-1.c	options, requirements or dg-final checks
+Wmissingdirs.c	options, requirements or dg-final checks
+Wsignprom.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/Wsignprom.c:22 (dir
+Wtrigraphs-2.c	options, requirements or dg-final checks
+Wtrigraphs.c	options, requirements or dg-final checks
+Wunused.c	options, requirements or dg-final checks
+_Pragma1.c	clang disagrees: missing error at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/_Pragma1.c:18 (directive
+_Pragma3.c	GNU-only behaviour or a system header
+_Pragma4.c	options, requirements or dg-final checks
+_Pragma5.c	options, requirements or dg-final checks
+arith-1.c	clang rejects it
+arith-3.c	options, requirements or dg-final checks
+assert2.c	options, requirements or dg-final checks
+assert3.c	options, requirements or dg-final checks
+assert4.c	options, requirements or dg-final checks
+avoidpaste1.c	options, requirements or dg-final checks
+avoidpaste2.c	options, requirements or dg-final checks
+backslash2.c	dg diagnostic form not converted
+c11-elifdef-1.c	clang rejects it
+c11-scope-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/c11-scope-1.c:7 (di
+c11-warning-1.c	dg diagnostic form not converted
+c11-warning-2.c	dg diagnostic form not converted
+c11-warning-3.c	options, requirements or dg-final checks
+c17-scope-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/c17-scope-1.c:7 (di
+c23-elifdef-1.c	options, requirements or dg-final checks
+c23-elifdef-2.c	options, requirements or dg-final checks
+c23-scope-1.c	options, requirements or dg-final checks
+c23-scope-2.c	options, requirements or dg-final checks
+c23-ucnid-1-utf8.c	options, requirements or dg-final checks
+c23-ucnid-1.c	options, requirements or dg-final checks
+c23-ucnid-2.c	options, requirements or dg-final checks
+c23-va-opt-1.c	options, requirements or dg-final checks
+c23-warning-1.c	options, requirements or dg-final checks
+c23-warning-2.c	options, requirements or dg-final checks
+c89-pedantic.c	options, requirements or dg-final checks
+c89.c	options, requirements or dg-final checks
+c90-if-comma-1.c	options, requirements or dg-final checks
+c90-pedantic.c	options, requirements or dg-final checks
+c90-scope-1.c	options, requirements or dg-final checks
+c90.c	options, requirements or dg-final checks
+c94-pedantic.c	options, requirements or dg-final checks
+c94-scope-1.c	options, requirements or dg-final checks
+c94.c	options, requirements or dg-final checks
+c99-if-comma-1.c	dg diagnostic form not converted
+c99-scope-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/c99-scope-1.c:7 (di
+cmdlne-C.c	options, requirements or dg-final checks
+cmdlne-C2.c	options, requirements or dg-final checks
+cmdlne-C3.c	options, requirements or dg-final checks
+cmdlne-M-2.c	options, requirements or dg-final checks
+cmdlne-M.c	options, requirements or dg-final checks
+cmdlne-P.c	options, requirements or dg-final checks
+cmdlne-dD-M.c	options, requirements or dg-final checks
+cmdlne-dD-dM.c	options, requirements or dg-final checks
+cmdlne-dD.c	options, requirements or dg-final checks
+cmdlne-dI-C.c	options, requirements or dg-final checks
+cmdlne-dI-M.c	options, requirements or dg-final checks
+cmdlne-dM-M.c	options, requirements or dg-final checks
+cmdlne-dM-dD.c	options, requirements or dg-final checks
+cmdlne-dM.c	options, requirements or dg-final checks
+cmdlne-dN-M.c	options, requirements or dg-final checks
+cmdlne-dU-1.c	options, requirements or dg-final checks
+cmdlne-dU-10.c	options, requirements or dg-final checks
+cmdlne-dU-11.c	options, requirements or dg-final checks
+cmdlne-dU-12.c	options, requirements or dg-final checks
+cmdlne-dU-13.c	options, requirements or dg-final checks
+cmdlne-dU-14.c	options, requirements or dg-final checks
+cmdlne-dU-15.c	options, requirements or dg-final checks
+cmdlne-dU-16.c	options, requirements or dg-final checks
+cmdlne-dU-17.c	options, requirements or dg-final checks
+cmdlne-dU-18.c	options, requirements or dg-final checks
+cmdlne-dU-19.c	options, requirements or dg-final checks
+cmdlne-dU-2.c	options, requirements or dg-final checks
+cmdlne-dU-20.c	options, requirements or dg-final checks
+cmdlne-dU-21.c	options, requirements or dg-final checks
+cmdlne-dU-22.c	options, requirements or dg-final checks
+cmdlne-dU-23.c	options, requirements or dg-final checks
+cmdlne-dU-3.c	options, requirements or dg-final checks
+cmdlne-dU-4.c	options, requirements or dg-final checks
+cmdlne-dU-5.c	options, requirements or dg-final checks
+cmdlne-dU-6.c	options, requirements or dg-final checks
+cmdlne-dU-7.c	options, requirements or dg-final checks
+cmdlne-dU-8.c	options, requirements or dg-final checks
+cmdlne-dU-9.c	options, requirements or dg-final checks
+cxxcom1.c	options, requirements or dg-final checks
+cxxcom2.c	options, requirements or dg-final checks
+defined-Wexpansion-to-defined.c	options, requirements or dg-final checks
+defined-Wextra-Wno-expansion-to-defined.c	options, requirements or dg-final checks
+defined-Wextra.c	options, requirements or dg-final checks
+defined-Wno-expansion-to-defined.c	options, requirements or dg-final checks
+defined-syshdr.c	options, requirements or dg-final checks
+directiv.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/directiv.c:21 (dire
+embed-4.c	options, requirements or dg-final checks
+empty-include.c	options, requirements or dg-final checks
+endif-pedantic1.c	options, requirements or dg-final checks
+endif-pedantic2.c	options, requirements or dg-final checks
+expr-overflow-1.c	GNU-only behaviour or a system header
+expr.c	options, requirements or dg-final checks
+extratokens.c	options, requirements or dg-final checks
+extratokens2.c	options, requirements or dg-final checks
+fpreprocessed.c	options, requirements or dg-final checks
+gnu11-elifdef-1.c	options, requirements or dg-final checks
+gnu11-elifdef-2.c	options, requirements or dg-final checks
+gnu11-elifdef-3.c	options, requirements or dg-final checks
+gnu11-elifdef-4.c	options, requirements or dg-final checks
+gnu11-scope-1.c	options, requirements or dg-final checks
+gnu11-warning-1.c	options, requirements or dg-final checks
+gnu11-warning-2.c	options, requirements or dg-final checks
+gnu11-warning-3.c	options, requirements or dg-final checks
+gnu11-warning-4.c	options, requirements or dg-final checks
+gnu17-scope-1.c	options, requirements or dg-final checks
+gnu23-warning-1.c	options, requirements or dg-final checks
+gnu23-warning-2.c	options, requirements or dg-final checks
+gnu89-scope-1.c	options, requirements or dg-final checks
+gnu99-scope-1.c	options, requirements or dg-final checks
+gnuc89-pedantic.c	options, requirements or dg-final checks
+gnuc89.c	options, requirements or dg-final checks
+gnuc99-pedantic.c	options, requirements or dg-final checks
+gnuc99.c	options, requirements or dg-final checks
+ident-1.c	options, requirements or dg-final checks
+if-1.c	dg diagnostic form not converted
+if-2.c	dg diagnostic form not converted
+if-cexp.c	dg diagnostic form not converted
+if-mop.c	dg diagnostic form not converted
+if-mpar.c	dg diagnostic form not converted
+if-oppr2.c	clang rejects it
+if-paren.c	dg diagnostic form not converted
+if-shift.c	clang rejects it
+import1.c	options, requirements or dg-final checks
+import2.c	options, requirements or dg-final checks
+include2.c	GNU-only behaviour or a system header
+include2a.c	dg diagnostic form not converted
+include6.c	options, requirements or dg-final checks
+lexident.c	options, requirements or dg-final checks
+line1.c	options, requirements or dg-final checks
+line2.c	dg diagnostic form not converted
+line5.c	options, requirements or dg-final checks
+line6.c	dg diagnostic form not converted
+line7.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/line7.c:13 (directi
+line9.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/line9.c:5 (directiv
+maccom1.c	options, requirements or dg-final checks
+maccom2.c	options, requirements or dg-final checks
+maccom3.c	options, requirements or dg-final checks
+maccom4.c	options, requirements or dg-final checks
+maccom5.c	options, requirements or dg-final checks
+maccom6.c	options, requirements or dg-final checks
+macspace1.c	options, requirements or dg-final checks
+macspace2.c	dg diagnostic form not converted
+macsyntx.c	options, requirements or dg-final checks
+macsyntx2.c	GNU-only behaviour or a system header
+mi5.c	options, requirements or dg-final checks
+mi7.c	options, requirements or dg-final checks
+mi8.c	options, requirements or dg-final checks
+multiline.c	options, requirements or dg-final checks
+normalize-1.c	GNU-only behaviour or a system header
+normalize-2.c	options, requirements or dg-final checks
+normalize-4.c	options, requirements or dg-final checks
+paste1.c	dg diagnostic form not converted
+paste10.c	GNU-only behaviour or a system header
+paste12-2.c	options, requirements or dg-final checks
+paste12.c	options, requirements or dg-final checks
+paste13.c	options, requirements or dg-final checks
+paste14-2.c	options, requirements or dg-final checks
+paste14.c	options, requirements or dg-final checks
+paste17.c	options, requirements or dg-final checks
+paste8-2.c	options, requirements or dg-final checks
+paste8.c	options, requirements or dg-final checks
+poison.c	dg diagnostic form not converted
+pr101638.c	options, requirements or dg-final checks
+pr111965-1.c	options, requirements or dg-final checks
+pr111965-2.c	options, requirements or dg-final checks
+pr118674.c	dg diagnostic form not converted
+pr22168-2.c	options, requirements or dg-final checks
+pr22168.c	GNU-only behaviour or a system header
+pr27777.c	dg diagnostic form not converted
+pr28165.c	GNU-only behaviour or a system header
+pr29612-2.c	options, requirements or dg-final checks
+pr30805.c	options, requirements or dg-final checks
+pr34602.c	dg diagnostic form not converted
+pr35322.c	GNU-only behaviour or a system header
+pr43195.c	options, requirements or dg-final checks
+pr61854-3.c	options, requirements or dg-final checks
+pr61854-4.c	options, requirements or dg-final checks
+pr61854-c90.c	options, requirements or dg-final checks
+pr61854-c94.c	options, requirements or dg-final checks
+pr65238-2.c	dg diagnostic form not converted
+pr71591.c	options, requirements or dg-final checks
+pr71681-1.c	options, requirements or dg-final checks
+pr71681-2.c	options, requirements or dg-final checks
+pr97989-1.c	options, requirements or dg-final checks
+pr97989-2.c	options, requirements or dg-final checks
+pr98882.c	options, requirements or dg-final checks
+pragma-3.c	options, requirements or dg-final checks
+pragma-pop_macro-1.c	GNU-only behaviour or a system header
+redef2.c	options, requirements or dg-final checks
+redef3.c	options, requirements or dg-final checks
+skipping2.c	dg diagnostic form not converted
+source_date_epoch-3.c	options, requirements or dg-final checks
+spacing1.c	options, requirements or dg-final checks
+spacing2.c	options, requirements or dg-final checks
+strify1.c	dg diagnostic form not converted
+subframework1.c	options, requirements or dg-final checks
+syshdr.c	dg diagnostic form not converted
+sysmac1.c	options, requirements or dg-final checks
+sysmac3.c	options, requirements or dg-final checks
+tr-warn1.c	options, requirements or dg-final checks
+tr-warn2.c	options, requirements or dg-final checks
+tr-warn3.c	options, requirements or dg-final checks
+tr-warn4.c	options, requirements or dg-final checks
+tr-warn5.c	options, requirements or dg-final checks
+tr-warn6.c	options, requirements or dg-final checks
+uchar-1.c	options, requirements or dg-final checks
+ucnid-11-utf8.c	GNU-only behaviour or a system header
+ucnid-11.c	GNU-only behaviour or a system header
+ucnid-13-utf8.c	options, requirements or dg-final checks
+ucnid-13.c	options, requirements or dg-final checks
+ucnid-14-utf8.c	options, requirements or dg-final checks
+ucnid-14.c	options, requirements or dg-final checks
+ucnid-15-utf8.c	options, requirements or dg-final checks
+ucnid-15.c	options, requirements or dg-final checks
+ucnid-4.c	GNU-only behaviour or a system header
+ucnid-5-utf8.c	clang disagrees: missing error at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/ucnid-5-utf8.c:12 (direc
+ucnid-5.c	GNU-only behaviour or a system header
+ucnid-9.c	GNU-only behaviour or a system header
+unc1.c	dg diagnostic form not converted
+unc2.c	dg diagnostic form not converted
+unc3.c	dg diagnostic form not converted
+unc4.c	dg diagnostic form not converted
+undef-opt-1.c	options, requirements or dg-final checks
+vararg2.c	options, requirements or dg-final checks
+vararg3.c	GNU-only behaviour or a system header
+vararg4.c	options, requirements or dg-final checks
+warn-comments-2.c	options, requirements or dg-final checks
+warn-comments-3.c	options, requirements or dg-final checks
+warn-comments.c	options, requirements or dg-final checks
+warn-cxx-compat-2.c	options, requirements or dg-final checks
+warn-cxx-compat.c	options, requirements or dg-final checks
+warn-deprecated-2.c	options, requirements or dg-final checks
+warn-deprecated.c	options, requirements or dg-final checks
+warn-long-long-2.c	options, requirements or dg-final checks
+warn-long-long.c	options, requirements or dg-final checks
+warn-multichar-2.c	options, requirements or dg-final checks
+warn-multichar.c	options, requirements or dg-final checks
+warn-normalized-1.c	options, requirements or dg-final checks
+warn-normalized-2.c	options, requirements or dg-final checks
+warn-normalized-3.c	options, requirements or dg-final checks
+warn-normalized-4-bytes.c	options, requirements or dg-final checks
+warn-normalized-4-unicode.c	options, requirements or dg-final checks
+warn-redefined-2.c	options, requirements or dg-final checks
+warn-redefined.c	options, requirements or dg-final checks
+warn-trigraphs-1.c	options, requirements or dg-final checks
+warn-trigraphs-2.c	options, requirements or dg-final checks
+warn-trigraphs-3.c	options, requirements or dg-final checks
+warn-trigraphs-4.c	options, requirements or dg-final checks
+warn-undef-2.c	options, requirements or dg-final checks
+warn-undef.c	options, requirements or dg-final checks
+warn-unused-macros-2.c	options, requirements or dg-final checks
+warn-unused-macros.c	options, requirements or dg-final checks
+warn-variadic-2.c	options, requirements or dg-final checks
+warn-variadic.c	options, requirements or dg-final checks
+widestr1.c	dg diagnostic form not converted
