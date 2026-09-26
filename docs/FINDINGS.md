@@ -116,7 +116,7 @@ line; loomcc reports `<built-in>:0: error: macro name missing`.
 - `lex-errors/backslash-at-eof.c`: a file ending in backslash-newline
   (5.1.1.2p2); silent (clang warns). No crash, which is the main point.
 
-### F10. Declaration-specifier constraints (same build)
+### F10. Declaration-specifier constraints (loomcc build of 2026-09-25 23:18)
 
 | test | expected | loomcc |
 |---|---|---|
@@ -225,7 +225,7 @@ overrides) rather than devkitsnes's.
 
 ## Fixed
 
-### F9. A parameter may not share a name with a typedef (loomcc working tree, 2025-09-25 23:18 build)
+### F9. A parameter may not share a name with a typedef (loomcc build of 2026-09-25 23:18)
 
 Test: `t2-parse/typedef/param-shadows-typedef.c`.
 
@@ -239,7 +239,7 @@ the parameter's scope hides the typedef name). loomcc: `error: expected ')'
 before 'T'`. Loom does not do this today, but hooks written by users could.
 
 Fixed in loomcc 65be77e; the tests pass (suite run of 2026-09-26).
-### F11. Bit-field layout differs from 816-tcc for mixed unit types (same build)
+### F11. Bit-field layout differs from 816-tcc for mixed unit types (loomcc build of 2026-09-25 23:18)
 
 Test: `t3-sema/layout/bitfields-816tcc.c`, line 19:
 `struct P { unsigned char a : 4; unsigned b : 4; };` is 4 bytes in 816-tcc
@@ -248,7 +248,7 @@ unit at byte 2). loomcc makes it 2 bytes (b packed into the same bytes as a). Th
 file match.
 
 Fixed in loomcc 65be77e; the tests pass (suite run of 2026-09-26).
-### F12. Negative pointer offsets read the wrong element (same build, `rom` mode)
+### F12. Negative pointer offsets read the wrong element (loomcc build of 2026-09-25 23:18, `rom` mode)
 
 Tests: `t4-exec/pointer/arithmetic.c` line 11 (`*(q - 2)` where `q = &a[9]`),
 `t4-exec/array/index-types.c` line 15 (`mid[s8]` with `i8 s8 = -3`,
@@ -258,14 +258,14 @@ probably treated as unsigned (a 16-bit offset added to a 24-bit pointer
 without borrowing from the bank byte, or zero-extended from 8 bits).
 
 Fixed in loomcc 65be77e; the tests pass (suite run of 2026-09-26).
-### F13. Struct arguments are not copied (same build, `rom` mode)
+### F13. Struct arguments are not copied (loomcc build of 2026-09-25 23:18, `rom` mode)
 
 Test: `t4-exec/struct/pass-by-value.c`, line 10. `sum(struct P p)` does
 `p.x += 100`; afterwards the caller's `a.x` must still be 3. In loomcc's ROM
 it is changed: the callee writes the caller's object.
 
 Fixed in loomcc 65be77e; the tests pass (suite run of 2026-09-26).
-### F14. Statics with the same name in two units collide (same build, `rom` mode)
+### F14. Statics with the same name in two units collide (loomcc build of 2026-09-25 23:18, `rom` mode)
 
 Test: `t4-exec/global/static-same-name-two-units.c`, line 9. Both units name
 their `static short hidden` `lcs0_hidden`, so the second unit reads the
@@ -273,7 +273,7 @@ first unit's variable (1, not 2). 816-tcc avoids this with
 `tccs_{WLA_FILENAME}_name`; loomcc needs a per-unit prefix too.
 
 Fixed in loomcc 65be77e; the tests pass (suite run of 2026-09-26).
-### F16. Struct by value across the 816-tcc ABI (same build, `rom` mode)
+### F16. Struct by value across the 816-tcc ABI (loomcc build of 2026-09-25 23:18, `rom` mode)
 
 Test: `t5-snes/interop/struct-by-value.c`, line 15: 816-tcc code calls the
 unit's `struct V unit_swap(struct V v)` (argument copied whole onto the
