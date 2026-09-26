@@ -92,11 +92,17 @@ def main():
     manifest = {"schema_version": 1, "note": __doc__.strip().splitlines()[0], "suites": {}}
 
     suite = os.path.join(ROOT, "c-testsuite/single-exec")
+    # c-testsuite's tests from TinyCC are LGPL-2.1: not vendored here, read
+    # from the checkout tests/external/fetch.sh c-testsuite makes (pinned to
+    # the same commit). Without it they are left out of the manifest.
+    fetched = os.path.join(TESTBED, "../tests/external/fetched/c-testsuite/tests/single-exec")
+    names = set(n for n in os.listdir(suite) if n.endswith(".c"))
+    if os.path.isdir(fetched):
+        names |= set(n for n in os.listdir(fetched) if n.endswith(".c"))
     tests = []
-    for name in sorted(os.listdir(suite)):
-        if not name.endswith(".c"):
-            continue
-        path = os.path.join(suite, name)
+    for name in sorted(names):
+        vendored = os.path.exists(os.path.join(suite, name))
+        path = os.path.join(suite if vendored else fetched, name)
         tags = open(path + ".tags").read().split() if os.path.exists(path + ".tags") else []
         otags = {}
         if os.path.exists(path + ".otags"):
@@ -106,12 +112,16 @@ def main():
         origin = otags.get("repository", "c-testsuite")
         licence = {
             "git://git.simple-cc.org/scc": "ISC (LICENSE.scc-ISC)",
-            "git://repo.or.cz/tinycc.git": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+            "git://repo.or.cz/tinycc.git": "LGPL-2.1 (fetched, not vendored)",
         }.get(origin, "MIT (c-testsuite LICENSE)")
+        if not vendored and origin != "git://repo.or.cz/tinycc.git":
+            continue
         flags, recursion, wide = classify(path)
+        where = "c-testsuite/single-exec/" if vendored else "fetched:c-testsuite/tests/single-exec/"
         tests.append({
-            "file": "c-testsuite/single-exec/" + name,
-            "expected": "c-testsuite/single-exec/" + name + ".expected",
+            "file": where + name,
+            "expected": where + name + ".expected",
+            "vendored": vendored,
             "expected_output_empty": os.path.getsize(path + ".expected") == 0,
             "tags": tags,
             "origin": origin,

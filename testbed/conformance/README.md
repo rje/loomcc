@@ -1,10 +1,12 @@
 # Conformance tests
 
 Third-party C conformance tests, copied unmodified, each with its licence.
+Copyleft tests are not copied: c-testsuite's 69 tests from TinyCC (LGPL-2.1)
+are fetched instead (see below).
 `manifest.json` (written by `testbed/scripts/classify-conformance.py`) lists
 every test with its origin, licence and heuristic flags.
 
-## c-testsuite/single-exec (220 tests)
+## c-testsuite/single-exec (151 vendored, 69 fetched)
 
 - Source: https://github.com/c-testsuite/c-testsuite, commit
   `5c7275656d751de0e68b2d340a95b5681858ed07` (2020-03-09), `tests/single-exec/`.
@@ -18,9 +20,12 @@ every test with its origin, licence and heuristic flags.
     `tests/scc/execute/*`, scc version `355356a9…`): **ISC**,
     `LICENSE.scc-ISC` (copied from scc commit `66f99bce…`).
   - 69 tests from TinyCC (git://repo.or.cz/tinycc.git, `tests/tests2/*`,
-    version `61ba9f22…`): **LGPL-2.1**, `LICENSE.tinycc-LGPL-2.1` (TinyCC's
-    `COPYING`, copied from commit `3dc99dbc…`). Keep them as test inputs;
-    nothing from them goes into the compiler.
+    version `61ba9f22…`): **LGPL-2.1**, so **not in this repository**.
+    `tests/external/fetch.sh c-testsuite` checks out c-testsuite at the
+    commit above into `tests/external/fetched/c-testsuite/` (git-ignored);
+    they are `tests/single-exec/NNNNN.c` there, and `manifest.json` lists
+    them with `"vendored": false` and a `fetched:` path. Nothing from them
+    goes into the compiler.
   - `00001.c` (no `.otags`; `return 0;`): c-testsuite's own, MIT.
 
 ## chibicc/test (41 tests)
@@ -82,6 +87,10 @@ Read them as:
 git clone --depth 1 https://github.com/c-testsuite/c-testsuite
 git clone --depth 1 https://github.com/rui314/chibicc
 cp c-testsuite/tests/single-exec/* testbed/conformance/c-testsuite/single-exec/
+# then delete the TinyCC-origin tests (their .otags name bellard.org/tcc):
+grep -l bellard.org/tcc testbed/conformance/c-testsuite/single-exec/*.otags \
+  | sed 's/\.otags$//' | while read t; do rm "$t" "$t.expected" "$t.tags" "$t.otags"; done
+tests/external/fetch.sh c-testsuite      # so the manifest covers them
 cp chibicc/test/*.c chibicc/test/*.h chibicc/test/common testbed/conformance/chibicc/test/
 cp -R chibicc/include/. testbed/conformance/chibicc/include/
 python3 testbed/scripts/classify-conformance.py
