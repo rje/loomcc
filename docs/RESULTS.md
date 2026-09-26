@@ -159,8 +159,8 @@ loop and bounds checks are tighter), while its inner loop still pays the
 | M5 (2026-09-26) | 379/458 | 75/79 | 77/86 | 220/234 | 17/17 | - | - | 767/874 |
 | M6c + correctness fixes (F17, F18, loop, Q1, Q2, diagnostics) | 448/458 | 79/79 | 85/87 | 299/316 | 17/17 | 31/31 | 80/80 | 1039/1068 |
 | M7c (suite has grown to 2422 tests) | 449/460 | 303/309 | 300/303 | 1191/1214 | 17/17 | 39/39 | 80/80 | 2379/2422 |
-| M8 + F29/F30 (suite now 2473 tests; 3 unresolved are the suite's own unfinished t6 tests) | 449/460 | 303/309 | 300/307 | **1212/1218** (0 fail) | **47/48** (0 fail) | 48/51 | 80/80 | 2439/2473 |
 | M8 (recursion, 32-bit ops, re-entry through foreign code) | 449/460 | 303/309 | 300/303 | **1210/1216** (0 fail, 6 xfail) | **32/33** (0 fail, 1 xfail) | 39/39 | 80/80 | 2413/2440 |
+| M8 + F29/F30 (suite now 2473 tests; 3 unresolved are the suite's own unfinished t6 tests) | 449/460 | 303/309 | 300/307 | **1212/1218** (0 fail) | **47/48** (0 fail) | 48/51 | 80/80 | 2439/2473 |
 
 Since M8 no execution test fails (t4-exec, t5-snes, t6-loom, t7-random);
 remaining failures are front-end diagnostics: t1 failures are `__VA_OPT__`

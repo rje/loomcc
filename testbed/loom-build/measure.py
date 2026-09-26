@@ -44,6 +44,7 @@ def package(copy, work):
     (work / f"in-{copy.name}.json").write_text(json.dumps(req))
     fw = LOOM / "target/Frameworks"
     env = dict(os.environ, LOOM_MESEN_FRAMEWORKS=str(fw), LOOM_DISABLE_AUDIO="1", DYLD_LIBRARY_PATH=str(fw))
+    wait_for_quiet()
     p = sh(BG + [LOOM / "target/debug/loom-automation", work / f"in-{copy.name}.json", work / f"out-{copy.name}.json"], env=env)
     ok = (copy / "Build/Release/project").exists() and any((copy / "Build/Release/project").iterdir())
     return ok, (p.stdout + p.stderr)[-500:]
@@ -59,13 +60,28 @@ def build(copy, runtime, variant, out, profile="release", ref=None):
     return p.stdout.strip().splitlines()[-1]
 
 
+def wait_for_quiet(limit=None):
+    """At background priority the emulator misses its fixed 5-second frame
+    deadline when the machine is saturated by other work (NoFrame at frame 0
+    or mid-run). Wait for the load to fall instead of burning retries."""
+    import time
+    limit = limit or max(4, (os.cpu_count() or 8) // 2)
+    waited = 0
+    while os.getloadavg()[0] > limit:
+        if waited % 600 == 0:
+            print(f"waiting for load {os.getloadavg()[0]:.0f} to fall under {limit}", flush=True)
+        time.sleep(30)
+        waited += 30
+
+
 def trace(rom, script, out, extra):
-    for _ in range(4):
+    for _ in range(8):
+        wait_for_quiet()
         p = sh(BG + [EMU, "trace", "--rom", rom, "--script", script, "--out", out] + extra)
         if p.returncode == 0:
             return
         print("emulator retry:", (p.stderr or p.stdout).strip().splitlines()[:1])
-    raise SystemExit("emulator failed four times")
+    raise SystemExit("emulator failed eight times")
 
 
 def tick_cost(rom, script, out, frames, ticks):
