@@ -32,12 +32,8 @@ HARNESS = ROOT / "harness/include"
 
 
 CSMITH_DIR = HERE / "csmith"
-# No structs or unions: the host16 oracle runs in lli, which ignores byval
-# (a callee's writes to a struct parameter reach the caller) and lays out
-# pointer-bearing aggregates with 8-byte pointers while clang sized them for
-# 2-byte ones. Programs with struct parameters get wrong reference checksums.
 CSMITH_FLAGS = ["--no-argc", "--no-longlong", "--no-math64", "--no-bitfields", "--no-packed-struct", "--no-float",
-                "--no-structs", "--no-unions", "--max-funcs", "4", "--max-block-size", "3", "--quiet", "--concise"]
+                "--max-funcs", "4", "--max-block-size", "3", "--quiet", "--concise"]
 
 
 def host16_checksum(src, work, extra=(), init=None):

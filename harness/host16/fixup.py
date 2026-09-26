@@ -51,7 +51,7 @@ def sizeof(t):
 GLOBAL = re.compile(r"^(@[\w.$\"-]+) = [^=]*?\b(?:global|constant) ")
 ALLOCA = re.compile(r"^\s*(%[\w.$\"-]+) = alloca ")
 MEMCALL = re.compile(r"call void @llvm\.(memcpy|memset|memmove)\.[\w.]+\((.*)\)")
-BYVAL = re.compile(r"ptr noundef byval\((.+?)\) align (\d+) (%[\w.$\"-]+)")
+BYVAL = re.compile(r"ptr (?:noundef )?byval\((.+?)\)(?: align (\d+))? ([%@][\w.$\"-]+)")
 
 
 def pre(text):
@@ -87,7 +87,7 @@ def pre(text):
 
             def copy(mm):
                 nonlocal counter
-                t, align, v = mm.group(1), mm.group(2), mm.group(3)
+                t, align, v = mm.group(1), mm.group(2) or "1", mm.group(3)
                 counter += 1
                 tmp = f"%host16.byval.{counter}"
                 pre_lines.append(f"  {tmp} = alloca {t}, align {align}")
