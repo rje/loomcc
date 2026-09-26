@@ -58,6 +58,8 @@ impl Tools {
         let llvm = o
             .llvm_bin
             .or_else(|| std::env::var_os("LLVM_BIN").map(PathBuf::from))
+            // lli on PATH (a full LLVM, not Apple's clang), else Homebrew's keg.
+            .or_else(|| which("lli").and_then(|p| p.parent().map(Path::to_path_buf)))
             .unwrap_or_else(|| PathBuf::from("/opt/homebrew/opt/llvm/bin"));
         let emulator = o
             .emulator

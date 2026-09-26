@@ -1,9 +1,9 @@
 # tcc-tests2 tests rejected by external/wrap-suite.py, with reasons
 03_struct.c	GNU extensions
-100_c99array-decls.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/100_c99array-decls.c:8:
+100_c99array-decls.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/100_c99array-decls.c:8:
 101_cleanup.c	floating point
 102_alignas.c	floating point
-104_inline.c	tcc-rom: wlalink failed: /Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/pvsneslib/lib/LoROM_FastROM/libc.obj: libc_c.asm:7377: _TRY_PUT_LABEL: Label 
+104_inline.c	tcc-rom: wlalink failed: $PVSNESLIB_HOME/pvsneslib/lib/LoROM_FastROM/libc.obj: libc_c.asm:7377: _TRY_PUT_LABEL: Label 
 106_versym.c	includes pthread.h
 107_stack_safe.c	floating constants
 108_constructor.c	GNU extensions
@@ -20,8 +20,8 @@
 119_random_stuff.c	includes sys/mman.h
 120_alias.c	GNU extensions
 121_struct_return.c	floating point
-122_vla_reuse.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/122_vla_reuse.c:8:
-123_vla_bug.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/123_vla_bug.c:8:
+122_vla_reuse.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/122_vla_reuse.c:8:
+123_vla_bug.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/123_vla_bug.c:8:
 124_atomic_counter.c	includes stddef.h
 125_atomic_misc.c	includes stdatomic.h
 126_bound_global.c	tcc-rom: output differs at byte 0 (printed 0 bytes, expected 173): got ``, expected `126_bound_global`
@@ -48,7 +48,7 @@
 15_recursion.c	tcc-rom: output differs at byte 22 (printed 42 bytes, expected 43): got `-25216\n-30336\n24`, expected `40320\n362880\n362`
 17_enum.c	64-bit integers
 18_include.c	includes 18_include.h
-19_pointer_arithmetic.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/19_pointer_arithmetic.c:8:
+19_pointer_arithmetic.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/19_pointer_arithmetic.c:8:
 21_char_array.c	tcc-rom: output differs at byte 9 (printed 54 bytes, expected 64): got `0\ne: 0\nl: 0\nl: 0`, expected `104\ne: 101\nl: 10`
 22_floating_point.c	includes math.h
 23_type_coercion.c	floating point
@@ -59,7 +59,7 @@
 31_args.c	tcc-rom: output differs at byte 12 (printed 19 bytes, expected 74): got `-31712\n`, expected `6\narg 1: arg1\nar`
 32_led.c	64-bit integers
 33_ternary_op.c	includes assert.h
-34_array_assignment.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/34_array_assignment.c:8:
+34_array_assignment.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/34_array_assignment.c:8:
 35_sizeof.c	wide/C11 features
 36_array_initialisers.c	tcc-rom: output differs at byte 149 (printed 188 bytes, expected 186): got `-10\n3: 0\n4: 0\n5:`, expected `0\n3: 0\n4: 0\n5: 0`
 37_sprintf.c	library functions
@@ -73,17 +73,17 @@
 55_lshift_type.c	floating constants
 60_errors_and_warnings.c	floating point
 61_integers.c	tcc-rom: output differs at byte 120 (printed 700 bytes, expected 810): got `6385\n(UINT_MAX/2`, expected `073741825\n(UINT_`
-64_macro_nesting.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/64_macro_nesting.c:8:
-67_macro_concat.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/67_macro_concat.c:8:
+64_macro_nesting.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/64_macro_nesting.c:8:
+67_macro_concat.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/67_macro_concat.c:8:
 70_floating_point_literals.c	floating point
 71_macro_empty_arg.c	tcc-rom: output differs at byte 2 (printed 2 bytes, expected 3): got ``, expected `\n`
 72_long_long_constant.c	64-bit integers
 73_arm64.c	includes stdarg.h
-75_array_in_struct_init.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/75_array_in_struct_init.c:8:
-76_dollars_in_identifiers.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/76_dollars_in_identifiers.c:8:
+75_array_in_struct_init.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/75_array_in_struct_init.c:8:
+76_dollars_in_identifiers.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/76_dollars_in_identifiers.c:8:
 77_push_pop_macro.c	pragmas
-78_vla_label.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/78_vla_label.c:8:
-79_vla_continue.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-tcc-tests2/79_vla_continue.c:8:
+78_vla_label.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/78_vla_label.c:8:
+79_vla_continue.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-tcc-tests2/79_vla_continue.c:8:
 81_types.c	64-bit integers
 82_attribs_position.c	64-bit integers
 83_utf8_in_identifiers.c	floating point

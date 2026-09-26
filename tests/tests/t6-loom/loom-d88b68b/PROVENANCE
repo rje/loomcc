@@ -1,4 +1,4 @@
-Copied from the Loom repository (/Users/rje/src/rust/loom) at commit d88b68b
+Copied from the Loom repository ($LOOM_REPO) at commit d88b68b
 ("perf(runtime): the pass decides the idle second player; still sprites keep
 their x-sign bit"), unchanged:
 

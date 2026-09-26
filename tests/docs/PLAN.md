@@ -215,7 +215,7 @@ for asm interop, hand-computed expectations.
 
 ## T6: Loom-realistic (stages 1 and 2 running)
 
-Loom's runtime C, generated C and hooks, copied from /Users/rje/src/rust/loom
+Loom's runtime C, generated C and hooks, copied from Loom
 at d88b68b (`tests/t6-loom/loom-d88b68b/PROVENANCE`).
 
 - Stage 1 (`tests/t6-loom/compile`): `compile` every unit with Loom's include

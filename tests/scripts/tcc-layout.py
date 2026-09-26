@@ -16,7 +16,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-PVS = Path(os.environ.get("PVSNESLIB_HOME", "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib"))
+PVS = Path(os.environ.get("PVSNESLIB_HOME", Path.home() / "Library/Loom/Toolchains/v0/artifacts/pvsneslib"))
 TCC = PVS / "devkitsnes/bin/816-tcc"
 HARNESS = Path(__file__).resolve().parent.parent / "harness/include"
 

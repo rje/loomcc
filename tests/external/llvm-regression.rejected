@@ -2,17 +2,17 @@
 2003-05-21-BitfieldHandling.c	64-bit integers
 2003-05-21-UnionBitfields.c	includes math.h
 2003-05-21-UnionTest.c	floating point
-2003-05-22-LocalTypeTest.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-llvm-regression/2003-05-22-LocalTypeTest.c:8:
-2003-05-22-VarSizeArray.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-llvm-regression/2003-05-22-VarSizeArray.c:8:
+2003-05-22-LocalTypeTest.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-llvm-regression/2003-05-22-LocalTypeTest.c:8:
+2003-05-22-VarSizeArray.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-llvm-regression/2003-05-22-VarSizeArray.c:8:
 2003-05-23-TransparentUnion.c	floating point
 2003-10-12-GlobalVarInitializers.c	floating point
-2004-03-15-IndirectGoto.c	tcc-rom: wlalink failed: /private/var/folders/88/vd041fd94pq3m7rsytzk6lnc0000gn/T/loomcc-tests-82518/ext-wrapped-llvm-regression_2004-03-15-IndirectGoto.c/ref_t
+2004-03-15-IndirectGoto.c	tcc-rom: wlalink failed: <work>/ext-wrapped-llvm-regression_2004-03-15-IndirectGoto.c/ref_t
 2004-08-12-InlinerAndAllocas.c	includes alloca.h
 2005-05-06-LongLongSignedShift.c	64-bit integers
 2008-01-07-LongDouble.c	floating point
 ConstructorDestructorAttributes.c	GNU extensions
 DuffsDevice.c	implicit int (C89 only)
-PR10189.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-llvm-regression/PR10189.c:8:
+PR10189.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-llvm-regression/PR10189.c:8:
 PR1386.c	includes stdint.h
 PR491.c	library functions
 PR640.c	includes stdarg.h
@@ -26,7 +26,7 @@ globalrefs.c	includes inttypes.h
 matrixTranspose.c	floating point
 pointer_arithmetic.c	floating point
 sumarray.c	library functions
-sumarray2d.c	tcc-rom: 816-tcc failed (exit 1): /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-llvm-regression/sumarray2d.c:9: error: stack overflow
+sumarray2d.c	tcc-rom: 816-tcc failed (exit 1): external/fetched/wrapped-llvm-regression/sumarray2d.c:9: error: stack overflow
 sumarraymalloc.c	library functions
 test_indvars.c	floating point
 uint64_to_float.c	includes stdint.h

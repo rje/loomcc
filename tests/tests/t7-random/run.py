@@ -20,6 +20,7 @@ Generated programs are written to DIR (default: a scratch directory; pass
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -27,7 +28,15 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-LLVM = Path(os.environ.get("LLVM_BIN", "/opt/homebrew/opt/llvm/bin"))
+def _llvm_bin():
+    """$LLVM_BIN, else the directory of lli on PATH, else Homebrew's LLVM."""
+    if os.environ.get("LLVM_BIN"):
+        return Path(os.environ["LLVM_BIN"])
+    lli = shutil.which("lli")
+    return Path(lli).parent if lli else Path("/opt/homebrew/opt/llvm/bin")
+
+
+LLVM = _llvm_bin()
 HARNESS = ROOT / "harness/include"
 
 

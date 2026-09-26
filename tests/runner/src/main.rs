@@ -40,7 +40,8 @@ usage: loomcc-tests [options] [test paths or directories...]
   --list               list the tests and their modes, run nothing
   --pvsneslib DIR      PVSnesLib root (816-tcc, wla-65816, crt0)
   --emulator PATH      loom-emulator binary
-  --llvm-bin DIR       LLVM bin dir with clang and lli (default /opt/homebrew/opt/llvm/bin)
+  --llvm-bin DIR       LLVM bin dir with clang and lli (default $LLVM_BIN, else where lli is on PATH,
+                       else /opt/homebrew/opt/llvm/bin)
   --clang PATH         host clang (default clang)
 
 exit status: 0 when no result is FAIL, XPASS or UNRESOLVED; 1 otherwise; 2 usage.

@@ -178,7 +178,7 @@ builtin-tgmath-err-2.c	GNU or unsupported feature (__builtin)
 builtins-28.c	GNU or unsupported feature (float)
 builtins-68.c	options
 builtins-error.c	GNU or unsupported feature (__builtin)
-c11-align-3.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c11-align-3.c:15 (directive line 7)
+c11-align-3.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c11-align-3.c:15 (directive line 7)
 c11-align-4.c	requirements, extra options or dg-final checks
 c11-align-5.c	GNU or unsupported feature (double)
 c11-align-8.c	GNU or unsupported feature (_Atomic)
@@ -190,8 +190,8 @@ c11-floatn-1.c	requirements, extra options or dg-final checks
 c11-floatn-2.c	requirements, extra options or dg-final checks
 c11-floatn-3.c	requirements, extra options or dg-final checks
 c11-floatn-4.c	requirements, extra options or dg-final checks
-c11-fordecl-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c11-fordecl-1.c:10 (directive line 4)
-c11-fordecl-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c11-fordecl-2.c:10 (directive line 4)
+c11-fordecl-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c11-fordecl-1.c:10 (directive line 4)
+c11-fordecl-2.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c11-fordecl-2.c:10 (directive line 4)
 c11-generic-4.c	GNU or unsupported feature (float)
 c11-labels-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 14)
 c11-noreturn-3.c	options
@@ -389,16 +389,16 @@ c90-thread-local-1.c	options
 c90-typedef-1.c	options
 c90-typespec-1.c	options
 c90-vla-1.c	options
-c99-align-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-align-1.c:5 (directive line 4)
-c99-anon-struct-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-anon-struct-1.c:11 (directive line 4)
-c99-array-lval-8.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-array-lval-8.c:29 (directive line 7)
+c99-align-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-align-1.c:5 (directive line 4)
+c99-anon-struct-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-anon-struct-1.c:11 (directive line 4)
+c99-array-lval-8.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-array-lval-8.c:29 (directive line 7)
 c99-arraydecl-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
 c99-atomic-1.c	GNU or unsupported feature (_Atomic)
-c99-compare-incomplete-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-compare-incomplete-2.c:15 (directive li
+c99-compare-incomplete-2.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-compare-incomplete-2.c:15 (directive li
 c99-complex-1.c	GNU or unsupported feature (_Complex)
 c99-complex-2.c	GNU or unsupported feature (_Complex)
 c99-complex-3.c	GNU or unsupported feature (_Imaginary)
-c99-complit-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-complit-2.c:48 (directive line 14)
+c99-complit-2.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-complit-2.c:48 (directive line 14)
 c99-const-expr-11.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 26)
 c99-const-expr-12.c	GNU or unsupported feature (double)
 c99-const-expr-14.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 26)
@@ -406,19 +406,19 @@ c99-const-expr-7.c	header float.h
 c99-const-expr-8.c	options
 c99-const-expr-9.c	options
 c99-flex-array-typedef-8.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
-c99-fordecl-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-fordecl-2.c:12 (directive line 4)
-c99-fordecl-3.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-fordecl-3.c:11 (directive line 4)
+c99-fordecl-2.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-fordecl-2.c:12 (directive line 4)
+c99-fordecl-3.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-fordecl-3.c:11 (directive line 4)
 c99-hexfloat-3.c	GNU or unsupported feature (double)
-c99-left-shift-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-left-shift-1.c:11 (directive line 4)
+c99-left-shift-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-left-shift-1.c:11 (directive line 4)
 c99-left-shift-2.c	options
 c99-left-shift-3.c	options
-c99-noreturn-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-noreturn-1.c:5 (directive line 4)
+c99-noreturn-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-noreturn-1.c:5 (directive line 4)
 c99-static-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 27)
-c99-static-assert-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-static-assert-1.c:5 (directive line 4)
-c99-tag-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-tag-1.c:131 (directive line 11)
+c99-static-assert-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-static-assert-1.c:5 (directive line 4)
+c99-tag-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-tag-1.c:131 (directive line 11)
 c99-tag-3.c	GNU or unsupported feature (float)
 c99-thread-local-1.c	GNU or unsupported feature (_Thread_local)
-c99-typedef-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-typedef-1.c:6 (directive line 4)
+c99-typedef-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/c99-typedef-1.c:6 (directive line 4)
 c99-typespec-1.c	GNU or unsupported feature (_Complex)
 c99-vla-jump-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 17)
 c99-vla-jump-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 17)
@@ -487,7 +487,7 @@ encoding-issues-unicode.c	options
 enum-compat-1.c	options
 enum-compat-2.c	options
 enum-incomplete-1.c	GNU or unsupported feature (typeof)
-enum-incomplete-3.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/enum-incomplete-3.c:13 (directive line 4)
+enum-incomplete-3.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/enum-incomplete-3.c:13 (directive line 4)
 enum-incomplete-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
 enum-mode-1.c	GNU or unsupported feature (__attribute__)
 enum-redef-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 28)
@@ -571,7 +571,7 @@ init-bad-3.c	options
 init-desig-obs-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
 init-desig-obs-3.c	options
 init-empty-3.c	options
-init-string-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/init-string-1.c:14 (directive line 4)
+init-string-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/init-string-1.c:14 (directive line 4)
 init-string-2.c	requirements, extra options or dg-final checks
 inline-12.c	options
 inline-21.c	options
@@ -591,14 +591,14 @@ label-decl-4.c	GNU or unsupported feature (__label__)
 large-size-array-2.c	dg-error form not converted (target selector, xfail or line spec)
 large-size-array-4.c	dg-error form not converted (target selector, xfail or line spec)
 large-size-array-5.c	options
-large-size-array-6.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/large-size-array-6.c:6 (directive line 4)
+large-size-array-6.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/large-size-array-6.c:6 (directive line 4)
 long-long-typespec-1.c	options
-lvalue-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/lvalue-2.c:41 (directive line 23)
+lvalue-2.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/lvalue-2.c:41 (directive line 23)
 lvalue-3.c	GNU or unsupported feature (typeof)
 lvalue-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
 lvalue-6.c	options
 lvalue-8.c	GNU or unsupported feature (double)
-lvalue-9.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/lvalue-9.c:59 (directive line 23)
+lvalue-9.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/lvalue-9.c:59 (directive line 23)
 lvalue1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
 march-generic.c	requirements, extra options or dg-final checks
 march.c	requirements, extra options or dg-final checks
@@ -688,7 +688,7 @@ pr108375-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla er
 pr109409.c	GNU or unsupported feature (__builtin)
 pr109412.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 13)
 pr110699.c	GNU or unsupported feature (__attribute__)
-pr111708-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr111708-1.c:39 (directive line 4)
+pr111708-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/pr111708-1.c:39 (directive line 4)
 pr112622.c	GNU or unsupported feature (__attribute__)
 pr113602.c	requirements, extra options or dg-final checks
 pr114540.c	GNU or unsupported feature (asm)
@@ -737,11 +737,11 @@ pr18596-2.c	options
 pr18596-3.c	options
 pr18725.c	GNU or unsupported feature (asm)
 pr18809-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
-pr20245-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr20245-1.c:7 (directive line 5)
+pr20245-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/pr20245-1.c:7 (directive line 5)
 pr20368-1.c	options
 pr20368-2.c	options
 pr20368-3.c	options
-pr20672-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr20672-1.c:7 (directive line 4)
+pr20672-1.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/pr20672-1.c:7 (directive line 4)
 pr21419.c	GNU or unsupported feature (__asm)
 pr22231.c	options
 pr22458-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
@@ -787,20 +787,20 @@ pr53037-4.c	GNU or unsupported feature (__attribute__)
 pr53196-1.c	options
 pr53196-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
 pr53532.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
-pr54355.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr54355.c:11 (directive line 4)
+pr54355.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/pr54355.c:11 (directive line 4)
 pr55570.c	GNU or unsupported feature (__attribute__)
 pr56724-1.c	options
 pr56724-3.c	options
 pr56980.c	GNU or unsupported feature (__extension__)
 pr58893.c	options
-pr59827.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr59827.c:14 (directive line 4)
+pr59827.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/pr59827.c:14 (directive line 4)
 pr59940.c	options
 pr60440-1.c	options
 pr60797.c	requirements, extra options or dg-final checks
 pr60915.c	GNU or unsupported feature (__attribute__)
 pr61053.c	GNU or unsupported feature (float)
 pr61096-1.c	options
-pr61096-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr61096-2.c:9 (directive line 4)
+pr61096-2.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/pr61096-2.c:9 (directive line 4)
 pr61162-2.c	options
 pr61692.c	GNU or unsupported feature (asm)
 pr61861.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 28)
@@ -893,7 +893,7 @@ raw-string-1.c	options
 readonly-loc.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 3)
 redecl-1.c	options
 redecl-11.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
-redecl-16.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-16.c:18 (directive line 4)
+redecl-16.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-16.c:18 (directive line 4)
 redecl-19.c	options
 redecl-20.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
 redecl-21.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
@@ -901,11 +901,11 @@ redecl-23.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla err
 redecl-24.c	options
 redecl-25.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
 redecl-26.c	GNU or unsupported feature (__builtin)
-redecl-3.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-3.c:1000 (directive line 4)
+redecl-3.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-3.c:1000 (directive line 4)
 redecl-4.c	options
 redecl-5.c	options
-redecl-7.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-7.c:13 (directive line 4)
-redecl-8.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-8.c:13 (directive line 4)
+redecl-7.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-7.c:13 (directive line 4)
+redecl-8.c	clang disagrees: missing diagnostic at external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-8.c:13 (directive line 4)
 reg-vol-struct-1.c	GNU or unsupported feature (__asm)
 register-var-1.c	options
 register-var-2.c	options

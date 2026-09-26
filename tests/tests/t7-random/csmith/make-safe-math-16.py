@@ -4,10 +4,22 @@ integer wrappers, drops the 64-bit and floating-point ones (loomcc's subset).
 
     tests/t7-random/csmith/make-safe-math-16.py [path/to/csmith/safe_math.h]
 """
+import shutil
 import sys
 from pathlib import Path
 
-src = Path(sys.argv[1] if len(sys.argv) > 1 else "/opt/homebrew/Cellar/csmith/2.3.0/include/csmith-2.3.0/safe_math.h").read_text()
+def default_safe_math():
+    """Csmith's installed safe_math.h: beside the csmith on PATH
+    (<prefix>/include/csmith-*/safe_math.h), else Homebrew's 2.3.0."""
+    exe = shutil.which("csmith")
+    if exe:
+        found = sorted(Path(exe).resolve().parent.parent.glob("include/csmith-*/safe_math.h"))
+        if found:
+            return found[-1]
+    return Path("/opt/homebrew/Cellar/csmith/2.3.0/include/csmith-2.3.0/safe_math.h")
+
+
+src = Path(sys.argv[1] if len(sys.argv) > 1 else default_safe_math()).read_text()
 head, _, rest = src.partition("\nSTATIC ")
 blocks = rest.split("\nSTATIC ")
 keep = ["STATIC " + b.rstrip() for b in blocks if not any(x in b.split("{", 1)[0] for x in ("int64", "float", "double"))]

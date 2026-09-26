@@ -6,7 +6,7 @@
 2002-05-02-ManyArguments.c	floating point
 2002-05-19-DivTest.c	includes inttypes.h
 2002-08-19-CodegenBug.c	64-bit integers
-2002-10-09-ArrayResolution.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-llvm-unittests/2002-10-09-ArrayResolution.c:8:
+2002-10-09-ArrayResolution.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-llvm-unittests/2002-10-09-ArrayResolution.c:8:
 2002-10-12-StructureArgs.c	floating point
 2002-10-12-StructureArgsSimple.c	floating point
 2002-10-13-BadLoad.c	tcc-rom: output differs at byte 0 (printed 2 bytes, expected 6): got `0\n`, expected `65536\n`
@@ -15,7 +15,7 @@
 2003-05-02-DependentPHI.c	tcc-rom: output differs at byte 21 (printed 21 bytes, expected 25): got ``, expected `5 4\n`
 2003-05-07-VarArgs.c	includes stdarg.h
 2003-05-12-MinIntProblem.c	tcc-rom: output differs at byte 0 (printed 0 bytes, expected 8): got ``, expected `success\n`
-2003-05-14-AtExit.c	tcc-rom: wlalink failed: /private/var/folders/88/vd041fd94pq3m7rsytzk6lnc0000gn/T/loomcc-tests-81350/ext-wrapped-llvm-unittests_2003-05-14-AtExit.c/ref_tcc-rom/
+2003-05-14-AtExit.c	tcc-rom: wlalink failed: <work>/ext-wrapped-llvm-unittests_2003-05-14-AtExit.c/ref_tcc-rom/
 2003-05-26-Shorts.c	64-bit integers
 2003-05-31-CastToBool.c	64-bit integers
 2003-05-31-LongShifts.c	64-bit integers
@@ -32,7 +32,7 @@
 2005-05-11-Popcount-ffs-fls.c	includes sys/bitops.h
 2005-05-12-Int64ToFP.c	floating point
 2005-05-13-SDivTwo.c	64-bit integers
-2005-07-15-Bitfield-ABI.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-llvm-unittests/2005-07-15-Bitfield-ABI.c:8:
+2005-07-15-Bitfield-ABI.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-llvm-unittests/2005-07-15-Bitfield-ABI.c:8:
 2005-07-17-INT-To-FP.c	floating point
 2005-11-29-LongSwitch.c	64-bit integers
 2006-01-23-UnionInit.c	floating point
@@ -80,4 +80,4 @@ testcase-ExprConstant-1.c	includes stdint.h
 testcase-ExprConstant-2.c	64-bit integers
 testcase-InstCombine-1.c	includes stdint.h
 testcase-Value-1.c	includes stdint.h
-vla.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-llvm-unittests/vla.c:8:
+vla.c	tcc-rom: 816-tcc failed (exit 1): In file included from external/fetched/wrapped-llvm-unittests/vla.c:8:

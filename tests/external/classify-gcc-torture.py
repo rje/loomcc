@@ -22,7 +22,9 @@ dg- directives that need options or targets. Dynamic filter: the test must
 pass under host16 (clang's msp430 front end: 16-bit int, 32-bit long, run by
 lli), i.e. it does not assume a 32-bit int.
 """
+import os
 import re
+import shutil
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -31,7 +33,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "external/fetched/gcc/gcc/testsuite/gcc.c-torture/execute"
 WRAP = ROOT / "external/fetched/gcc-wrapped"
-LLVM = Path("/opt/homebrew/opt/llvm/bin")
+def _llvm_bin():
+    """$LLVM_BIN, else the directory of lli on PATH, else Homebrew's LLVM."""
+    if os.environ.get("LLVM_BIN"):
+        return Path(os.environ["LLVM_BIN"])
+    lli = shutil.which("lli")
+    return Path(lli).parent if lli else Path("/opt/homebrew/opt/llvm/bin")
+
+
+LLVM = _llvm_bin()
 HARNESS = ROOT / "harness/include"
 
 REJECT = [
