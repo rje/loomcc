@@ -1,0 +1,4561 @@
+{
+ "schema_version": 1,
+ "note": "Writes testbed/conformance/manifest.json: provenance, licence and a",
+ "suites": {
+  "c-testsuite": [
+   {
+    "file": "c-testsuite/single-exec/00001.c",
+    "expected": "c-testsuite/single-exec/00001.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "c-testsuite",
+    "origin_path": null,
+    "origin_version": null,
+    "licence": "MIT (c-testsuite LICENSE)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00002.c",
+    "expected": "c-testsuite/single-exec/00002.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0002-expr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00003.c",
+    "expected": "c-testsuite/single-exec/00003.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0003-local.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00004.c",
+    "expected": "c-testsuite/single-exec/00004.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0004-pointer.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00005.c",
+    "expected": "c-testsuite/single-exec/00005.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0005-ifstmt.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00006.c",
+    "expected": "c-testsuite/single-exec/00006.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0006-whilestmt.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00007.c",
+    "expected": "c-testsuite/single-exec/00007.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0007-forstmt.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00008.c",
+    "expected": "c-testsuite/single-exec/00008.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0008-dowhilestmt.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00009.c",
+    "expected": "c-testsuite/single-exec/00009.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0009-expr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00010.c",
+    "expected": "c-testsuite/single-exec/00010.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0010-goto.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00011.c",
+    "expected": "c-testsuite/single-exec/00011.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0011-assign.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00012.c",
+    "expected": "c-testsuite/single-exec/00012.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0012-expr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00013.c",
+    "expected": "c-testsuite/single-exec/00013.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0013-addridx.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00014.c",
+    "expected": "c-testsuite/single-exec/00014.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0014-assignidx.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00015.c",
+    "expected": "c-testsuite/single-exec/00015.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0015-localarray.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00016.c",
+    "expected": "c-testsuite/single-exec/00016.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0016-addrarray.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00017.c",
+    "expected": "c-testsuite/single-exec/00017.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0017-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00018.c",
+    "expected": "c-testsuite/single-exec/00018.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0018-structptr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00019.c",
+    "expected": "c-testsuite/single-exec/00019.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0019-selfrefstruct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00020.c",
+    "expected": "c-testsuite/single-exec/00020.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0020-ptrptr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00021.c",
+    "expected": "c-testsuite/single-exec/00021.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0021-intfunc.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00022.c",
+    "expected": "c-testsuite/single-exec/00022.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0022-typedef.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00023.c",
+    "expected": "c-testsuite/single-exec/00023.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0023-global.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00024.c",
+    "expected": "c-testsuite/single-exec/00024.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0024-typedefstruct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00025.c",
+    "expected": "c-testsuite/single-exec/00025.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0025-string.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "libc"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00026.c",
+    "expected": "c-testsuite/single-exec/00026.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0027-charval.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00027.c",
+    "expected": "c-testsuite/single-exec/00027.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0028-bor.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00028.c",
+    "expected": "c-testsuite/single-exec/00028.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0029-band.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00029.c",
+    "expected": "c-testsuite/single-exec/00029.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0030-bxor.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00030.c",
+    "expected": "c-testsuite/single-exec/00030.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0031-relop.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00031.c",
+    "expected": "c-testsuite/single-exec/00031.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0032-indec.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00032.c",
+    "expected": "c-testsuite/single-exec/00032.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0033-ptrindec.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00033.c",
+    "expected": "c-testsuite/single-exec/00033.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0034-logandor.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00034.c",
+    "expected": "c-testsuite/single-exec/00034.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0035-breakcont.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00035.c",
+    "expected": "c-testsuite/single-exec/00035.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0036-notneg.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00036.c",
+    "expected": "c-testsuite/single-exec/00036.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0037-assignop.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00037.c",
+    "expected": "c-testsuite/single-exec/00037.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0038-ptradd.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00038.c",
+    "expected": "c-testsuite/single-exec/00038.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0039-sizeof.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "sizeof-of-int-long-or-pointer"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00039.c",
+    "expected": "c-testsuite/single-exec/00039.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0040-cast.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00040.c",
+    "expected": "c-testsuite/single-exec/00040.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0041-queen.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "libc",
+     "sizeof-of-int-long-or-pointer"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00041.c",
+    "expected": "c-testsuite/single-exec/00041.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0042-prime.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00042.c",
+    "expected": "c-testsuite/single-exec/00042.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0043-union.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00043.c",
+    "expected": "c-testsuite/single-exec/00043.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0044-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00044.c",
+    "expected": "c-testsuite/single-exec/00044.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0045-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00045.c",
+    "expected": "c-testsuite/single-exec/00045.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0046-inits.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00046.c",
+    "expected": "c-testsuite/single-exec/00046.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c11"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0047-anonexport.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00047.c",
+    "expected": "c-testsuite/single-exec/00047.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0048-inits.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00048.c",
+    "expected": "c-testsuite/single-exec/00048.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0049-inits.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00049.c",
+    "expected": "c-testsuite/single-exec/00049.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0050-inits.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00050.c",
+    "expected": "c-testsuite/single-exec/00050.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c11"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0051-inits.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00051.c",
+    "expected": "c-testsuite/single-exec/00051.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0052-switch.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00052.c",
+    "expected": "c-testsuite/single-exec/00052.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0053-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00053.c",
+    "expected": "c-testsuite/single-exec/00053.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0054-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00054.c",
+    "expected": "c-testsuite/single-exec/00054.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0055-enum.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00055.c",
+    "expected": "c-testsuite/single-exec/00055.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0056-enum.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00056.c",
+    "expected": "c-testsuite/single-exec/00056.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/00_assignment.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00057.c",
+    "expected": "c-testsuite/single-exec/00057.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0058-bug.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00058.c",
+    "expected": "c-testsuite/single-exec/00058.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0059-multistring.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00059.c",
+    "expected": "c-testsuite/single-exec/00059.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0060-charlit.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00060.c",
+    "expected": "c-testsuite/single-exec/00060.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0061-comments.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00061.c",
+    "expected": "c-testsuite/single-exec/00061.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0063-define.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00062.c",
+    "expected": "c-testsuite/single-exec/00062.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0065-ifdef.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00063.c",
+    "expected": "c-testsuite/single-exec/00063.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0066-cppelse.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00064.c",
+    "expected": "c-testsuite/single-exec/00064.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0067-define.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00065.c",
+    "expected": "c-testsuite/single-exec/00065.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0068-funclikemacro.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00066.c",
+    "expected": "c-testsuite/single-exec/00066.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0069-funclikemacro.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00067.c",
+    "expected": "c-testsuite/single-exec/00067.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0070-cppif.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00068.c",
+    "expected": "c-testsuite/single-exec/00068.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0071-cppelif.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00069.c",
+    "expected": "c-testsuite/single-exec/00069.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0072-cppelif.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00070.c",
+    "expected": "c-testsuite/single-exec/00070.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0073-ifndef.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00071.c",
+    "expected": "c-testsuite/single-exec/00071.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0074-undef.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00072.c",
+    "expected": "c-testsuite/single-exec/00072.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0075-ptraddasn.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00073.c",
+    "expected": "c-testsuite/single-exec/00073.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0076-ptrsubasn.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00074.c",
+    "expected": "c-testsuite/single-exec/00074.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0077-defined.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00075.c",
+    "expected": "c-testsuite/single-exec/00075.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0078-dirifexpr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00076.c",
+    "expected": "c-testsuite/single-exec/00076.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0079-cond.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00077.c",
+    "expected": "c-testsuite/single-exec/00077.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0080-arrays.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "sizeof-of-int-long-or-pointer"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00078.c",
+    "expected": "c-testsuite/single-exec/00078.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0081-calls.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00079.c",
+    "expected": "c-testsuite/single-exec/00079.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0082-bug.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00080.c",
+    "expected": "c-testsuite/single-exec/00080.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0083-voidret.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00081.c",
+    "expected": "c-testsuite/single-exec/00081.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0084-longlong.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long-long"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00082.c",
+    "expected": "c-testsuite/single-exec/00082.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0085-ulonglong.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long-long"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00083.c",
+    "expected": "c-testsuite/single-exec/00083.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0086-variadic.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00084.c",
+    "expected": "c-testsuite/single-exec/00084.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0087-variadic.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00085.c",
+    "expected": "c-testsuite/single-exec/00085.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0088-macros.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00086.c",
+    "expected": "c-testsuite/single-exec/00086.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0089-short.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00087.c",
+    "expected": "c-testsuite/single-exec/00087.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0090-fptr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00088.c",
+    "expected": "c-testsuite/single-exec/00088.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0091-fptr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00089.c",
+    "expected": "c-testsuite/single-exec/00089.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0092-fptr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00090.c",
+    "expected": "c-testsuite/single-exec/00090.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0093-arrayinit.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00091.c",
+    "expected": "c-testsuite/single-exec/00091.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0094-arrayinit.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00092.c",
+    "expected": "c-testsuite/single-exec/00092.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0095-arrayselector.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "sizeof-of-int-long-or-pointer"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00093.c",
+    "expected": "c-testsuite/single-exec/00093.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0096-inferredarraysize.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "sizeof-of-int-long-or-pointer"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00094.c",
+    "expected": "c-testsuite/single-exec/00094.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0097-extern.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00095.c",
+    "expected": "c-testsuite/single-exec/00095.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0098-tentative.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00096.c",
+    "expected": "c-testsuite/single-exec/00096.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0099-tentative.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00097.c",
+    "expected": "c-testsuite/single-exec/00097.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0100-redeclaremacro.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00098.c",
+    "expected": "c-testsuite/single-exec/00098.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0101-wcharlit.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00099.c",
+    "expected": "c-testsuite/single-exec/00099.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0102-bug.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00100.c",
+    "expected": "c-testsuite/single-exec/00100.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0103-voidparm.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00101.c",
+    "expected": "c-testsuite/single-exec/00101.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0104-qbebug.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00102.c",
+    "expected": "c-testsuite/single-exec/00102.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0105-shl.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00103.c",
+    "expected": "c-testsuite/single-exec/00103.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0106-ppcast.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00104.c",
+    "expected": "c-testsuite/single-exec/00104.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0107-bnot.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long-long",
+     "libc",
+     "int-literal-over-16-bit"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "0xffffffff",
+     "0xffffffffffffffff"
+    ]
+   },
+   {
+    "file": "c-testsuite/single-exec/00105.c",
+    "expected": "c-testsuite/single-exec/00105.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0108-bug.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00106.c",
+    "expected": "c-testsuite/single-exec/00106.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0109-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00107.c",
+    "expected": "c-testsuite/single-exec/00107.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0110-typedefcast.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00108.c",
+    "expected": "c-testsuite/single-exec/00108.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0111-doubledef.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00109.c",
+    "expected": "c-testsuite/single-exec/00109.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0112-cond.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00110.c",
+    "expected": "c-testsuite/single-exec/00110.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0113-externredecl.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00111.c",
+    "expected": "c-testsuite/single-exec/00111.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0114-shortassig.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00112.c",
+    "expected": "c-testsuite/single-exec/00112.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0115-null-comparision.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00113.c",
+    "expected": "c-testsuite/single-exec/00113.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0116-floatcmp.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "float"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00114.c",
+    "expected": "c-testsuite/single-exec/00114.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0118-voidmain.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00115.c",
+    "expected": "c-testsuite/single-exec/00115.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0119-macrostr.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00116.c",
+    "expected": "c-testsuite/single-exec/00116.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0120-funpar.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00117.c",
+    "expected": "c-testsuite/single-exec/00117.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0121-localinit.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00118.c",
+    "expected": "c-testsuite/single-exec/00118.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0122-localinit.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00119.c",
+    "expected": "c-testsuite/single-exec/00119.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0123-doubleconst.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "float"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00120.c",
+    "expected": "c-testsuite/single-exec/00120.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0124-enumstruct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00121.c",
+    "expected": "c-testsuite/single-exec/00121.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0125-fundcl.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00122.c",
+    "expected": "c-testsuite/single-exec/00122.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0126-macropar.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00123.c",
+    "expected": "c-testsuite/single-exec/00123.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0127-doublecte.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "float"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00124.c",
+    "expected": "c-testsuite/single-exec/00124.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0130-mulpars.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00125.c",
+    "expected": "c-testsuite/single-exec/00125.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0131-hello.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00126.c",
+    "expected": "c-testsuite/single-exec/00126.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0135-unary.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00127.c",
+    "expected": "c-testsuite/single-exec/00127.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0136-if.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00128.c",
+    "expected": "c-testsuite/single-exec/00128.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0137-int-cast.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long-long"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00129.c",
+    "expected": "c-testsuite/single-exec/00129.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0138-namespace.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00130.c",
+    "expected": "c-testsuite/single-exec/00130.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0139-ptr-ary.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00131.c",
+    "expected": "c-testsuite/single-exec/00131.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/01_comment.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00132.c",
+    "expected": "c-testsuite/single-exec/00132.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/02_printf.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00133.c",
+    "expected": "c-testsuite/single-exec/00133.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0143-int-const.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long-long"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00134.c",
+    "expected": "c-testsuite/single-exec/00134.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0144-long-const.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long-long"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00135.c",
+    "expected": "c-testsuite/single-exec/00135.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0145-llong-const.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "long-long"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00136.c",
+    "expected": "c-testsuite/single-exec/00136.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0146-ifdef.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00137.c",
+    "expected": "c-testsuite/single-exec/00137.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0148-cpp-string.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00138.c",
+    "expected": "c-testsuite/single-exec/00138.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0149-define.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00139.c",
+    "expected": "c-testsuite/single-exec/00139.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0150-define.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00140.c",
+    "expected": "c-testsuite/single-exec/00140.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0151-vararg.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [
+     "float",
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00141.c",
+    "expected": "c-testsuite/single-exec/00141.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0152-cat.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00142.c",
+    "expected": "c-testsuite/single-exec/00142.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0154-if-defined.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00143.c",
+    "expected": "c-testsuite/single-exec/00143.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0156-duff2.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00144.c",
+    "expected": "c-testsuite/single-exec/00144.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0158-ternary.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00145.c",
+    "expected": "c-testsuite/single-exec/00145.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0160-cpp-if.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00146.c",
+    "expected": "c-testsuite/single-exec/00146.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0161-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00147.c",
+    "expected": "c-testsuite/single-exec/00147.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0162-array.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00148.c",
+    "expected": "c-testsuite/single-exec/00148.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0163-array.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00149.c",
+    "expected": "c-testsuite/single-exec/00149.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0164-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00150.c",
+    "expected": "c-testsuite/single-exec/00150.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0165-struct.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00151.c",
+    "expected": "c-testsuite/single-exec/00151.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0168-array.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00152.c",
+    "expected": "c-testsuite/single-exec/00152.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0170-line.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00153.c",
+    "expected": "c-testsuite/single-exec/00153.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0173-macro.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00154.c",
+    "expected": "c-testsuite/single-exec/00154.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/03_struct.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00155.c",
+    "expected": "c-testsuite/single-exec/00155.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://git.simple-cc.org/scc",
+    "origin_path": "tests/scc/execute/0179-sizeof.c",
+    "origin_version": "355356a9836e487939cf5e98b5332a63e5264e27",
+    "licence": "ISC (LICENSE.scc-ISC)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00156.c",
+    "expected": "c-testsuite/single-exec/00156.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/04_for.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00157.c",
+    "expected": "c-testsuite/single-exec/00157.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/05_array.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00158.c",
+    "expected": "c-testsuite/single-exec/00158.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/06_case.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00159.c",
+    "expected": "c-testsuite/single-exec/00159.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/07_function.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf",
+     "recursion"
+    ],
+    "recursive_functions": [
+     "qfunc"
+    ],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00160.c",
+    "expected": "c-testsuite/single-exec/00160.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/08_while.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00161.c",
+    "expected": "c-testsuite/single-exec/00161.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/09_do_while.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00162.c",
+    "expected": "c-testsuite/single-exec/00162.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/100_c99array-decls.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00163.c",
+    "expected": "c-testsuite/single-exec/00163.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/10_pointer.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00164.c",
+    "expected": "c-testsuite/single-exec/00164.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/11_precedence.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00165.c",
+    "expected": "c-testsuite/single-exec/00165.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/12_hashdefine.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00166.c",
+    "expected": "c-testsuite/single-exec/00166.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/13_integer_literals.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf",
+     "int-literal-over-16-bit"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "01234567",
+     "0x2468ac",
+     "0x2468AC"
+    ]
+   },
+   {
+    "file": "c-testsuite/single-exec/00167.c",
+    "expected": "c-testsuite/single-exec/00167.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/14_if.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00168.c",
+    "expected": "c-testsuite/single-exec/00168.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/15_recursion.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf",
+     "recursion"
+    ],
+    "recursive_functions": [
+     "factorial"
+    ],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00169.c",
+    "expected": "c-testsuite/single-exec/00169.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/16_nesting.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00170.c",
+    "expected": "c-testsuite/single-exec/00170.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/17_enum.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00171.c",
+    "expected": "c-testsuite/single-exec/00171.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/19_pointer_arithmetic.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00172.c",
+    "expected": "c-testsuite/single-exec/00172.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/20_pointer_comparison.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00173.c",
+    "expected": "c-testsuite/single-exec/00173.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/21_char_array.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00174.c",
+    "expected": "c-testsuite/single-exec/00174.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/22_floating_point.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "float",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00175.c",
+    "expected": "c-testsuite/single-exec/00175.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/23_type_coercion.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "float",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00176.c",
+    "expected": "c-testsuite/single-exec/00176.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/25_quicksort.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf",
+     "recursion"
+    ],
+    "recursive_functions": [
+     "quicksort"
+    ],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00177.c",
+    "expected": "c-testsuite/single-exec/00177.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/26_character_constants.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00178.c",
+    "expected": "c-testsuite/single-exec/00178.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/27_sizeof.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "float",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00179.c",
+    "expected": "c-testsuite/single-exec/00179.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/28_strings.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00180.c",
+    "expected": "c-testsuite/single-exec/00180.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/29_array_address.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00181.c",
+    "expected": "c-testsuite/single-exec/00181.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/30_hanoi.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf",
+     "recursion"
+    ],
+    "recursive_functions": [
+     "Hanoi"
+    ],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00182.c",
+    "expected": "c-testsuite/single-exec/00182.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/32_led.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long",
+     "libc",
+     "printf",
+     "int-literal-over-16-bit"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "1234567"
+    ]
+   },
+   {
+    "file": "c-testsuite/single-exec/00183.c",
+    "expected": "c-testsuite/single-exec/00183.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/33_ternary_op.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00184.c",
+    "expected": "c-testsuite/single-exec/00184.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/35_sizeof.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00185.c",
+    "expected": "c-testsuite/single-exec/00185.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/36_array_initialisers.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00186.c",
+    "expected": "c-testsuite/single-exec/00186.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/37_sprintf.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00187.c",
+    "expected": "c-testsuite/single-exec/00187.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/40_stdio.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00188.c",
+    "expected": "c-testsuite/single-exec/00188.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/41_hashif.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00189.c",
+    "expected": "c-testsuite/single-exec/00189.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/42_function_pointer.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "varargs",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00190.c",
+    "expected": "c-testsuite/single-exec/00190.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/43_void_param.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00191.c",
+    "expected": "c-testsuite/single-exec/00191.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/44_scoped_declarations.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00192.c",
+    "expected": "c-testsuite/single-exec/00192.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/45_empty_for.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00193.c",
+    "expected": "c-testsuite/single-exec/00193.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/47_switch_return.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00194.c",
+    "expected": "c-testsuite/single-exec/00194.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/48_nested_break.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00195.c",
+    "expected": "c-testsuite/single-exec/00195.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/49_bracket_evaluation.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "float",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00196.c",
+    "expected": "c-testsuite/single-exec/00196.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/50_logical_second_arg.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00197.c",
+    "expected": "c-testsuite/single-exec/00197.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/51_static.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00198.c",
+    "expected": "c-testsuite/single-exec/00198.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/52_unnamed_enum.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00199.c",
+    "expected": "c-testsuite/single-exec/00199.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/54_goto.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf",
+     "recursion"
+    ],
+    "recursive_functions": [
+     "fred",
+     "henry",
+     "joe"
+    ],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00200.c",
+    "expected": "c-testsuite/single-exec/00200.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/55_lshift_type.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long-long",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00201.c",
+    "expected": "c-testsuite/single-exec/00201.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/64_macro_nesting.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00202.c",
+    "expected": "c-testsuite/single-exec/00202.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/67_macro_concat.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00203.c",
+    "expected": "c-testsuite/single-exec/00203.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/72_long_long_constant.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long-long",
+     "libc",
+     "printf",
+     "int-literal-over-16-bit"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "2147483648LL",
+     "2147483648",
+     "2147483647LL",
+     "2147483647"
+    ]
+   },
+   {
+    "file": "c-testsuite/single-exec/00204.c",
+    "expected": "c-testsuite/single-exec/00204.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/73_arm64.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "float",
+     "long-long",
+     "varargs",
+     "libc",
+     "printf",
+     "int-literal-over-16-bit"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "0xabcd0000",
+     "0xabcd00000000",
+     "0xabcd000000000000",
+     "0xffffabcd",
+     "0xabcdffff"
+    ]
+   },
+   {
+    "file": "c-testsuite/single-exec/00205.c",
+    "expected": "c-testsuite/single-exec/00205.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/75_array_in_struct_init.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long",
+     "libc",
+     "printf",
+     "int-literal-over-16-bit"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "4194304L",
+     "2097152L",
+     "67108864L",
+     "262144L",
+     "268435456L"
+    ]
+   },
+   {
+    "file": "c-testsuite/single-exec/00206.c",
+    "expected": "c-testsuite/single-exec/00206.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/77_push_pop_macro.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00207.c",
+    "expected": "c-testsuite/single-exec/00207.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/78_vla_label.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00208.c",
+    "expected": "c-testsuite/single-exec/00208.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/80_flexarray.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00209.c",
+    "expected": "c-testsuite/single-exec/00209.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/81_types.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00210.c",
+    "expected": "c-testsuite/single-exec/00210.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/82_attribs_position.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "varargs",
+     "libc",
+     "printf",
+     "gnu-or-c11-extension"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00211.c",
+    "expected": "c-testsuite/single-exec/00211.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/84_hex-float.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "varargs",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00212.c",
+    "expected": "c-testsuite/single-exec/00212.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/86_memory-model.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long-long",
+     "libc",
+     "printf",
+     "sizeof-of-int-long-or-pointer"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00213.c",
+    "expected": "c-testsuite/single-exec/00213.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/87_dead_code.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long",
+     "varargs",
+     "libc",
+     "printf",
+     "gnu-or-c11-extension"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00214.c",
+    "expected": "c-testsuite/single-exec/00214.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/88_codeopt.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long",
+     "varargs",
+     "libc",
+     "printf",
+     "gnu-or-c11-extension"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00215.c",
+    "expected": "c-testsuite/single-exec/00215.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/89_nocode_wanted.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long",
+     "varargs",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00216.c",
+    "expected": "c-testsuite/single-exec/00216.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/90_struct-init.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long",
+     "varargs",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00217.c",
+    "expected": "c-testsuite/single-exec/00217.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/91_ptr_longlong_arith32.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long-long",
+     "varargs",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00218.c",
+    "expected": "c-testsuite/single-exec/00218.c.expected",
+    "expected_output_empty": true,
+    "tags": [
+     "portable",
+     "c89"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/92_enum_bitfield.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "varargs",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00219.c",
+    "expected": "c-testsuite/single-exec/00219.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c89",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/94_generic.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "long-long",
+     "libc",
+     "printf",
+     "gnu-or-c11-extension"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "c-testsuite/single-exec/00220.c",
+    "expected": "c-testsuite/single-exec/00220.c.expected",
+    "expected_output_empty": false,
+    "tags": [
+     "portable",
+     "c99",
+     "needs-libc",
+     "needs-cpp"
+    ],
+    "origin": "git://repo.or.cz/tinycc.git",
+    "origin_path": "tests/tests2/97_utf8_string_literal.c",
+    "origin_version": "61ba9f229955f105af9d7dcdbfcc9c9effbe8af3",
+    "licence": "LGPL-2.1 (LICENSE.tinycc-LGPL-2.1)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   }
+  ],
+  "chibicc": [
+   {
+    "file": "chibicc/test/alignof.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "long-long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/alloca.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/arith.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "int-literal-over-16-bit",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "1073741824",
+     "0xffffffffffffffff",
+     "0xfffffffffffffff0",
+     "0xfffffffffffffff0",
+     "0xffffffffffffffff"
+    ]
+   },
+   {
+    "file": "chibicc/test/asm.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/atomic.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/attribute.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/bitfield.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/builtin.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "libc",
+     "long",
+     "printf",
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/cast.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "int-literal-over-16-bit",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "131585",
+     "8590066177",
+     "8590066177",
+     "8590066177",
+     "0xffffffff"
+    ]
+   },
+   {
+    "file": "chibicc/test/commonsym.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/compat.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/complit.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/const.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/constexpr.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "int-literal-over-16-bit",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "0xffffff0f",
+     "0xffff010f",
+     "0xfffffffffff",
+     "0xffffffff",
+     "0xffff800f"
+    ]
+   },
+   {
+    "file": "chibicc/test/control.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "int-literal-over-16-bit",
+     "libc",
+     "printf",
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "0xffffffff"
+    ]
+   },
+   {
+    "file": "chibicc/test/decl.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "long-long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/enum.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/extern.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/float.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "int-literal-over-16-bit",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "2147483648"
+    ]
+   },
+   {
+    "file": "chibicc/test/function.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "libc",
+     "long",
+     "printf",
+     "recursion",
+     "varargs"
+    ],
+    "recursive_functions": [
+     "fib"
+    ],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/generic.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/initializer.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "int-literal-over-16-bit",
+     "libc",
+     "long",
+     "printf",
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "0x01020304",
+     "0x05060708",
+     "0x01020304",
+     "0x01020304",
+     "0x01020304"
+    ]
+   },
+   {
+    "file": "chibicc/test/line.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/literal.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "int-literal-over-16-bit",
+     "libc",
+     "long-long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "2147483647",
+     "2147483648",
+     "0xffffffffffffffff",
+     "0xffffffffffffffff",
+     "4294967295U"
+    ]
+   },
+   {
+    "file": "chibicc/test/macro.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "libc",
+     "printf",
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/offsetof.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/pointer.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/pragma-once.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/sizeof.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "libc",
+     "long-long",
+     "printf",
+     "sizeof-of-int-long-or-pointer"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/stdhdr.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "libc",
+     "printf",
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/string.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/struct.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/tls.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/typedef.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/typeof.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/unicode.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "int-literal-over-16-bit",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "127843",
+     "127843"
+    ]
+   },
+   {
+    "file": "chibicc/test/union.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "int-literal-over-16-bit",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "0xdeadbeef",
+     "0xdeadbeef",
+     "0xdeadbeef",
+     "0xdeadbeef"
+    ]
+   },
+   {
+    "file": "chibicc/test/usualconv.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "int-literal-over-16-bit",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": [
+     "2147483647",
+     "2147483647"
+    ]
+   },
+   {
+    "file": "chibicc/test/varargs.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "float",
+     "gnu-or-c11-extension",
+     "libc",
+     "printf",
+     "varargs"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/variable.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "long",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   },
+   {
+    "file": "chibicc/test/vla.c",
+    "licence": "MIT (chibicc/LICENSE)",
+    "flags": [
+     "gnu-or-c11-extension",
+     "libc",
+     "printf"
+    ],
+    "recursive_functions": [],
+    "wide_literals": []
+   }
+  ]
+ }
+}
