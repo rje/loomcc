@@ -1,0 +1,11 @@
+name = "oam_finish"
+kind = "pair"
+description = "End of an OAM commit: park the 11 of last commit's 32 slots this commit did not stage, then make this commit's 29 slots the previous set."
+unit_labels = ["loom_pvs_oam_finish"]
+helper_labels = []
+
+[provenance]
+loom_commit = "2e278a7"
+c_source = "runtime/backends/pvsneslib/src/runtime-adapter.c:953-973 at 2e278a7 (the hide loop of loom_pvs_target_prepare_oam, the host C rendition of the same contract) plus its previous-slot bookkeeping; the 2e278a7^ C (a full oamClear every commit) was replaced rather than transliterated and is not isolatable"
+asm_source = "runtime/backends/pvsneslib/src/oam.asm:loom_pvs_oam_finish (+ its RAM section and high-table tables) at 2e278a7; changed later (7b4d960 advances the generation at finish, HEAD also clears per-slot staged flags); `.BASE $00` / `.BASE $80` added around the RAM section as HEAD has it"
+notes = "The host rendition marked this commit's slots TRUE/FALSE in its own array; the C here tests mark[slot] == generation as the asm does, and copies loom_pvs_oam_current to loom_pvs_oam_previous as the asm does (the host wrote the previous list while writing entries). The asm's RAM is defined in unit.c for the C variant with the same names; the driver initialises it. oamMemory comes from pvsneslib libc.obj on the console and from driver.c on the host."
