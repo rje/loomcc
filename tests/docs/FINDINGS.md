@@ -358,4 +358,4 @@ timeouts, all in inputs outside Loom's subset:
 
 Tests: `t3-sema/robust/*.c`, `t5-snes/unsupported/*.c`.
 
-Fixed in loomcc SWEEPHASH.
+Fixed in loomcc d1ab81f.
