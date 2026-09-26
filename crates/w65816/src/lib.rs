@@ -42,6 +42,82 @@ pub struct ModuleInfo {
     pub externs: HashMap<String, Vec<ParamKind>>,
     /// Functions reachable from an interrupt root.
     pub interrupt_funcs: HashSet<String>,
+    /// Recursive call-graph components: function -> component index.
+    pub scc_of: HashMap<String, usize>,
+    /// Members of each recursive component with their frame sizes.
+    pub scc_members: Vec<Vec<(String, u32)>>,
+}
+
+/// Strongly connected components of the direct call graph that contain a
+/// cycle (recursion).
+fn recursive_components(m: &Module) -> Vec<Vec<usize>> {
+    let n = m.funcs.len();
+    let index: HashMap<&str, usize> = m.funcs.iter().enumerate().map(|(i, f)| (f.name.as_str(), i)).collect();
+    let succ: Vec<Vec<usize>> = m
+        .funcs
+        .iter()
+        .map(|f| {
+            let mut v = Vec::new();
+            for b in &f.blocks {
+                for i in &b.insts {
+                    if let Inst::Call { callee: Callee::Direct(c), .. } = i {
+                        if let Some(&j) = index.get(c.as_str()) {
+                            v.push(j);
+                        }
+                    }
+                }
+            }
+            v
+        })
+        .collect();
+    // Tarjan.
+    struct St {
+        idx: Vec<Option<usize>>,
+        low: Vec<usize>,
+        on: Vec<bool>,
+        stack: Vec<usize>,
+        next: usize,
+        out: Vec<Vec<usize>>,
+    }
+    fn go(v: usize, succ: &[Vec<usize>], st: &mut St) {
+        st.idx[v] = Some(st.next);
+        st.low[v] = st.next;
+        st.next += 1;
+        st.stack.push(v);
+        st.on[v] = true;
+        for &w in &succ[v] {
+            match st.idx[w] {
+                None => {
+                    go(w, succ, st);
+                    st.low[v] = st.low[v].min(st.low[w]);
+                }
+                Some(i) if st.on[w] => st.low[v] = st.low[v].min(i),
+                _ => {}
+            }
+        }
+        if Some(st.low[v]) == st.idx[v] {
+            let mut comp = Vec::new();
+            loop {
+                let w = st.stack.pop().unwrap();
+                st.on[w] = false;
+                comp.push(w);
+                if w == v {
+                    break;
+                }
+            }
+            let cyclic = comp.len() > 1 || succ[v].contains(&v);
+            if cyclic {
+                st.out.push(comp);
+            }
+        }
+    }
+    let mut st = St { idx: vec![None; n], low: vec![0; n], on: vec![false; n], stack: Vec::new(), next: 0, out: Vec::new() };
+    for v in 0..n {
+        if st.idx[v].is_none() {
+            go(v, &succ, &mut st);
+        }
+    }
+    st.out
 }
 
 impl ModuleInfo {
@@ -58,6 +134,10 @@ impl ModuleInfo {
             Helper::Mul16Soft => "mul16s",
             Helper::DivU16Soft => "divu16s",
             Helper::DivS16Soft => "divs16s",
+            Helper::A32(c, irq) => {
+                let n = ["mul32", "divu32", "divs32", "remu32", "rems32"][c as usize];
+                return format!("lcc_{}{}_{}", n, if irq { "i" } else { "" }, self.tag);
+            }
         };
         format!("lcc_{}_{}", base, self.tag)
     }
@@ -96,7 +176,59 @@ fn sanitize(s: &str) -> String {
     s.chars().map(|c| if c.is_ascii_alphanumeric() || c == '_' { c } else { '_' }).collect()
 }
 
+/// Functions reachable from an interrupt root get their own copies
+/// (`name__nmi`) for the interrupt context: static frames are not
+/// reentrant, so a function the NMI shares with main-line code would have its
+/// frame overwritten when the NMI arrives while main-line code is inside it.
+pub fn clone_for_interrupts(m: &mut Module) {
+    let index: HashMap<String, usize> = m.funcs.iter().enumerate().map(|(i, f)| (f.name.clone(), i)).collect();
+    let roots: Vec<usize> = m.funcs.iter().enumerate().filter(|(_, f)| f.interrupt).map(|(i, _)| i).collect();
+    if roots.is_empty() {
+        return;
+    }
+    let mut reach: BTreeSet<usize> = BTreeSet::new();
+    let mut stack = roots.clone();
+    while let Some(v) = stack.pop() {
+        for b in &m.funcs[v].blocks {
+            for i in &b.insts {
+                if let Inst::Call { callee: Callee::Direct(n), .. } = i {
+                    if let Some(&j) = index.get(n) {
+                        if !roots.contains(&j) && reach.insert(j) {
+                            stack.push(j);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let cloned: HashSet<String> = reach.iter().map(|&i| m.funcs[i].name.clone()).collect();
+    let mut clones = Vec::new();
+    for &i in &reach {
+        let mut g = m.funcs[i].clone();
+        g.name = format!("{}__nmi", g.name);
+        g.exported = false;
+        g.address_taken = false;
+        g.interrupt = true;
+        clones.push(g);
+    }
+    m.funcs.extend(clones);
+    for f in m.funcs.iter_mut().filter(|f| f.interrupt) {
+        for b in &mut f.blocks {
+            for i in &mut b.insts {
+                if let Inst::Call { callee: Callee::Direct(n), .. } = i {
+                    if cloned.contains(n.as_str()) {
+                        *n = format!("{}__nmi", n);
+                    }
+                }
+            }
+        }
+    }
+}
+
 pub fn compile_module(m: &Module, opts: &Options) -> Output {
+    let mut owned = m.clone();
+    clone_for_interrupts(&mut owned);
+    let m = &owned;
     let tag = sanitize(&opts.tag);
     let mut errors = Vec::new();
 
@@ -218,7 +350,18 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
             stack.extend(callees[v].iter().flatten().copied());
         }
     }
-    let mi = ModuleInfo { funcs, near_globals, tag: tag.clone(), frame_base: frame_base.clone(), externs, interrupt_funcs };
+    let mut scc_of = HashMap::new();
+    let mut scc_members = Vec::new();
+    for comp in recursive_components(m) {
+        let id = scc_members.len();
+        let mut members = Vec::new();
+        for &v in &comp {
+            scc_of.insert(m.funcs[v].name.clone(), id);
+            members.push((m.funcs[v].name.clone(), allocs[v].frame_size));
+        }
+        scc_members.push(members);
+    }
+    let mi = ModuleInfo { funcs, near_globals, tag: tag.clone(), frame_base: frame_base.clone(), externs, interrupt_funcs, scc_of, scc_members };
 
     let mut out = String::new();
     let _ = writeln!(out, "; generated by loomcc");
@@ -278,6 +421,13 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
             let _ = writeln!(out, "{} dsb {}", g.name, g.size.max(1));
         }
         out.push_str(".ENDS\n");
+    }
+    for irq in [false, true] {
+        if helpers.iter().any(|h| matches!(h, Helper::A32(_, i) if *i == irq)) {
+            let _ = writeln!(out, ".RAMSECTION \"lcc.h32{}.{}\" BANK $7E SLOT 2", if irq { "i" } else { "" }, tag);
+            let _ = writeln!(out, "lcc_h32{}_{} dsb 4", if irq { "i" } else { "" }, tag);
+            out.push_str(".ENDS\n");
+        }
     }
     if cstack_bytes > 0 {
         let _ = writeln!(out, ".RAMSECTION \"lcc.cstack.{}\" BANK $7E SLOT 2", tag);
@@ -413,7 +563,7 @@ fn place_frames(m: &Module, allocs: &[Alloc], callbacks: &HashSet<String>) -> (H
     }
     let recursive: HashSet<usize> = cyc.into_iter().collect();
     for &r in &recursive {
-        errors.push(format!("{}: recursion is not supported yet (static frames)", m.funcs[r].name));
+        let _ = r; // recursive calls save and restore frames (isel)
     }
     // Longest-path placement in topological order (ignoring back edges).
     let mut base = vec![0u32; n];
@@ -535,6 +685,33 @@ fn helper_text(h: Helper, name: &str, mi: &ModuleInfo) -> String {
             )
         }
         Helper::JslR10 => format!("{name}:\n  jml [$1c]\n"),
+        Helper::A32(code, irq) => {
+            // Operands a at $18/$1a, b at $1c/$1e; result A (low), X (high).
+            // Work RAM in bank $7E (a private copy for interrupt context).
+            let ram = format!("lcc_h32{}_{}", if irq { "i" } else { "" }, mi.tag);
+            let core = mi.helper_name(Helper::A32(1, irq));
+            match code {
+                0 => format!(
+                    "{name}:\n  stz.w {ram}\n  stz.w {ram}+2\n{name}_loop:\n  lda.b $1c\n  ora.b $1e\n  beq {name}_done\n  lsr.b $1e\n  ror.b $1c\n  bcc {name}_skip\n  clc\n  lda.w {ram}\n  adc.b $18\n  sta.w {ram}\n  lda.w {ram}+2\n  adc.b $1a\n  sta.w {ram}+2\n{name}_skip:\n  asl.b $18\n  rol.b $1a\n  bra {name}_loop\n{name}_done:\n  lda.w {ram}\n  ldx.w {ram}+2\n  rtl\n"
+                ),
+                // Unsigned divide: quotient in $18/$1a, remainder in ram.
+                1 => format!(
+                    "{name}:\n  stz.w {ram}\n  stz.w {ram}+2\n  ldy.w #$0020\n{name}_loop:\n  asl.b $18\n  rol.b $1a\n  rol.w {ram}\n  rol.w {ram}+2\n  lda.w {ram}\n  sec\n  sbc.b $1c\n  tax\n  lda.w {ram}+2\n  sbc.b $1e\n  bcc {name}_skip\n  sta.w {ram}+2\n  stx.w {ram}\n  inc.b $18\n{name}_skip:\n  dey\n  bne {name}_loop\n  lda.b $18\n  ldx.b $1a\n  rtl\n"
+                ),
+                3 => format!("{name}:\n  jsl {core}\n  lda.w {ram}\n  ldx.w {ram}+2\n  rtl\n"),
+                // Signed: magnitudes, then signs (quotient: a^b; remainder: a).
+                _ => {
+                    let rem = code == 4;
+                    format!(
+                        "{name}:\n  lda.b $1a\n  pha\n  eor.b $1e\n  pha\n  lda.b $1a\n  bpl {name}_a\n  lda.w #$0000\n  sec\n  sbc.b $18\n  sta.b $18\n  lda.w #$0000\n  sbc.b $1a\n  sta.b $1a\n{name}_a:\n  lda.b $1e\n  bpl {name}_b\n  lda.w #$0000\n  sec\n  sbc.b $1c\n  sta.b $1c\n  lda.w #$0000\n  sbc.b $1e\n  sta.b $1e\n{name}_b:\n  jsl {core}\n{pick}{sel}  bpl {name}_pos\n  lda.w #$0000\n  sec\n  sbc.b $18\n  sta.b $18\n  lda.w #$0000\n  sbc.b $1a\n  sta.b $1a\n{name}_pos:\n  lda.b $18\n  ldx.b $1a\n  rtl\n",
+                        pick = if rem { format!("  lda.w {ram}\n  sta.b $18\n  lda.w {ram}+2\n  sta.b $1a\n") } else { String::new() },
+                        // quotient sign on top of the stack; remainder sign below it
+                        // Stack: quotient sign on top, dividend sign below.
+                        sel = if rem { "  pla\n  pla\n".to_string() } else { "  pla\n  ply\n  ora.w #$0000\n".to_string() },
+                    )
+                }
+            }
+        }
     };
     format!("\n.SECTION \"{}\" SUPERFREE\n{}.ENDS\n", name, body)
 }

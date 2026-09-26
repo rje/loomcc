@@ -11,6 +11,9 @@ struct Args {
     output: Option<PathBuf>,
     nostdinc: bool,
     opt: u8,
+    /// Hand-written assembly whose `jsl` targets are C functions called back
+    /// while the assembly runs (frames must stay disjoint).
+    asm_callbacks: Vec<PathBuf>,
 }
 
 #[derive(PartialEq)]
@@ -30,7 +33,7 @@ enum Mode {
 }
 
 fn parse_args() -> Result<Args, String> {
-    let mut args = Args { inputs: Vec::new(), pp: Options { target_macros: true, ..Default::default() }, mode: Mode::Preprocess, output: None, nostdinc: false, opt: 2 };
+    let mut args = Args { inputs: Vec::new(), pp: Options { target_macros: true, ..Default::default() }, mode: Mode::Preprocess, output: None, nostdinc: false, opt: 2, asm_callbacks: Vec::new() };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
         let mut value = |flag: &str, rest: &str| -> Result<String, String> {
@@ -66,6 +69,8 @@ fn parse_args() -> Result<Args, String> {
             args.mode = Mode::SyntaxOnly;
         } else if a == "--emit-ir" {
             args.mode = Mode::EmitIr;
+        } else if let Some(f) = a.strip_prefix("--asm-callbacks=") {
+            args.asm_callbacks.push(f.into());
         } else if a == "-S" {
             args.mode = Mode::Assembly;
         } else if a == "--interpret" || a == "--run-ir" {
@@ -149,7 +154,26 @@ fn real_main() -> ExitCode {
                     .and_then(|p| p.file_stem())
                     .map(|s| s.to_string_lossy().to_string())
                     .unwrap_or_else(|| "unit".into());
-                let o = loomcc_w65816::compile_module(&m, &loomcc_w65816::Options { tag, ..Default::default() });
+                let mut callbacks = std::collections::HashSet::new();
+                for f in &args.asm_callbacks {
+                    let text = match std::fs::read_to_string(f) {
+                        Ok(t) => t,
+                        Err(e) => {
+                            eprintln!("loomcc: {}: {}", f.display(), e);
+                            return ExitCode::from(1);
+                        }
+                    };
+                    for line in text.lines() {
+                        let code = line.split(';').next().unwrap_or("").trim();
+                        let mut parts = code.split_whitespace();
+                        if let (Some(op), Some(target)) = (parts.next(), parts.next()) {
+                            if matches!(op.to_ascii_lowercase().as_str(), "jsl" | "jsr.l" | "jml" | "jmp.l") {
+                                callbacks.insert(target.to_string());
+                            }
+                        }
+                    }
+                }
+                let o = loomcc_w65816::compile_module(&m, &loomcc_w65816::Options { tag, callbacks, ..Default::default() });
                 for e in &o.errors {
                     eprintln!("loomcc: error: {}", e);
                 }

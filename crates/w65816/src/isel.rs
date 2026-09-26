@@ -63,6 +63,9 @@ pub enum Helper {
     Mul16Soft,
     DivU16Soft,
     DivS16Soft,
+    /// 32-bit operations (0 mul, 1 divu, 2 divs, 3 remu, 4 rems); the flag
+    /// selects the copy with interrupt-private work RAM.
+    A32(u8, bool),
 }
 
 pub struct Gen<'a> {
@@ -1193,6 +1196,83 @@ impl<'a> Gen<'a> {
                 self.acc = None;
                 self.invalidate_reg(dst);
             }
+            BinOp::Shl | BinOp::ShrU | BinOp::ShrS => {
+                // Variable count: copy, then shift in place Y times.
+                for k in 0..2 {
+                    self.lda(a, k);
+                    self.sta_reg(dst, k);
+                }
+                let (lo, hi) = match (self.src(&Operand::Reg(dst), 0), self.src(&Operand::Reg(dst), 1)) {
+                    (Src::Dp(x), Src::Dp(y)) => (Mode::Dp(x), Mode::Dp(y)),
+                    (Src::Abs(x), Src::Abs(y)) => (Mode::Abs(x), Mode::Abs(y)),
+                    _ => {
+                        self.errors.push(format!("{}: 32-bit shift destination", self.f.name));
+                        return;
+                    }
+                };
+                self.acc = None;
+                let s0 = self.src(b, 0);
+                self.op_src("lda", &s0);
+                self.i("and", Mode::Imm(w(0x3f)));
+                self.i("tay", Mode::Implied);
+                let (lp, done) = (self.fresh(), self.fresh());
+                self.i("beq", Mode::Label(done.clone()));
+                self.label(lp.clone());
+                match op {
+                    BinOp::Shl => {
+                        self.i("asl", lo.clone());
+                        self.i("rol", hi.clone());
+                    }
+                    BinOp::ShrU => {
+                        self.i("lsr", hi.clone());
+                        self.i("ror", lo.clone());
+                    }
+                    _ => {
+                        self.i("lda", hi.clone());
+                        self.i("cmp", Mode::Imm(w(0x8000)));
+                        self.i("ror", hi.clone());
+                        self.i("ror", lo.clone());
+                    }
+                }
+                self.i("dey", Mode::Implied);
+                self.i("bne", Mode::Label(lp));
+                self.label(done);
+                self.acc = None;
+                self.yv = None;
+                self.invalidate_reg(dst);
+            }
+            BinOp::Mul | BinOp::DivU | BinOp::DivS | BinOp::RemU | BinOp::RemS => {
+                for k in 0..2u32 {
+                    self.acc = None;
+                    let s = self.src(a, k);
+                    self.op_src("lda", &s);
+                    self.i("sta", Mode::Dp(0x18 + 2 * k as u8));
+                }
+                for k in 0..2u32 {
+                    self.acc = None;
+                    let s = self.src(b, k);
+                    self.op_src("lda", &s);
+                    self.i("sta", Mode::Dp(0x1c + 2 * k as u8));
+                }
+                let code = match op {
+                    BinOp::Mul => 0,
+                    BinOp::DivU => 1,
+                    BinOp::DivS => 2,
+                    BinOp::RemU => 3,
+                    _ => 4,
+                };
+                let irq = self.mi.interrupt_funcs.contains(&self.f.name);
+                self.helpers.insert(Helper::A32(code, irq));
+                if code != 0 {
+                    self.helpers.insert(Helper::A32(1, irq));
+                }
+                let name = self.mi.helper_name(Helper::A32(code, irq));
+                self.i("jsl", Mode::Label(name));
+                self.forget();
+                self.sta_reg(dst, 0);
+                self.stx_reg(dst, 1);
+                self.acc = None;
+            }
             _ => self.errors.push(format!("{}: 32-bit {:?} is not supported yet", self.f.name, op)),
         }
     }
@@ -1907,8 +1987,41 @@ impl<'a> Gen<'a> {
             Callee::Indirect(_) => None,
         };
         if let Some(info) = internal {
+            // A call inside a recursive component: the callee may reuse any
+            // member's static frame, this function's included, so every
+            // member's frame is saved on the hardware stack around it.
+            let callee_name = match callee {
+                Callee::Direct(n) => n.clone(),
+                _ => String::new(),
+            };
+            let scc = match (self.mi.scc_of.get(&self.f.name), self.mi.scc_of.get(&callee_name)) {
+                (Some(a), Some(b)) if a == b => Some(*a),
+                _ => None,
+            };
+            let saved: Vec<(String, u32)> = scc.map(|c| self.mi.scc_members[c].clone()).unwrap_or_default();
+            for (name, size) in &saved {
+                let sym = self.mi.frame_symbol(name);
+                for k in (0..size / 2).rev() {
+                    self.i("lda", Mode::Abs(Expr::Sym(sym.clone(), 2 * k as i64)));
+                    self.i("pha", Mode::Implied);
+                }
+            }
+            self.acc = None;
             self.pass_internal_args(&info, args, sret);
             self.i("jsl", Mode::Label(info.body_label.clone()));
+            if !saved.is_empty() {
+                self.i("sta", Mode::Dp(0x18));
+                self.i("stx", Mode::Dp(0x1a));
+                for (name, size) in saved.iter().rev() {
+                    let sym = self.mi.frame_symbol(name);
+                    for k in 0..size / 2 {
+                        self.i("pla", Mode::Implied);
+                        self.i("sta", Mode::Abs(Expr::Sym(sym.clone(), 2 * k as i64)));
+                    }
+                }
+                self.i("lda", Mode::Dp(0x18));
+                self.i("ldx", Mode::Dp(0x1a));
+            }
             self.forget();
             if let Some(d) = dst {
                 let t = self.f.ty(d);
