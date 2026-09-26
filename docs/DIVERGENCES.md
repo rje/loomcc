@@ -113,12 +113,42 @@ clang spells it "./h/file.h"
 - `t1-pp/include/file-in-header.c`
 - `t1-pp/line/line-then-include.c`
 
+### `clang16-bitfield-units` (clang16, 1 test)
+
+clang packs bit-fields of different declared types into shared bytes
+
+- `t3-sema/layout/bitfields-816tcc.c`
+
+### `clang16-long-align` (clang16, 1 test)
+
+msp430 aligns long to 2
+
+- `t3-sema/layout/thirty-two-bit-member.c`
+
+### `clang16-ptr16` (clang16, 7 tests)
+
+msp430 pointers are 2 bytes
+
+- `t3-sema/layout/function-pointer-member.c`
+- `t3-sema/layout/nested-struct-alignment.c`
+- `t3-sema/layout/pointer-array-member.c`
+- `t3-sema/layout/pointer-first-last.c`
+- `t3-sema/layout/pointer-member.c`
+- `t3-sema/layout/union-with-pointer.c`
+- `t3-sema/promote/pointer-size.c`
+
 ### `uncoded` (host, 2 tests)
 
 deliberately calls abort()
 
 - `t4-exec/smoke/xfail-harness-detects-abort.c`
 - `t4-exec/smoke/xfail-harness-detects-nonzero.c`
+
+### `lli-byval` (host16, 1 test)
+
+the LLVM interpreter ignores byval: the callee writes the caller's struct
+
+- `t4-exec/struct/pass-by-value.c`
 
 ### `uncoded` (host16, 2 tests)
 
@@ -160,6 +190,12 @@ deliberately calls abort()
 - `t1-pp/stringize/embedded-quote-in-char.c`
 - `t1-pp/stringize/escape-chars.c`
 
+### `tcc-crash` (tcc, 1 test)
+
+816-tcc crashes on sizeof of an assignment expression
+
+- `t3-sema/promote/compound-assign-types.c`
+
 ### `tcc-define-defined` (tcc, 2 tests)
 
 816-tcc lets `defined` be defined or undefined
@@ -173,6 +209,12 @@ deliberately calls abort()
 
 - `t1-pp/lex/max-munch.c`
 
+### `tcc-empty-init` (tcc, 1 test)
+
+816-tcc accepts `{}`
+
+- `t2-parse/init/empty-braces-error.c`
+
 ### `tcc-extra-tokens` (tcc, 6 tests)
 
 816-tcc ignores tokens after #endif/#else/#ifdef
@@ -183,6 +225,17 @@ deliberately calls abort()
 - `t1-pp/directive/undef-extra.c`
 - `t1-pp/include/extra-tokens.c`
 - `t1-pp/line/line-directive-extra.c`
+
+### `tcc-fold-host-int` (tcc, 6 tests)
+
+816-tcc folds unsigned int constant arithmetic in 32 bits (-1 + 0u != 65535u, -1 / 2u == 0x7fffffff)
+
+- `t3-sema/promote/conditional-operator.c`
+- `t3-sema/promote/int-plus-unsigned.c`
+- `t3-sema/promote/multiply-no-widening.c`
+- `t3-sema/promote/unary-minus-unsigned-char.c`
+- `t3-sema/promote/unsigned-wraparound.c`
+- `t3-sema/promote/ushort-promotes-to-unsigned-int.c`
 
 ### `tcc-gnu-comma` (tcc, 1 test)
 
@@ -240,6 +293,37 @@ deliberately calls abort()
 - `t1-pp/cond/overflow.c`
 - `t1-pp/cond/string-in-if.c`
 
+### `tcc-implicit-function` (tcc, 1 test)
+
+816-tcc declares it implicitly
+
+- `t3-sema/constraint/implicit-function-declaration.c`
+
+### `tcc-implicit-int` (tcc, 2 tests)
+
+816-tcc accepts implicit int
+
+- `t2-parse/decl/kr-undeclared-param.c`
+- `t2-parse/errors/missing-type-c99.c`
+
+### `tcc-lax-decl` (tcc, 7 tests)
+
+816-tcc accepts conflicting declaration specifiers
+
+- `t2-parse/errors/two-storage-classes.c`
+- `t2-parse/errors/two-types.c`
+- `t3-sema/constraint/bitfield-wider-than-int.c`
+- `t3-sema/constraint/conflicting-types.c`
+- `t3-sema/constraint/duplicate-member.c`
+- `t3-sema/constraint/redefinition.c`
+- `t3-sema/constraint/void-object.c`
+
+### `tcc-lax-init` (tcc, 1 test)
+
+816-tcc ignores excess initializers
+
+- `t2-parse/init/excess-initializer.c`
+
 ### `tcc-lax-params` (tcc, 11 tests)
 
 816-tcc accepts malformed macro parameter lists
@@ -256,6 +340,37 @@ deliberately calls abort()
 - `t1-pp/stringize/hash-not-param.c`
 - `t1-pp/variadic/ellipsis-not-last.c`
 
+### `tcc-lax-register` (tcc, 1 test)
+
+816-tcc allows & on a register variable
+
+- `t3-sema/constraint/address-of-register.c`
+
+### `tcc-lax-return` (tcc, 1 test)
+
+816-tcc accepts it
+
+- `t3-sema/constraint/return-without-value.c`
+
+### `tcc-lax-sizeof` (tcc, 2 tests)
+
+816-tcc accepts sizeof of a bit-field
+
+- `t3-sema/constraint/sizeof-bitfield.c`
+- `t3-sema/constraint/sizeof-function.c`
+
+### `tcc-lax-switch` (tcc, 1 test)
+
+816-tcc accepts duplicate case labels
+
+- `t3-sema/constraint/duplicate-case.c`
+
+### `tcc-lax-types` (tcc, 1 test)
+
+816-tcc converts silently
+
+- `t3-sema/constraint/argument-type.c`
+
 ### `tcc-lex-lax` (tcc, 2 tests)
 
 816-tcc -E passes the stray quote through
@@ -263,7 +378,7 @@ deliberately calls abort()
 - `t1-pp/lex-errors/unterminated-char.c`
 - `t1-pp/lex-errors/unterminated-string.c`
 
-### `tcc-line-after` (tcc, 19 tests)
+### `tcc-line-after` (tcc, 20 tests)
 
 816-tcc reports #if/#ifdef errors on the line after the directive
 
@@ -286,6 +401,7 @@ deliberately calls abort()
 - `t1-pp/include/unterminated-comment-in-header.c`
 - `t1-pp/lex-errors/unterminated-comment.c`
 - `t1-pp/line/line-directive-empty.c`
+- `t2-parse/errors/goto-undefined-label.c`
 
 ### `tcc-line-lax` (tcc, 3 tests)
 
@@ -307,6 +423,17 @@ deliberately calls abort()
 
 - `t1-pp/line/line-directive-decimal.c`
 
+### `tcc-long16` (tcc, 6 tests)
+
+816-tcc's long is 16 bits
+
+- `t3-sema/consttype/decimal.c`
+- `t3-sema/consttype/hex-octal.c`
+- `t3-sema/consttype/suffixes.c`
+- `t3-sema/promote/int-vs-unsigned-long.c`
+- `t3-sema/promote/long-vs-unsigned-int.c`
+- `t3-sema/promote/sizes.c`
+
 ### `tcc-memory-full` (tcc, 3 tests)
 
 816-tcc fails with 'memory full' when an invocation's arguments continue past the end of a macro
@@ -321,6 +448,18 @@ deliberately calls abort()
 
 - `t1-pp/cond/if-after-missing-endif-in-include.c`
 - `t1-pp/cond/missing-endif.c`
+
+### `tcc-no-array-static` (tcc, 1 test)
+
+816-tcc rejects static in array parameter declarators (C99)
+
+- `t2-parse/decl/abstract-in-prototype.c`
+
+### `tcc-no-c11-align` (tcc, 1 test)
+
+816-tcc has no _Alignas/_Alignof
+
+- `t2-parse/decl/alignas-alignof.c`
 
 ### `tcc-no-c99-ws` (tcc, 1 test)
 
@@ -351,6 +490,20 @@ deliberately calls abort()
 
 - `t1-pp/lex/dollar-identifier.c`
 
+### `tcc-no-for-decl` (tcc, 3 tests)
+
+816-tcc rejects declarations in for (C99)
+
+- `t2-parse/expr/comma.c`
+- `t2-parse/stmt/all-statements.c`
+- `t2-parse/stmt/for-declaration-scope.c`
+
+### `tcc-no-generic` (tcc, 1 test)
+
+816-tcc has no _Generic
+
+- `t2-parse/expr/generic.c`
+
 ### `tcc-no-has-include` (tcc, 3 tests)
 
 816-tcc has no __has_include
@@ -364,6 +517,19 @@ deliberately calls abort()
 816-tcc does not define __STDC_HOSTED__
 
 - `t1-pp/predef/stdc-hosted.c`
+
+### `tcc-no-noreturn` (tcc, 1 test)
+
+816-tcc has no _Noreturn
+
+- `t2-parse/decl/noreturn-inline.c`
+
+### `tcc-no-overflow-diag` (tcc, 2 tests)
+
+816-tcc accepts it
+
+- `t3-sema/consttype/enum-range.c`
+- `t3-sema/consttype/overflow-diagnosed.c`
 
 ### `tcc-no-paste-diag` (tcc, 1 test)
 
@@ -408,6 +574,12 @@ deliberately calls abort()
 - `t1-pp/object/redefine-object-as-function.c`
 - `t1-pp/object/redefine-whitespace-presence.c`
 - `t1-pp/std/c17-6.10.3.5-ex6-invalid.c`
+
+### `tcc-no-static-assert` (tcc, 1 test)
+
+816-tcc has no _Static_assert
+
+- `t2-parse/decl/static-assert.c`
 
 ### `tcc-no-trigraphs` (tcc, 1 test)
 
@@ -464,6 +636,12 @@ deliberately calls abort()
 - `t1-pp/stringize/comments-become-space.c`
 - `t1-pp/stringize/leading-space-from-macro.c`
 
+### `tcc-tag-scope` (tcc, 1 test)
+
+816-tcc rejects redeclaring a struct tag in an inner block
+
+- `t2-parse/decl/struct-tag-scope.c`
+
 ### `tcc-unknown-directive` (tcc, 1 test)
 
 816-tcc ignores unknown directives
@@ -483,6 +661,42 @@ deliberately calls abort()
 - `t1-pp/variadic/define-va-args.c`
 - `t1-pp/variadic/va-args-in-text.c`
 - `t1-pp/variadic/va-args-outside.c`
+
+### `tcc-void-arith` (tcc, 1 test)
+
+816-tcc does void * arithmetic (GNU)
+
+- `t3-sema/constraint/void-pointer-arithmetic.c`
+
+### `tcc-zero-array` (tcc, 1 test)
+
+816-tcc accepts [0]
+
+- `t3-sema/constraint/zero-array-size.c`
+
+### `tcc-deref-call-spill` (tcc-rom, 1 test)
+
+816-tcc spills f into its stack slot after pushing the arguments (S-relative offset not adjusted), so the call jumps to garbage
+
+- `t4-exec/call/function-pointer-deref-call.c`
+
+### `tcc-fold-host-int` (tcc-rom, 1 test)
+
+816-tcc folds (i16)(u16)65535u to 65535, not -1
+
+- `t4-exec/arith16/const-cast-fold.c`
+
+### `tcc-long16` (tcc-rom, 1 test)
+
+816-tcc's long is 16 bits
+
+- `t4-exec/arith32/long-is-32.c`
+
+### `tcc-no-llshift` (tcc-rom, 1 test)
+
+816-tcc calls tcc__ashldi3 for variable 32-bit shifts and PVSnesLib's libtcc lacks it
+
+- `t4-exec/arith32/shifts.c`
 
 ### `uncoded` (tcc-rom, 2 tests)
 

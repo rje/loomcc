@@ -16,6 +16,8 @@
 ;   test_status = $600d  main returned; test_result holds its return value
 ;                 $dead  abort() was called
 ;                 $e817  exit() was called; test_result holds its argument
+;                 $c4ec  a CHECK failed; test_result holds its line
+;                        (loomcc-test.h's CHECK calls loomcc_test_fail_line)
 ;   test_result = the 16-bit return value (0 means pass)
 
 .SECTION "loomcc_harness.code" SUPERFREE
@@ -46,6 +48,18 @@ loomcc_test_abort:
   sta.l test_done
 harness_abort_idle:
   bra harness_abort_idle
+
+; void loomcc_test_fail_line(int line): line at 4,s (816-tcc ABI)
+loomcc_test_fail_line:
+  rep #$30
+  lda 4,s
+  sta.l test_result
+  lda.w #$c4ec
+  sta.l test_status
+  lda.w #1
+  sta.l test_done
+harness_fail_idle:
+  bra harness_fail_idle
 
 ; void loomcc_test_exit(int status): status at 4,s (816-tcc ABI)
 loomcc_test_exit:

@@ -32,7 +32,16 @@ typedef unsigned int u32;
 #define LT_CAT(a, b) LT_CAT_(a, b)
 #define STATIC_CHECK(e) typedef char LT_CAT(loomcc_static_check_, __LINE__)[(e) ? 1 : -1]
 
-/* Runtime check: abort() when false. */
+/* Runtime check: stop the test when false. Harness ROMs record the failing
+ * line (harness/rom/harness.asm); host runs print it; otherwise abort(). */
+#if defined(LOOMCC_TEST_ROM)
+void loomcc_test_fail_line(int line);
+#define CHECK(e) do { if (!(e)) loomcc_test_fail_line(__LINE__); } while (0)
+#elif defined(LOOMCC_TEST_HOST)
+int printf(const char *, ...);
+#define CHECK(e) do { if (!(e)) { printf("CHECK failed at line %d: %s\n", __LINE__, #e); abort(); } } while (0)
+#else
 #define CHECK(e) do { if (!(e)) abort(); } while (0)
+#endif
 
 #endif

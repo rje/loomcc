@@ -513,6 +513,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
                 // a test that relies on UB fails on the host.
                 "-fsanitize=undefined".into(),
                 "-fsanitize-trap=all".into(),
+                "-DLOOMCC_TEST_HOST=1".into(),
                 harness_inc(cfg),
             ];
             args.extend(t.options.clone());
@@ -530,7 +531,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             if out.ok() {
                 Res::Pass
             } else {
-                Res::Fail(format!("host run: {} {}", out.describe(), rom::first_lines(&out.stderr, 3)))
+                Res::Fail(format!("host run: {} {}{}", out.describe(), rom::first_lines(&out.stdout, 2), rom::first_lines(&out.stderr, 2)))
             }
         }
         (Action::Run, "host16") => {
@@ -540,7 +541,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             let sources: Vec<String> = std::iter::once(file.clone()).chain(t.extra_sources.iter().cloned()).chain(t.tcc_sources.iter().cloned()).collect();
             for (n, s) in sources.iter().enumerate() {
                 let ll = work.join(format!("s{}.ll", n));
-                let mut args = vec!["--target=msp430-none-elf".to_string(), "-fsigned-char".into(), "-std=c17".into(), "-O0".into(), "-w".into(), "-S".into(), "-emit-llvm".into(), harness_inc(cfg)];
+                let mut args = vec!["--target=msp430-none-elf".to_string(), "-fsigned-char".into(), "-std=c17".into(), "-O0".into(), "-w".into(), "-S".into(), "-emit-llvm".into(), "-DLOOMCC_TEST_HOST=1".into(), harness_inc(cfg)];
                 args.extend(t.options.clone());
                 args.extend([s.clone(), "-o".into(), ll.display().to_string()]);
                 let out = exec::run(&clang, &args, dir, timeout(t, 60));
@@ -566,15 +567,38 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             };
             // The LLVM interpreter keeps host pointers in memory: widen the
             // msp430 data layout's 16-bit pointers so they survive a store.
-            let text = std::fs::read_to_string(&linked).unwrap_or_default().replace("p:16:16", "p:64:64");
+            let text = std::fs::read_to_string(&linked).unwrap_or_default().replace("p:16:16", "p:64:64").replace(" optnone", "");
+            let widened = work.join("widened.ll");
+            let _ = std::fs::write(&widened, text);
+            // lli's interpreter zero-extends GEP indices narrower than 32
+            // bits; instcombine rewrites them to the (now 64-bit) index type.
+            let opt = need!(&tools.llvm_opt, "opt");
             let patched = work.join("host16.ll");
+            let out = exec::run(
+                &opt,
+                &["-S".into(), "-passes=instcombine<no-verify-fixpoint>".into(), widened.display().to_string(), "-o".into(), patched.display().to_string()],
+                work,
+                timeout(t, 60),
+            );
+            rom::log_cmd(log, &out);
+            if !out.ok() {
+                return Res::Unresolved(format!("opt failed: {}", rom::first_lines(&out.stderr, 3)));
+            }
+            // ... and the interpreter has no `freeze`: a same-type bitcast is equivalent here.
+            let freeze = regex::Regex::new(r"= freeze (\S+) (.+)$").unwrap();
+            let text: String = std::fs::read_to_string(&patched)
+                .unwrap_or_default()
+                .lines()
+                .map(|l| freeze.replace(l, "= bitcast $1 $2 to $1").into_owned() + "\n")
+                .collect();
             let _ = std::fs::write(&patched, text);
             let out = exec::run(&lli, &["-force-interpreter".into(), patched.display().to_string()], work, timeout(t, 60));
             rom::log_cmd(log, &out);
             if out.ok() {
                 Res::Pass
             } else {
-                Res::Fail(format!("lli: {} {}", out.describe(), rom::first_lines(&out.stderr, 2)))
+                let check = out.stdout.lines().find(|l| l.starts_with("CHECK failed")).map(String::from);
+                Res::Fail(format!("lli: {}: {}", out.describe(), check.unwrap_or_else(|| rom::first_lines(&out.stderr, 1))))
             }
         }
         (Action::Run, "tcc-rom") => {

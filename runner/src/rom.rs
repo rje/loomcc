@@ -13,6 +13,7 @@ pub const ROM_DEFINES: &[&str] =
 const DONE_STATUS: i64 = 0x600d;
 const ABORT_STATUS: i64 = 0xdead;
 const EXIT_STATUS: i64 = 0xe817;
+const CHECK_STATUS: i64 = 0xc4ec;
 
 pub enum RomOutcome {
     Pass,
@@ -199,6 +200,7 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
         ABORT_STATUS => RomOutcome::Fail("abort() called".into()),
         EXIT_STATUS if r == 0 => RomOutcome::Pass,
         EXIT_STATUS => RomOutcome::Fail(format!("exit({})", r)),
+        CHECK_STATUS => RomOutcome::Fail(format!("CHECK failed at line {}", r)),
         other => RomOutcome::Broken(format!("unknown status {:04x}", other)),
     }
 }
