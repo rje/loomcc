@@ -1,0 +1,1505 @@
+# rejected GCC torture compile tests and why
+103818.c	64-bit integers
+20000105-1.c	clang (16-bit int) rejects it: e/20000105-1.c:6:2: error: use of unknown builtin '__builtin_exit' [-Wimplicit-function-declaration]
+20000105-2.c	64-bit integers
+20000120-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20000120-2.c	GNU keywords
+20000127-1.c	floating point or complex
+20000211-1.c	64-bit integers
+20000224-1.c	clang (16-bit int) rejects it: 0000224-1.c:33:27: error: use of GNU old-style field designator extension [-Werror,-Wgnu-designator]
+20000314-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20000314-2.c	compiler-predefined type macros
+20000319-1.c	clang (16-bit int) rejects it: re/compile/20000319-1.c:5:13: error: zero size arrays are an extension [-Werror,-Wzero-length-array]
+20000326-2.c	labels as values
+20000329-1.c	floating point or complex
+20000403-1.c	64-bit integers
+20000403-2.c	64-bit integers
+20000405-1.c	floating point or complex
+20000405-3.c	GNU attributes that change meaning
+20000412-2.c	builtins
+20000420-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20000511-1.c	dg directives
+20000517-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20000518-1.c	labels as values
+20000605-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20000609-1.c	dg directives
+20000701-1.c	clang (16-bit int) rejects it: error: ISO C does not allow indirection on operand of type 'void *' [-Werror,-Wvoid-ptr-dereference]
+20000718.c	floating point or complex
+20000802-1.c	builtins
+20000803-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20000804-1.c	floating point or complex
+20000818-1.c	floating point or complex
+20000825-1.c	GNU keywords
+20000827-1.c	inline assembly
+20000922-1.c	builtins
+20000923-1.c	inline assembly
+20001024-1.c	64-bit integers
+20001109-1.c	GNU keywords
+20001109-2.c	GNU keywords
+20001116-1.c	clang (16-bit int) rejects it: e/gcc.c-torture/compile/20001116-1.c:3:23: error: initializer element is not a compile-time constant
+20001121-1.c	statement expressions
+20001123-1.c	builtins
+20001123-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20001205-1.c	inline assembly
+20001212-1.c	floating point or complex
+20001221-1.c	statement expressions
+20001222-1.c	floating point or complex
+20001226-1.c	floating constants
+20010102-1.c	floating point or complex
+20010107-1.c	dg directives
+20010112-1.c	inline assembly
+20010113-1.c	floating constants
+20010114-2.c	includes stdbool.h
+20010118-1.c	statement expressions
+20010124-1.c	floating constants
+20010202-1.c	clang (16-bit int) rejects it: testsuite/gcc.c-torture/compile/20010202-1.c:1:27: error: variable length array used [-Werror,-Wvla]
+20010209-1.c	floating constants
+20010226-1.c	dg directives
+20010227-1.c	floating point or complex
+20010313-1.c	GNU attributes that change meaning
+20010320-1.c	64-bit integers
+20010326-1.c	floating point or complex
+20010327-1.c	floating constants
+20010328-1.c	64-bit integers
+20010329-1.c	floating point or complex
+20010404-1.c	includes limits.h
+20010421-1.c	floating point or complex
+20010423-1.c	includes stdbool.h
+20010503-1.c	floating point or complex
+20010510-1.c	clang (16-bit int) rejects it: e/gcc.c-torture/compile/20010510-1.c:2:2: error: #ident is a language extension [-Werror,-Wpedantic]
+20010518-1.c	64-bit integers
+20010518-2.c	includes limits.h
+20010525-1.c	builtins
+20010605-1.c	clang (16-bit int) rejects it: testsuite/gcc.c-torture/compile/20010605-1.c:7:14: error: variable length array used [-Werror,-Wvla]
+20010605-2.c	clang (16-bit int) rejects it: -2.c:13:7: error: C99 forbids casting nonscalar type 'union u' to the same type [-Werror,-Wpedantic]
+20010605-3.c	statement expressions
+20010610-1.c	includes stdbool.h
+20010611-1.c	wide characters
+20010701-1.c	GNU attributes that change meaning
+20010711-1.c	64-bit integers
+20010711-2.c	64-bit integers
+20010714-1.c	GNU attributes that change meaning
+20010903-1.c	inline assembly
+20010903-2.c	clang (16-bit int) rejects it: d/gcc/gcc/testsuite/gcc.c-torture/compile/20010903-2.c:7:3: error: illegal storage class on function
+20010911-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20011010-1.c	statement expressions
+20011023-1.c	clang (16-bit int) rejects it: d/gcc/gcc/testsuite/gcc.c-torture/compile/20011023-1.c:7:3: error: illegal storage class on function
+20011029-1.c	builtins
+20011109-1.c	floating point or complex
+20011114-1.c	compiler-predefined type macros
+20011119-1.c	GNU attributes that change meaning
+20011119-2.c	GNU attributes that change meaning
+20011130-2.c	floating point or complex
+20011205-1.c	64-bit integers
+20011217-2.c	floating point or complex
+20011218-1.c	64-bit integers
+20011219-1.c	floating point or complex
+20011219-2.c	floating point or complex
+20011229-1.c	64-bit integers
+20011229-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20020106-1.c	64-bit integers
+20020110.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20020120-1.c	floating point or complex
+20020129-1.c	64-bit integers
+20020210-1.c	clang (16-bit int) rejects it: testsuite/gcc.c-torture/compile/20020210-1.c:2:29: error: variable length array used [-Werror,-Wvla]
+20020303-1.c	GNU attributes that change meaning
+20020304-1.c	floating constants
+20020304-2.c	64-bit integers
+20020309-1.c	clang (16-bit int) rejects it: gcc/testsuite/gcc.c-torture/compile/20020309-1.c:9:7: error: function definition is not allowed here
+20020309-2.c	floating point or complex
+20020312-1.c	statement expressions
+20020320-1.c	builtins
+20020330-1.c	floating point or complex
+20020409-1.c	includes limits.h
+20020415-1.c	floating point or complex
+20020418-1.c	floating point or complex
+20020604-1.c	floating point or complex
+20020701-1.c	compiler-predefined type macros
+20020706-1.c	dg directives
+20020706-2.c	dg directives
+20020709-1.c	floating point or complex
+20020807-1.c	clang (16-bit int) rejects it: estsuite/gcc.c-torture/compile/20020807-1.c:19:12: error: variable length array used [-Werror,-Wvla]
+20020910-1.c	64-bit integers
+20020926-1.c	floating point or complex
+20020927-1.c	64-bit integers
+20020930-1.c	floating point or complex
+20021001-1.c	floating point or complex
+20021007-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20021008-1.c	floating point or complex
+20021015-1.c	dg directives
+20021015-2.c	builtins
+20021103-1.c	floating point or complex
+20021108-1.c	labels as values
+20021110.c	empty structs (GNU)
+20021119-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20021120-1.c	dg directives
+20021120-2.c	dg directives
+20021204-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20021205-1.c	dg directives
+20021212-1.c	floating point or complex
+20021230-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20030109-1.c	dg directives
+20030110-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20030206-1.c	floating point or complex
+20030219-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20030224-1.c	dg directives
+20030305-1.c	clang (16-bit int) rejects it: y not be used as an array element due to flexible array member [-Werror,-Wflexible-array-extensions]
+20030314-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20030320-1.c	compiler-predefined type macros
+20030330-1.c	64-bit integers
+20030331-1.c	labels as values
+20030405-1.c	compiler-predefined type macros
+20030405-2.c	floating point or complex
+20030410-1.c	empty structs (GNU)
+20030415-1.c	floating point or complex
+20030418-1.c	clang (16-bit int) rejects it: c/testsuite/gcc.c-torture/compile/20030418-1.c:13:14: error: function definition is not allowed here
+20030503-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20030518-1.c	builtins
+20030530-3.c	statement expressions
+20030604-1.c	floating point or complex
+20030605-1.c	builtins
+20030612-1.c	64-bit integers
+20030624-1.c	floating point or complex
+20030716-1.c	clang (16-bit int) rejects it: testsuite/gcc.c-torture/compile/20030716-1.c:3:23: error: variable length array used [-Werror,-Wvla]
+20030804-1.c	floating point or complex
+20030902-1.c	compiler-predefined type macros
+20030903-1.c	floating point or complex
+20030904-1.c	floating point or complex
+20030907-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20030910-1.c	floating point or complex
+20030917-1.c	dg directives
+20030921-1.c	dg directives
+20031011-1.c	clang (16-bit int) rejects it: c/testsuite/gcc.c-torture/compile/20031011-1.c:15:13: error: function definition is not allowed here
+20031023-1.c	includes limits.h
+20031023-2.c	includes 20031023-1.c
+20031023-3.c	includes 20031023-1.c
+20031023-4.c	includes 20031023-1.c
+20031031-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20031112-1.c	floating point or complex
+20031113-1.c	64-bit integers
+20031125-1.c	64-bit integers
+20031203-3.c	floating constants
+20031208-1.c	floating point or complex
+20031220-1.c	64-bit integers
+20031220-2.c	floating point or complex
+20040101-1.c	64-bit integers
+20040130-1.c	compiler-predefined type macros
+20040202-1.c	builtins
+20040209-1.c	floating point or complex
+20040214-2.c	dg directives
+20040219-1.c	floating point or complex
+20040220-1.c	builtins
+20040304-2.c	64-bit integers
+20040309-1.c	dg directives
+20040310-1.c	dg directives
+20040317-1.c	clang (16-bit int) rejects it: testsuite/gcc.c-torture/compile/20040317-1.c:1:41: error: variable length array used [-Werror,-Wvla]
+20040317-2.c	64-bit integers
+20040317-3.c	dg directives
+20040323-1.c	GNU attributes that change meaning
+20040415-1.c	library functions
+20040419-1.c	floating point or complex
+20040610-1.c	floating point or complex
+20040611-1.c	inline assembly
+20040614-1.c	labels as values
+20040624-1.c	floating point or complex
+20040705-1.c	builtins
+20040709-1.c	floating point or complex
+20040726-1.c	64-bit integers
+20040726-2.c	dg directives
+20040727-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20040817-1.c	dg directives
+20040824-1.c	builtins
+20040901-1.c	GNU attributes that change meaning
+20040908-1.c	floating point or complex
+20040909-1.c	GNU keywords
+20040914-1.c	labels as values
+20041026-1.c	floating point or complex
+20041119-1.c	inline assembly
+20041211-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20050105-1.c	dg directives
+20050119-1.c	clang (16-bit int) rejects it: gcc/testsuite/gcc.c-torture/compile/20050119-1.c:8:3: error: function definition is not allowed here
+20050122-1.c	dg directives
+20050122-2.c	GNU keywords
+20050202-1.c	dg directives
+20050210-1.c	compiler-predefined type macros
+20050215-1.c	dg directives
+20050215-2.c	dg directives
+20050215-3.c	dg directives
+20050217-1.c	compiler-predefined type macros
+20050303-1.c	64-bit integers
+20050328-1.c	clang (16-bit int) rejects it: o parameter of type 'void *' converts between void pointer and function pointer [-Werror,-Wpedantic]
+20050510-1.c	labels as values
+20050622-1.c	compiler-predefined type macros
+20050721-1.c	floating point or complex
+20050801-2.c	clang (16-bit int) rejects it: testsuite/gcc.c-torture/compile/20050801-2.c:4:11: error: variable length array used [-Werror,-Wvla]
+20051207-1.c	64-bit integers
+20051216-1.c	floating point or complex
+20060109-1.c	clang (16-bit int) rejects it: 20060109-1.c:34:23: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+20060202-1.c	compiler-predefined type macros
+20060208-1.c	compiler-predefined type macros
+20060217-1.c	inline assembly
+20060309-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20060421-1.c	64-bit integers
+20060625-1.c	floating point or complex
+20060826-1.c	floating point or complex
+20061214-1.c	64-bit integers
+20070129.c	clang (16-bit int) rejects it: ger types where one is of the unique plain 'char' type and the other is not [-Werror,-Wpointer-sign]
+20070419-1.c	clang (16-bit int) rejects it: 14:9: error: ordered comparison between pointer and integer ('unsigned long' and 'void *') [-Werror]
+20070501-1.c	GNU attributes that change meaning
+20070522-1.c	GNU attributes that change meaning
+20070603-1.c	floating point or complex
+20070603-2.c	floating point or complex
+20070905-1.c	builtins
+20070915-1.c	builtins
+20071102-1.c	floating point or complex
+20071105-1.c	64-bit integers
+20071107-1.c	64-bit integers
+20071108-1.c	builtins
+20071114-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20071117-1.c	builtins
+20071207-1.c	builtins
+20071214-1.c	builtins
+20080114-1.c	inline assembly
+20080124-1.c	includes stdarg.h
+20080419-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+20080613-1.c	compiler-predefined type macros
+20080625-1.c	floating point or complex
+20080628-1.c	floating point or complex
+20080704-1.c	floating point or complex
+20080806-1.c	compiler-predefined type macros
+20080903-1.c	dg directives
+20080910-1.c	dg directives
+20080929-1.c	64-bit integers
+20081108-1.c	64-bit integers
+20081108-3.c	compiler-predefined type macros
+20081119-1.c	64-bit integers
+20090107-1.c	GNU attributes that change meaning
+20090209-1.c	labels as values
+20090328-1.c	64-bit integers
+20090518-1.c	floating point or complex
+20090721-1.c	floating point or complex
+20090907-1.c	statement expressions
+20090917-1.c	builtins
+20091215-1.c	dg directives
+20100915-1.c	dg directives
+20101216-1.c	floating point or complex
+20101217-1.c	library functions
+20110126-1.c	builtins
+20110131-1.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+20110902.c	statement expressions
+20110913-1.c	floating point or complex
+20111209-1.c	GNU attributes that change meaning
+20120524-1.c	builtins
+20120727-1.c	floating point or complex
+20120727-2.c	floating point or complex
+20120822-1.c	64-bit integers
+20120913-1.c	64-bit integers
+20120917-1.c	64-bit integers
+20121027-1.c	64-bit integers
+20121107-1.c	floating point or complex
+20121220-1.c	GNU keywords
+20140723-1.c	floating point or complex
+20150108.c	64-bit integers
+20150327.c	dg directives
+20151204.c	compiler-predefined type macros
+20161123-1.c	floating point or complex
+20170419-1.c	floating point or complex
+20180309-1.c	builtins
+20180605-1.c	dg directives
+20180915-1.c	builtins
+20181114-1.c	floating point or complex
+20190827-1.c	GNU attributes that change meaning
+20191108-1.c	floating point or complex
+20200313-1.c	floating point or complex
+386.c	dg directives
+86.c	dg directives
+900216-1.c	dg directives
+900313-1.c	64-bit integers
+900407-1.c	dg directives
+900516-1.c	floating constants
+920301-1.c	dg directives
+920409-1.c	floating constants
+920409-2.c	floating point or complex
+920410-1.c	floating point or complex
+920411-2.c	floating point or complex
+920413-1.c	floating point or complex
+920415-1.c	labels as values
+920428-1.c	dg directives
+920428-2.c	floating point or complex
+920428-3.c	labels as values
+920428-4.c	clang (16-bit int) rejects it: c/testsuite/gcc.c-torture/compile/920428-4.c:1:28: error: variable length array used [-Werror,-Wvla]
+920428-5.c	dg directives
+920428-7.c	floating point or complex
+920501-1.c	dg directives
+920501-11.c	dg directives
+920501-12.c	dg directives
+920501-13.c	dg directives
+920501-15.c	floating point or complex
+920501-16.c	dg directives
+920501-18.c	floating point or complex
+920501-19.c	64-bit integers
+920501-20.c	library functions
+920501-22.c	clang (16-bit int) rejects it: e/920501-22.c:1:22: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+920501-23.c	64-bit integers
+920501-3.c	64-bit integers
+920501-4.c	floating point or complex
+920501-6.c	floating point or complex
+920501-7.c	labels as values
+920501-8.c	dg directives
+920502-1.c	labels as values
+920502-2.c	64-bit integers
+920520-1.c	floating constants
+920521-1.c	inline assembly
+920529-1.c	clang (16-bit int) rejects it: '; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+920608-1.c	dg directives
+920617-1.c	floating point or complex
+920617-2.c	floating point or complex
+920625-1.c	64-bit integers
+920625-2.c	64-bit integers
+920626-1.c	dg directives
+920701-1.c	dg directives
+920702-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+920706-1.c	floating point or complex
+920710-2.c	floating point or complex
+920721-1.c	floating point or complex
+920723-1.c	floating point or complex
+920808-1.c	statement expressions
+920809-1.c	library functions
+920817-1.c	dg directives
+920820-1.c	floating point or complex
+920821-1.c	clang (16-bit int) rejects it: C requires a translation unit to contain at least one declaration [-Werror,-Wempty-translation-unit]
+920825-1.c	pragmas
+920825-2.c	floating point or complex
+920826-1.c	compiler-predefined type macros
+920829-1.c	floating point or complex
+920831-1.c	labels as values
+920909-1.c	64-bit integers
+920917-1.c	dg directives
+920928-2.c	floating point or complex
+920928-4.c	64-bit integers
+920928-5.c	empty structs (GNU)
+921004-1.c	64-bit integers
+921011-2.c	dg directives
+921012-1.c	statement expressions
+921021-1.c	dg directives
+921024-1.c	64-bit integers
+921103-1.c	dg directives
+921109-1.c	floating point or complex
+921111-1.c	dg directives
+921116-2.c	dg directives
+921118-1.c	64-bit integers
+921126-1.c	floating point or complex
+921202-1.c	dg directives
+921202-2.c	dg directives
+921203-1.c	library functions
+921203-2.c	library functions
+921206-1.c	floating point or complex
+930109-1.c	dg directives
+930111-1.c	floating constants
+930117-1.c	dg directives
+930118-1.c	GNU keywords
+930120-1.c	floating point or complex
+930217-1.c	floating point or complex
+930222-1.c	floating point or complex
+930325-1.c	dg directives
+930326-1.c	64-bit integers
+930411-1.c	dg directives
+930421-1.c	floating point or complex
+930427-2.c	dg directives
+930503-2.c	dg directives
+930506-1.c	floating point or complex
+930506-2.c	statement expressions
+930513-1.c	64-bit integers
+930513-2.c	floating point or complex
+930529-1.c	library functions
+930530-1.c	dg directives
+930602-1.c	dg directives
+930603-1.c	floating point or complex
+930607-1.c	64-bit integers
+930611-1.c	floating point or complex
+930618-1.c	dg directives
+930621-1.c	dg directives
+930623-1.c	builtins
+930702-1.c	statement expressions
+930926-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+930927-1.c	includes stddef.h
+931003-1.c	floating point or complex
+931004-1.c	dg directives
+931013-1.c	dg directives
+931013-2.c	dg directives
+931013-3.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+931018-1.c	64-bit integers
+931031-1.c	labels as values
+931102-1.c	dg directives
+931102-2.c	dg directives
+931203-1.c	dg directives
+940718-1.c	floating point or complex
+941014-1.c	dg directives
+941014-2.c	dg directives
+941014-3.c	dg directives
+941014-4.c	labels as values
+941019-1.c	floating point or complex
+941111-1.c	dg directives
+941113-1.c	dg directives
+950124-1.c	dg directives
+950221-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+950329-1.c	dg directives
+950610-1.c	clang (16-bit int) rejects it: c/testsuite/gcc.c-torture/compile/950610-1.c:1:25: error: variable length array used [-Werror,-Wvla]
+950612-1.c	64-bit integers
+950613-1.c	floating point or complex
+950618-1.c	GNU keywords
+950719-1.c	dg directives
+950729-1.c	64-bit integers
+950816-1.c	floating point or complex
+950816-2.c	floating point or complex
+950910-1.c	dg directives
+950919-1.c	clang (16-bit int) rejects it: te/gcc.c-torture/compile/950919-1.c:2:10: error: invalid token at start of a preprocessor expression
+950921-1.c	floating point or complex
+950922-1.c	floating point or complex
+951106-1.c	floating point or complex
+951116-1.c	64-bit integers
+951222-1.c	64-bit integers
+960106-1.c	dg directives
+960130-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+960201-1.c	GNU attributes that change meaning
+960218-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+960220-1.c	64-bit integers
+960221-1.c	clang (16-bit int) rejects it: e/960221-1.c:11:23: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+960319-1.c	64-bit integers
+960514-1.c	64-bit integers
+960704-1.c	floating point or complex
+960829-1.c	floating constants
+961004-1.c	64-bit integers
+961010-1.c	floating point or complex
+961019-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+961031-1.c	floating point or complex
+961203-1.c	compiler-predefined type macros
+970206-1.c	dg directives
+970214-1.c	includes stddef.h
+980329-1.c	compiler-predefined type macros
+980408-1.c	floating point or complex
+980504-1.c	floating point or complex
+980506-1.c	dg directives
+980506-2.c	GNU attributes that change meaning
+980511-1.c	empty structs (GNU)
+980706-1.c	64-bit integers
+980726-1.c	GNU keywords
+980729-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+980816-1.c	64-bit integers
+980821-1.c	floating point or complex
+980825-1.c	dg directives
+981001-1.c	clang (16-bit int) rejects it: le/981001-1.c:17:3: error: use of unknown builtin '__builtin_exit' [-Wimplicit-function-declaration]
+981001-2.c	GNU attributes that change meaning
+981001-4.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+981006-1.c	labels as values
+981007-1.c	floating point or complex
+981107-1.c	64-bit integers
+981223-1.c	floating point or complex
+990107-1.c	floating point or complex
+990117-1.c	builtins
+990203-1.c	floating point or complex
+990517-1.c	statement expressions
+990523-1.c	floating point or complex
+990617-1.c	builtins
+990625-1.c	includes string.h
+990801-1.c	dg directives
+990801-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+990829-1.c	dg directives
+990913-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+990928-1.c	clang (16-bit int) rejects it: compile/990928-1.c:8:9: error: ISO C forbids forward references to 'enum' types [-Werror,-Wpedantic]
+991026-1.c	floating point or complex
+991026-2.c	library functions
+991202-1.c	floating point or complex
+991213-1.c	floating point or complex
+991213-2.c	dg directives
+991213-3.c	labels as values
+991214-1.c	floating point or complex
+991214-2.c	floating point or complex
+991229-2.c	floating point or complex
+991229-3.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+BUG1.c	dg directives
+BUG11.c	floating point or complex
+BUG12.c	64-bit integers
+BUG16.c	dg directives
+BUG17.c	floating point or complex
+BUG18.c	builtins
+BUG2.c	dg directives
+BUG22.c	floating point or complex
+BUG24.c	dg directives
+BUG25.c	builtins
+BUG3.c	dg directives
+BUG4.c	library functions
+BUG5.c	builtins
+BUG6.c	floating point or complex
+DFcmp.c	floating point or complex
+HIcmp.c	64-bit integers
+HIset.c	64-bit integers
+QIcmp.c	64-bit integers
+QIset.c	64-bit integers
+SFset.c	floating point or complex
+SIcmp.c	64-bit integers
+SIset.c	64-bit integers
+UHIcmp.c	64-bit integers
+UQIcmp.c	64-bit integers
+USIcmp.c	64-bit integers
+a.c	dg directives
+a1.c	dg directives
+a3.c	dg directives
+aa.c	dg directives
+aaa.c	dg directives
+abs.c	builtins
+ac.c	library functions
+acc.c	dg directives
+acc1.c	floating point or complex
+add.c	dg directives
+add386.c	dg directives
+addcc.c	dg directives
+andm.c	library functions
+andmem.c	library functions
+andn.c	dg directives
+andok.c	dg directives
+andsi.c	dg directives
+aos.c	dg directives
+arr.c	dg directives
+as.c	library functions
+ase.c	dg directives
+asmgoto-1.c	statement expressions
+asmgoto-2.c	inline assembly
+asmgoto-3.c	inline assembly
+asmgoto-4.c	inline assembly
+asmgoto-5.c	inline assembly
+asmgoto-6.c	inline assembly
+attr-complex-method-2.c	floating point or complex
+attr-complex-method.c	floating point or complex
+attr-retain-1.c	GNU attributes that change meaning
+attr-retain-2.c	includes attr-retain-1.c
+attr-used-retain-1.c	GNU attributes that change meaning
+attr-used-retain-2.c	includes attr-used-retain-1.c
+b1.c	64-bit integers
+b88.c	floating point or complex
+bad.c	64-bit integers
+band.c	library functions
+bb0.c	dg directives
+bb1.c	dg directives
+bc.c	dg directives
+bcopy-1.c	builtins
+bcopy.c	64-bit integers
+bf.c	builtins
+bfx.c	library functions
+bge.c	floating point or complex
+bit.c	dg directives
+bitf.c	dg directives
+bitfield-1.c	dg directives
+bitfield-endian-1.c	GNU attributes that change meaning
+bitfield-endian-2.c	GNU attributes that change meaning
+bitw.c	dg directives
+blk.c	floating point or complex
+bt386.c	library functions
+bug.c	dg directives
+builtin_constant_p.c	builtins
+builtin_unreachable-1.c	builtins
+buns.c	library functions
+c.c	64-bit integers
+c2.c	dg directives
+call.c	dg directives
+call386.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+callind.c	dg directives
+calls-void.c	dg directives
+calls.c	dg directives
+cc.c	floating point or complex
+cmb.c	dg directives
+cmp.c	floating point or complex
+cmpdi-1.c	64-bit integers
+cmpsi386.c	dg directives
+cmul.c	dg directives
+cn1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+comb.c	dg directives
+combine-hang.c	floating point or complex
+complex-1.c	floating point or complex
+complex-2.c	floating point or complex
+complex-3.c	floating point or complex
+complex-4.c	floating point or complex
+complex-5.c	floating point or complex
+complex-6.c	floating point or complex
+compound-literal-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+compound-literal-2.c	floating point or complex
+compound-literal-3.c	floating point or complex
+condmove-1.c	64-bit integers
+consec.c	64-bit integers
+const-high-part.c	dg directives
+const.c	dg directives
+conv.c	floating point or complex
+conv_tst.c	floating point or complex
+cp.c	floating point or complex
+cpp-1.c	clang (16-bit int) rejects it: C requires a translation unit to contain at least one declaration [-Werror,-Wempty-translation-unit]
+cpp-2.c	pragmas
+cvt.c	dg directives
+d.c	64-bit integers
+dbl_parm.c	floating point or complex
+dblbug.c	floating point or complex
+dce-inline-asm-1.c	inline assembly
+dce-inline-asm-2.c	builtins
+dead.c	dg directives
+debugvlafunction-1.c	clang (16-bit int) rejects it: e/gcc.c-torture/compile/debugvlafunction-1.c:5:35: error: variable length array used [-Werror,-Wvla]
+delay.c	dg directives
+di.c	64-bit integers
+dic.c	64-bit integers
+dilayout.c	64-bit integers
+dimove.c	64-bit integers
+dimul.c	64-bit integers
+div.c	dg directives
+divdf.c	floating point or complex
+dll.c	GNU attributes that change meaning
+dm.c	library functions
+dse.c	library functions
+dshift.c	library functions
+e.c	dg directives
+ex.c	library functions
+ext.c	64-bit integers
+f1.c	floating point or complex
+f2.c	floating point or complex
+fdmul.c	floating point or complex
+fix-trunc-mem-1.c	floating point or complex
+flatten.c	GNU attributes that change meaning
+flo.c	floating point or complex
+float.c	floating point or complex
+flt_const.c	floating point or complex
+fnul.c	builtins
+fold-popcount-1.c	builtins
+foo.c	clang (16-bit int) rejects it: /external/fetched/gcc/gcc/testsuite/gcc.c-torture/compile/foo.c:1:1: error: 'main' must return 'int'
+forgetcc.c	dg directives
+funcptr-1.c	builtins
+g.c	64-bit integers
+gen_tst.c	floating point or complex
+gronk.c	dg directives
+hi.c	dg directives
+i++.c	builtins
+i.c	dg directives
+icfmatch.c	GNU attributes that change meaning
+icmp.c	dg directives
+ifreg.c	floating point or complex
+iftrap-1.c	builtins
+iftrap-2.c	builtins
+iftrap-3.c	floating point or complex
+imm.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+init-2.c	clang (16-bit int) rejects it: pile/init-2.c:4:9: error: use of GNU old-style field designator extension [-Werror,-Wgnu-designator]
+init-3.c	empty structs (GNU)
+inline-1.c	builtins
+inline-asm-1.c	inline assembly
+irreducible-loop.c	floating point or complex
+isinf.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+jumptab.c	dg directives
+l.c	dg directives
+labels-1.c	labels as values
+labels-2.c	dg directives
+labels-3.c	labels as values
+layout.c	dg directives
+lbug.c	64-bit integers
+libcall-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+limits-blockid.c	compiler-predefined type macros
+limits-declparen.c	clang (16-bit int) rejects it: -torture/compile/limits-declparen.c:15:5: fatal error: bracket nesting level exceeded maximum of 256
+limits-enumconst.c	compiler-predefined type macros
+limits-exprparen.c	clang (16-bit int) rejects it: torture/compile/limits-exprparen.c:15:14: fatal error: bracket nesting level exceeded maximum of 256
+limits-externdecl.c	dg directives
+limits-fnargs.c	floating constants
+limits-fndefn.c	floating constants
+limits-stringlit.c	dg directives
+limits-structnest.c	clang (16-bit int) rejects it: torture/compile/limits-structnest.c:21:1: fatal error: bracket nesting level exceeded maximum of 256
+ll1.c	64-bit integers
+llbug.c	64-bit integers
+lll.c	64-bit integers
+load8.c	dg directives
+loadhicc.c	dg directives
+log2.c	dg directives
+logic.c	dg directives
+loop-1.c	dg directives
+loop386.c	library functions
+lop.c	dg directives
+m1.c	dg directives
+m5.c	dg directives
+m68.c	dg directives
+mangle-1.c	inline assembly
+mbyte.c	dg directives
+mcmp.c	dg directives
+mdouble.c	floating point or complex
+memcpy-1.c	builtins
+memcpy-2.c	builtins
+memtst.c	builtins
+mipscop-1.c	GNU attributes that change meaning
+mipscop-2.c	GNU attributes that change meaning
+mipscop-3.c	GNU attributes that change meaning
+mipscop-4.c	GNU attributes that change meaning
+miscomp.c	builtins
+mm.c	dg directives
+mod.c	dg directives
+modcc.c	dg directives
+move.c	dg directives
+move_qhi.c	dg directives
+mregtst.c	dg directives
+msp.c	dg directives
+mu.c	dg directives
+mword.c	dg directives
+n.c	dg directives
+n1.c	64-bit integers
+nand.c	dg directives
+neg.c	dg directives
+nested-1.c	compiler-predefined type macros
+nested-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+nested-3.c	clang (16-bit int) rejects it: ed/gcc/gcc/testsuite/gcc.c-torture/compile/nested-3.c:12:3: error: illegal storage class on function
+o.c	dg directives
+omit.c	dg directives
+opout.c	dg directives
+opt.c	dg directives
+or.c	dg directives
+or386.c	library functions
+p.c	dg directives
+packed-1.c	GNU attributes that change meaning
+packed-aligned-1.c	GNU attributes that change meaning
+parms.c	64-bit integers
+pass.c	64-bit integers
+pc44485.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pmt.c	64-bit integers
+poor.c	floating point or complex
+pp.c	floating point or complex
+pr100106.c	floating point or complex
+pr100241-1.c	dg directives
+pr100278.c	inline assembly
+pr100305.c	GNU attributes that change meaning
+pr100316.c	builtins
+pr100576.c	library functions
+pr101159.c	builtins
+pr101189.c	labels as values
+pr101437.c	clang (16-bit int) rejects it: /pr101437.c:3:1: error: struct without named members is a GNU extension [-Werror,-Wgnu-empty-struct]
+pr10153-1.c	GNU attributes that change meaning
+pr10153-2.c	GNU attributes that change meaning
+pr101642.c	builtins
+pr101941-1.c	GNU attributes that change meaning
+pr102645.c	labels as values
+pr103288-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr103314-1.c	dg directives
+pr103376.c	GNU attributes that change meaning
+pr103513.c	labels as values
+pr103813.c	dg directives
+pr104327.c	GNU attributes that change meaning
+pr104499.c	GNU attributes that change meaning
+pr105192.c	dg directives
+pr105234.c	dg directives
+pr106030.c	clang (16-bit int) rejects it: 17: error: ordered comparison between pointer and integer ('char (*)(int, int)' and 'int') [-Werror]
+pr106101.c	builtins
+pr106433.c	GNU attributes that change meaning
+pr106537-1.c	compiler-predefined type macros
+pr106537-2.c	compiler-predefined type macros
+pr106537-3.c	compiler-predefined type macros
+pr106751.c	builtins
+pr106878.c	compiler-predefined type macros
+pr107997.c	inline assembly
+pr108237.c	GNU attributes that change meaning
+pr108596.c	builtins
+pr108638.c	64-bit integers
+pr108639.c	64-bit integers
+pr108783.c	GNU attributes that change meaning
+pr108892.c	GNU attributes that change meaning
+pr109604-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr109604-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr109834-1.c	builtins
+pr109919-1.c	dg directives
+pr110266.c	floating point or complex
+pr110271.c	compiler-predefined type macros
+pr110334.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr110386-2.c	includes immintrin.h
+pr110444-1.c	floating point or complex
+pr110600.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr110603.c	compiler-predefined type macros
+pr110705-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr110940.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr111054.c	dg directives
+pr111059-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr111059-10.c	dg directives
+pr111059-11.c	compiler-predefined type macros
+pr111059-12.c	compiler-predefined type macros
+pr111059-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr111059-3.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr111059-4.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr111059-5.c	compiler-predefined type macros
+pr111059-6.c	compiler-predefined type macros
+pr111059-7.c	dg directives
+pr111059-8.c	dg directives
+pr111059-9.c	dg directives
+pr111414-1.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pr111435-1.c	dg directives
+pr111442-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr111699-1.c	GNU attributes that change meaning
+pr111911-1.c	compiler-predefined type macros
+pr111911-2.c	compiler-predefined type macros
+pr113089.c	dg directives
+pr113114.c	floating point or complex
+pr113201.c	GNU attributes that change meaning
+pr113221-1.c	64-bit integers
+pr113228.c	clang (16-bit int) rejects it: le/pr113228.c:8:14: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+pr113322-1.c	floating point or complex
+pr113603.c	clang (16-bit int) rejects it: e/pr113603.c:15:23: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+pr113616.c	compiler-predefined type macros
+pr113759.c	builtins
+pr115143-1.c	statement expressions
+pr115143-2.c	dg directives
+pr115143-3.c	dg directives
+pr115881.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr116348.c	64-bit integers
+pr116516.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr116600.c	statement expressions
+pr117358.c	compiler-predefined type macros
+pr117449.c	dg directives
+pr118501.c	floating point or complex
+pr119226.c	builtins
+pr120250.c	builtins
+pr120807.c	compiler-predefined type macros
+pr122066.c	64-bit integers
+pr122588-1.c	builtins
+pr123069.c	GNU attributes that change meaning
+pr123365.c	64-bit integers
+pr123386.c	inline assembly
+pr123703.c	library functions
+pr124250.c	GNU attributes that change meaning
+pr124280.c	dg directives
+pr125039.c	floating point or complex
+pr125373.c	compiler-predefined type macros
+pr13066-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr13889.c	64-bit integers
+pr16566-1.c	clang (16-bit int) rejects it: 'c' may not be nested in a struct due to flexible array member [-Werror,-Wflexible-array-extensions]
+pr16566-2.c	dg directives
+pr16566-3.c	clang (16-bit int) rejects it: 'c' may not be nested in a struct due to flexible array member [-Werror,-Wflexible-array-extensions]
+pr16808.c	floating point or complex
+pr17273.c	clang (16-bit int) rejects it: le/pr17273.c:15:21: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+pr17397.c	library functions
+pr17408.c	dg directives
+pr17529.c	inline assembly
+pr17656.c	library functions
+pr17906.c	empty structs (GNU)
+pr17913.c	statement expressions
+pr18903.c	labels as values
+pr19121.c	dg directives
+pr19357.c	floating point or complex
+pr19736.c	library functions
+pr19853.c	builtins
+pr20203.c	64-bit integers
+pr20539-1.c	64-bit integers
+pr21293.c	floating point or complex
+pr21356.c	labels as values
+pr21380.c	floating point or complex
+pr21562.c	dg directives
+pr21728.c	GNU keywords
+pr21761.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr21839.c	empty structs (GNU)
+pr21840.c	dg directives
+pr22013-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr22269.c	library functions
+pr22398.c	64-bit integers
+pr22589-1.c	64-bit integers
+pr23233-1.c	64-bit integers
+pr23237.c	GNU attributes that change meaning
+pr23435.c	64-bit integers
+pr23929.c	dg directives
+pr23944.c	floating point or complex
+pr23946.c	builtins
+pr25224.c	floating point or complex
+pr25310.c	compiler-predefined type macros
+pr25311.c	dg directives
+pr25483.c	floating point or complex
+pr25513.c	floating point or complex
+pr26213.c	dg directives
+pr26425.c	clang (16-bit int) rejects it: rture/compile/pr26425.c:2:19: error: zero size arrays are an extension [-Werror,-Wzero-length-array]
+pr26622.c	64-bit integers
+pr26626.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr26725.c	clang (16-bit int) rejects it: 725.c:12:26: error: C99 forbids conditional expressions with only one void side [-Werror,-Wpedantic]
+pr26781-2.c	compiler-predefined type macros
+pr27282.c	floating point or complex
+pr27341-1.c	floating point or complex
+pr27341-2.c	floating point or complex
+pr27373.c	floating point or complex
+pr27528.c	inline assembly
+pr27863.c	compiler-predefined type macros
+pr27889.c	floating point or complex
+pr27907.c	GNU attributes that change meaning
+pr28489.c	labels as values
+pr28776-2.c	dg directives
+pr28865.c	clang (16-bit int) rejects it: y not be used as an array element due to flexible array member [-Werror,-Wflexible-array-extensions]
+pr29128.c	labels as values
+pr29201.c	empty structs (GNU)
+pr29241.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr29250.c	floating point or complex
+pr30132.c	floating point or complex
+pr30311.c	floating point or complex
+pr30433.c	floating point or complex
+pr30564-2.c	builtins
+pr30984.c	labels as values
+pr31703.c	64-bit integers
+pr32139.c	dg directives
+pr32349.c	dg directives
+pr32355.c	empty structs (GNU)
+pr32399.c	floating point or complex
+pr32571.c	statement expressions
+pr32584.c	64-bit integers
+pr32780.c	compiler-predefined type macros
+pr32796.c	64-bit integers
+pr32919.c	labels as values
+pr33133.c	library functions
+pr33173.c	compiler-predefined type macros
+pr33382.c	compiler-predefined type macros
+pr33614.c	GNU attributes that change meaning
+pr33617.c	GNU attributes that change meaning
+pr33855.c	floating point or complex
+pr34029-2.c	builtins
+pr34030.c	clang (16-bit int) rejects it: arison between pointer and integer ('void *' and 'unsigned int') [-Werror,-Wpointer-integer-compare]
+pr34091.c	floating point or complex
+pr34138.c	library functions
+pr34334.c	GNU attributes that change meaning
+pr34458.c	64-bit integers
+pr34648.c	dg directives
+pr34688.c	64-bit integers
+pr34808.c	64-bit integers
+pr34856.c	GNU attributes that change meaning
+pr34885.c	GNU attributes that change meaning
+pr34966.c	floating point or complex
+pr34993.c	GNU attributes that change meaning
+pr35006.c	clang (16-bit int) rejects it: c/testsuite/gcc.c-torture/compile/pr35006.c:13:12: error: variable length array used [-Werror,-Wvla]
+pr35043.c	floating point or complex
+pr35318.c	floating point or complex
+pr35431.c	floating point or complex
+pr35432.c	clang (16-bit int) rejects it: rture/compile/pr35432.c:5:10: error: zero size arrays are an extension [-Werror,-Wzero-length-array]
+pr35468.c	dg directives
+pr35595.c	floating point or complex
+pr35607.c	compiler-predefined type macros
+pr35760.c	floating point or complex
+pr35869.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr36125.c	floating point or complex
+pr36141.c	64-bit integers
+pr36154.c	GNU attributes that change meaning
+pr36172.c	floating point or complex
+pr36245.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr36817.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr37056.c	64-bit integers
+pr37078.c	builtins
+pr37258.c	64-bit integers
+pr37285.c	64-bit integers
+pr37305.c	compiler-predefined type macros
+pr37327.c	64-bit integers
+pr37341.c	compiler-predefined type macros
+pr37380.c	empty structs (GNU)
+pr37381.c	64-bit integers
+pr37387.c	clang (16-bit int) rejects it: '; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+pr37395.c	inline assembly
+pr37433-1.c	dg directives
+pr37433.c	dg directives
+pr37483.c	64-bit integers
+pr37617.c	floating point or complex
+pr37664.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr37669-2.c	64-bit integers
+pr37669.c	64-bit integers
+pr37742-3.c	64-bit integers
+pr37742.c	GNU keywords
+pr37878.c	floating point or complex
+pr37976.c	builtins
+pr38123.c	includes stdarg.h
+pr38343-2.c	builtins
+pr38343.c	builtins
+pr38360.c	dg directives
+pr38505.c	builtins
+pr38554.c	floating point or complex
+pr38621.c	64-bit integers
+pr38661-1.c	compiler-predefined type macros
+pr38661.c	compiler-predefined type macros
+pr38771.c	64-bit integers
+pr38789.c	builtins
+pr38807.c	labels as values
+pr38857.c	clang (16-bit int) rejects it:  'vs_total_ac_bits' is used in an inline function with external linkage [-Werror,-Wstatic-in-inline]
+pr39394.c	inline assembly
+pr39423-2.c	clang (16-bit int) rejects it: e/pr39423-2.c:43:9: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+pr39614-5.c	dg directives
+pr39636.c	floating point or complex
+pr39673-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr39673-2.c	64-bit integers
+pr39824.c	floating point or complex
+pr39834.c	dg directives
+pr39845.c	GNU keywords
+pr39928-1.c	GNU attributes that change meaning
+pr39928-2.c	floating point or complex
+pr39937.c	dg directives
+pr39941.c	dg directives
+pr39943.c	floating point or complex
+pr39983.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr40023.c	builtins
+pr40035.c	compiler-predefined type macros
+pr40080.c	dg directives
+pr40204.c	dg directives
+pr40233.c	GNU attributes that change meaning
+pr40291.c	64-bit integers
+pr40321.c	statement expressions
+pr40351.c	GNU attributes that change meaning
+pr40556.c	empty structs (GNU)
+pr40570.c	clang (16-bit int) rejects it: c-torture/compile/pr40570.c:5:33: warning: non-void function does not return a value [-Wreturn-type]
+pr40676.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr40753.c	compiler-predefined type macros
+pr41006-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr41006-2.c	GNU keywords
+pr41016.c	floating point or complex
+pr41181.c	builtins
+pr41182-1.c	library functions
+pr41282.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr41469.c	dg directives
+pr41634.c	dg directives
+pr41661.c	floating point or complex
+pr41679.c	dg directives
+pr41987.c	floating point or complex
+pr42049.c	library functions
+pr42164.c	64-bit integers
+pr42196-1.c	floating point or complex
+pr42196-2.c	floating point or complex
+pr42196-3.c	floating point or complex
+pr42196-4.c	floating point or complex
+pr42234.c	dg directives
+pr42299.c	dg directives
+pr42347.c	builtins
+pr42398.c	inline assembly
+pr42559.c	builtins
+pr42703.c	64-bit integers
+pr42708-1.c	compiler-predefined type macros
+pr42716.c	64-bit integers
+pr42717.c	empty structs (GNU)
+pr42927.c	GNU attributes that change meaning
+pr42956.c	floating point or complex
+pr42998.c	builtins
+pr43066.c	empty structs (GNU)
+pr43188.c	GNU attributes that change meaning
+pr43191.c	empty structs (GNU)
+pr43288.c	GNU attributes that change meaning
+pr43415.c	64-bit integers
+pr43417.c	64-bit integers
+pr43635.c	floating point or complex
+pr43636.c	builtins
+pr43661.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pr43791.c	dg directives
+pr43845.c	dg directives
+pr44043.c	empty structs (GNU)
+pr44063.c	GNU attributes that change meaning
+pr44119.c	empty structs (GNU)
+pr44197.c	GNU attributes that change meaning
+pr44246.c	library functions
+pr44686.c	compiler-predefined type macros
+pr44687.c	clang (16-bit int) rejects it: ile/pr44687.c:7:31: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+pr44707.c	inline assembly
+pr44784.c	64-bit integers
+pr44788.c	floating point or complex
+pr44891.c	floating point or complex
+pr44937.c	clang (16-bit int) rejects it: ile/pr44937.c:4:24: error: use of an empty initializer is a C23 extension [-Werror,-Wc23-extensions]
+pr44941.c	empty structs (GNU)
+pr45059.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr45535.c	dg directives
+pr45728.c	floating point or complex
+pr45771.c	builtins
+pr45919.c	clang (16-bit int) rejects it: : error: flexible array initialization is a GNU extension [-Werror,-Wgnu-flexible-array-initializer]
+pr45969-1.c	floating point or complex
+pr46002.c	builtins
+pr46034.c	builtins
+pr46107.c	labels as values
+pr46360.c	GNU attributes that change meaning
+pr46461.c	builtins
+pr46534.c	library functions
+pr46547-1.c	floating point or complex
+pr46637.c	inline assembly
+pr46832.c	floating point or complex
+pr46866.c	GNU attributes that change meaning
+pr46934.c	dg directives
+pr47141.c	compiler-predefined type macros
+pr47150.c	floating point or complex
+pr47157.c	compiler-predefined type macros
+pr47364-2.c	compiler-predefined type macros
+pr47428.c	dg directives
+pr47967.c	floating point or complex
+pr48335-1.c	floating point or complex
+pr48381.c	64-bit integers
+pr48517.c	dg directives
+pr48596.c	floating point or complex
+pr48641.c	floating point or complex
+pr48734.c	compiler-predefined type macros
+pr48767.c	builtins
+pr48929.c	floating point or complex
+pr49029.c	GNU attributes that change meaning
+pr49049.c	64-bit integers
+pr49145.c	dg directives
+pr49163.c	GNU attributes that change meaning
+pr49206.c	dg directives
+pr49238.c	64-bit integers
+pr49474.c	builtins
+pr49735.c	GNU attributes that change meaning
+pr50009.c	GNU attributes that change meaning
+pr50380.c	builtins
+pr50565-1.c	clang (16-bit int) rejects it: 565-1.c:3:40: error: arithmetic on pointers to void is a GNU extension [-Werror,-Wgnu-pointer-arith]
+pr50565-2.c	clang (16-bit int) rejects it: 565-2.c:3:40: error: arithmetic on pointers to void is a GNU extension [-Werror,-Wgnu-pointer-arith]
+pr51069.c	clang (16-bit int) rejects it: e/pr51069.c:16:17: error: void function 'foo' should not return void expression [-Werror,-Wpedantic]
+pr51077.c	builtins
+pr51354.c	GNU attributes that change meaning
+pr51495.c	labels as values
+pr51694.c	dg directives
+pr51761.c	statement expressions
+pr51767.c	inline assembly
+pr51856.c	64-bit integers
+pr52074.c	GNU attributes that change meaning
+pr52115.c	floating point or complex
+pr52437.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr52555.c	GNU attributes that change meaning
+pr52714.c	builtins
+pr52750.c	GNU attributes that change meaning
+pr52891-1.c	labels as values
+pr52891-2.c	GNU attributes that change meaning
+pr53058.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr53187.c	floating point or complex
+pr53226.c	64-bit integers
+pr53409.c	clang (16-bit int) rejects it: orture/compile/pr53409.c:4:7: error: zero size arrays are an extension [-Werror,-Wzero-length-array]
+pr53410-2.c	GNU attributes that change meaning
+pr53411.c	dg directives
+pr53495.c	64-bit integers
+pr53748.c	GNU attributes that change meaning
+pr53886.c	dg directives
+pr54103-1.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pr54103-2.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pr54103-3.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pr54103-4.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pr54103-6.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pr54321.c	clang (16-bit int) rejects it: rture/compile/pr54321.c:2:19: error: zero size arrays are an extension [-Werror,-Wzero-length-array]
+pr54428.c	floating point or complex
+pr54552-1.c	floating point or complex
+pr54559.c	floating point or complex
+pr54713-1.c	GNU attributes that change meaning
+pr54713-2.c	includes pr54713-1.c
+pr54713-3.c	includes pr54713-1.c
+pr55273.c	builtins
+pr55350.c	compiler-predefined type macros
+pr55569.c	64-bit integers
+pr55851.c	clang (16-bit int) rejects it: : ISO C restricts enumerator values to range of 'int' (4294967295 is too large) [-Werror,-Wpedantic]
+pr55920.c	GNU attributes that change meaning
+pr55921.c	floating point or complex
+pr55955.c	dg directives
+pr56405.c	inline assembly
+pr56448.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr56484.c	builtins
+pr56571.c	dg directives
+pr56745.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr57331.c	compiler-predefined type macros
+pr57441.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr57698.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr58164.c	labels as values
+pr58332.c	GNU attributes that change meaning
+pr58340.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr58343.c	labels as values
+pr58344.c	empty structs (GNU)
+pr58901-0.c	GNU attributes that change meaning
+pr58901-1.c	GNU attributes that change meaning
+pr58946.c	compiler-predefined type macros
+pr58978.c	builtins
+pr58997.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr59102.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr59119.c	compiler-predefined type macros
+pr59134.c	GNU attributes that change meaning
+pr59322.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr59362.c	builtins
+pr59386.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr59743.c	64-bit integers
+pr59919.c	library functions
+pr60071.c	builtins
+pr60268.c	dg directives
+pr60502.c	GNU attributes that change meaning
+pr60556.c	64-bit integers
+pr60655-1.c	compiler-predefined type macros
+pr60655-2.c	compiler-predefined type macros
+pr61042.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr61159.c	GNU attributes that change meaning
+pr61222-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr61684.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr61848.c	GNU attributes that change meaning
+pr63282.c	inline assembly
+pr63761.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr64269.c	compiler-predefined type macros
+pr64494.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr65014.c	compiler-predefined type macros
+pr65153.c	dg directives
+pr65163.c	GNU attributes that change meaning
+pr65241.c	dg directives
+pr65540.c	floating point or complex
+pr65593.c	includes pr20928.c
+pr65595.c	compiler-predefined type macros
+pr65680.c	dg directives
+pr65803.c	dg directives
+pr65873.c	GNU attributes that change meaning
+pr66168.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr67106.c	dg directives
+pr67143.c	builtins
+pr67485.c	compiler-predefined type macros
+pr67816.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr68013.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr68538.c	64-bit integers
+pr69102.c	dg directives
+pr69161.c	compiler-predefined type macros
+pr69209.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr69740-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr69740-2.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr69989-2.c	clang (16-bit int) rejects it: rsion from 'long long' to 'short' changes value from 4073709551611 to -16389 [-Wconstant-conversion]
+pr70061.c	GNU attributes that change meaning
+pr70190.c	compiler-predefined type macros
+pr70199.c	labels as values
+pr70240.c	GNU attributes that change meaning
+pr70263-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr70355.c	GNU attributes that change meaning
+pr70633.c	GNU attributes that change meaning
+pr70916.c	compiler-predefined type macros
+pr71109.c	dg directives
+pr71112.c	dg directives
+pr71295.c	64-bit integers
+pr71328.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr71436.c	pragmas
+pr71872.c	GNU attributes that change meaning
+pr72742.c	labels as values
+pr72749.c	dg directives
+pr72771.c	floating point or complex
+pr72802.c	floating point or complex
+pr77754-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr77754-2.c	dg directives
+pr77754-3.c	dg directives
+pr77754-4.c	dg directives
+pr77754-5.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr77754-6.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr78162.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr78439.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr78527.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr78574.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr78694.c	builtins
+pr78748.c	dg directives
+pr78883.c	dg directives
+pr79089.c	statement expressions
+pr79197.c	floating point or complex
+pr79386.c	compiler-predefined type macros
+pr79411.c	library functions
+pr79413.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr79780.c	64-bit integers
+pr80357.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr80422.c	labels as values
+pr80443.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr81207.c	builtins
+pr81262.c	inline assembly
+pr81290.c	dg directives
+pr81360.c	GNU attributes that change meaning
+pr81553.c	64-bit integers
+pr81595.c	compiler-predefined type macros
+pr82052.c	64-bit integers
+pr82096.c	floating point or complex
+pr82337.c	builtins
+pr82381.c	dg directives
+pr82549.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr82564.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr82816.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr82875.c	64-bit integers
+pr82879.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr83051-2.c	GNU attributes that change meaning
+pr83051.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr83104.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr83164.c	compiler-predefined type macros
+pr83222.c	floating point or complex
+pr83448.c	builtins
+pr83487.c	GNU attributes that change meaning
+pr83510.c	dg directives
+pr83547.c	statement expressions
+pr83575.c	dg directives
+pr84136.c	labels as values
+pr84178-1.c	dg directives
+pr84195.c	GNU attributes that change meaning
+pr84383.c	builtins
+pr84425.c	GNU attributes that change meaning
+pr84860.c	floating point or complex
+pr84960.c	floating point or complex
+pr85401.c	dg directives
+pr85704.c	empty structs (GNU)
+pr85945.c	GNU attributes that change meaning
+pr86122.c	floating point or complex
+pr86123.c	floating point or complex
+pr86526.c	builtins
+pr86636.c	dg directives
+pr86637-1.c	dg directives
+pr86637-2.c	includes stdint.h
+pr86637-3.c	dg directives
+pr87110.c	clang (16-bit int) rejects it: cc/testsuite/gcc.c-torture/compile/pr87110.c:9:14: error: variable length array used [-Werror,-Wvla]
+pr87473.c	floating constants
+pr87647.c	empty structs (GNU)
+pr88140.c	empty structs (GNU)
+pr88347.c	includes ../../gcc.target/powerpc/ppc-switch-2.c
+pr88423.c	includes ../../gcc.dg/20030309-1.c
+pr89235.c	dg directives
+pr89280.c	GNU attributes that change meaning
+pr89412.c	floating point or complex
+pr89655.c	clang (16-bit int) rejects it: onditional expression extension, omitting middle operand [-Werror,-Wgnu-conditional-omitted-operand]
+pr89663-1.c	64-bit integers
+pr89663-2.c	floating point or complex
+pr89703-1.c	compiler-predefined type macros
+pr89703-2.c	compiler-predefined type macros
+pr89998-1.c	compiler-predefined type macros
+pr89998-2.c	includes pr89998-1.c
+pr90139.c	GNU attributes that change meaning
+pr90275-2.c	64-bit integers
+pr90275.c	64-bit integers
+pr90840.c	GNU attributes that change meaning
+pr91001.c	GNU attributes that change meaning
+pr91190.c	builtins
+pr91725.c	64-bit integers
+pr91919.c	64-bit integers
+pr92056.c	builtins
+pr92231.c	clang (16-bit int) rejects it: etic on a pointer to the function type 'int (void)' is a GNU extension [-Werror,-Wgnu-pointer-arith]
+pr92372.c	GNU attributes that change meaning
+pr92449.c	floating point or complex
+pr92618.c	GNU attributes that change meaning
+pr92891.c	GNU attributes that change meaning
+pr93098.c	64-bit integers
+pr93174.c	64-bit integers
+pr93335.c	64-bit integers
+pr93505.c	builtins
+pr93776.c	empty structs (GNU)
+pr93927-1.c	compiler-predefined type macros
+pr93927-2.c	compiler-predefined type macros
+pr93949.c	floating point or complex
+pr94144.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr94238.c	dg directives
+pr94488.c	GNU attributes that change meaning
+pr94621.c	clang (16-bit int) rejects it: cc/testsuite/gcc.c-torture/compile/pr94621.c:8:14: error: variable length array used [-Werror,-Wvla]
+pr96426.c	GNU attributes that change meaning
+pr96796.c	builtins
+pr96998.c	inline assembly
+pr97205.c	GNU attributes that change meaning
+pr97243.c	floating point or complex
+pr97576.c	GNU attributes that change meaning
+pr97578.c	library functions
+pr98087.c	64-bit integers
+pr98096.c	inline assembly
+pr98199.c	GNU attributes that change meaning
+pr98229.c	64-bit integers
+pr98407.c	builtins
+pr98726.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+pr99225.c	GNU attributes that change meaning
+pr99324.c	includes stdarg.h
+pr99647.c	GNU attributes that change meaning
+pr99787-1.c	floating point or complex
+pr99822.c	64-bit integers
+pret-arg.c	floating point or complex
+pta-1.c	dg directives
+ptr-conv-1.c	64-bit integers
+pyr.c	dg directives
+pyr2.c	dg directives
+r.c	dg directives
+r1.c	library functions
+regs-arg-size.c	floating constants
+rmsc.c	dg directives
+round.c	floating point or complex
+s.c	floating point or complex
+sc.c	dg directives
+scal.c	library functions
+scc.c	dg directives
+scond.c	dg directives
+section.c	GNU attributes that change meaning
+seq.c	dg directives
+set386.c	dg directives
+set88.c	dg directives
+sh.c	dg directives
+shand.c	dg directives
+shft.c	library functions
+shift.c	dg directives
+signext.c	64-bit integers
+signext2.c	64-bit integers
+simd-1.c	GNU attributes that change meaning
+simd-2.c	GNU attributes that change meaning
+simd-3.c	GNU attributes that change meaning
+simd-4.c	GNU attributes that change meaning
+simd-5.c	GNU attributes that change meaning
+simd-6.c	GNU attributes that change meaning
+simple.c	dg directives
+sizeof-macros-1.c	floating point or complex
+sne.c	floating point or complex
+sound.c	compiler-predefined type macros
+sparcbug.c	dg directives
+split-path-10.c	floating point or complex
+split-path-11.c	64-bit integers
+split-path-12.c	floating point or complex
+split-path-13.c	floating constants
+split-path-3.c	compiler-predefined type macros
+split-path-5.c	statement expressions
+split-path-7.c	empty structs (GNU)
+split-path-8.c	floating point or complex
+sra-1.c	floating point or complex
+ssa-pre-1.c	floating point or complex
+ssa-unused-1.c	dg directives
+stack-check-1.c	includes 20031023-1.c
+statement-expression-1.c	statement expressions
+stor.c	dg directives
+str.c	dg directives
+strcpy-1.c	builtins
+strcpy-2.c	builtins
+string-large-1.c	compiler-predefined type macros
+struct-non-lval-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+structret.c	floating point or complex
+structs.c	library functions
+stuct.c	dg directives
+sub32.c	dg directives
+subcc.c	library functions
+subcse.c	dg directives
+switch-1.c	clang (16-bit int) rejects it: ion declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+sym.c	dg directives
+symconst.c	dg directives
+sync-1.c	64-bit integers
+sync-2.c	64-bit integers
+sync-3.c	64-bit integers
+t.c	dg directives
+test-flow.c	dg directives
+test-loop.c	dg directives
+test.c	dg directives
+tmp.c	dg directives
+trivial.c	dg directives
+trunc.c	library functions
+trunctfdf.c	floating point or complex
+u.c	dg directives
+udconvert.c	floating point or complex
+udivmod4.c	64-bit integers
+unalign-1.c	GNU attributes that change meaning
+uns.c	dg directives
+uns_tst.c	dg directives
+uuarg.c	64-bit integers
+v.c	clang (16-bit int) rejects it: c.c-torture/compile/v.c:2:1: error: first parameter of 'main' (argument count) must be of type 'int'
+vector-1.c	GNU attributes that change meaning
+vector-2.c	GNU attributes that change meaning
+vector-3.c	GNU attributes that change meaning
+vector-4.c	GNU attributes that change meaning
+vector-5.c	GNU attributes that change meaning
+vector-6.c	GNU attributes that change meaning
+vector-align-1.c	GNU attributes that change meaning
+vector-dup-1.c	GNU attributes that change meaning
+vector-shift-1.c	GNU attributes that change meaning
+vla-const-1.c	compiler-predefined type macros
+vla-const-2.c	clang (16-bit int) rejects it: estsuite/gcc.c-torture/compile/vla-const-2.c:5:22: error: variable length array used [-Werror,-Wvla]
+volatile-1.c	dg directives
+widechar-1.c	dg directives
+ww.c	dg directives
+x.c	dg directives
+xb.c	library functions
+xc.c	dg directives
+xdi.c	64-bit integers
+xfoo.c	dg directives
+xi.c	dg directives
+xlop.c	dg directives
+xneg.c	floating point or complex
+xopt.c	dg directives
+xor.c	dg directives
+xorn.c	library functions
+xp.c	dg directives
+xpp.c	library functions
+xs.c	dg directives
+xsh.c	dg directives
+xzz.c	dg directives
+zero-strct-1.c	empty structs (GNU)
+zero-strct-2.c	empty structs (GNU)
+zero-strct-3.c	empty structs (GNU)
+zero-strct-4.c	empty structs (GNU)
+zero-strct-5.c	empty structs (GNU)

@@ -1,0 +1,3 @@
+// loomcc-do: syntax
+struct S { int a; };
+int f(struct S s) { return s->a; } // loomcc-error

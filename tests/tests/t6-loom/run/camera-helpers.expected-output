@@ -1,0 +1,30 @@
+sign -128=-1
+sign -1=-1
+sign 0=0
+sign 1=1
+sign 127=1
+auto 0 -> 0 frac 0
+auto 1 -> 0 frac 5
+auto 255 -> 4 frac 251
+auto 256 -> 5 frac 0
+auto 257 -> 5 frac 5
+auto 384 -> 7 frac 128
+auto 1000 -> 19 frac 136
+auto -1 -> -1 frac 251
+auto -255 -> -5 frac 5
+auto -256 -> -5 frac 0
+auto -257 -> -6 frac 251
+auto -384 -> -8 frac 128
+auto -1000 -> -20 frac 120
+auto 32767 -> 639 frac 251
+auto -32767 -> -640 frac 5
+approach -300 -> -122
+approach -17 -> -5
+approach -1 -> -1
+approach 0 -> 0
+approach 1 -> 1
+approach 5 -> 4
+approach 16 -> 5
+approach 17 -> 5
+approach 40 -> 15
+approach 300 -> 122

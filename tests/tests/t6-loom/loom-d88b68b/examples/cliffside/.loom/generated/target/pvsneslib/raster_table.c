@@ -1,0 +1,14 @@
+#include <loom-pvsneslib/generated.h>
+#include <loom/generated/raster_programs.h>
+
+/* Adapter-private ownership: HDMA channel 6. ROM tables and the wave's
+   data share one array; the runtime's WRAM tables are its own. */
+const loom_u8 loom_pvs_generated_raster_table_start[] = {
+0x1cu, 0x00u, 0x00u, 0xc8u, 0x69u, 0x1cu, 0x00u, 0x00u, 0x0au, 0x6eu, 0x1cu, 0x00u, 0x00u, 0x2bu, 0x6eu, 0x1cu, 0x00u, 0x00u, 0x6du, 0x72u, 0x1cu, 0x00u, 0x00u, 0xafu, 0x72u, 0x1cu, 0x00u, 0x00u, 0xf1u, 0x76u, 0x1cu, 0x00u, 0x00u, 0x12u, 0x77u, 0x1cu, 0x00u, 0x00u, 0x54u, 0x7bu, 0x00u
+};
+
+const loom_u16 loom_pvs_generated_raster_program_count = 1u;
+
+const LoomPvsGeneratedRasterProgram loom_pvs_generated_raster_programs[1] = {
+    { LOOM_GENERATED_RASTER_PROGRAM_0, 41u, 6u, 0x40u, 3u, 0x21u, LOOM_PVS_RASTER_KIND_BACKDROP_GRADIENT, 0u, 0u, 41u, 0u },
+};

@@ -1,0 +1,6 @@
+# llvm-regression tests selected by external/wrap-suite.py (static filter, host clang and 816-tcc ROM pass)
+2003-05-14-initialize-string.c
+2003-06-16-InvalidInitializer.c
+2003-06-16-VolatileError.c
+2004-02-03-AggregateCopy.c
+testtrace.c

@@ -1,0 +1,9 @@
+Csmith support for T7 (tests/t7-random/run.py --csmith).
+
+csmith.h           replaces Csmith's runtime header: 16-bit-int limits, the
+                   safe math wrappers below, a 16-bit checksum instead of CRC32
+safe_math_16.h     Csmith 2.3.0's safe_math.h without the 64-bit and
+                   floating-point wrappers (make-safe-math-16.py regenerates it)
+LICENSE.csmith     Csmith's licence (BSD-style), which covers safe_math_16.h
+
+Csmith itself: brew install csmith (2.3.0 at the time of writing).

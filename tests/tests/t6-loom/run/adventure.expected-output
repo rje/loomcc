@@ -1,0 +1,21 @@
+set-early=1 init=0 
+set=0 set=0 set=0 set=0 set=0 set=0 clear=0 
+flags=37385 1 0 0 1 0 0 0 0 0 1 0 0 1 0 0 1 0 0
+gate 0 0 1 0
+gate 4 1 0 0
+gate 8 1 0 0
+gate 12 0 1 0
+gate 16 0 0 0
+gate none 1
+pickup 0 -> 0 dispatched 1 pending 1
+pickup 1 -> 0 dispatched 1 pending 2
+pickup 2 -> 0 dispatched 0 pending 2
+pickup 3 -> 0 dispatched 1 pending 3
+pickup 4 -> 0 dispatched 1 pending 4
+pickup 5 -> 2 dispatched 0 pending 4
+pickup 6 -> 2 dispatched 0 pending 4
+take 1 10
+take 1 11
+take 1 13
+take 1 14
+count 4 last 1 14

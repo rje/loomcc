@@ -1,0 +1,5 @@
+Imported from mcpp 2.7.2 (Kiyoshi Matsui), cpp-test/test-t, by
+scripts/import-mcpp.py. BSD-2-Clause: see LICENSE in this directory, which
+must stay with these files. The test text is unchanged; loomcc directives
+are appended at the end of each file, and n_* tests have a .expected file
+(clang -E -P -std=c17 output, checked against mcpp's own dg-final patterns).

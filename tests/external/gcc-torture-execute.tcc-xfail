@@ -1,0 +1,25 @@
+# GCC torture execute tests (external/gcc-torture-execute.list) that 816-tcc gets wrong:
+# an --xfail-list for the tcc-rom reference. Generated from a run on 2026-09-25;
+# regenerate with external/classify-gcc-torture.py and a --refs tcc-rom --json run.
+
+ext-gcc-wrapped/20000314-3.c ref:tcc-rom # 816-tcc rejects it
+ext-gcc-wrapped/20020920-1.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/20031216-1.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/20071202-1.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/920922-1.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/990923-1.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/bf-layout-1.c ref:tcc-rom # 816-tcc rejects it
+ext-gcc-wrapped/divcmp-5.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/loop-4.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/loop-ivopts-2.c ref:tcc-rom # 816-tcc emits assembly wla-65816 rejects
+ext-gcc-wrapped/medce-1.c ref:tcc-rom # link fails (missing 816-tcc runtime helper)
+ext-gcc-wrapped/pr110115.c ref:tcc-rom # wrong result: main returned 8208
+ext-gcc-wrapped/pr111469-1.c ref:tcc-rom # wrong result: main returned 2
+ext-gcc-wrapped/pr117498.c ref:tcc-rom # 816-tcc rejects it
+ext-gcc-wrapped/pr36077.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/pr37924.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/pr46909-1.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/pr49768.c ref:tcc-rom # link fails (missing 816-tcc runtime helper)
+ext-gcc-wrapped/pr51023.c ref:tcc-rom # wrong result: abort() called
+ext-gcc-wrapped/pr58277-2.c ref:tcc-rom # 816-tcc emits assembly wla-65816 rejects
+ext-gcc-wrapped/scope-1.c ref:tcc-rom # wrong result: abort() called

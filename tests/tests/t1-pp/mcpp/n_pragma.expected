@@ -1,0 +1,9 @@
+#pragma vfunction
+void f(int n, double * a, double * b) {
+#pragma ivdep
+    while(n-- > 0) {
+        *a++ += *b++;
+    }
+}
+int libfunc() { ... }
+#pragma duplicate libfunc as (lib_func,xyz)

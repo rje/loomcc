@@ -1,0 +1,42 @@
+# chibicc tests rejected by external/wrap-suite.py, with reasons
+alignof.c	64-bit integers
+alloca.c	library functions
+arith.c	floating point
+asm.c	GNU extensions
+atomic.c	includes stdatomic.h
+attribute.c	includes stddef.h
+bitfield.c	GNU extensions
+builtin.c	floating point
+cast.c	floating point
+commonsym.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-chibicc/chibicc-common.c:1:
+compat.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-chibicc/compat.c:9:
+complit.c	GNU extensions
+const.c	GNU extensions
+constexpr.c	floating point
+control.c	floating point
+decl.c	64-bit integers
+enum.c	GNU extensions
+extern.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-chibicc/chibicc-common.c:1:
+float.c	floating point
+function.c	floating point
+generic.c	floating point
+initializer.c	GNU extensions
+line.c	tcc-rom: 816-tcc failed (exit 1): In file included from /Users/rje/src/rust/loomcc-tests/external/fetched/wrapped-chibicc/chibicc-common.c:1:
+literal.c	floating constants
+macro.c	includes include1.h
+offsetof.c	includes stddef.h
+pointer.c	GNU extensions
+pragma-once.c	includes test/pragma-once.c
+sizeof.c	floating point
+stdhdr.c	includes float.h
+string.c	wide/C11 features
+struct.c	GNU extensions
+tls.c	includes pthread.h
+typedef.c	GNU extensions
+typeof.c	GNU extensions
+unicode.c	GNU extensions
+union.c	GNU extensions
+usualconv.c	GNU extensions
+varargs.c	includes stdarg.h
+variable.c	GNU extensions
+vla.c	GNU extensions

@@ -1,0 +1,1023 @@
+# gcc.dg compile tests with dg-error lines not wrapped, and why
+20010516-1.c	options
+20020919-1.c	GNU or unsupported feature (asm)
+20030906-1a.c	options
+20030906-2a.c	options
+20031222-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+20031223-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+20040910-1.c	GNU or unsupported feature (__attribute__)
+20041014-1.c	options
+20041213-1.c	options
+20050121-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+20050620-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+20051207-3.c	requirements, extra options or dg-final checks
+20081223-1.c	target-specific options
+990506-0.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+Walloc-size-larger-than-16.c	options
+Warray-parameter-6.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+Wattributes-10.c	requirements, extra options or dg-final checks
+Wbuiltin-declaration-mismatch-16.c	GNU or unsupported feature (__builtin)
+Wc90-c99-compat-8.c	options
+Wc99-c11-compat-6.c	options
+Wc99-c11-compat-7.c	options
+Wcxx-compat-8.c	options
+Wdeclaration-after-statement-3.c	options
+Wdesignated-init.c	options
+Werror-1.c	options
+Werror-10.c	options
+Werror-11.c	options
+Werror-13.c	options
+Werror-4.c	options
+Werror-5.c	options
+Werror-6.c	options
+Werror-7.c	options
+Werror-implicit-function-declaration.c	options
+Wfatal-2.c	options
+Wfatal-bad-attr-pr119366.c	options
+Wfatal.c	options
+Wimplicit-int-1a.c	options
+Wimplicit-int-2.c	options
+Wimplicit-int-4a.c	options
+Wincompatible-pointer-types-1.c	options
+Wincompatible-pointer-types-3.c	options
+Winfinite-recursion-5.c	options
+Wpointer-arith.c	options
+Wreturn-mismatch-1.c	options
+Wreturn-mismatch-1a.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 27)
+Wreturn-mismatch-2.c	options
+Wreturn-mismatch-2a.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 27)
+Wreturn-mismatch-4.c	options
+Wreturn-mismatch-5.c	options
+Wreturn-mismatch-6.c	options
+Wshadow-1.c	options
+Wswitch-enum-error.c	options
+Wswitch-error.c	options
+Wswitch-unreachable-1.c	options
+Wvla-3.c	options
+Wvla-7.c	options
+Wzero-length-array-bounds-3.c	dg-error form not converted (target selector, xfail or line spec)
+addr_builtin-1.c	GNU or unsupported feature (__builtin)
+alias-12.c	requirements, extra options or dg-final checks
+alias-13.c	requirements, extra options or dg-final checks
+alias-3.c	requirements, extra options or dg-final checks
+alias-4.c	requirements, extra options or dg-final checks
+always_inline.c	options
+always_inline2.c	options
+always_inline3.c	options
+anon-struct-11.c	options
+anon-struct-11a.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 18)
+anon-struct-13.c	options
+anon-struct-13a.c	options
+anon-struct-14.c	options
+array-10.c	GNU or unsupported feature (typeof)
+array-11.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+array-12.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 7)
+array-14.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+array-15.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 50)
+array-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+array-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 7)
+array-5.c	options
+array-8.c	options
+array-const-3.c	options
+asm-1.c	requirements, extra options or dg-final checks
+asm-10.c	GNU or unsupported feature (asm)
+asm-6.c	GNU or unsupported feature (asm)
+asm-7.c	GNU or unsupported feature (__asm)
+asm-hard-reg-error-1.c	GNU or unsupported feature (__asm)
+asm-hard-reg-error-2.c	GNU or unsupported feature (__int128)
+asm-hard-reg-error-3.c	requirements, extra options or dg-final checks
+asm-hard-reg-error-4.c	GNU or unsupported feature (__asm)
+asm-hard-reg-error-5.c	GNU or unsupported feature (asm)
+asm-hard-reg-error-6.c	GNU or unsupported feature (__asm)
+asm-qual-1.c	options
+asm-qual-2.c	options
+asm-qual-3.c	options
+asm-scope-1.c	options
+asm-wide-1.c	GNU or unsupported feature (asm)
+assign-warn-1.c	options
+assign-warn-2.c	options
+assign-warn-4.c	options
+atomic-fetch-bool.c	GNU or unsupported feature (_Atomic)
+atomic-invalid.c	requirements, extra options or dg-final checks
+atomic-param.c	requirements, extra options or dg-final checks
+atomic-pr51256.c	requirements, extra options or dg-final checks
+atomic-pr81231.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+attr-access-3.c	GNU or unsupported feature (__attribute__)
+attr-access-4.c	GNU or unsupported feature (__attribute__)
+attr-access-read-only.c	options
+attr-access-read-write.c	options
+attr-access-write-only.c	options
+attr-access.c	GNU or unsupported feature (__attribute__)
+attr-alias-5.c	requirements, extra options or dg-final checks
+attr-aligned-2.c	options
+attr-aligned-3.c	requirements, extra options or dg-final checks
+attr-aligned.c	options
+attr-alloc_align-2.c	GNU or unsupported feature (__attribute__)
+attr-assume-2.c	options
+attr-assume-3.c	options
+attr-assume-4.c	options
+attr-assume_aligned-2.c	GNU or unsupported feature (__attribute__)
+attr-btf-decl-tag-1.c	GNU or unsupported feature (__attribute__)
+attr-btf-decl-tag-2.c	options
+attr-btf-type-tag-1.c	GNU or unsupported feature (__attribute__)
+attr-btf-type-tag-2.c	options
+attr-copy-4.c	options
+attr-copy.c	requirements, extra options or dg-final checks
+attr-error-1.c	GNU or unsupported feature (__attribute__)
+attr-ifunc-2.c	requirements, extra options or dg-final checks
+attr-malloc.c	options
+attr-mode-1.c	GNU or unsupported feature (__attribute__)
+attr-section.c	requirements, extra options or dg-final checks
+attr-unavailable-1.c	GNU or unsupported feature (__attribute__)
+attr-unavailable-2.c	GNU or unsupported feature (__attribute__)
+attr-unavailable-3.c	GNU or unsupported feature (__attribute__)
+attr-unavailable-4.c	GNU or unsupported feature (__attribute__)
+attr-unavailable-5.c	GNU or unsupported feature (__attribute__)
+attr-unavailable-6.c	GNU or unsupported feature (__attribute__)
+attr-vector_size.c	options
+attr-weakref-2.c	requirements, extra options or dg-final checks
+attr-weakref-5.c	GNU or unsupported feature (__attribute__)
+auto-type-2.c	GNU or unsupported feature (__auto_type)
+bad-binary-ops.c	options
+bad-dereference.c	options
+bconstp-4.c	GNU or unsupported feature (__builtin)
+binary-constants-3.c	options
+binary-constants-4.c	options
+bitfld-1.c	options
+bitfld-11.c	GNU or unsupported feature (__alignof)
+bitfld-13.c	GNU or unsupported feature (float)
+bitfld-7.c	options
+bitint-1.c	options
+bitint-115.c	options
+bitint-117.c	options
+bitint-14.c	options
+bitint-15.c	options
+bitint-21.c	options
+bitint-27.c	GNU or unsupported feature (_BitInt)
+bitint-32.c	options
+bitint-75.c	options
+bss.c	requirements, extra options or dg-final checks
+builtin-arith-overflow-4.c	options
+builtin-arith-overflow-4a.c	GNU or unsupported feature (_Atomic)
+builtin-assume-aligned-2.c	GNU or unsupported feature (double)
+builtin-choose-expr-2.c	GNU or unsupported feature (__builtin)
+builtin-clear-padding-2.c	GNU or unsupported feature (__attribute__)
+builtin-complex-err-1.c	GNU or unsupported feature (__builtin)
+builtin-complex-err-2.c	options
+builtin-constant_p-1.c	GNU or unsupported feature (__builtin)
+builtin-counted-by-ref-2.c	GNU or unsupported feature (__builtin)
+builtin-counted-by-ref.c	GNU or unsupported feature (__builtin)
+builtin-inf-1.c	GNU or unsupported feature (float)
+builtin-object-size-21.c	requirements, extra options or dg-final checks
+builtin-stdc-bit-2.c	GNU or unsupported feature (__attribute__)
+builtin-stdc-bit-3.c	options
+builtin-stdc-rotate-2.c	GNU or unsupported feature (__attribute__)
+builtin-stdc-rotate-3.c	options
+builtin-tgmath-err-1.c	options
+builtin-tgmath-err-2.c	GNU or unsupported feature (__builtin)
+builtins-28.c	GNU or unsupported feature (float)
+builtins-68.c	options
+builtins-error.c	GNU or unsupported feature (__builtin)
+c11-align-3.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c11-align-3.c:15 (directive line 7)
+c11-align-4.c	requirements, extra options or dg-final checks
+c11-align-5.c	GNU or unsupported feature (double)
+c11-align-8.c	GNU or unsupported feature (_Atomic)
+c11-align-9.c	dg-error form not converted (target selector, xfail or line spec)
+c11-anon-struct-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 38)
+c11-atomic-3.c	GNU or unsupported feature (_Atomic)
+c11-empty-init-1.c	GNU or unsupported feature (float)
+c11-floatn-1.c	requirements, extra options or dg-final checks
+c11-floatn-2.c	requirements, extra options or dg-final checks
+c11-floatn-3.c	requirements, extra options or dg-final checks
+c11-floatn-4.c	requirements, extra options or dg-final checks
+c11-fordecl-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c11-fordecl-1.c:10 (directive line 4)
+c11-fordecl-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c11-fordecl-2.c:10 (directive line 4)
+c11-generic-4.c	GNU or unsupported feature (float)
+c11-labels-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 14)
+c11-noreturn-3.c	options
+c11-pointer-float-1.c	GNU or unsupported feature (float)
+c11-static-assert-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+c11-thread-local-2.c	GNU or unsupported feature (_Thread_local)
+c11-typedef-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 46)
+c11-typeof-3.c	GNU or unsupported feature (__typeof)
+c11-unproto-1.c	GNU or unsupported feature (float)
+c11-unproto-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+c17-nullptr-2.c	GNU or unsupported feature (nullptr)
+c23-align-10.c	options
+c23-attr-deprecated-2.c	options
+c23-attr-deprecated-3.c	options
+c23-attr-deprecated-4.c	options
+c23-attr-fallthrough-2.c	options
+c23-attr-fallthrough-3.c	options
+c23-attr-fallthrough-5.c	options
+c23-attr-fallthrough-6.c	options
+c23-attr-maybe_unused-2.c	options
+c23-attr-maybe_unused-3.c	options
+c23-attr-maybe_unused-4.c	options
+c23-attr-nodiscard-2.c	options
+c23-attr-nodiscard-3.c	options
+c23-attr-noreturn-2.c	options
+c23-attr-noreturn-3.c	options
+c23-attr-reproducible-2.c	options
+c23-attr-reproducible-3.c	options
+c23-attr-reproducible-4.c	options
+c23-attr-syntax-3.c	options
+c23-attr-syntax-5.c	options
+c23-attr-syntax-6.c	GNU or unsupported feature (__extension__)
+c23-attr-syntax-7.c	options
+c23-attr-unsequenced-2.c	options
+c23-attr-unsequenced-3.c	options
+c23-attr-unsequenced-4.c	options
+c23-auto-3.c	options
+c23-binary-constants-3.c	options
+c23-bool-errors-1.c	options
+c23-bool-errors-2.c	options
+c23-bool-errors-3.c	options
+c23-complex-1.c	options
+c23-complit-5.c	options
+c23-complit-8.c	options
+c23-concat-1.c	options
+c23-constexpr-10.c	options
+c23-constexpr-3.c	options
+c23-constexpr-6.c	options
+c23-constexpr-7.c	options
+c23-constexpr-9.c	requirements, extra options or dg-final checks
+c23-digit-separators-2.c	options
+c23-digit-separators-3.c	options
+c23-empty-init-2.c	options
+c23-empty-init-4.c	options
+c23-enum-10.c	options
+c23-enum-2.c	options
+c23-enum-3.c	options
+c23-enum-4.c	options
+c23-enum-7.c	options
+c23-enum-9.c	options
+c23-generic-1.c	options
+c23-generic-5.c	options
+c23-if-decls-1.c	options
+c23-imaginary-constants-10.c	requirements, extra options or dg-final checks
+c23-imaginary-constants-2.c	options
+c23-imaginary-constants-4.c	requirements, extra options or dg-final checks
+c23-imaginary-constants-6.c	requirements, extra options or dg-final checks
+c23-imaginary-constants-8.c	requirements, extra options or dg-final checks
+c23-incomplete-1.c	options
+c23-incomplete-2.c	options
+c23-incomplete-3.c	options
+c23-incomplete-4.c	options
+c23-mismatching-fn-ptr-a52dec.c	options
+c23-mismatching-fn-ptr-alsatools.c	options
+c23-mismatching-fn-ptr.c	options
+c23-named-loops-1.c	options
+c23-no-dfp-1.c	options
+c23-nullptr-3.c	options
+c23-nullptr-6.c	options
+c23-octal-constants-2.c	options
+c23-old-style-definition-2.c	options
+c23-old-style-definition-4.c	options
+c23-old-style-definition-6.c	options
+c23-qual-4.c	options
+c23-qual-5.c	options
+c23-qual-6.c	options
+c23-register-array-1.c	options
+c23-static-assert-2.c	options
+c23-static-assert-4.c	options
+c23-static-assert-6.c	options
+c23-stdarg-11.c	options
+c23-stdarg-3.c	options
+c23-switch-1.c	options
+c23-tag-1.c	options
+c23-tag-3.c	options
+c23-tag-4.c	options
+c23-tag-6.c	options
+c23-tag-7.c	options
+c23-tag-8.c	options
+c23-tag-9.c	options
+c23-tag-alias-5.c	options
+c23-tag-bitfields-1.c	requirements, extra options or dg-final checks
+c23-tag-composite-1.c	options
+c23-tag-composite-11.c	options
+c23-tag-composite-3.c	options
+c23-tag-composite-5.c	options
+c23-tag-enum-1.c	options
+c23-tag-enum-3.c	options
+c23-tag-enum-4.c	options
+c23-tag-enum-5.c	options
+c23-tag-enum-6.c	options
+c23-thread-local-1.c	options
+c23-thread-local-2.c	options
+c23-typeof-2.c	options
+c23-unproto-1.c	options
+c23-unproto-2.c	options
+c23-unproto-4.c	options
+c23-utf8char-3.c	options
+c23-utf8str.c	requirements, extra options or dg-final checks
+c2y-align-2.c	options
+c2y-array-negative-1.c	options
+c2y-digit-separators-2.c	options
+c2y-function-qual-1.c	options
+c2y-generic-5.c	options
+c2y-if-decls-10.c	options
+c2y-if-decls-2.c	options
+c2y-if-decls-3.c	options
+c2y-if-decls-7.c	options
+c2y-if-decls-9.c	options
+c2y-imaginary-constants-12.c	options
+c2y-incomplete-1.c	options
+c2y-incomplete-2.c	options
+c2y-incomplete-3.c	options
+c2y-incomplete-4.c	options
+c2y-incomplete-5.c	options
+c2y-init-1.c	options
+c2y-init-2.c	options
+c2y-init-3.c	options
+c2y-inline-1.c	options
+c2y-linkage-1.c	options
+c2y-linkage-2.c	options
+c2y-linkage-3.c	options
+c2y-linkage-4.c	options
+c2y-named-loops-2.c	options
+c2y-named-loops-7.c	options
+c2y-octal-constants-3.c	options
+c2y-pointer-1.c	options
+c2y-register-array-1.c	options
+c2y-static-assert-1.c	options
+c2y-static-assert-4.c	options
+c2y-storage-class-1.c	options
+c2y-struct-empty-1.c	options
+c2y-switch-1.c	options
+c2y-switch-2.c	options
+c2y-void-parm-1.c	options
+c90-align-1.c	options
+c90-anon-struct-1.c	options
+c90-array-lval-1.c	options
+c90-array-lval-3.c	options
+c90-array-lval-5.c	options
+c90-array-lval-6.c	options
+c90-array-lval-7.c	options
+c90-array-lval-8.c	options
+c90-arraydecl-1.c	options
+c90-atomic-1.c	options
+c90-complex-1.c	options
+c90-complit-1.c	options
+c90-complit-2.c	options
+c90-const-expr-1.c	options
+c90-const-expr-10.c	options
+c90-const-expr-11.c	options
+c90-const-expr-5.c	options
+c90-const-expr-6.c	options
+c90-const-expr-7.c	options
+c90-const-expr-8.c	options
+c90-const-expr-9.c	options
+c90-dupqual-1.c	options
+c90-enum-comma-1.c	options
+c90-flex-array-1.c	options
+c90-fordecl-1.c	options
+c90-func-1.c	options
+c90-hexfloat-1.c	options
+c90-idem-qual-1.c	options
+c90-idem-qual-2.c	options
+c90-idem-qual-3.c	options
+c90-init-1.c	options
+c90-longlong-1.c	options
+c90-mixdecl-1.c	options
+c90-noreturn-1.c	options
+c90-restrict-1.c	options
+c90-return-1.c	options
+c90-static-1.c	options
+c90-static-assert-1.c	options
+c90-thread-local-1.c	options
+c90-typedef-1.c	options
+c90-typespec-1.c	options
+c90-vla-1.c	options
+c99-align-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-align-1.c:5 (directive line 4)
+c99-anon-struct-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-anon-struct-1.c:11 (directive line 4)
+c99-array-lval-8.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-array-lval-8.c:29 (directive line 7)
+c99-arraydecl-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+c99-atomic-1.c	GNU or unsupported feature (_Atomic)
+c99-compare-incomplete-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-compare-incomplete-2.c:15 (directive li
+c99-complex-1.c	GNU or unsupported feature (_Complex)
+c99-complex-2.c	GNU or unsupported feature (_Complex)
+c99-complex-3.c	GNU or unsupported feature (_Imaginary)
+c99-complit-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-complit-2.c:48 (directive line 14)
+c99-const-expr-11.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 26)
+c99-const-expr-12.c	GNU or unsupported feature (double)
+c99-const-expr-14.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 26)
+c99-const-expr-7.c	header float.h
+c99-const-expr-8.c	options
+c99-const-expr-9.c	options
+c99-flex-array-typedef-8.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+c99-fordecl-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-fordecl-2.c:12 (directive line 4)
+c99-fordecl-3.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-fordecl-3.c:11 (directive line 4)
+c99-hexfloat-3.c	GNU or unsupported feature (double)
+c99-left-shift-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-left-shift-1.c:11 (directive line 4)
+c99-left-shift-2.c	options
+c99-left-shift-3.c	options
+c99-noreturn-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-noreturn-1.c:5 (directive line 4)
+c99-static-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 27)
+c99-static-assert-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-static-assert-1.c:5 (directive line 4)
+c99-tag-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-tag-1.c:131 (directive line 11)
+c99-tag-3.c	GNU or unsupported feature (float)
+c99-thread-local-1.c	GNU or unsupported feature (_Thread_local)
+c99-typedef-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/c99-typedef-1.c:6 (directive line 4)
+c99-typespec-1.c	GNU or unsupported feature (_Complex)
+c99-vla-jump-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 17)
+c99-vla-jump-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 17)
+c99-vla-jump-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 17)
+c99-vla-jump-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 17)
+c99-vla-jump-5.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 18)
+call-diag-2.c	options
+cast-1.c	options
+cast-2.c	options
+cast-3.c	options
+cleanup-1.c	options
+comp-goto-5.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+comp-goto-6.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+comp-return-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 11)
+compound-literal-1.c	GNU or unsupported feature (__extension__)
+compound-literal-cast-lvalue-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+concat.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+concat2.c	dg-error form not converted (target selector, xfail or line spec)
+counted-by-anonymous-3.c	options
+counted-by-anonymous.c	GNU or unsupported feature (__attribute__)
+countof-compile.c	options
+countof-pedantic-errors.c	options
+crc-non-cst-poly-1.c	GNU or unsupported feature (__builtin)
+cwsc0.c	GNU or unsupported feature (__builtin)
+darwin-aligned-globals.c	requirements, extra options or dg-final checks
+darwin-cfstring-1.c	options
+darwin-cfstring-2.c	options
+darwin-cfstring-format-1.c	GNU or unsupported feature (__builtin)
+darwin-comm-1.c	options
+decl-8.c	options
+decl-9.c	options
+decl-nospec-3.c	options
+declspec-1.c	options
+declspec-10.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+declspec-11.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 35)
+declspec-13.c	options
+declspec-17.c	options
+declspec-18.c	options
+declspec-4.c	GNU or unsupported feature (double)
+declspec-5.c	options
+declspec-6.c	options
+declspec-7.c	options
+declspec-9.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+dg-test-1.c	options
+diag-aka-1.c	options
+diag-aka-1a.c	options
+diag-aka-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+diag-aka-3.c	GNU or unsupported feature (__attribute__)
+diag-aka-5a.c	header diag-aka-5.h
+diag-aka-5b.c	header diag-aka-5.h
+diag-sanity.c	options
+diagnostic-input-charset-1.c	requirements, extra options or dg-final checks
+diagnostic-input-utf8-bom.c	options
+diagnostic-range-bad-called-object.c	options
+diagnostic-range-bad-return-2.c	options
+diagnostic-range-static-assert.c	options
+diagnostic-token-ranges.c	options
+diagnostic-types-2.c	options
+dollar.c	options
+dremf-type-compat-3.c	options
+driver-nostdlibstar.c	requirements, extra options or dg-final checks
+driver-specs.c	requirements, extra options or dg-final checks
+empty-source-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 7)
+encoding-issues-bytes.c	options
+encoding-issues-unicode.c	options
+enum-compat-1.c	options
+enum-compat-2.c	options
+enum-incomplete-1.c	GNU or unsupported feature (typeof)
+enum-incomplete-3.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/enum-incomplete-3.c:13 (directive line 4)
+enum-incomplete-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+enum-mode-1.c	GNU or unsupported feature (__attribute__)
+enum-redef-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 28)
+fixits-pr84852-1.c	options
+fixits-pr84852-2.c	options
+fixits.c	options
+flex-array-counted-by-8.c	options
+flex-array-counted-by-9.c	GNU or unsupported feature (__attribute__)
+flex-array-counted-by.c	requirements, extra options or dg-final checks
+float-range-2.c	options
+floatn-errs.c	requirements, extra options or dg-final checks
+fltconst-1.c	options
+fltconst-double-pedantic-2.c	GNU or unsupported feature (double)
+fltconst-pedantic-dfp.c	options
+fold-nonneg-1.c	GNU or unsupported feature (double)
+for-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+func-args-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+func-outside-2.c	GNU or unsupported feature (__extension__)
+func-ptr-conv-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 12)
+funcdef-var-1.c	options
+funcdef-var-2.c	options
+funroll-loops-all.c	options
+gimplefe-54.c	options
+gimplefe-55.c	options
+gimplefe-error-1.c	options
+gimplefe-error-10.c	options
+gimplefe-error-11.c	options
+gimplefe-error-12.c	options
+gimplefe-error-13.c	options
+gimplefe-error-14.c	options
+gimplefe-error-15.c	options
+gimplefe-error-16.c	options
+gimplefe-error-2.c	options
+gimplefe-error-3.c	options
+gimplefe-error-4.c	options
+gimplefe-error-5.c	options
+gimplefe-error-6.c	options
+gimplefe-error-7.c	options
+gimplefe-error-8.c	options
+gimplefe-error-9.c	options
+gnu-compoundlit-1.c	options
+gnu-cond-expr-3.c	options
+gnu11-typeof-4.c	options
+gnu17-tag-1.c	options
+gnu23-attr-syntax-2.c	options
+gnu23-attr-syntax-3.c	options
+gnu23-attrs-1.c	requirements, extra options or dg-final checks
+gnu23-auto-1.c	options
+gnu23-builtins-no-dfp-1.c	options
+gnu23-constexpr-2.c	options
+gnu23-empty-init-2.c	options
+gnu23-enum-1.c	options
+gnu23-stdarg-1.c	options
+gnu23-switch-1.c	options
+gnu23-switch-2.c	options
+gnu23-tag-1.c	options
+gnu23-tag-2.c	options
+gnu23-tag-3.c	options
+gnu23-tag-5.c	options
+gnu23-tag-composite-1.c	options
+gnu23-tag-composite-5.c	options
+gnu23-utf8str.c	requirements, extra options or dg-final checks
+gnu23-varmod-1.c	options
+gnu23-varmod-3.c	options
+gnu2y-named-loops-3.c	options
+gnu89-const-expr-1.c	options
+gnu89-const-expr-2.c	options
+gnu90-const-expr-1.c	options
+gnu99-const-expr-1.c	options
+gnu99-const-expr-2.c	options
+gnu99-const-expr-3.c	options
+gnu99-const-expr-4.c	options
+gnu99-init-2.c	options
+gnu99-named-loops-2.c	options
+gnu99-named-loops-3.c	options
+gnu99-static-1.c	options
+hardbool-err.c	GNU or unsupported feature (__attribute__)
+init-bad-1.c	options
+init-bad-2.c	options
+init-bad-3.c	options
+init-desig-obs-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+init-desig-obs-3.c	options
+init-empty-3.c	options
+init-string-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/init-string-1.c:14 (directive line 4)
+init-string-2.c	requirements, extra options or dg-final checks
+inline-12.c	options
+inline-21.c	options
+inline-25.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 58)
+inline-5.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+inline-9.c	options
+inline1.c	options
+inline3.c	options
+inline4.c	options
+inline5.c	options
+intmax_t-1.c	header inttypes.h
+ivdep.c	GNU or unsupported feature (#pragma)
+label-decl-1.c	GNU or unsupported feature (__label__)
+label-decl-2.c	GNU or unsupported feature (__label__)
+label-decl-3.c	GNU or unsupported feature (__label__)
+label-decl-4.c	GNU or unsupported feature (__label__)
+large-size-array-2.c	dg-error form not converted (target selector, xfail or line spec)
+large-size-array-4.c	dg-error form not converted (target selector, xfail or line spec)
+large-size-array-5.c	options
+large-size-array-6.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/large-size-array-6.c:6 (directive line 4)
+long-long-typespec-1.c	options
+lvalue-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/lvalue-2.c:41 (directive line 23)
+lvalue-3.c	GNU or unsupported feature (typeof)
+lvalue-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+lvalue-6.c	options
+lvalue-8.c	GNU or unsupported feature (double)
+lvalue-9.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/lvalue-9.c:59 (directive line 23)
+lvalue1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+march-generic.c	requirements, extra options or dg-final checks
+march.c	requirements, extra options or dg-final checks
+maxof-compile.c	options
+maxof-pedantic-errors.c	options
+misc-column.c	options
+mismatch-decl-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 19)
+missing-header-fixit-1a.c	options
+missing-header-fixit-2a.c	options
+missing-header-fixit-4a.c	options
+missing-header-fixit-5a.c	options
+missing-symbol-2.c	options
+missing-symbol-3.c	options
+mtune.c	requirements, extra options or dg-final checks
+nested-func-1.c	options
+nested-func-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 20)
+nested-redef-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 43)
+no-asm-1.c	options
+no-asm-3.c	options
+no-asm-4.c	options
+nodfp-1.c	options
+nofixed-point-1.c	options
+nofixed-point-2.c	options
+nonnull-2.c	GNU or unsupported feature (__attribute__)
+nonnull-6.c	GNU or unsupported feature (__attribute__)
+nonnull-9.c	options
+octal-constants-3.c	options
+octal-constants-4.c	options
+old-style-prom-3.c	options
+old-style-prom-4.c	options
+old-style-then-proto-1.c	options
+opts-1.c	options
+opts-3.c	options
+opts-5.c	options
+opts-6.c	options
+opts-7.c	options
+ordered-comparison-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+overflow-warn-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 21)
+overflow-warn-2.c	options
+overflow-warn-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 21)
+param-type-mismatch-2.c	options
+param-type-mismatch.c	options
+parm-forwdecl-1.c	GNU or unsupported feature (__attribute__)
+parm-incomplete-1.c	options
+parm-mismatch-1.c	options
+parse-decl-after-if.c	options
+parse-decl-after-label.c	options
+parse-else-error-2.c	options
+parse-else-error-3.c	options
+parse-else-error-4.c	options
+parse-else-error.c	options
+parse-error-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+parse-error-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+parse-error-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+parser-pr28152-2.c	GNU or unsupported feature (float)
+parser-pr28152.c	GNU or unsupported feature (_Complex)
+permerror-default.c	options
+permerror-gnu89-nopermissive.c	options
+permerror-gnu89-pedantic.c	options
+permerror-pedantic.c	options
+permerror-system.c	options
+pointer-arith-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 13)
+pointer-arith-2.c	options
+pointer-arith-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 13)
+pointer-array-atomic-2.c	GNU or unsupported feature (double)
+pointer-array-atomic.c	options
+pointer-array-quals-1.c	options
+pointer-array-quals-2.c	options
+pointer-counted-by-1.c	GNU or unsupported feature (__attribute__)
+pointer-counted-by-3.c	options
+pointer-counted-by.c	GNU or unsupported feature (__attribute__)
+pr100501-1.c	GNU or unsupported feature (asm)
+pr100547.c	GNU or unsupported feature (__attribute__)
+pr100792-1.c	GNU or unsupported feature (asm)
+pr101172.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 17)
+pr101285-1.c	options
+pr101364-1.c	options
+pr104506-1.c	options
+pr104506-2.c	options
+pr104506-3.c	GNU or unsupported feature (double)
+pr105635-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+pr107787.c	options
+pr107805-1.c	GNU or unsupported feature (double)
+pr107805-2.c	GNU or unsupported feature (double)
+pr108375-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+pr108375-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+pr109409.c	GNU or unsupported feature (__builtin)
+pr109412.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 13)
+pr110699.c	GNU or unsupported feature (__attribute__)
+pr111708-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr111708-1.c:39 (directive line 4)
+pr112622.c	GNU or unsupported feature (__attribute__)
+pr113602.c	requirements, extra options or dg-final checks
+pr114540.c	GNU or unsupported feature (asm)
+pr114727.c	options
+pr114831-1.c	options
+pr115696.c	options
+pr116357.c	GNU or unsupported feature (__attribute__)
+pr117065.c	options
+pr117145-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 7)
+pr117391.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+pr117745.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+pr117755-1.c	GNU or unsupported feature (_Atomic)
+pr118061.c	options
+pr118948-1.c	GNU or unsupported feature (float)
+pr119001-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+pr119350-1.c	options
+pr119350-2.c	options
+pr119350-3.c	options
+pr119651.c	GNU or unsupported feature (double)
+pr120057-2.c	options
+pr120303.c	options
+pr120380.c	GNU or unsupported feature (__attribute__)
+pr120381.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+pr121216.c	GNU or unsupported feature (__builtin)
+pr121217.c	options
+pr121391-1.c	GNU or unsupported feature (__asm)
+pr121391-2.c	GNU or unsupported feature (__asm)
+pr121507.c	options
+pr123018.c	GNU or unsupported feature (__attribute__)
+pr123472.c	GNU or unsupported feature (__attribute__)
+pr13519-1.c	GNU or unsupported feature (typeof)
+pr14765-1.c	GNU or unsupported feature (({)
+pr15236.c	options
+pr15698-2.c	options
+pr15698-3.c	options
+pr15698-4.c	options
+pr15698-5.c	options
+pr15698-7.c	options
+pr15698-8.c	options
+pr17188-1.c	options
+pr17301-1.c	GNU or unsupported feature (__builtin)
+pr17301-2.c	GNU or unsupported feature (__builtin)
+pr18164.c	GNU or unsupported feature (asm)
+pr18596-1.c	options
+pr18596-2.c	options
+pr18596-3.c	options
+pr18725.c	GNU or unsupported feature (asm)
+pr18809-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+pr20245-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr20245-1.c:7 (directive line 5)
+pr20368-1.c	options
+pr20368-2.c	options
+pr20368-3.c	options
+pr20672-1.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr20672-1.c:7 (directive line 4)
+pr21419.c	GNU or unsupported feature (__asm)
+pr22231.c	options
+pr22458-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+pr23075-2.c	options
+pr24293.c	options
+pr25559.c	GNU or unsupported feature (__attribute__)
+pr25801.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+pr27428-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+pr27528.c	GNU or unsupported feature (asm)
+pr28419.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 2)
+pr29521-a.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+pr29736.c	GNU or unsupported feature (__attribute__)
+pr30949.c	GNU or unsupported feature (double)
+pr32370.c	target-specific options
+pr34088.c	options
+pr34965.c	GNU or unsupported feature (double)
+pr35334.c	options
+pr35440.c	options
+pr35441.c	options
+pr35442.c	target-specific options
+pr35443.c	GNU or unsupported feature (({)
+pr35742.c	options
+pr35746.c	options
+pr36093.c	requirements, extra options or dg-final checks
+pr36901-3.c	header pr36901.h
+pr36901-4.c	options
+pr36997.c	options
+pr37529.c	options
+pr37561.c	GNU or unsupported feature (__extension__)
+pr37772.c	GNU or unsupported feature (asm)
+pr39323-1.c	GNU or unsupported feature (__attribute__)
+pr40989.c	options
+pr41842.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+pr42611.c	GNU or unsupported feature (asm)
+pr43211.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 13)
+pr43783.c	requirements, extra options or dg-final checks
+pr48552-1.c	GNU or unsupported feature (__asm)
+pr48552-2.c	GNU or unsupported feature (__asm)
+pr49899.c	GNU or unsupported feature (__attribute__)
+pr51034.c	options
+pr51321.c	GNU or unsupported feature (__builtin)
+pr53037-4.c	GNU or unsupported feature (__attribute__)
+pr53196-1.c	options
+pr53196-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+pr53532.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+pr54355.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr54355.c:11 (directive line 4)
+pr55570.c	GNU or unsupported feature (__attribute__)
+pr56724-1.c	options
+pr56724-3.c	options
+pr56980.c	GNU or unsupported feature (__extension__)
+pr58893.c	options
+pr59827.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr59827.c:14 (directive line 4)
+pr59940.c	options
+pr60440-1.c	options
+pr60797.c	requirements, extra options or dg-final checks
+pr60915.c	GNU or unsupported feature (__attribute__)
+pr61053.c	GNU or unsupported feature (float)
+pr61096-1.c	options
+pr61096-2.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/pr61096-2.c:9 (directive line 4)
+pr61162-2.c	options
+pr61692.c	GNU or unsupported feature (asm)
+pr61861.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 28)
+pr62294.c	header pr62294.h
+pr64417.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+pr64766.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+pr65228.c	GNU or unsupported feature (__auto_type)
+pr65345-1.c	GNU or unsupported feature (_Atomic)
+pr65345-3.c	GNU or unsupported feature (_Atomic)
+pr65901.c	GNU or unsupported feature (__builtin)
+pr66066-1.c	options
+pr66066-2.c	options
+pr66066-3.c	options
+pr66618-2.c	accepts `"foo"[2]` as a constant initializer, which C17 6.6 does not require (6.6p10 allows it)
+pr67088.c	options
+pr67784-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+pr67964.c	requirements, extra options or dg-final checks
+pr68090.c	options
+pr68320.c	options
+pr68533.c	options
+pr69554-1.c	options
+pr69627.c	options
+pr69650.c	options
+pr69796.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 7)
+pr69819.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+pr69974.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+pr70859-2.c	GNU or unsupported feature (__builtin)
+pr70859.c	GNU or unsupported feature (double)
+pr71514.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+pr7356-2.c	options
+pr7356.c	options
+pr77323.c	GNU or unsupported feature (__int128)
+pr77521.c	GNU or unsupported feature (__asm)
+pr78957.c	options
+pr79412.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+pr79677.c	options
+pr79730.c	options
+pr79983.c	options
+pr80163.c	GNU or unsupported feature (__int128)
+pr80468.c	GNU or unsupported feature (__attribute__)
+pr81854.c	requirements, extra options or dg-final checks
+pr82112.c	options
+pr83415.c	GNU or unsupported feature (__attribute__)
+pr83595.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+pr83620.c	options
+pr84721.c	GNU or unsupported feature (({)
+pr84853.c	GNU or unsupported feature (float)
+pr85045.c	options
+pr87600-2.c	header pr87600.h
+pr87600-3.c	header pr87600.h
+pr87811-2.c	requirements, extra options or dg-final checks
+pr87811.c	requirements, extra options or dg-final checks
+pr8788-1.c	GNU or unsupported feature (asm)
+pr89340.c	GNU or unsupported feature (__attribute__)
+pr90082.c	requirements, extra options or dg-final checks
+pr90760.c	requirements, extra options or dg-final checks
+pr91134.c	options
+pr91193-1.c	options
+pr91193-2.c	options
+pr93573-1.c	options
+pr93577-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+pr93577-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+pr93577-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 11)
+pr93577-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 11)
+pr94705.c	options
+pr94726.c	GNU or unsupported feature (__attribute__)
+pr94968.c	GNU or unsupported feature (__builtin)
+pr96377-1.c	options
+pr96377-3.c	options
+pr96377-5.c	options
+pr97882.c	options
+pr97932.c	options
+pr97955.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+pr97986-2.c	options
+pr98195-1.c	GNU or unsupported feature (_Atomic)
+pr98271.c	options
+pr99990.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+pragma-diag-1.c	options
+pragma-diag-2.c	options
+pragma-diag-3.c	options
+pragma-diag-4.c	options
+pragma-message.c	GNU or unsupported feature (#pragma)
+proto-1.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+qual-component-1.c	options
+qual-return-3.c	options
+qual-return-5.c	GNU or unsupported feature (_Atomic)
+qual-return-7.c	options
+qual-return-9.c	options
+raw-string-1.c	options
+readonly-loc.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 3)
+redecl-1.c	options
+redecl-11.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 8)
+redecl-16.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-16.c:18 (directive line 4)
+redecl-19.c	options
+redecl-20.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+redecl-21.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+redecl-23.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+redecl-24.c	options
+redecl-25.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+redecl-26.c	GNU or unsupported feature (__builtin)
+redecl-3.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-3.c:1000 (directive line 4)
+redecl-4.c	options
+redecl-5.c	options
+redecl-7.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-7.c:13 (directive line 4)
+redecl-8.c	clang disagrees: missing diagnostic at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/redecl-8.c:13 (directive line 4)
+reg-vol-struct-1.c	GNU or unsupported feature (__asm)
+register-var-1.c	options
+register-var-2.c	options
+simd-1.c	GNU or unsupported feature (__attribute__)
+simd-1b.c	GNU or unsupported feature (__attribute__)
+simd-2.c	GNU or unsupported feature (float)
+simd-4.c	GNU or unsupported feature (float)
+simd-5.c	options
+simd-6.c	options
+sizeof-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 4)
+spec-barrier-3a.c	options
+spellcheck-fields-2.c	options
+spellcheck-fields-3.c	options
+spellcheck-identifiers-1a.c	options
+spellcheck-identifiers-2a.c	options
+spellcheck-identifiers-3a.c	options
+spellcheck-identifiers-4a.c	GNU or unsupported feature (double)
+spellcheck-identifiers.c	options
+spellcheck-inttypes.c	header inttypes.h
+spellcheck-options-1.c	options
+spellcheck-options-10.c	options
+spellcheck-options-11.c	options
+spellcheck-options-12.c	options
+spellcheck-options-13.c	options
+spellcheck-options-14.c	options
+spellcheck-options-15.c	options
+spellcheck-options-16.c	options
+spellcheck-options-17.c	options
+spellcheck-options-18.c	options
+spellcheck-options-19.c	options
+spellcheck-options-2.c	options
+spellcheck-options-20.c	options
+spellcheck-options-21.c	requirements, extra options or dg-final checks
+spellcheck-options-22.c	options
+spellcheck-options-23.c	options
+spellcheck-options-24.c	options
+spellcheck-options-3.c	options
+spellcheck-options-4.c	options
+spellcheck-options-5.c	options
+spellcheck-options-6.c	options
+spellcheck-options-7.c	options
+spellcheck-options-8.c	options
+spellcheck-options-9.c	options
+spellcheck-params-2.c	options
+spellcheck-params.c	options
+spellcheck-stdbool.c	GNU or unsupported feature (bool)
+spellcheck-stdint.c	options
+spellcheck-stdlib-2.c	options
+spellcheck-stdlib.c	header errno.h
+spellcheck-typenames.c	options
+sso-1.c	GNU or unsupported feature (__attribute__)
+sso-2.c	GNU or unsupported feature (__attribute__)
+sso-3.c	GNU or unsupported feature (__attribute__)
+sso-4.c	GNU or unsupported feature (__attribute__)
+sso-5.c	GNU or unsupported feature (__attribute__)
+stdckdint-2.c	options
+stmt-expr-3.c	options
+stmt-expr-label-1.c	GNU or unsupported feature (({)
+stmt-expr-label-2.c	GNU or unsupported feature (({)
+stmt-expr-label-3.c	GNU or unsupported feature (({)
+strict-flex-array-1.c	GNU or unsupported feature (__attribute__)
+struct-incompl-1.c	GNU or unsupported feature (__attribute__)
+struct-parse-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 10)
+struct-semi-3.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 16)
+switch-2.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+switch-5.c	GNU or unsupported feature (double)
+switch-7.c	options
+switch-A.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 3)
+sync-fetch-bool.c	GNU or unsupported feature (_Atomic)
+too-many-arguments.c	requirements, extra options or dg-final checks
+transparent-union-1a.c	options
+transparent-union-2.c	options
+two-types-1.c	options
+two-types-10.c	options
+two-types-2.c	options
+two-types-3.c	options
+two-types-4.c	options
+two-types-5.c	options
+two-types-6.c	options
+two-types-7.c	options
+two-types-8.c	options
+two-types-9.c	options
+typedef-init.c	options
+typedef-var-2.c	GNU or unsupported feature (float)
+typespec-1.c	options
+ucnid-13-utf8.c	requirements, extra options or dg-final checks
+ucnid-13.c	requirements, extra options or dg-final checks
+ucnid-7-utf8.c	requirements, extra options or dg-final checks
+ucnid-7.c	requirements, extra options or dg-final checks
+ucnid-8-utf8.c	requirements, extra options or dg-final checks
+ucnid-8.c	requirements, extra options or dg-final checks
+unclosed-init.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 3)
+union-cast-2.c	options
+union-cast-4.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 5)
+union-duplicate-field.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 17)
+unordered-1.c	GNU or unsupported feature (float)
+utf-array-short-wchar.c	requirements, extra options or dg-final checks
+utf-array.c	requirements, extra options or dg-final checks
+utf-badconcat.c	options
+utf-badconcat2.c	options
+utf-dflt.c	options
+utf-dflt2.c	options
+utf16-4.c	options
+utf32-4.c	options
+utf8-2.c	requirements, extra options or dg-final checks
+va-arg-2.c	header varargs.h
+va-arg-pack-1.c	options
+va-arg-pack-len-2.c	GNU or unsupported feature (__attribute__)
+visibility-13.c	requirements, extra options or dg-final checks
+vla-11.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 9)
+vla-19.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 11)
+vla-20.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)
+vla-25.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 7)
+vla-6.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 13)
+vla-8.c	relies on extensions or VLAs (clang -pedantic-errors -Werror=vla errors at line 6)

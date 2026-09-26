@@ -1,0 +1,1249 @@
+# rejected GCC torture execute tests and why (external/classify-gcc-torture.py)
+20000112-1.c	includes string.h
+20000121-1.c	64-bit integers
+20000223-1.c	floating point or complex
+20000314-2.c	64-bit integers
+20000402-1.c	includes limits.h
+20000412-2.c	fails at 16-bit int (lli exit -6)
+20000412-3.c	dg directives
+20000412-4.c	fails at 16-bit int (lli exit -6)
+20000511-1.c	labels as values
+20000519-1.c	includes stdarg.h
+20000523-1.c	64-bit integers
+20000603-1.c	floating point or complex
+20000605-1.c	floating point or complex
+20000703-1.c	statement expressions
+20000717-2.c	64-bit integers
+20000717-3.c	dg directives
+20000731-1.c	floating point or complex
+20000801-1.c	checks type sizes
+20000801-3.c	empty structs (GNU)
+20000815-1.c	64-bit integers
+20000822-1.c	dg directives
+20000910-1.c	msp430 compile fails: 1 error generated.
+20000910-2.c	includes string.h
+20000914-1.c	compiler-predefined type macros
+20000917-1.c	64-bit integers
+20001009-2.c	inline assembly
+20001011-1.c	library functions
+20001017-1.c	floating point or complex
+20001026-1.c	builtins
+20001031-1.c	64-bit integers
+20001101.c	labels as values
+20001108-1.c	64-bit integers
+20001111-1.c	msp430 compile fails: 2 errors generated.
+20001112-1.c	64-bit integers
+20001121-1.c	floating point or complex
+20001124-1.c	64-bit integers
+20001203-2.c	64-bit integers
+20001221-1.c	64-bit integers
+20001229-1.c	GNU attributes that change meaning
+20010114-1.c	floating constants
+20010118-1.c	floating point or complex
+20010119-1.c	builtins
+20010122-1.c	compiler-predefined type macros
+20010129-1.c	labels as values
+20010206-1.c	floating constants
+20010209-1.c	msp430 compile fails: 2 errors generated.
+20010325-1.c	wide characters
+20010329-1.c	includes limits.h
+20010409-1.c	compiler-predefined type macros
+20010518-2.c	GNU attributes that change meaning
+20010520-1.c	labels as values
+20010604-1.c	includes stdbool.h
+20010605-1.c	msp430 compile fails: 2 errors generated.
+20010605-2.c	floating point or complex
+20010904-1.c	GNU attributes that change meaning
+20010904-2.c	GNU attributes that change meaning
+20010910-1.c	floating constants
+20010915-1.c	builtins
+20010924-1.c	static initialisation of a flexible array member (GNU)
+20010925-1.c	compiler-predefined type macros
+20011008-3.c	dg directives
+20011024-1.c	compiler-predefined type macros
+20011113-1.c	compiler-predefined type macros
+20011121-1.c	builtins
+20011126-1.c	64-bit integers
+20011217-1.c	floating point or complex
+20020107-1.c	inline assembly
+20020108-1.c	GNU attributes that change meaning
+20020201-1.c	64-bit integers
+20020206-1.c	statement expressions
+20020206-2.c	64-bit integers
+20020213-1.c	floating point or complex
+20020216-1.c	checks type sizes
+20020219-1.c	64-bit integers
+20020225-2.c	floating point or complex
+20020226-1.c	includes limits.h
+20020227-1.c	GNU attributes that change meaning
+20020314-1.c	floating point or complex
+20020320-1.c	statement expressions
+20020321-1.c	floating point or complex
+20020402-1.c	64-bit integers
+20020402-2.c	fails at 16-bit int (lli exit -6)
+20020402-3.c	64-bit integers
+20020404-1.c	64-bit integers
+20020406-1.c	compiler-predefined type macros
+20020411-1.c	floating point or complex
+20020412-1.c	includes stdarg.h
+20020413-1.c	floating point or complex
+20020418-1.c	builtins
+20020503-1.c	library functions
+20020506-1.c	includes limits.h
+20020508-1.c	includes limits.h
+20020508-2.c	includes limits.h
+20020508-3.c	includes limits.h
+20020510-1.c	includes limits.h
+20020614-1.c	includes limits.h
+20020615-1.c	floating constants
+20020619-1.c	builtins
+20020720-1.c	floating point or complex
+20020819-1.c	dg directives
+20021010-1.c	includes limits.h
+20021010-2.c	msp430 compile fails: 1 error generated.
+20021011-1.c	builtins
+20021024-1.c	64-bit integers
+20021113-1.c	builtins
+20021118-2.c	floating point or complex
+20021120-1.c	floating point or complex
+20021120-3.c	64-bit integers
+20021127-1.c	64-bit integers
+20021204-1.c	64-bit integers
+20030125-1.c	GNU attributes that change meaning
+20030209-1.c	floating point or complex
+20030216-1.c	floating point or complex
+20030221-1.c	builtins
+20030222-1.c	includes limits.h
+20030224-2.c	GNU attributes that change meaning
+20030307-1.c	64-bit integers
+20030323-1.c	builtins
+20030330-1.c	builtins
+20030403-1.c	includes limits.h
+20030408-1.c	builtins
+20030501-1.c	msp430 compile fails: 2 errors generated.
+20030606-1.c	builtins
+20030626-1.c	library functions
+20030626-2.c	library functions
+20030714-1.c	64-bit integers
+20030715-1.c	library functions
+20030717-1.c	builtins
+20030718-1.c	floating constants
+20030811-1.c	64-bit integers
+20030828-1.c	64-bit integers
+20030910-1.c	floating point or complex
+20030914-1.c	floating point or complex
+20030916-1.c	includes limits.h
+20030928-1.c	includes limits.h
+20031003-1.c	includes limits.h
+20031012-1.c	compiler-predefined type macros
+20031020-1.c	includes limits.h
+20031204-1.c	includes string.h
+20031211-2.c	dg directives
+20031214-1.c	floating point or complex
+20040208-1.c	floating point or complex
+20040223-1.c	includes string.h
+20040302-1.c	labels as values
+20040308-1.c	GNU attributes that change meaning
+20040331-1.c	64-bit integers
+20040409-1.c	includes limits.h
+20040409-1w.c	includes limits.h
+20040409-2.c	includes limits.h
+20040409-2w.c	includes limits.h
+20040409-3.c	includes limits.h
+20040409-3w.c	includes limits.h
+20040411-1.c	builtins
+20040423-1.c	builtins
+20040520-1.c	msp430 compile fails: 2 errors generated.
+20040625-1.c	GNU attributes that change meaning
+20040629-1.c	includes 20040629-1.c
+20040703-1.c	dg directives
+20040705-1.c	includes 20040629-1.c
+20040705-2.c	includes 20040629-1.c
+20040709-1.c	floating point or complex
+20040709-2.c	GNU attributes that change meaning
+20040709-3.c	includes 20040709-2.c
+20040805-1.c	compiler-predefined type macros
+20040811-1.c	dg directives
+20040823-1.c	includes string.h
+20040831-1.c	floating point or complex
+20040917-1.c	64-bit integers
+20041011-1.c	64-bit integers
+20041019-1.c	dg directives
+20041112-1.c	compiler-predefined type macros
+20041113-1.c	includes stdarg.h
+20041114-1.c	includes limits.h
+20041124-1.c	floating point or complex
+20041126-1.c	library functions
+20041201-1.c	floating point or complex
+20041210-1.c	includes limits.h
+20041214-1.c	builtins
+20041218-1.c	builtins
+20041218-2.c	GNU attributes that change meaning
+20050104-1.c	64-bit integers
+20050107-1.c	GNU attributes that change meaning
+20050111-1.c	64-bit integers
+20050119-1.c	GNU attributes that change meaning
+20050119-2.c	GNU attributes that change meaning
+20050121-1.c	floating point or complex
+20050125-1.c	includes stdio.h
+20050131-1.c	includes stdio.h
+20050203-1.c	inline assembly
+20050215-1.c	GNU attributes that change meaning
+20050218-1.c	compiler-predefined type macros
+20050316-1.c	GNU attributes that change meaning
+20050316-2.c	GNU attributes that change meaning
+20050316-3.c	GNU attributes that change meaning
+20050502-1.c	library functions
+20050502-2.c	compiler-predefined type macros
+20050604-1.c	GNU attributes that change meaning
+20050607-1.c	GNU attributes that change meaning
+20050713-1.c	64-bit integers
+20050826-1.c	compiler-predefined type macros
+20051012-1.c	dg directives
+20051113-1.c	GNU attributes that change meaning
+20060102-1.c	width macros
+20060110-1.c	64-bit integers
+20060110-2.c	64-bit integers
+20060127-1.c	64-bit integers
+20060420-1.c	GNU attributes that change meaning
+20060930-2.c	builtins
+20061031-1.c	inline assembly
+20061101-1.c	dg directives
+20061220-1.c	inline assembly
+20070201-1.c	library functions
+20070517-1.c	64-bit integers
+20070614-1.c	floating point or complex
+20070623-1.c	includes limits.h
+20070824-1.c	builtins
+20070919-1.c	compiler-predefined type macros
+20071018-1.c	builtins
+20071030-1.c	floating point or complex
+20071108-1.c	builtins
+20071120-1.c	empty structs (GNU)
+20071210-1.c	labels as values
+20071211-1.c	64-bit integers
+20071213-1.c	includes stdarg.h
+20071219-1.c	compiler-predefined type macros
+20071220-1.c	inline assembly
+20071220-2.c	inline assembly
+20080117-1.c	floating point or complex
+20080122-1.c	inline assembly
+20080502-1.c	floating point or complex
+20080529-1.c	floating point or complex
+20080719-1.c	msp430 compile fails: 1 error generated.
+20081103-1.c	floating point or complex
+20081112-1.c	includes limits.h
+20081117-1.c	64-bit integers
+20081218-1.c	builtins
+20090113-2.c	empty structs (GNU)
+20090113-3.c	empty structs (GNU)
+20090219-1.c	msp430 compile fails: 2 errors generated.
+20090623-1.c	GNU keywords
+20090711-1.c	64-bit integers
+20091229-1.c	64-bit integers
+20100209-1.c	64-bit integers
+20100416-1.c	64-bit integers
+20100430-1.c	GNU attributes that change meaning
+20100708-1.c	floating point or complex
+20100805-1.c	fails at 16-bit int (lli exit -6)
+20101011-1.c	includes signal.h
+20101013-1.c	64-bit integers
+20110418-1.c	64-bit integers
+20111208-1.c	compiler-predefined type macros
+20111212-1.c	GNU attributes that change meaning
+20120105-1.c	GNU attributes that change meaning
+20120111-1.c	includes stdint.h
+20120207-1.c	library functions
+20120427-1.c	dg directives
+20120427-2.c	dg directives
+20120817-1.c	64-bit integers
+20120919-1.c	floating point or complex
+20121108-1.c	floating constants
+20131127-1.c	pragmas
+20140212-1.c	64-bit integers
+20140212-2.c	msp430 compile fails: 1 error generated.
+20140622-1.c	msp430 compile fails: 1 error generated.
+20140828-1.c	msp430 compile fails: 1 error generated.
+20141022-1.c	builtins
+20141107-1.c	builtins
+20141125-1.c	64-bit integers
+20170111-1.c	64-bit integers
+20170401-1.c	GNU attributes that change meaning
+20170419-1.c	width macros
+20171008-1.c	GNU attributes that change meaning
+20180112-1.c	compiler-predefined type macros
+20180921-1.c	labels as values
+20181120-1.c	dg directives
+20190228-1.c	msp430 compile fails: 1 error generated.
+20190820-1.c	GNU attributes that change meaning
+20190901-1.c	floating point or complex
+20191023-1.c	msp430 compile fails: 1 error generated.
+20210505-1.c	includes setjmp.h
+20221006-1.c	library functions
+20230509-1.c	builtins
+20230510-1.c	msp430 compile fails: 1 error generated.
+20230630-1.c	msp430 compile fails: 1 error generated.
+20230630-2.c	GNU attributes that change meaning
+20230630-3.c	compiler-predefined type macros
+20230630-4.c	GNU attributes that change meaning
+20230802-1.c	64-bit integers
+20241029-1.c	builtins
+920302-1.c	builtins
+920409-1.c	dg directives
+920410-1.c	dg directives
+920411-1.c	dg directives
+920415-1.c	labels as values
+920428-1.c	dg directives
+920428-2.c	GNU keywords
+920429-1.c	dg directives
+920501-1.c	dg directives
+920501-2.c	64-bit integers
+920501-3.c	labels as values
+920501-4.c	labels as values
+920501-5.c	labels as values
+920501-6.c	includes stdio.h
+920501-7.c	GNU keywords
+920501-8.c	includes stdio.h
+920501-9.c	includes stdio.h
+920520-1.c	dg directives
+920603-1.c	dg directives
+920604-1.c	64-bit integers
+920612-1.c	dg directives
+920612-2.c	dg directives
+920618-1.c	floating constants
+920625-1.c	includes stdarg.h
+920710-1.c	floating point or complex
+920711-1.c	dg directives
+920721-2.c	floating point or complex
+920721-3.c	dg directives
+920721-4.c	labels as values
+920726-1.c	includes stdio.h
+920728-1.c	dg directives
+920730-1.c	includes limits.h
+920731-1.c	dg directives
+920810-1.c	includes stdio.h
+920812-1.c	dg directives
+920829-1.c	64-bit integers
+920908-1.c	includes stdarg.h
+920908-2.c	64-bit integers
+920909-1.c	dg directives
+920929-1.c	floating point or complex
+921006-1.c	builtins
+921007-1.c	builtins
+921013-1.c	floating point or complex
+921017-1.c	dg directives
+921019-2.c	floating point or complex
+921029-1.c	64-bit integers
+921110-1.c	dg directives
+921112-1.c	floating point or complex
+921113-1.c	floating point or complex
+921117-1.c	64-bit integers
+921123-1.c	dg directives
+921124-1.c	floating point or complex
+921202-1.c	dg directives
+921202-2.c	64-bit integers
+921204-1.c	64-bit integers
+921207-1.c	dg directives
+921208-1.c	floating point or complex
+921208-2.c	floating point or complex
+921215-1.c	dg directives
+921218-1.c	dg directives
+921218-2.c	dg directives
+930106-1.c	floating point or complex
+930111-1.c	64-bit integers
+930126-1.c	64-bit integers
+930208-1.c	dg directives
+930406-1.c	statement expressions
+930429-2.c	dg directives
+930513-1.c	includes stdio.h
+930513-2.c	dg directives
+930518-1.c	dg directives
+930526-1.c	dg directives
+930527-1.c	dg directives
+930529-1.c	dg directives
+930603-1.c	floating point or complex
+930603-3.c	dg directives
+930608-1.c	floating point or complex
+930614-1.c	floating point or complex
+930614-2.c	floating point or complex
+930621-1.c	64-bit integers
+930622-1.c	dg directives
+930622-2.c	floating point or complex
+930628-1.c	floating point or complex
+930630-1.c	64-bit integers
+930702-1.c	floating point or complex
+930713-1.c	dg directives
+930718-1.c	dg directives
+930719-1.c	dg directives
+930725-1.c	builtins
+930818-1.c	floating point or complex
+930916-1.c	dg directives
+930921-1.c	64-bit integers
+930929-1.c	dg directives
+930930-1.c	compiler-predefined type macros
+930930-2.c	floating point or complex
+931002-1.c	dg directives
+931004-10.c	includes stdarg.h
+931004-12.c	includes stdarg.h
+931004-14.c	includes stdarg.h
+931004-2.c	includes stdarg.h
+931004-4.c	includes stdarg.h
+931004-6.c	includes stdarg.h
+931004-8.c	includes stdarg.h
+931009-1.c	dg directives
+931012-1.c	dg directives
+931017-1.c	dg directives
+931018-1.c	dg directives
+931031-1.c	64-bit integers
+931102-1.c	dg directives
+931102-2.c	dg directives
+931110-1.c	64-bit integers
+931208-1.c	dg directives
+931228-1.c	dg directives
+940115-1.c	dg directives
+940122-1.c	dg directives
+941014-2.c	includes stdio.h
+941015-1.c	64-bit integers
+941021-1.c	floating point or complex
+941101-1.c	dg directives
+941110-1.c	dg directives
+941202-1.c	library functions
+950221-1.c	builtins
+950322-1.c	dg directives
+950426-1.c	library functions
+950503-1.c	64-bit integers
+950511-1.c	64-bit integers
+950512-1.c	64-bit integers
+950605-1.c	dg directives
+950607-2.c	64-bit integers
+950612-1.c	64-bit integers
+950621-1.c	dg directives
+950704-1.c	64-bit integers
+950906-1.c	statement expressions
+950915-1.c	64-bit integers
+960117-1.c	GNU attributes that change meaning
+960215-1.c	floating point or complex
+960218-1.c	dg directives
+960311-1.c	includes stdio.h
+960311-2.c	includes stdio.h
+960311-3.c	includes stdio.h
+960312-1.c	inline assembly
+960327-1.c	includes stdio.h
+960402-1.c	64-bit integers
+960405-1.c	floating point or complex
+960416-1.c	64-bit integers
+960512-1.c	floating point or complex
+960513-1.c	floating point or complex
+960521-1.c	library functions
+960801-1.c	64-bit integers
+960830-1.c	inline assembly
+961112-1.c	dg directives
+961122-1.c	64-bit integers
+961206-1.c	64-bit integers
+961213-1.c	64-bit integers
+961223-1.c	floating point or complex
+970214-1.c	wide characters
+970214-2.c	wide characters
+970217-1.c	variably modified parameter (VLA; C17 optional, loomcc has none)
+980205.c	includes stdarg.h
+980506-3.c	builtins
+980526-1.c	labels as values
+980526-2.c	checks type sizes
+980602-2.c	64-bit integers
+980604-1.c	floating point or complex
+980605-1.c	includes stdio.h
+980608-1.c	includes stdarg.h
+980707-1.c	includes string.h
+980709-1.c	includes math.h
+980716-1.c	includes stdarg.h
+981130-1.c	dg directives
+990106-1.c	dg directives
+990106-2.c	fails at 16-bit int (lli exit -6)
+990117-1.c	floating point or complex
+990127-2.c	floating point or complex
+990128-1.c	library functions
+990130-1.c	inline assembly
+990208-1.c	labels as values
+990211-1.c	64-bit integers
+990326-1.c	GNU attributes that change meaning
+990413-2.c	floating point or complex
+990513-1.c	includes string.h
+990531-1.c	checks type sizes
+990628-1.c	builtins
+990826-0.c	includes stdio.h
+990829-1.c	floating point or complex
+991014-1.c	64-bit integers
+991016-1.c	64-bit integers
+991019-1.c	floating point or complex
+991030-1.c	floating point or complex
+991112-1.c	library functions
+991118-1.c	64-bit integers
+991216-1.c	64-bit integers
+991216-2.c	includes stdarg.h
+991221-1.c	checks type sizes
+991228-1.c	floating point or complex
+alias-1.c	GNU attributes that change meaning
+alias-2.c	GNU attributes that change meaning
+alias-3.c	GNU attributes that change meaning
+alias-4.c	GNU attributes that change meaning
+alias-access-path-1.c	msp430 compile fails: 1 error generated.
+alias-access-path-2.c	msp430 compile fails: 1 error generated.
+align-1.c	GNU attributes that change meaning
+align-2.c	floating point or complex
+align-3.c	GNU attributes that change meaning
+align-nest.c	GNU attributes that change meaning
+alloca-1.c	GNU attributes that change meaning
+anon-1.c	fails at 16-bit int (lli exit -6)
+arith-rand-ll.c	64-bit integers
+ashldi-1.c	includes limits.h
+ashrdi-1.c	includes limits.h
+bcp-1.c	GNU attributes that change meaning
+bf-pack-1.c	GNU attributes that change meaning
+bf-sign-2.c	64-bit integers
+bf64-1.c	64-bit integers
+bitfld-1.c	64-bit integers
+bitfld-10.c	msp430 compile fails: 1 error generated.
+bitfld-3.c	64-bit integers
+bitfld-4.c	dg directives
+bitfld-5.c	64-bit integers
+bitfld-6.c	dg directives
+bitfld-7.c	dg directives
+bitfld-8.c	msp430 compile fails: 1 error generated.
+bitfld-9.c	labels as values
+bitfld-signed1-1.c	msp430 compile fails: 1 error generated.
+bitops-1.c	msp430 compile fails: 1 error generated.
+bswap-1.c	64-bit integers
+bswap-2.c	compiler-predefined type macros
+bswap-3.c	builtins
+built-in-setjmp.c	builtins
+builtin-bitops-1.c	includes limits.h
+builtin-constant.c	builtins
+builtin-prefetch-1.c	64-bit integers
+builtin-prefetch-2.c	builtins
+builtin-prefetch-3.c	builtins
+builtin-prefetch-4.c	builtins
+builtin-prefetch-5.c	builtins
+builtin-prefetch-6.c	includes limits.h
+builtin-types-compatible-p.c	floating point or complex
+call-trap-1.c	64-bit integers
+cbrt.c	GNU attributes that change meaning
+cmpdi-1.c	64-bit integers
+cmpsf-1.c	includes limits.h
+cmpsi-1.c	dg directives
+cmpsi-2.c	dg directives
+comp-goto-1.c	floating point or complex
+comp-goto-2.c	floating constants
+complex-1.c	floating point or complex
+complex-2.c	floating point or complex
+complex-3.c	floating point or complex
+complex-4.c	floating point or complex
+complex-5.c	floating point or complex
+complex-6.c	includes stdio.h
+complex-7.c	floating point or complex
+compndlit-1.c	64-bit integers
+const-addr-expr-1.c	includes stdio.h
+conversion.c	floating point or complex
+cvt-1.c	floating point or complex
+dbra-1.c	dg directives
+divconst-3.c	64-bit integers
+divmod-1.c	dg directives
+doloop-1.c	includes limits.h
+doloop-2.c	includes limits.h
+eeprof-1.c	GNU attributes that change meaning
+enum-2.c	floating constants
+enum-3.c	includes limits.h
+extzvsi.c	64-bit integers
+ffs-1.c	builtins
+ffs-2.c	64-bit integers
+float-floor.c	floating point or complex
+floatunsisf-1.c	floating point or complex
+fprintf-1.c	includes stdio.h
+fprintf-2.c	includes stdio.h
+fprintf-chk-1.c	includes stdio.h
+frame-address.c	64-bit integers
+func-ptr-1.c	floating point or complex
+gofast.c	includes stdio.h
+ifcvt-diamond-1.c	builtins
+index-1.c	dg directives
+inst-check.c	includes stdarg.h
+int-compare.c	includes limits.h
+ipa-sra-1.c	floating point or complex
+ipa-sra-2.c	64-bit integers
+longlong.c	64-bit integers
+loop-12.c	64-bit integers
+loop-2.c	dg directives
+loop-2b.c	includes limits.h
+loop-2c.c	GNU keywords
+loop-2d.c	dg directives
+loop-2e.c	64-bit integers
+loop-2f.c	includes limits.h
+loop-2g.c	includes limits.h
+loop-3.c	includes limits.h
+loop-3b.c	includes limits.h
+loop-3c.c	includes limits.h
+loop-8.c	floating point or complex
+loop-9.c	dg directives
+loop-ivopts-1.c	floating point or complex
+lshrdi-1.c	includes limits.h
+lto-tbaa-1.c	floating point or complex
+mayalias-1.c	GNU attributes that change meaning
+mayalias-2.c	GNU attributes that change meaning
+mayalias-3.c	GNU attributes that change meaning
+memchr-1.c	compiler-predefined type macros
+memclr.c	GNU attributes that change meaning
+memcpy-1.c	includes string.h
+memcpy-2.c	includes string.h
+memcpy-a1.c	includes memcpy-ax.h
+memcpy-a2.c	includes memcpy-ax.h
+memcpy-a4.c	includes memcpy-ax.h
+memcpy-a8.c	includes memcpy-ax.h
+memcpy-bi.c	GNU attributes that change meaning
+memset-1.c	includes string.h
+memset-2.c	includes string.h
+memset-3.c	includes string.h
+memset-4.c	64-bit integers
+minmaxcmp-1.c	msp430 compile fails: 1 error generated.
+misalign.c	GNU attributes that change meaning
+mod-1.c	dg directives
+mode-dependent-address.c	includes stdint.h
+mul-sext.c	64-bit integers
+multdi-1.c	64-bit integers
+multi-ix.c	includes stdarg.h
+nest-align-1.c	GNU attributes that change meaning
+nest-stdar-1.c	includes stdarg.h
+nestfunc-1.c	dg directives
+nestfunc-2.c	dg directives
+nestfunc-3.c	dg directives
+nestfunc-4.c	64-bit integers
+nestfunc-5.c	GNU keywords
+nestfunc-6.c	compiler-predefined type macros
+nestfunc-7.c	msp430 compile fails: 3 errors generated.
+p18298.c	includes stdbool.h
+packed-1.c	GNU attributes that change meaning
+packed-2.c	GNU attributes that change meaning
+packed-aligned.c	GNU attributes that change meaning
+pending-4.c	fails at 16-bit int (lli exit -6)
+postmod-1.c	floating point or complex
+pr101188.c	compiler-predefined type macros
+pr101335.c	msp430 compile fails: 1 error generated.
+pr102134.c	64-bit integers
+pr103052.c	builtins
+pr103209.c	includes stdio.h
+pr103255.c	compiler-predefined type macros
+pr103376.c	64-bit integers
+pr103405.c	compiler-predefined type macros
+pr103417.c	dg directives
+pr10352-1.c	msp430 compile fails: 1 error generated.
+pr104196.c	compiler-predefined type macros
+pr104604.c	floating point or complex
+pr104814.c	msp430 compile fails: 1 error generated.
+pr104839.c	msp430 compile fails: 1 error generated.
+pr105613.c	GNU attributes that change meaning
+pr105777.c	includes ../../gcc.dg/tree-ssa/pr105777.c
+pr105984.c	64-bit integers
+pr106032.c	msp430 compile fails: 1 error generated.
+pr106523.c	width macros
+pr107131.c	64-bit integers
+pr107879.c	floating point or complex
+pr107881-1.c	msp430 compile fails: 1 error generated.
+pr108064.c	GNU attributes that change meaning
+pr108292.c	GNU attributes that change meaning
+pr108498-1.c	builtins
+pr108498-2.c	builtins
+pr108789.c	compiler-predefined type macros
+pr109040.c	GNU attributes that change meaning
+pr109778.c	labels as values
+pr109925.c	msp430 compile fails: 1 error generated.
+pr109938.c	includes ../../gcc.dg/tree-ssa/pr109938.c
+pr109986.c	includes ../../gcc.dg/tree-ssa/pr109986.c
+pr110165-1.c	msp430 compile fails: 1 error generated.
+pr110166-1.c	msp430 compile fails: 1 error generated.
+pr110252-1.c	64-bit integers
+pr110252-2.c	inline assembly
+pr110252-3.c	msp430 compile fails: 1 error generated.
+pr110252-4.c	labels as values
+pr110666-1.c	msp430 compile fails: 1 error generated.
+pr110817-1.c	GNU attributes that change meaning
+pr110817-2.c	GNU attributes that change meaning
+pr110817-3.c	GNU attributes that change meaning
+pr110914.c	builtins
+pr110954-1.c	msp430 compile fails: 1 error generated.
+pr111151.c	compiler-predefined type macros
+pr111331-1.c	msp430 compile fails: 1 error generated.
+pr111331-2.c	msp430 compile fails: 1 error generated.
+pr111331-3.c	msp430 compile fails: 1 error generated.
+pr111408.c	msp430 compile fails: 1 error generated.
+pr111422.c	64-bit integers
+pr111431-1.c	msp430 compile fails: 1 error generated.
+pr111613.c	includes stdio.h
+pr111863-1.c	builtins
+pr112581-1.c	dg directives
+pr112758.c	64-bit integers
+pr113010.c	64-bit integers
+pr113787.c	msp430 compile fails: 1 error generated.
+pr114207.c	includes stdio.h
+pr114396.c	GNU attributes that change meaning
+pr114552.c	GNU attributes that change meaning
+pr114965.c	msp430 compile fails: 1 error generated.
+pr115033.c	builtins
+pr115277.c	builtins
+pr116799.c	builtins
+pr117095.c	64-bit integers
+pr117432.c	includes stdarg.h
+pr118623.c	msp430 compile fails: 1 error generated.
+pr118638.c	msp430 compile fails: 1 error generated.
+pr118915.c	msp430 compile fails: 1 error generated.
+pr119030.c	64-bit integers
+pr119071.c	msp430 compile fails: 1 error generated.
+pr119291.c	msp430 compile fails: 1 error generated.
+pr119428.c	builtins
+pr120630.c	msp430 compile fails: 1 error generated.
+pr120677.c	dg directives
+pr121957.c	GNU attributes that change meaning
+pr122000.c	GNU attributes that change meaning
+pr122943.c	64-bit integers
+pr123625-2.c	GNU attributes that change meaning
+pr123625-3.c	GNU attributes that change meaning
+pr123625.c	GNU attributes that change meaning
+pr123753.c	GNU attributes that change meaning
+pr123864.c	64-bit integers
+pr123978.c	64-bit integers
+pr124358.c	msp430 compile fails: 1 error generated.
+pr125291.c	builtins
+pr126405-2.c	GNU attributes that change meaning
+pr126405-3.c	GNU attributes that change meaning
+pr126405.c	GNU attributes that change meaning
+pr126501.c	builtins
+pr126747.c	msp430 compile fails: 1 error generated.
+pr126994.c	msp430 compile fails: 1 error generated.
+pr15262-1.c	floating point or complex
+pr15262-2.c	floating point or complex
+pr15262.c	floating point or complex
+pr15296.c	64-bit integers
+pr17377.c	64-bit integers
+pr19449.c	builtins
+pr19606.c	64-bit integers
+pr19689.c	dg directives
+pr20187-1.c	64-bit integers
+pr20527-1.c	64-bit integers
+pr20621-1.c	dg directives
+pr22061-1.c	library functions
+pr22061-2.c	variably modified type (VLA)
+pr22061-3.c	msp430 compile fails: 2 errors generated.
+pr22061-4.c	msp430 compile fails: 2 errors generated.
+pr22098-1.c	compiler-predefined type macros
+pr22098-2.c	compiler-predefined type macros
+pr22098-3.c	compiler-predefined type macros
+pr22141-1.c	builtins
+pr22141-2.c	GNU attributes that change meaning
+pr22429.c	width macros
+pr22493-1.c	includes limits.h
+pr23047.c	includes limits.h
+pr23135.c	GNU attributes that change meaning
+pr23324.c	floating point or complex
+pr23467.c	GNU attributes that change meaning
+pr23941.c	floating point or complex
+pr24135.c	GNU keywords
+pr24716.c	64-bit integers
+pr27260.c	compiler-predefined type macros
+pr27364.c	msp430 compile fails: 1 error generated.
+pr28289.c	dg directives
+pr28403.c	64-bit integers
+pr28651.c	includes limits.h
+pr28865.c	msp430 compile fails: 3 errors generated.
+pr28982a.c	floating point or complex
+pr28982b.c	floating point or complex
+pr29006.c	GNU attributes that change meaning
+pr29156.c	floating point or complex
+pr29695-1.c	64-bit integers
+pr29695-2.c	64-bit integers
+pr29797-1.c	dg directives
+pr29798.c	floating point or complex
+pr30185.c	64-bit integers
+pr30314.c	includes ../../gcc.dg/tree-ssa/pr30314.c
+pr30778.c	compiler-predefined type macros
+pr31072.c	msp430 compile fails: 1 error generated.
+pr31448-2.c	msp430 compile fails: 1 error generated.
+pr31448.c	dg directives
+pr32244-1.c	64-bit integers
+pr32500.c	fails at 16-bit int (lli exit -6)
+pr33142.c	library functions
+pr33669.c	64-bit integers
+pr33870-1.c	64-bit integers
+pr33870.c	64-bit integers
+pr33992.c	64-bit integers
+pr34130.c	builtins
+pr34154.c	64-bit integers
+pr34176.c	compiler-predefined type macros
+pr34456.c	library functions
+pr34971.c	64-bit integers
+pr34982.c	dg directives
+pr35163.c	width macros
+pr35456.c	floating point or complex
+pr35472.c	compiler-predefined type macros
+pr35800.c	floating point or complex
+pr36034-1.c	floating point or complex
+pr36034-2.c	floating point or complex
+pr36038.c	64-bit integers
+pr36321.c	compiler-predefined type macros
+pr36339.c	fails at 16-bit int (lli exit -11)
+pr36343.c	floating point or complex
+pr36765.c	builtins
+pr37573.c	builtins
+pr37780.c	builtins
+pr37882.c	msp430 compile fails: 1 error generated.
+pr38048-2.c	floating constants
+pr38051.c	compiler-predefined type macros
+pr38151.c	GNU attributes that change meaning
+pr38422.c	width macros
+pr38533.c	inline assembly
+pr38969.c	floating point or complex
+pr39100.c	msp430 compile fails: 1 error generated.
+pr39120.c	fails at 16-bit int (lli exit -11)
+pr39228.c	floating point or complex
+pr39339.c	builtins
+pr39501.c	floating point or complex
+pr40022.c	inline assembly
+pr40057.c	64-bit integers
+pr40386.c	64-bit integers
+pr40404.c	width macros
+pr40493.c	fails at 16-bit int (lli exit -6)
+pr40579.c	compiler-predefined type macros
+pr40657.c	64-bit integers
+pr40668.c	builtins
+pr41239.c	GNU attributes that change meaning
+pr41395-1.c	compiler-predefined type macros
+pr41395-2.c	compiler-predefined type macros
+pr41463.c	compiler-predefined type macros
+pr41917.c	checks type sizes
+pr41935.c	builtins
+pr42248.c	floating point or complex
+pr42269-2.c	64-bit integers
+pr42544.c	64-bit integers
+pr42614.c	compiler-predefined type macros
+pr42691.c	floating point or complex
+pr42721.c	64-bit integers
+pr42833.c	compiler-predefined type macros
+pr43008.c	builtins
+pr43220.c	dg directives
+pr43236.c	compiler-predefined type macros
+pr43385.c	builtins
+pr43560.c	inline assembly
+pr43784.c	msp430 compile fails: 1 error generated.
+pr43835.c	64-bit integers
+pr43987.c	GNU attributes that change meaning
+pr44468.c	includes stddef.h
+pr44575.c	includes stdarg.h
+pr44683.c	floating point or complex
+pr44852.c	builtins
+pr44858.c	64-bit integers
+pr44942.c	includes stdarg.h
+pr45070.c	GNU attributes that change meaning
+pr45262.c	dg directives
+pr45695.c	inline assembly
+pr46019.c	64-bit integers
+pr46309.c	inline assembly
+pr46316.c	64-bit integers
+pr47148.c	msp430 compile fails: 1 error generated.
+pr47155.c	msp430 compile fails: 1 error generated.
+pr47237.c	builtins
+pr47337.c	64-bit integers
+pr47538.c	floating point or complex
+pr47925.c	inline assembly
+pr48197.c	64-bit integers
+pr48571-1.c	compiler-predefined type macros
+pr49186.c	64-bit integers
+pr49218.c	floating point or complex
+pr49279.c	inline assembly
+pr49390.c	builtins
+pr49644.c	floating point or complex
+pr49886.c	64-bit integers
+pr50865.c	64-bit integers
+pr51447.c	64-bit integers
+pr51581-1.c	64-bit integers
+pr51581-2.c	64-bit integers
+pr51877.c	builtins
+pr51933.c	builtins
+pr52286.c	inline assembly
+pr52760.c	msp430 compile fails: 1 error generated.
+pr52979-1.c	GNU attributes that change meaning
+pr52979-2.c	GNU attributes that change meaning
+pr53645-2.c	GNU attributes that change meaning
+pr53645.c	GNU attributes that change meaning
+pr53688.c	builtins
+pr54471.c	64-bit integers
+pr55137.c	compiler-predefined type macros
+pr55875.c	dg directives
+pr56051.c	64-bit integers
+pr56205.c	includes stdarg.h
+pr56799.c	includes stdio.h
+pr56837.c	floating point or complex
+pr56866.c	64-bit integers
+pr56899.c	width macros
+pr56962.c	64-bit integers
+pr56982.c	includes setjmp.h
+pr57124.c	dg directives
+pr57130.c	builtins
+pr57131.c	64-bit integers
+pr57144.c	64-bit integers
+pr57281.c	64-bit integers
+pr57344-1.c	GNU attributes that change meaning
+pr57344-2.c	GNU attributes that change meaning
+pr57344-3.c	GNU attributes that change meaning
+pr57344-4.c	GNU attributes that change meaning
+pr57829.c	width macros
+pr57860.c	64-bit integers
+pr57861.c	labels as values
+pr57876.c	64-bit integers
+pr57877.c	64-bit integers
+pr58209.c	compiler-predefined type macros
+pr58277-1.c	inline assembly
+pr58364.c	msp430 compile fails: 1 error generated.
+pr58419.c	inline assembly
+pr58431.c	msp430 compile fails: 1 error generated.
+pr58570.c	dg directives
+pr58574.c	floating point or complex
+pr58662.c	labels as values
+pr58726.c	width macros
+pr58831.c	includes assert.h
+pr58943.c	msp430 compile fails: 1 error generated.
+pr58984.c	msp430 compile fails: 1 error generated.
+pr59014-2.c	64-bit integers
+pr59014.c	msp430 compile fails: 1 error generated.
+pr59101.c	64-bit integers
+pr59221.c	msp430 compile fails: 1 error generated.
+pr59229.c	builtins
+pr59358.c	msp430 compile fails: 1 error generated.
+pr59388.c	fails at 16-bit int (lli exit -6)
+pr59413.c	msp430 compile fails: 1 error generated.
+pr59643.c	floating point or complex
+pr59747.c	64-bit integers
+pr60003.c	64-bit integers
+pr60062.c	GNU attributes that change meaning
+pr60072.c	GNU attributes that change meaning
+pr60454.c	compiler-predefined type macros
+pr60822.c	64-bit integers
+pr60960.c	GNU attributes that change meaning
+pr61306-1.c	compiler-predefined type macros
+pr61306-2.c	compiler-predefined type macros
+pr61306-3.c	msp430 compile fails: 1 error generated.
+pr61375.c	64-bit integers
+pr61517.c	msp430 compile fails: 1 error generated.
+pr61673.c	msp430 compile fails: 1 error generated.
+pr61682.c	msp430 compile fails: 1 error generated.
+pr61725.c	builtins
+pr62151.c	msp430 compile fails: 1 error generated.
+pr63302.c	64-bit integers
+pr63641.c	inline assembly
+pr63659.c	msp430 compile fails: 1 error generated.
+pr63843.c	builtins
+pr64006.c	builtins
+pr64242.c	builtins
+pr64255.c	msp430 compile fails: 1 error generated.
+pr64260.c	msp430 compile fails: 1 error generated.
+pr64682.c	msp430 compile fails: 1 error generated.
+pr64718.c	msp430 compile fails: 1 error generated.
+pr64756.c	msp430 compile fails: 1 error generated.
+pr64957.c	msp430 compile fails: 1 error generated.
+pr64979.c	includes stdarg.h
+pr65053-1.c	inline assembly
+pr65053-2.c	inline assembly
+pr65170.c	64-bit integers
+pr65215-1.c	64-bit integers
+pr65215-2.c	64-bit integers
+pr65215-3.c	64-bit integers
+pr65215-4.c	64-bit integers
+pr65215-5.c	width macros
+pr65216.c	msp430 compile fails: 1 error generated.
+pr65369.c	GNU attributes that change meaning
+pr65401.c	msp430 compile fails: 1 error generated.
+pr65418-1.c	msp430 compile fails: 1 error generated.
+pr65418-2.c	msp430 compile fails: 1 error generated.
+pr65427.c	GNU attributes that change meaning
+pr65648.c	64-bit integers
+pr65956.c	64-bit integers
+pr66187.c	msp430 compile fails: 1 error generated.
+pr66233.c	floating point or complex
+pr66556.c	labels as values
+pr66757.c	msp430 compile fails: 1 error generated.
+pr66940.c	64-bit integers
+pr67037.c	dg directives
+pr67226.c	msp430 compile fails: 1 error generated.
+pr67714.c	msp430 compile fails: 1 error generated.
+pr67781.c	compiler-predefined type macros
+pr67929_1.c	floating point or complex
+pr68143_1.c	msp430 compile fails: 1 error generated.
+pr68185.c	msp430 compile fails: 1 error generated.
+pr68249.c	msp430 compile fails: 1 error generated.
+pr68250.c	msp430 compile fails: 1 error generated.
+pr68321.c	msp430 compile fails: 1 error generated.
+pr68328.c	inline assembly
+pr68376-1.c	msp430 compile fails: 1 error generated.
+pr68381.c	builtins
+pr68390.c	floating point or complex
+pr68506.c	labels as values
+pr68532.c	dg directives
+pr68624.c	labels as values
+pr68648.c	dg directives
+pr68841.c	msp430 compile fails: 1 error generated.
+pr68911.c	labels as values
+pr69097-2.c	compiler-predefined type macros
+pr69320-1.c	msp430 compile fails: 1 error generated.
+pr69320-2.c	inline assembly
+pr69320-3.c	msp430 compile fails: 1 error generated.
+pr69320-4.c	64-bit integers
+pr69403.c	msp430 compile fails: 1 error generated.
+pr69447.c	64-bit integers
+pr69691.c	builtins
+pr70005.c	labels as values
+pr70127.c	msp430 compile fails: 1 error generated.
+pr70222-1.c	64-bit integers
+pr70222-2.c	64-bit integers
+pr70429.c	64-bit integers
+pr70460.c	labels as values
+pr70566.c	msp430 compile fails: 1 error generated.
+pr70602.c	GNU attributes that change meaning
+pr70903.c	GNU attributes that change meaning
+pr71083.c	GNU attributes that change meaning
+pr71494.c	labels as values
+pr71550.c	builtins
+pr71554.c	compiler-predefined type macros
+pr71626-1.c	GNU attributes that change meaning
+pr71626-2.c	includes pr71626-1.c
+pr71631.c	labels as values
+pr71700.c	msp430 compile fails: 1 error generated.
+pr7284-1.c	dg directives
+pr77718.c	GNU attributes that change meaning
+pr77767.c	msp430 compile fails: 1 error generated.
+pr78170.c	dg directives
+pr78378.c	64-bit integers
+pr78436.c	msp430 compile fails: 1 error generated.
+pr78438.c	inline assembly
+pr78477.c	checks type sizes
+pr78559.c	msp430 compile fails: 1 error generated.
+pr78586.c	builtins
+pr78617.c	msp430 compile fails: 1 error generated.
+pr78622.c	compiler-predefined type macros
+pr78675.c	labels as values
+pr78720.c	msp430 compile fails: 1 error generated.
+pr78726.c	inline assembly
+pr78791.c	64-bit integers
+pr79043.c	GNU attributes that change meaning
+pr79121.c	64-bit integers
+pr79286.c	builtins
+pr79327.c	builtins
+pr79354.c	floating point or complex
+pr79388.c	dg directives
+pr79450.c	64-bit integers
+pr79737-1.c	compiler-predefined type macros
+pr79737-2.c	compiler-predefined type macros
+pr80153.c	builtins
+pr80421.c	inline assembly
+pr80501.c	width macros
+pr80692.c	floating constants
+pr81281.c	compiler-predefined type macros
+pr81423.c	64-bit integers
+pr81503.c	compiler-predefined type macros
+pr81555.c	msp430 compile fails: 1 error generated.
+pr81556.c	64-bit integers
+pr81588.c	64-bit integers
+pr81913.c	compiler-predefined type macros
+pr82192.c	64-bit integers
+pr82210.c	GNU attributes that change meaning
+pr82524.c	msp430 compile fails: 1 error generated.
+pr82954.c	inline assembly
+pr83269.c	64-bit integers
+pr83298.c	msp430 compile fails: 1 error generated.
+pr83362.c	compiler-predefined type macros
+pr83383.c	64-bit integers
+pr83477.c	msp430 compile fails: 1 error generated.
+pr84169.c	64-bit integers
+pr84339.c	builtins
+pr84478.c	builtins
+pr84521.c	builtins
+pr84524.c	inline assembly
+pr84748.c	64-bit integers
+pr85095.c	builtins
+pr85156.c	builtins
+pr85169.c	GNU attributes that change meaning
+pr85331.c	GNU attributes that change meaning
+pr85529-1.c	msp430 compile fails: 1 error generated.
+pr85529-2.c	msp430 compile fails: 1 error generated.
+pr85582-1.c	64-bit integers
+pr85582-2.c	64-bit integers
+pr85582-3.c	64-bit integers
+pr85756.c	inline assembly
+pr86231.c	msp430 compile fails: 1 error generated.
+pr86492.c	width macros
+pr86528.c	compiler-predefined type macros
+pr86659-1.c	GNU attributes that change meaning
+pr86659-2.c	GNU attributes that change meaning
+pr86714.c	builtins
+pr86844.c	checks type sizes
+pr87053.c	builtins
+pr87290.c	msp430 compile fails: 1 error generated.
+pr87623.c	GNU attributes that change meaning
+pr88693.c	builtins
+pr88714.c	msp430 compile fails: 1 error generated.
+pr88739.c	width macros
+pr88904.c	inline assembly
+pr89195.c	dg directives
+pr89369.c	64-bit integers
+pr89434.c	64-bit integers
+pr89634.c	compiler-predefined type macros
+pr89826.c	64-bit integers
+pr90025.c	compiler-predefined type macros
+pr90311.c	64-bit integers
+pr90348.c	msp430 compile fails: 1 error generated.
+pr91137.c	64-bit integers
+pr91450-1.c	64-bit integers
+pr91450-2.c	64-bit integers
+pr91597.c	GNU attributes that change meaning
+pr91632.c	dg directives
+pr91635.c	builtins
+pr92140.c	msp430 compile fails: 1 error generated.
+pr92618.c	GNU attributes that change meaning
+pr92904.c	GNU attributes that change meaning
+pr93213.c	64-bit integers
+pr93249.c	builtins
+pr93402.c	64-bit integers
+pr93434.c	floating point or complex
+pr93494.c	64-bit integers
+pr93582.c	msp430 compile fails: 1 error generated.
+pr93744-1.c	msp430 compile fails: 1 error generated.
+pr93744-2.c	msp430 compile fails: 1 error generated.
+pr93744-3.c	msp430 compile fails: 1 error generated.
+pr93908.c	msp430 compile fails: 1 error generated.
+pr93945.c	builtins
+pr94130.c	builtins
+pr94134.c	msp430 compile fails: 1 error generated.
+pr94412.c	GNU attributes that change meaning
+pr94524-1.c	GNU attributes that change meaning
+pr94524-2.c	GNU attributes that change meaning
+pr94567.c	msp430 compile fails: 1 error generated.
+pr94591.c	GNU attributes that change meaning
+pr94724.c	msp430 compile fails: 1 error generated.
+pr94734.c	64-bit integers
+pr94809.c	64-bit integers
+pr95731.c	64-bit integers
+pr96549.c	msp430 compile fails: 1 error generated.
+pr97073.c	64-bit integers
+pr97325.c	64-bit integers
+pr97386-1.c	64-bit integers
+pr97386-2.c	64-bit integers
+pr97404.c	dg directives
+pr97421-1.c	dg directives
+pr97421-2.c	dg directives
+pr97421-3.c	dg directives
+pr97764.c	dg directives
+pr97836.c	msp430 compile fails: 1 error generated.
+pr97888-1.c	builtins
+pr97888-2.c	msp430 compile fails: 1 error generated.
+pr98304-2.c	includes ../../gcc.dg/pr98304-1.c
+pr98366.c	builtins
+pr98474.c	64-bit integers
+pr98681.c	msp430 compile fails: 1 error generated.
+pr98727.c	compiler-predefined type macros
+pr98736.c	msp430 compile fails: 1 error generated.
+pr98853-1.c	64-bit integers
+pr98853-2.c	64-bit integers
+pr99079.c	64-bit integers
+pr99751.c	msp430 compile fails: 1 error generated.
+printf-1.c	includes stdio.h
+printf-2.c	includes stdio.h
+printf-chk-1.c	includes stdio.h
+pushpop_macro.c	pragmas
+regstack-1.c	floating point or complex
+restrict-1.c	GNU keywords
+return-addr.c	compiler-predefined type macros
+scal-to-vec1.c	GNU attributes that change meaning
+scal-to-vec2.c	GNU attributes that change meaning
+scal-to-vec3.c	GNU attributes that change meaning
+shiftdi-2.c	64-bit integers
+shiftdi.c	64-bit integers
+signed1bitfield-1.c	msp430 compile fails: 1 error generated.
+simd-1.c	GNU attributes that change meaning
+simd-2.c	GNU attributes that change meaning
+simd-4.c	GNU attributes that change meaning
+simd-5.c	GNU attributes that change meaning
+simd-6.c	GNU attributes that change meaning
+split-path-1.c	includes stdio.h
+ssad-run.c	library functions
+stdarg-1.c	includes stdarg.h
+stdarg-2.c	includes stdarg.h
+stdarg-3.c	includes stdarg.h
+stdarg-4.c	includes stdarg.h
+stkalign.c	GNU attributes that change meaning
+strcmp-1.c	includes string.h
+strcpy-1.c	includes string.h
+strcpy-2.c	builtins
+strct-pack-1.c	GNU attributes that change meaning
+strct-pack-2.c	GNU attributes that change meaning
+strct-pack-3.c	GNU attributes that change meaning
+strct-pack-4.c	GNU attributes that change meaning
+strct-stdarg-1.c	includes stdarg.h
+strct-varg-1.c	includes stdarg.h
+string-opt-17.c	compiler-predefined type macros
+string-opt-18.c	compiler-predefined type macros
+string-opt-5.c	compiler-predefined type macros
+strlen-1.c	includes string.h
+strlen-2.c	compiler-predefined type macros
+strlen-3.c	compiler-predefined type macros
+strlen-4.c	compiler-predefined type macros
+strlen-5.c	compiler-predefined type macros
+strlen-6.c	64-bit integers
+strlen-7.c	64-bit integers
+strncmp-1.c	includes string.h
+struct-aliasing-1.c	floating point or complex
+struct-cpy-1.c	GNU attributes that change meaning
+struct-ret-1.c	includes stdio.h
+struct-ret-2.c	GNU attributes that change meaning
+subcmp-1.c	msp430 compile fails: 1 error generated.
+tstdi-1.c	64-bit integers
+unroll-1.c	dg directives
+usad-run.c	library functions
+user-printf.c	GNU attributes that change meaning
+usmul.c	dg directives
+va-arg-1.c	includes stdarg.h
+va-arg-10.c	includes stdarg.h
+va-arg-11.c	includes stdarg.h
+va-arg-12.c	includes stdarg.h
+va-arg-13.c	includes stdarg.h
+va-arg-14.c	includes stdarg.h
+va-arg-15.c	includes stdarg.h
+va-arg-16.c	includes stdarg.h
+va-arg-17.c	includes stdarg.h
+va-arg-18.c	includes stdarg.h
+va-arg-19.c	includes stdarg.h
+va-arg-2.c	includes stdarg.h
+va-arg-20.c	includes stdarg.h
+va-arg-21.c	GNU attributes that change meaning
+va-arg-22.c	includes stdarg.h
+va-arg-23.c	includes stdarg.h
+va-arg-24.c	includes stdarg.h
+va-arg-26.c	includes stdarg.h
+va-arg-4.c	includes stdarg.h
+va-arg-5.c	includes stdarg.h
+va-arg-6.c	includes stdarg.h
+va-arg-7.c	includes stdarg.h
+va-arg-8.c	includes stdarg.h
+va-arg-9.c	includes stdarg.h
+va-arg-pack-1.c	GNU attributes that change meaning
+va-arg-trap-1.c	includes stdarg.h
+vfprintf-1.c	includes stdio.h
+vfprintf-chk-1.c	includes stdio.h
+vla-dealloc-1.c	width macros
+vprintf-1.c	includes stdio.h
+vprintf-chk-1.c	includes stdio.h
+vrp-1.c	fails at 16-bit int (lli exit -6)
+vrp-2.c	fails at 16-bit int (lli exit -6)
+vrp-3.c	fails at 16-bit int (lli exit -6)
+vrp-5.c	dg directives
+vrp-6.c	includes limits.h
+wchar_t-1.c	compiler-predefined type macros
+widechar-1.c	wide characters
+widechar-2.c	includes stddef.h
+widechar-3.c	builtins
+zero-struct-1.c	empty structs (GNU)
+zero-struct-2.c	empty structs (GNU)
+zerolen-2.c	GNU attributes that change meaning
