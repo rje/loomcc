@@ -452,7 +452,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
     match (t.action, tool) {
         (Action::Preprocess, "clang") | (Action::Preprocess, "tcc") => {
             let (prog, mut args) = if tool == "clang" {
-                (need!(&tools.clang, "clang"), vec!["-E".to_string(), "-P".into(), "-std=c17".into(), "-fno-caret-diagnostics".into()])
+                (need!(&tools.clang, "clang"), vec!["-E".to_string(), "-P".into(), "-std=c17".into(), "-pedantic".into(), "-fno-caret-diagnostics".into()])
             } else {
                 (need!(&tools.tcc, "816-tcc"), vec!["-E".to_string()])
             };
@@ -461,8 +461,8 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             let mut out = exec::run(&prog, &args, dir, timeout(t, 30));
             rom::log_cmd(log, &out);
             // 816-tcc -E aborts (SIGABRT) while exiting after writing complete
-            // output; treat that as success when it printed no diagnostics.
-            if tool == "tcc" && out.code.is_none() && !out.timed_out && parse_diags(&out.stderr).is_empty() {
+            // output; treat that as success when it printed no errors.
+            if tool == "tcc" && out.code.is_none() && !out.timed_out && !parse_diags(&out.stderr).iter().any(|d| d.kind == DiagKind::Error) {
                 out.code = Some(0);
             }
             let mut p = check_frontend(t, &out, &file, false, tool);
@@ -477,7 +477,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
         }
         (Action::Syntax | Action::Compile, "clang16") | (Action::Syntax | Action::Compile, "clang") => {
             let prog = need!(&tools.clang, "clang");
-            let mut args = vec!["-std=c17".to_string(), "-fsyntax-only".into(), "-fno-caret-diagnostics".into()];
+            let mut args = vec!["-std=c17".to_string(), "-pedantic".into(), "-fsyntax-only".into(), "-fno-caret-diagnostics".into()];
             if tool == "clang16" {
                 args.push("--target=msp430-none-elf".into());
             }
