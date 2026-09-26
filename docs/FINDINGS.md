@@ -229,6 +229,25 @@ fold it (6.6p10 lets an implementation accept other forms), devkitsnes's own
 failure in T6 stage 1: the other 30 Loom and Cliffside units compile and
 assemble.
 
+### F19. A loop-carried variable assigned late loses its value (loomcc 65be77e, `ir` and `rom`)
+
+Test: `t4-exec/control/loop-carried-late-init.c` (and GCC torture
+`pr53465.c` through `external/fetched/gcc-wrapped`). A local first assigned
+inside a loop body (`prev = cur;`) and read on later iterations only, under
+a flag set in the same body (`if (seen && cur <= prev)`), must keep its value
+from the previous iteration. Both the interpreter and the ROM abort; host,
+host16 and the 816-tcc ROM pass. The declaration without an initialiser
+(`i16 prev;`) is probably treated as "undefined on every entry to the loop
+body" when building SSA, instead of a phi of the value from the back edge.
+
+### F20. Source files must be UTF-8 (loomcc 65be77e)
+
+GCC torture `20000227-1.c` has a raw 0xFF byte inside a string literal.
+loomcc stops with `stream did not contain valid UTF-8`. The source character
+set is implementation-defined, but 816-tcc and clang accept such bytes in
+literals (passing them through unchanged), and Latin-1 bytes in SNES text
+strings are plausible. Low priority.
+
 ### F15. Not yet supported (tracked, not bugs)
 
 `rom` mode rejects 32-bit multiply, divide and shift, and recursion

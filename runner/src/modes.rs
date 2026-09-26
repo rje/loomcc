@@ -183,16 +183,25 @@ pub fn execute(job: &Job, cfg: &Config) -> Outcome {
         run_loomcc(job, t, cfg, &work, &mut o.log)
     };
     // Expected failures.
+    // An --xfail-list entry without a mode covers every loomcc mode; one
+    // with a mode (`rom`, `ref:tcc-rom`, ...) covers just that mode.
+    let listed = cfg
+        .xfail_list
+        .iter()
+        .find(|(p, m, _)| {
+            let path_ok = p == &job.id || job.id.starts_with(&format!("{}/", p.trim_end_matches('/')));
+            let mode_ok = match m {
+                Some(m) => m == &job.mode,
+                None => !job.is_ref(),
+            };
+            path_ok && mode_ok
+        })
+        .map(|(_, _, r)| r.clone());
     let xfail_reason: Option<String> = if job.is_ref() {
         let tool = &job.mode[4..];
-        t.ref_diverges.iter().find(|(n, _)| n == tool).map(|(_, r)| r.clone())
+        t.ref_diverges.iter().find(|(n, _)| n == tool).map(|(_, r)| r.clone()).or(listed)
     } else {
-        t.xfail.clone().or_else(|| {
-            cfg.xfail_list
-                .iter()
-                .find(|(p, m, _)| (p == &job.id || job.id.starts_with(&format!("{}/", p.trim_end_matches('/')))) && m.as_ref().map_or(true, |m| m == &job.mode))
-                .map(|(_, _, r)| r.clone())
-        })
+        t.xfail.clone().or(listed)
     };
     match (res, xfail_reason) {
         (Res::Pass, None) => {}

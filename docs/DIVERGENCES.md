@@ -98,6 +98,34 @@ diverges widely. Two classes matter differently:
 | `tcc-lex-lax` | unterminated string/character literals pass through `-E` silently |
 | `tcc-no-paste-diag` | an invalid `##` result (`+ ## -`) is not diagnosed |
 
+## 816-tcc as a compiler (T2-T5)
+
+The compile and execute references use 816-tcc's front end and code
+generator. Codes:
+
+| code | what | affects |
+|---|---|---|
+| `tcc-long16` | `long` is 16 bits (loomcc: 32); `long long` is 32 | every test using `long`; the harness maps `i32` to `long long` for 816-tcc |
+| `tcc-fold-host-int` | the constant folder does `unsigned int` arithmetic in 32 bits: `-1 + 0u != 65535u`, `-1 / 2u` folds to 0x7fffffff, `(i16)(u16)65535u` folds to 65535, while the same operations at run time are 16-bit | **real code**: a constant expression and the same expression on variables can disagree in 816-tcc builds |
+| `tcc-deref-call-spill` | `(*f)(a, b)` through a function pointer local: after pushing the arguments 816-tcc stores `f` into its stack slot with an S-relative offset that ignores the pushes, overwriting an argument, then calls through a garbage bank | **real code**: calls written `(*fp)(...)` can crash 816-tcc builds (plain `fp(...)` is fine) |
+| `tcc-no-llshift` | variable 32-bit shifts call `tcc__ashldi3`, which PVSnesLib's libtcc does not provide (link error) | 32-bit shifts by a variable |
+| `tcc-crash` | 816-tcc crashes on `sizeof (x += 1)` | |
+| `tcc-no-for-decl` | no declarations in `for (...)` (C99) | tests keep loop counters at block scope for 816-tcc's sake |
+| `tcc-no-array-static`, `tcc-no-static-assert`, `tcc-no-c11-align`, `tcc-no-noreturn`, `tcc-no-generic`, `tcc-empty-init` | missing C99/C11 features, or GNU `= {}` accepted | |
+| `tcc-tag-scope` | a struct tag redeclared in an inner block is rejected as a redefinition | |
+| `tcc-lax-decl`, `tcc-lax-switch`, `tcc-lax-types`, `tcc-lax-init`, `tcc-lax-register`, `tcc-lax-sizeof`, `tcc-lax-return`, `tcc-zero-array`, `tcc-void-arith`, `tcc-implicit-int`, `tcc-implicit-function`, `tcc-no-overflow-diag` | constraint violations 816-tcc accepts silently (duplicate members, conflicting types, duplicate `case`, void objects, `&register`, `sizeof` of a bit-field or function, `return;` in an int function, `int a[0]`, `void *` arithmetic, implicit int and implicit declarations, constant overflow) | diagnostics only |
+
+GCC torture execute tests that 816-tcc gets wrong are listed, with reasons,
+in `external/gcc-torture-execute.tcc-xfail` (an `--xfail-list` for the
+`tcc-rom` reference): 21 of the 450 selected tests, several of them because
+816-tcc's `long` is 16 bits.
+
+clang with `--target=msp430-none-elf` (`clang16`, `host16`) differs from the
+SNES target in pointer size (`clang16-ptr16`: 2 bytes, not 4) and in plain
+`char` signedness (pinned with `-fsigned-char`). The LLVM interpreter under
+`host16` ignores `byval` (`lli-byval`: a callee's writes to a struct
+parameter reach the caller's object).
+
 ## Execute references
 
 `host`, `host16` and `tcc-rom` divergences are declared per test; the
