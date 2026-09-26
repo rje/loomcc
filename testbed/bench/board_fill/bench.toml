@@ -1,0 +1,11 @@
+name = "board_fill"
+kind = "pair"
+description = "Board wipe (loom_board_clear): every cell becomes 0, its tilemap words are rewritten and the surface's dirty spans widened; the kept hash goes stale. A full 4x2 box and a full 2x1 board of 2x2-tile cells."
+unit_labels = ["loom_pvs_board_fill"]
+helper_labels = ["tcc__mul"]
+
+[provenance]
+loom_commit = "cb5a47f"
+c_source = "runtime/src/board.c:292-308 at cb5a47f^ (loom_board_clear: loom_board_touch 38-46, the cell loop, loom_board_redraw_rows 169-212 over every row) with loom_board_cell 163-167 and runtime/src/surface.c:169-202,318-343 at cb5a47f^ (loom_surface_dirty, _cell, _row, _mark), taking the LoomBoardPaint record and the kind as an argument"
+asm_source = "runtime/backends/pvsneslib/src/board.asm:loom_pvs_board_fill (+ loom_pvs_board_draw, _dirty, _load, _mul) at cb5a47f (unchanged at HEAD)"
+notes = "Genuine difference: the C redraws and marks every row whole, the asm redraws and marks only cells whose kind changes (nothing at all for a board already clear). They agree only when every cell changes or its row's span is already whole, so both boards start full. The scene checks board.c makes first (board handle, the surface's row bound) are left out of both. .BASE LOOM_ROM_BASE is written .BASE $80."
