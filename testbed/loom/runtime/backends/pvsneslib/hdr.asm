@@ -1,0 +1,45 @@
+; Loom-owned deterministic PVSnesLib conformance header.
+; LoROM, SlowROM, NTSC, 8 x 32 KiB banks.
+; No .BASE: code and low RAM both sit in bank $00.
+.DEFINE LOOM_ROM_BASE $00
+
+.MEMORYMAP
+  SLOTSIZE $8000
+  DEFAULTSLOT 0
+  SLOT 0 $8000
+  SLOT 1 $0 $2000
+  SLOT 2 $2000 $E000
+  SLOT 3 $0 $10000
+.ENDME
+
+.ROMBANKSIZE $8000
+.ROMBANKS 8
+
+.SNESHEADER
+  ID "SNES"
+  NAME "LOOM CONFORMANCE     "
+  SLOWROM
+  LOROM
+  CARTRIDGETYPE $00
+  ROMSIZE $08
+  SRAMSIZE $00
+  COUNTRY $01
+  LICENSEECODE $00
+  VERSION $00
+.ENDSNES
+
+.SNESNATIVEVECTOR
+  COP EmptyHandler
+  BRK EmptyHandler
+  ABORT EmptyHandler
+  NMI VBlank
+  IRQ EmptyHandler
+.ENDNATIVEVECTOR
+
+.SNESEMUVECTOR
+  COP EmptyHandler
+  ABORT EmptyHandler
+  NMI EmptyHandler
+  RESET tcc__start
+  IRQBRK EmptyHandler
+.ENDEMUVECTOR

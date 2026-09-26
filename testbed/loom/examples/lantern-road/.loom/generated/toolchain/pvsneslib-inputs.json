@@ -1,0 +1,1648 @@
+{
+  "build_profiles": [
+    "debug",
+    "release"
+  ],
+  "cartridge": {
+    "mapping": "lorom",
+    "region": "ntsc",
+    "rom_size_kib": 512,
+    "speed": "fastrom",
+    "sram_size_kib": 2,
+    "ui_background": "bg3"
+  },
+  "inputs": {
+    "authored_source_roots": [
+      "Code/Portable",
+      "Code/Target/pvsneslib"
+    ],
+    "generated_assembly_includes": [
+      ".loom/generated/target/pvsneslib/hdr.asm"
+    ],
+    "generated_assembly_sources": [
+      ".loom/generated/target/pvsneslib/assets.asm"
+    ],
+    "generated_c_sources": [
+      ".loom/generated/src/audio_data.c",
+      ".loom/generated/src/ui_data.c",
+      ".loom/generated/src/mode1_data.c",
+      ".loom/generated/src/runtime_schedule.c",
+      ".loom/generated/src/user_hooks.c",
+      ".loom/generated/target/pvsneslib/asset_table.c",
+      ".loom/generated/target/pvsneslib/audio_table.c",
+      ".loom/generated/target/pvsneslib/raster_table.c",
+      ".loom/generated/src/variables_data.c"
+    ],
+    "generated_include_roots": [
+      ".loom/generated/include"
+    ],
+    "loom_install_debug_sources": [
+      "runtime/src/replay-passthrough.c"
+    ],
+    "loom_install_include_roots": [
+      "runtime/include"
+    ],
+    "loom_install_portable_sources": [
+      "runtime/src/actor.c",
+      "runtime/src/adventure.c",
+      "runtime/src/animation.c",
+      "runtime/src/audio.c",
+      "runtime/src/camera.c",
+      "runtime/src/combat.c",
+      "runtime/src/frame-build.c",
+      "runtime/src/frame-shell.c",
+      "runtime/src/game.c",
+      "runtime/src/mode1.c",
+      "runtime/src/movement.c",
+      "runtime/src/save.c",
+      "runtime/src/scene.c",
+      "runtime/src/ui.c",
+      "runtime/src/variables.c"
+    ],
+    "loom_install_target_include_roots": [
+      "runtime/backends/pvsneslib/include"
+    ],
+    "loom_install_target_sources": [
+      "runtime/backends/pvsneslib/src/board.asm",
+      "runtime/backends/pvsneslib/src/body.asm",
+      "runtime/backends/pvsneslib/src/frame-transaction.c",
+      "runtime/backends/pvsneslib/src/movement.asm",
+      "runtime/backends/pvsneslib/src/oam.asm",
+      "runtime/backends/pvsneslib/src/runtime-adapter.c",
+      "runtime/backends/pvsneslib/src/scene.asm",
+      "runtime/backends/pvsneslib/src/startup.c",
+      "runtime/backends/pvsneslib/src/vblank.asm"
+    ],
+    "normalized_assets": [
+      {
+        "asset_id": "0000000000006f1c18c95a41e1ffbbb8",
+        "asset_segment_handles": [],
+        "byte_length": 187,
+        "disposition": "generated-catalog-input",
+        "owner_id": "d45f3214b19d52a167f1af73c80d39d4",
+        "path": ".loom/cache/assets/0000000000006f1c18c95a41e1ffbbb8/fcf91e6d62694f42fb25ae5d58672cfff629c258d301ef1e01d22a086d8248e8/normalized/audio-cues.json",
+        "path_base": "project",
+        "role": "audio-cue-table",
+        "sha256": "85ac3f7106dc89aaef4de975a638f2881be93518e722d7e234fd70f135815301"
+      },
+      {
+        "asset_id": "0000000000006f1c18c95a41e1ffbbb8",
+        "asset_segment_handles": [],
+        "byte_length": 2014,
+        "disposition": "review-metadata",
+        "owner_id": "d45f3214b19d52a167f1af73c80d39d4",
+        "path": ".loom/cache/assets/0000000000006f1c18c95a41e1ffbbb8/fcf91e6d62694f42fb25ae5d58672cfff629c258d301ef1e01d22a086d8248e8/normalized/audio-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "40428fa7dc67837ead3aae040b084fadc293b03ffcd403e60865370d6edc0633"
+      },
+      {
+        "asset_id": "0000000000006f1c18c95a41e1ffbbb8",
+        "asset_segment_handles": [
+          0
+        ],
+        "byte_length": 2313,
+        "disposition": "rom-asset",
+        "owner_id": "d45f3214b19d52a167f1af73c80d39d4",
+        "path": ".loom/cache/assets/0000000000006f1c18c95a41e1ffbbb8/fcf91e6d62694f42fb25ae5d58672cfff629c258d301ef1e01d22a086d8248e8/normalized/effect.brr",
+        "path_base": "project",
+        "role": "sound-effect-brr",
+        "sha256": "145dbca36f44b877cd4712402e43f54b33fd34e07d2cbb897770ca409a05a2d6"
+      },
+      {
+        "asset_id": "0000000000006f1c18c9da3d4f459a30",
+        "asset_segment_handles": [],
+        "byte_length": 185,
+        "disposition": "generated-catalog-input",
+        "owner_id": "7c0ef0dc379c7549ae7102b4bd92c762",
+        "path": ".loom/cache/assets/0000000000006f1c18c9da3d4f459a30/daa67e24d052c3ff87706c1d25fda7b69bd3055093bf0d95a8cbf165fc04dd92/normalized/audio-cues.json",
+        "path_base": "project",
+        "role": "audio-cue-table",
+        "sha256": "84d087a2c18a8574597bfd2ff9d54dd72ed4045d55c0c2cd0fc3ad0b051c0055"
+      },
+      {
+        "asset_id": "0000000000006f1c18c9da3d4f459a30",
+        "asset_segment_handles": [],
+        "byte_length": 2315,
+        "disposition": "review-metadata",
+        "owner_id": "7c0ef0dc379c7549ae7102b4bd92c762",
+        "path": ".loom/cache/assets/0000000000006f1c18c9da3d4f459a30/daa67e24d052c3ff87706c1d25fda7b69bd3055093bf0d95a8cbf165fc04dd92/normalized/audio-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "9430609136e3bfbae892af5ed0dde3b79901807eb18bd3a43abc32fc0c6bafd4"
+      },
+      {
+        "asset_id": "0000000000006f1c18c9da3d4f459a30",
+        "asset_segment_handles": [],
+        "byte_length": 319,
+        "disposition": "backend-source",
+        "owner_id": "7c0ef0dc379c7549ae7102b4bd92c762",
+        "path": ".loom/cache/assets/0000000000006f1c18c9da3d4f459a30/daa67e24d052c3ff87706c1d25fda7b69bd3055093bf0d95a8cbf165fc04dd92/normalized/soundbank.asm",
+        "path_base": "project",
+        "role": "backend-assembly",
+        "sha256": "a5e0dfeef59eb29999b445023bf54824356ab9145fda3ded0db7146cb6df4170"
+      },
+      {
+        "asset_id": "0000000000006f1c18c9da3d4f459a30",
+        "asset_segment_handles": [
+          1
+        ],
+        "byte_length": 2654,
+        "disposition": "rom-asset",
+        "owner_id": "7c0ef0dc379c7549ae7102b4bd92c762",
+        "path": ".loom/cache/assets/0000000000006f1c18c9da3d4f459a30/daa67e24d052c3ff87706c1d25fda7b69bd3055093bf0d95a8cbf165fc04dd92/normalized/soundbank.bnk",
+        "path_base": "project",
+        "role": "music-soundbank",
+        "sha256": "26031aa085f5a9a614ad02205db8f6ac8cf5dc99dd1a404649ee1d1a36ae3926"
+      },
+      {
+        "asset_id": "0000000000006f1c18c9da3d4f459a30",
+        "asset_segment_handles": [],
+        "byte_length": 230,
+        "disposition": "backend-source",
+        "owner_id": "7c0ef0dc379c7549ae7102b4bd92c762",
+        "path": ".loom/cache/assets/0000000000006f1c18c9da3d4f459a30/daa67e24d052c3ff87706c1d25fda7b69bd3055093bf0d95a8cbf165fc04dd92/normalized/soundbank.h",
+        "path_base": "project",
+        "role": "backend-header",
+        "sha256": "30da988b791f8f7455ecc44491ae0863b5e86b717c2e3a1e46a2c5effddc650b"
+      },
+      {
+        "asset_id": "0000000000006f1c18ca5a34af28c700",
+        "asset_segment_handles": [],
+        "byte_length": 2749,
+        "disposition": "generated-catalog-input",
+        "owner_id": "0000000000006f1c18ca5a34af28c700",
+        "path": ".loom/cache/assets/0000000000006f1c18ca5a34af28c700/1cb1ec9dc989ac092583a2edfbed4f300fa73594aa9c6a7902c6fece96d8938c/normalized/animations.json",
+        "path_base": "project",
+        "role": "animation-table",
+        "sha256": "8c31d16a9f6e7b89cb08dbf18a4ca6c0dd49016181e382a3a0f3707c4524a679"
+      },
+      {
+        "asset_id": "0000000000006f1c18ca5a34af28c700",
+        "asset_segment_handles": [
+          2
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000006f1c18ca5a34af28c700",
+        "path": ".loom/cache/assets/0000000000006f1c18ca5a34af28c700/1cb1ec9dc989ac092583a2edfbed4f300fa73594aa9c6a7902c6fece96d8938c/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "9f5381fee8047908195727a1bcb1c8cb14f6cbf6bc64c100da451169b25dceb5"
+      },
+      {
+        "asset_id": "0000000000006f1c18ca5a34af28c700",
+        "asset_segment_handles": [],
+        "byte_length": 9564,
+        "disposition": "generated-catalog-input",
+        "owner_id": "0000000000006f1c18ca5a34af28c700",
+        "path": ".loom/cache/assets/0000000000006f1c18ca5a34af28c700/1cb1ec9dc989ac092583a2edfbed4f300fa73594aa9c6a7902c6fece96d8938c/normalized/sprite-frames.json",
+        "path_base": "project",
+        "role": "sprite-frame-table",
+        "sha256": "e64074ae13b2c340f37e66f46eb7b30c885d7fd8952025f98cf0d3f5c21495a2"
+      },
+      {
+        "asset_id": "0000000000006f1c18ca5a34af28c700",
+        "asset_segment_handles": [
+          3
+        ],
+        "byte_length": 608,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000006f1c18ca5a34af28c700",
+        "path": ".loom/cache/assets/0000000000006f1c18ca5a34af28c700/1cb1ec9dc989ac092583a2edfbed4f300fa73594aa9c6a7902c6fece96d8938c/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "49221df539aca0584ee531b3d90b398b687e2992ecc14da772798fac8a3908cc"
+      },
+      {
+        "asset_id": "0000000000006f1c18ca5a34af28c700",
+        "asset_segment_handles": [],
+        "byte_length": 4731,
+        "disposition": "review-metadata",
+        "owner_id": "0000000000006f1c18ca5a34af28c700",
+        "path": ".loom/cache/assets/0000000000006f1c18ca5a34af28c700/1cb1ec9dc989ac092583a2edfbed4f300fa73594aa9c6a7902c6fece96d8938c/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "dd44bc44ccc1d8b279b553c6f961329c711e6ea1d3b4579caaff95589acb1cb2"
+      },
+      {
+        "asset_id": "0000000000006f1c18cada2d25152ee8",
+        "asset_segment_handles": [
+          4
+        ],
+        "byte_length": 96,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000006f1c18cada2d25152ee8",
+        "path": ".loom/cache/assets/0000000000006f1c18cada2d25152ee8/33e26b061814f39c69d952b7d9d643aa1e7907003fb38ac53a12703158ed7ad9/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "0ed7923278299ed4094c13821b291d7288f35550930d18f4776f48447c426b16"
+      },
+      {
+        "asset_id": "0000000000006f1c18cada2d25152ee8",
+        "asset_segment_handles": [
+          5
+        ],
+        "byte_length": 1984,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000006f1c18cada2d25152ee8",
+        "path": ".loom/cache/assets/0000000000006f1c18cada2d25152ee8/33e26b061814f39c69d952b7d9d643aa1e7907003fb38ac53a12703158ed7ad9/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "21c7277766dff57c94ac48f640f7f767a29fc5ae093a50a0045f3cb81e48871f"
+      },
+      {
+        "asset_id": "0000000000006f1c18cada2d25152ee8",
+        "asset_segment_handles": [],
+        "byte_length": 17355,
+        "disposition": "review-metadata",
+        "owner_id": "0000000000006f1c18cada2d25152ee8",
+        "path": ".loom/cache/assets/0000000000006f1c18cada2d25152ee8/33e26b061814f39c69d952b7d9d643aa1e7907003fb38ac53a12703158ed7ad9/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "cb054a15c07613dff30942bee3d3718bd54bc4f2d894a4583e8b36be46b5781d"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e90",
+        "asset_segment_handles": [],
+        "byte_length": 1023,
+        "disposition": "generated-catalog-input",
+        "owner_id": "0000000000013ae518cf78b08fc07e90",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e90/f40aaf70ddcc5511697c0ee1a9422e6e06143475f756d35b4e7908c9b8b0f10f/normalized/animations.json",
+        "path_base": "project",
+        "role": "animation-table",
+        "sha256": "2406432c6035fa8b6d2b1fd12a42b6b20a4bffeb291fa406ad8cde0f1888cfcd"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e90",
+        "asset_segment_handles": [
+          6
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000013ae518cf78b08fc07e90",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e90/f40aaf70ddcc5511697c0ee1a9422e6e06143475f756d35b4e7908c9b8b0f10f/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "328fa7af2d90707044126b399f59b49b929ab89d1a4967d8678fdac368d019a8"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e90",
+        "asset_segment_handles": [],
+        "byte_length": 9596,
+        "disposition": "generated-catalog-input",
+        "owner_id": "0000000000013ae518cf78b08fc07e90",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e90/f40aaf70ddcc5511697c0ee1a9422e6e06143475f756d35b4e7908c9b8b0f10f/normalized/sprite-frames.json",
+        "path_base": "project",
+        "role": "sprite-frame-table",
+        "sha256": "9199b8915db8c42c0c6b353f2c51abf56acc8e1657eaff14b00909e11ed6c9f1"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e90",
+        "asset_segment_handles": [
+          7
+        ],
+        "byte_length": 1024,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000013ae518cf78b08fc07e90",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e90/f40aaf70ddcc5511697c0ee1a9422e6e06143475f756d35b4e7908c9b8b0f10f/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "04638eaa5e68608c5d81ee736289cfe9e5a445b29ceb3c004bcc9b2f80662bd8"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e90",
+        "asset_segment_handles": [],
+        "byte_length": 4797,
+        "disposition": "review-metadata",
+        "owner_id": "0000000000013ae518cf78b08fc07e90",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e90/f40aaf70ddcc5511697c0ee1a9422e6e06143475f756d35b4e7908c9b8b0f10f/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "351423243c7c5f9facbb429b5bc9b30065c93bdfc3b1013d0ad951db95d14d0a"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e91",
+        "asset_segment_handles": [],
+        "byte_length": 1023,
+        "disposition": "generated-catalog-input",
+        "owner_id": "0000000000013ae518cf78b08fc07e91",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e91/cd48b5c6fed72cb135b582a34cb2cc153654647b8f164e5cd4de38a1803d97c8/normalized/animations.json",
+        "path_base": "project",
+        "role": "animation-table",
+        "sha256": "53ba7c0ec484ab33cdb1c01ecb207992861b6d19cb4c65afe46d09dc692e37fd"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e91",
+        "asset_segment_handles": [
+          8
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000013ae518cf78b08fc07e91",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e91/cd48b5c6fed72cb135b582a34cb2cc153654647b8f164e5cd4de38a1803d97c8/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "050581d2b141ff0284d6e46e7eb4adfb09807f2d3ae334014de535d8a9fad48e"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e91",
+        "asset_segment_handles": [],
+        "byte_length": 9596,
+        "disposition": "generated-catalog-input",
+        "owner_id": "0000000000013ae518cf78b08fc07e91",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e91/cd48b5c6fed72cb135b582a34cb2cc153654647b8f164e5cd4de38a1803d97c8/normalized/sprite-frames.json",
+        "path_base": "project",
+        "role": "sprite-frame-table",
+        "sha256": "133aa3890b8778be4e9457aa212c99d7d63a6782d05c8eee3d15291cc68f18cb"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e91",
+        "asset_segment_handles": [
+          9
+        ],
+        "byte_length": 1024,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000013ae518cf78b08fc07e91",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e91/cd48b5c6fed72cb135b582a34cb2cc153654647b8f164e5cd4de38a1803d97c8/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "caee808dd79454edb1fcba3098afe6158d6220036c0ed5a8683f130d5ded4256"
+      },
+      {
+        "asset_id": "0000000000013ae518cf78b08fc07e91",
+        "asset_segment_handles": [],
+        "byte_length": 4621,
+        "disposition": "review-metadata",
+        "owner_id": "0000000000013ae518cf78b08fc07e91",
+        "path": ".loom/cache/assets/0000000000013ae518cf78b08fc07e91/cd48b5c6fed72cb135b582a34cb2cc153654647b8f164e5cd4de38a1803d97c8/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "bf8216ac27c04f8f060114e08566c7e31778f9df2bc8fe26721c4c4bc5b3f24b"
+      },
+      {
+        "asset_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "asset_segment_handles": [],
+        "byte_length": 281,
+        "disposition": "generated-catalog-input",
+        "owner_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "path": ".loom/cache/assets/b3c9f21d47e05a86c1d4380fa5216c70/d47b49d8e6aaa380373052b24ebeddbab6935cc1ccc94af6bd04d4bf469620f5/normalized/animations.json",
+        "path_base": "project",
+        "role": "animation-table",
+        "sha256": "a607a0ce7b36a2a8e72a1dd7c6f77c6d2985195d5f8ea24836f9fecb64af1cc7"
+      },
+      {
+        "asset_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "asset_segment_handles": [
+          10
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "path": ".loom/cache/assets/b3c9f21d47e05a86c1d4380fa5216c70/d47b49d8e6aaa380373052b24ebeddbab6935cc1ccc94af6bd04d4bf469620f5/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "3c1b327d8944dda1e2b76e07b9e365dc23684eb4750c1b1a06f936cd663fb9e6"
+      },
+      {
+        "asset_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "asset_segment_handles": [],
+        "byte_length": 7732,
+        "disposition": "generated-catalog-input",
+        "owner_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "path": ".loom/cache/assets/b3c9f21d47e05a86c1d4380fa5216c70/d47b49d8e6aaa380373052b24ebeddbab6935cc1ccc94af6bd04d4bf469620f5/normalized/sprite-frames.json",
+        "path_base": "project",
+        "role": "sprite-frame-table",
+        "sha256": "cd4b047295b1debad23b3c901230074c32f95ff759efef98f8df1612a32d552c"
+      },
+      {
+        "asset_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "asset_segment_handles": [
+          11
+        ],
+        "byte_length": 672,
+        "disposition": "rom-asset",
+        "owner_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "path": ".loom/cache/assets/b3c9f21d47e05a86c1d4380fa5216c70/d47b49d8e6aaa380373052b24ebeddbab6935cc1ccc94af6bd04d4bf469620f5/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "594b6659f278ed49a521cf12fec88fd59341a87d171377527e09f2efc5afaabb"
+      },
+      {
+        "asset_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "asset_segment_handles": [],
+        "byte_length": 3921,
+        "disposition": "review-metadata",
+        "owner_id": "b3c9f21d47e05a86c1d4380fa5216c70",
+        "path": ".loom/cache/assets/b3c9f21d47e05a86c1d4380fa5216c70/d47b49d8e6aaa380373052b24ebeddbab6935cc1ccc94af6bd04d4bf469620f5/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "f30121bf8efb94e1b8beb31ee64816706eb5d1d27c5dffdf085e5df4131ab519"
+      },
+      {
+        "asset_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "asset_segment_handles": [],
+        "byte_length": 281,
+        "disposition": "generated-catalog-input",
+        "owner_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "path": ".loom/cache/assets/c8d1a94b62e0f37a5b1049ee7d3f0820/3931e29210d11fd9a67e944e3c7eae72e449a80bac448552e741877629605508/normalized/animations.json",
+        "path_base": "project",
+        "role": "animation-table",
+        "sha256": "1c0df28c319aed8a15d9f752ec98e59b92e8490fb16b1171b88dc9b93e56ef46"
+      },
+      {
+        "asset_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "asset_segment_handles": [
+          12
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "path": ".loom/cache/assets/c8d1a94b62e0f37a5b1049ee7d3f0820/3931e29210d11fd9a67e944e3c7eae72e449a80bac448552e741877629605508/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "0d7e0c2b12c78338cfb80563cea726ae0b0eed37874cb5bb44dba99aac7f399d"
+      },
+      {
+        "asset_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "asset_segment_handles": [],
+        "byte_length": 610,
+        "disposition": "generated-catalog-input",
+        "owner_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "path": ".loom/cache/assets/c8d1a94b62e0f37a5b1049ee7d3f0820/3931e29210d11fd9a67e944e3c7eae72e449a80bac448552e741877629605508/normalized/sprite-frames.json",
+        "path_base": "project",
+        "role": "sprite-frame-table",
+        "sha256": "3d85e753281f529e1a681239a730da577e77df809d6894685b5093e1624ed00e"
+      },
+      {
+        "asset_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "asset_segment_handles": [
+          13
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "path": ".loom/cache/assets/c8d1a94b62e0f37a5b1049ee7d3f0820/3931e29210d11fd9a67e944e3c7eae72e449a80bac448552e741877629605508/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "8ac9bd7412d54e6e4e9676b42e7d8815af7d71e19ed784e071d5b21e2733169b"
+      },
+      {
+        "asset_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "asset_segment_handles": [],
+        "byte_length": 1640,
+        "disposition": "review-metadata",
+        "owner_id": "c8d1a94b62e0f37a5b1049ee7d3f0820",
+        "path": ".loom/cache/assets/c8d1a94b62e0f37a5b1049ee7d3f0820/3931e29210d11fd9a67e944e3c7eae72e449a80bac448552e741877629605508/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "2539d71957a42084c0f1e21b9975f912fe49168a92b144c44a3f5d61168a3dfa"
+      }
+    ]
+  },
+  "outputs": {
+    "debug_root": "Build/Debug",
+    "path_base": "project",
+    "release_root": "Build/Release",
+    "rom_extension": "sfc"
+  },
+  "planning": {
+    "asset_segment_count": 66,
+    "capability_id": "pvsneslib-4-6-0-conformance",
+    "frame_path": ".loom/generated/plan/frame-plan.json",
+    "frame_sha256": "714a06e2bdb780b72cf82f1f6680d9eab4ebe6acd8635276f8242579651ece26",
+    "graphics_path": ".loom/generated/plan/graphics-plan.json",
+    "graphics_sha256": "32bea7331d1161e12d54d878724e93ffd51af2cb4e7b5de385d3e0ddae3ade95",
+    "memory_path": ".loom/generated/plan/memory-plan.json",
+    "memory_sha256": "eb6a82e61166dac24874794acfbd04511d6d443ab9d080cc3c4b90692c85200d",
+    "path": ".loom/generated/plan/project-plan.json",
+    "path_base": "project",
+    "rom_section_count": 70,
+    "sha256": "26562f237320f6f1c2d07f19b14805e27cb4eebfde40f39554ed4ade48670ada",
+    "state": "complete",
+    "ui_path": ".loom/generated/plan/ui-plan.json",
+    "ui_sha256": "be7f5a605a163b0c1e514a1acff109323c1a1a16c83ac20384d808e3bbd4042c"
+  },
+  "project": {
+    "id": "0000000000006a0518cf599e2bfff0b0",
+    "name": "Lantern Road"
+  },
+  "requested_runtime_modules": [
+    {
+      "id": "frame-shell",
+      "version": "0.1.0"
+    },
+    {
+      "id": "input",
+      "version": "0.1.0"
+    },
+    {
+      "id": "mode1",
+      "version": "0.1.0"
+    },
+    {
+      "id": "animation",
+      "version": "0.1.0"
+    },
+    {
+      "id": "collision",
+      "version": "0.1.0"
+    },
+    {
+      "id": "camera",
+      "version": "0.1.0"
+    },
+    {
+      "id": "triggers",
+      "version": "0.1.0"
+    },
+    {
+      "id": "adventure",
+      "version": "0.1.0"
+    },
+    {
+      "id": "audio",
+      "version": "0.1.0"
+    },
+    {
+      "id": "variables",
+      "version": "0.1.0"
+    },
+    {
+      "id": "game",
+      "version": "0.1.0"
+    },
+    {
+      "id": "actors",
+      "version": "0.1.0"
+    },
+    {
+      "id": "combat",
+      "version": "0.1.0"
+    }
+  ],
+  "schema_version": 1,
+  "selected_runtime_modules": [
+    {
+      "id": "frame-shell",
+      "uses": [
+        {
+          "reason": "every generated cartridge uses the deterministic frame shell"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "input",
+      "uses": [
+        {
+          "reason": "enabled player controller",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007a5418c85ca7f44fae00",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0903",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "enabled player controller",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007a5418cbdc9f4ad568b8",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0902",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "enabled player controller",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007a5418cf5c7d67491228",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0901",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "enabled player controller",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18db5ac852c755f0",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0900",
+            "pointer": "/entities/2/components/5"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "mode1",
+      "uses": [
+        {
+          "reason": "top-down-mode1 scene profile",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000006f1c18c0da4fd2d10328",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0903",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "top-down-mode1 scene profile",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000006f1c18c4da4c9c8c99b0",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0902",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "top-down-mode1 scene profile",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000006f1c18c8da486e7bf858",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0901",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d103",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d202",
+            "pointer": "/entities/5/components/1"
+          }
+        },
+        {
+          "reason": "top-down-mode1 scene profile",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18cf5a25afdf89e0",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0900",
+            "pointer": "/entities/2/components/5"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "animation",
+      "uses": [
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007a5418c75ca7f44fb5d0",
+            "pointer": "/entities/2/components/2"
+          }
+        },
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007a5418cadc9f4ad57470",
+            "pointer": "/entities/2/components/2"
+          }
+        },
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007a5418ce5c7d674921c8",
+            "pointer": "/entities/2/components/2"
+          }
+        },
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d102",
+            "pointer": "/entities/4/components/1"
+          }
+        },
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18da5ac852c761a8",
+            "pointer": "/entities/2/components/2"
+          }
+        },
+        {
+          "reason": "enabled animation player",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18d75acd99f14120",
+            "pointer": "/entities/4/components/1"
+          }
+        },
+        {
+          "reason": "scene activation on arrival (triggers module)"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "collision",
+      "uses": [
+        {
+          "reason": "authored collision layer",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000006f1c18dfda4fd2d12a38",
+            "pointer": "/layers/1"
+          }
+        },
+        {
+          "reason": "player movement uses collision resolution",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007a5418c85ca7f44fae00",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "enabled AABB collider",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007a5418c6dca7f44fbda0",
+            "pointer": "/entities/2/components/3"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e004",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0903",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "authored collision layer",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000006f1c18c3da4c9c8cb120",
+            "pointer": "/layers/2"
+          }
+        },
+        {
+          "reason": "player movement uses collision resolution",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007a5418cbdc9f4ad568b8",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "enabled AABB collider",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007a5418ca5c9f4ad57858",
+            "pointer": "/entities/2/components/3"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e003",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0902",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "authored collision layer",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000006f1c18c7da486e7c13b0",
+            "pointer": "/layers/2"
+          }
+        },
+        {
+          "reason": "player movement uses collision resolution",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007a5418cf5c7d67491228",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "enabled AABB collider",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007a5418cddc7d67493168",
+            "pointer": "/entities/2/components/3"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e002",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0901",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d103",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d202",
+            "pointer": "/entities/5/components/1"
+          }
+        },
+        {
+          "reason": "authored collision layer",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18ce5a25afdfb4d8",
+            "pointer": "/layers/1"
+          }
+        },
+        {
+          "reason": "player movement uses collision resolution",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18db5ac852c755f0",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "enabled AABB collider",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18d9dac852c76978",
+            "pointer": "/entities/2/components/3"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e001",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0900",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "enabled AABB collider",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "b3c9f21d47e05a86c1d4380fa5216c99",
+            "pointer": "/entities/10/components/1"
+          }
+        },
+        {
+          "reason": "scene activation on arrival (triggers module)"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "camera",
+      "uses": [
+        {
+          "reason": "enabled camera or scroll bounds",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007a5418c5dca85b2f7ec0",
+            "pointer": "/entities/3/components/0"
+          }
+        },
+        {
+          "reason": "enabled camera or scroll bounds",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007a5418c95c9fb2fb1f28",
+            "pointer": "/entities/3/components/0"
+          }
+        },
+        {
+          "reason": "enabled camera or scroll bounds",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007a5418ccdc80556f33e0",
+            "pointer": "/entities/3/components/0"
+          }
+        },
+        {
+          "reason": "enabled camera or scroll bounds",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18d8dacb53c45fb8",
+            "pointer": "/entities/3/components/0"
+          }
+        },
+        {
+          "reason": "scene activation on arrival (triggers module)"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "triggers",
+      "uses": [
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000006f1c18deda4fd2d141a8",
+            "pointer": "/entities/0/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000006f1c18ddda4fd2d14590",
+            "pointer": "/entities/1/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000012d5718c5764f78e18498",
+            "pointer": "/entities/4/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000012d5718c2764f82bd3700",
+            "pointer": "/entities/5/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000006f1c18c2da4c9c8cd448",
+            "pointer": "/entities/0/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000006f1c18c1da4c9c8cd830",
+            "pointer": "/entities/1/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000012d5718cb764f39b830f0",
+            "pointer": "/entities/4/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000012d5718c7f64f4cb8a1d0",
+            "pointer": "/entities/5/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000006f1c18c6da486e7c3ea8",
+            "pointer": "/entities/0/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000006f1c18c5da486e7c4290",
+            "pointer": "/entities/1/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18cd5a25afe04560",
+            "pointer": "/entities/0/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18cc5a25afe04948",
+            "pointer": "/entities/1/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000006f1c18d65ade923c1818",
+            "pointer": "/entities/5/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "000000000000b9ee18ce697973a6d038",
+            "pointer": "/entities/6/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "000000000000b9ee18cb69797fe13af0",
+            "pointer": "/entities/7/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000012d5718cdf64f00701920",
+            "pointer": "/entities/8/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000013e3618ce7938ac7df548",
+            "pointer": "/entities/9/components/1"
+          }
+        },
+        {
+          "reason": "authored world connection",
+          "source": {
+            "document": "Worlds/lantern-road-world.loom-world.json",
+            "owner": "0000000000006f1c18dcda5db5ec2108",
+            "pointer": "/connections/0"
+          }
+        },
+        {
+          "reason": "authored world connection",
+          "source": {
+            "document": "Worlds/lantern-road-world.loom-world.json",
+            "owner": "0000000000006f1c18dc5a651d08eec8",
+            "pointer": "/connections/1"
+          }
+        },
+        {
+          "reason": "authored world connection",
+          "source": {
+            "document": "Worlds/lantern-road-world.loom-world.json",
+            "owner": "0000000000006f1c18dbda80933b9990",
+            "pointer": "/connections/2"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "adventure",
+      "uses": [
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000012d5718c4f64f78e18498",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000012d5718c4764f78e18498",
+            "pointer": "/entities/4/components/3"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000012d5718c1f64f82bd3700",
+            "pointer": "/entities/5/components/2"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000012d5718c9764f441b7e30",
+            "pointer": "/entities/1/components/1"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000012d5718caf64f39b830f0",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000012d5718ca764f39b834d8",
+            "pointer": "/entities/4/components/3"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000012d5718c7764f4cb8a1d0",
+            "pointer": "/entities/5/components/2"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000012d5718cf764ef7d2bae8",
+            "pointer": "/entities/1/components/1"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "000000000000b9ee18cde97973a6d038",
+            "pointer": "/entities/6/components/2"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "000000000000b9ee18cd697973a6d038",
+            "pointer": "/entities/6/components/3"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "000000000000b9ee18cae9797fe13af0",
+            "pointer": "/entities/7/components/2"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "000000000000b9ee18ca69797fe13af0",
+            "pointer": "/entities/7/components/3"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000012d5718cd764f00701920",
+            "pointer": "/entities/8/components/2"
+          }
+        },
+        {
+          "reason": "enabled fixed-capacity adventure behavior",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000013e3618cdf938ac7df548",
+            "pointer": "/entities/9/components/2"
+          }
+        },
+        {
+          "reason": "variable backed by an adventure flag",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d3e8338113b220",
+            "pointer": "/variables/0"
+          }
+        },
+        {
+          "reason": "variable backed by an adventure flag",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d368338113b608",
+            "pointer": "/variables/1"
+          }
+        },
+        {
+          "reason": "variable backed by an adventure flag",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d0e8338113b9f0",
+            "pointer": "/variables/2"
+          }
+        },
+        {
+          "reason": "variable backed by an adventure flag",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d068338113b9f0",
+            "pointer": "/variables/3"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "audio",
+      "uses": [
+        {
+          "reason": "sound-effect asset",
+          "source": {
+            "document": "Assets/Audio/waypoint-chime.loom-asset.json",
+            "owner": "0000000000006f1c18c95a41e1ffbbb8",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "music asset",
+          "source": {
+            "document": "Assets/Audio/acceptance-theme.loom-asset.json",
+            "owner": "0000000000006f1c18c9da3d4f459a30",
+            "pointer": ""
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "variables",
+      "uses": [
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e004",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e003",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e002",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e001",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "declared game-state variable",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d3e8338113b220",
+            "pointer": "/variables/0"
+          }
+        },
+        {
+          "reason": "declared game-state variable",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d368338113b608",
+            "pointer": "/variables/1"
+          }
+        },
+        {
+          "reason": "declared game-state variable",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d0e8338113b9f0",
+            "pointer": "/variables/2"
+          }
+        },
+        {
+          "reason": "declared game-state variable",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d068338113b9f0",
+            "pointer": "/variables/3"
+          }
+        },
+        {
+          "reason": "declared game-state variable",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000b94218d0e8338113c001",
+            "pointer": "/variables/4"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "game",
+      "uses": [
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d103",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d202",
+            "pointer": "/entities/5/components/1"
+          }
+        },
+        {
+          "reason": "project requests the per-tick game update hook"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "actors",
+      "uses": [
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e004",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0903",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e003",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0902",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e002",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0901",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d103",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28d202",
+            "pointer": "/entities/5/components/1"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e001",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0900",
+            "pointer": "/entities/2/components/5"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "combat",
+      "uses": [
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e004",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-4.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0903",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e003",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-3.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0902",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e002",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-2.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0901",
+            "pointer": "/entities/2/components/5"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "0000000000007c1018cf5a34af28e001",
+            "pointer": "/entities/2/components/4"
+          }
+        },
+        {
+          "reason": "authored attack",
+          "source": {
+            "document": "Scenes/room-1.loom-room.json",
+            "owner": "c8d1a94b62e0f37a5b1049ee7d3f0900",
+            "pointer": "/entities/2/components/5"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    }
+  ],
+  "toolchain": {
+    "archive_sha256": "18654ba0761a7b8ba738807c622cd2b82395ee687ba60c85ccabc39feef0052d",
+    "backend": "pvsneslib",
+    "commit": "1fab4b2a9d31a265805be58bb45c5a46480ea211",
+    "port_contract": 1,
+    "version": "4.6.0"
+  },
+  "unused_requested_runtime_modules": []
+}

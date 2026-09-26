@@ -1,0 +1,513 @@
+{
+  "schema_version": 1,
+  "generator_version": "0.1.0",
+  "project_id": "0000000000006a0518cf599e2bfff0b0",
+  "project_manifest_sha256": "0a533d6b66075f739410c9110800957e7ff490d9fa18c516119d488380f62042",
+  "generation_ir_sha256": "0fc44a4167cd9f0094a2e4aa3b7256e5e2a7f1d88f0311cae2c39d20c50a6dba",
+  "files": [
+    {
+      "path": "README.md",
+      "role": "documentation",
+      "byte_length": 1450,
+      "sha256": "c6c17efcf9c652da65a13a72e5a220099513d145c24d81f133aa7e2757e849ae"
+    },
+    {
+      "path": "data/mode1/1931f8ab5e644a3e7fd2b2ab4fa49070.bg2.map",
+      "role": "generated",
+      "byte_length": 4096,
+      "sha256": "f05f2d82174c6a867db358c1716526f8e2b0a5b77588fc8b6ccf32c94963a102"
+    },
+    {
+      "path": "data/mode1/2a24793735005d3b8c5aa0a3aaf549fa.bg1.map",
+      "role": "generated",
+      "byte_length": 4096,
+      "sha256": "0a1d9f5f1fdc4db2faae928abcfac3da815dbd6394771b06b2c2e39ecc6aeb41"
+    },
+    {
+      "path": "data/mode1/317c109aeca600809c64678815696703.bg2.map",
+      "role": "generated",
+      "byte_length": 4096,
+      "sha256": "b638f43f03942a707b25a1c1ff7394e18a2dfac75765ed031e8ff7e0aab19ccf"
+    },
+    {
+      "path": "data/mode1/46cbe6d853499261cca83d826f3eb048.bg1.map",
+      "role": "generated",
+      "byte_length": 4096,
+      "sha256": "fdaf996387646117a9b491c79c23c1d93bfda82482347c1f88fc1781ca49f68c"
+    },
+    {
+      "path": "data/mode1/4f4bcb44f26f18d2ada20d9cde7a88cf.bg1.map",
+      "role": "generated",
+      "byte_length": 4096,
+      "sha256": "1a4bdc1d23c5f9977e9e5a41d1423a91bf8914bf3754ee433e5a769ec6cb4e97"
+    },
+    {
+      "path": "data/mode1/6bcb57ead8fcfc7697dc5248d44fddbd.bg1.map",
+      "role": "generated",
+      "byte_length": 4096,
+      "sha256": "21298f146b22ed054aba55b37d9a7a78ab05ab953c4f3c4fcc1fb3cefb7135f0"
+    },
+    {
+      "path": "data/mode1/7c66a26ded21f5ea0c1c08f0b55422cf.palette.bgr555",
+      "role": "generated",
+      "byte_length": 96,
+      "sha256": "956b11ce2fa1915f1e4caa501ad31aae62984e3cfd9c640927aa73d0c1b3de97"
+    },
+    {
+      "path": "data/mode1/8e21ebec1eb8fe93dbccffeeaf6c8aab.frames.4bpp",
+      "role": "generated",
+      "byte_length": 192,
+      "sha256": "85797ec2cb618129129ff01c6d8923ca06145a1c3310dd1a6fb843697ed2e60d"
+    },
+    {
+      "path": "data/mode1/90f40fd6982d7bd5262e8178733295e1.bg.4bpp",
+      "role": "generated",
+      "byte_length": 2016,
+      "sha256": "13217c1e550580112cced63c79e1e1efbc30459a67d8f7a695d7c71579c59d35"
+    },
+    {
+      "path": "data/mode1/98d0bdb6a01c551012677ce69fe70773.obj.4bpp",
+      "role": "generated",
+      "byte_length": 2944,
+      "sha256": "a857fe7cbfb7114e9d5c816e30911b544309245e5b19588ceaf880ee9cf2558f"
+    },
+    {
+      "path": "data/mode1/fde867c85b7c6882e0c2624671fa7e7e.obj.pal",
+      "role": "generated",
+      "byte_length": 128,
+      "sha256": "b2e7365dc4d76e2d7f4416679c79a150f2a7e6b9c00fba550c5ff265a9f5db8f"
+    },
+    {
+      "path": "data/ui/087e21e4a5b66b5c9bc701f7b5dd78d1.tiles.2bpp",
+      "role": "generated",
+      "byte_length": 1056,
+      "sha256": "6b0d9d45a9506ebf92dbcad55e44a4c5a5f6860f8b43c2bc4abd1b3ecb72d473"
+    },
+    {
+      "path": "data/ui/09136f2c3b61c3af2baf9d33efd8c02b.tiles.2bpp",
+      "role": "generated",
+      "byte_length": 1568,
+      "sha256": "6248b175c4741973daa5097141c852f58f1c20ecb839cf24affcc383240dba33"
+    },
+    {
+      "path": "data/ui/0da5e8eaae6a62a2fdb9b2e651c9974f.tiles.2bpp",
+      "role": "generated",
+      "byte_length": 1568,
+      "sha256": "6248b175c4741973daa5097141c852f58f1c20ecb839cf24affcc383240dba33"
+    },
+    {
+      "path": "data/ui/13335346dc96f6e7677d5414a29c53ba.bg2.map",
+      "role": "generated",
+      "byte_length": 1152,
+      "sha256": "04640e4c21cd61b1fd44281fe8a56d64057dbfa762033679840914f84ce5004d"
+    },
+    {
+      "path": "data/ui/23370ad15ad335cef6a611429e8f674a.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "7d17cbba26b473f65a25d850b87ff7f227c3de433f304cc7028e10f2800952a2"
+    },
+    {
+      "path": "data/ui/25f02ba4c48f3c76fbcc1d4655d4c97c.tiles.2bpp",
+      "role": "generated",
+      "byte_length": 1056,
+      "sha256": "6b0d9d45a9506ebf92dbcad55e44a4c5a5f6860f8b43c2bc4abd1b3ecb72d473"
+    },
+    {
+      "path": "data/ui/2a12360b4553327de2fb9f6f4ee0429b.palette.bgr555",
+      "role": "generated",
+      "byte_length": 16,
+      "sha256": "22d0e3c7f12389adf823b71fa464c8b0d5b6fcbf598c9afd7eb90c834c0977db"
+    },
+    {
+      "path": "data/ui/2c9758b8a873e30e608da04a601ff19b.bg2.map",
+      "role": "generated",
+      "byte_length": 320,
+      "sha256": "bf6dac816b8c23501ab3403f510951f700e4a1c624519a5d92bba3d7c9797c70"
+    },
+    {
+      "path": "data/ui/30fc7cedc77b74ac11baf768f97197f6.bg2.map",
+      "role": "generated",
+      "byte_length": 320,
+      "sha256": "a89a9dd2c6548f8709e606d5f4817fc880add4a9292b58435e5cf6284de7b36b"
+    },
+    {
+      "path": "data/ui/361e4aede68dfd956ed2b29e1b16b86f.palette.bgr555",
+      "role": "generated",
+      "byte_length": 64,
+      "sha256": "ead8e14e7bd4ad837bba14912a1b367b9dda474b5d4a3188f2b559160ec56f2e"
+    },
+    {
+      "path": "data/ui/3b27f434547a0f37fc250446caa6a21d.dialogue.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "117ea212b45cfcfaae5a660a56c01595d0b29c528f0a82729fa4999fbd49b885"
+    },
+    {
+      "path": "data/ui/425112d42f0da59af8352af72decca4f.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "5a6f83d1bc24472ba49416bc98c91357e7545d9ba1e01284df0fa8352db2de29"
+    },
+    {
+      "path": "data/ui/43507dbe743e52f328c0165d373528f2.dialogue.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "95c06d971a89403db09b24ce90cf7a326c782f13bd9820156c404f2e45bdbf74"
+    },
+    {
+      "path": "data/ui/45304abab5b4de6bb10fcc05ffd31c6b.bg2.map",
+      "role": "generated",
+      "byte_length": 320,
+      "sha256": "ccc8e571c5f7886cc4db33b5a230729c918c85925fe96e5c2e81bea5cac1baf2"
+    },
+    {
+      "path": "data/ui/4bcf117445b66b6306f3e5fcfacc9c52.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "7e7f0a79e0166a030aea750d3e2d7b86ab8bbee5e0c7c3325f794cc6d3fcf714"
+    },
+    {
+      "path": "data/ui/4dad38351cbe381c83b43a7148a938bf.palette.bgr555",
+      "role": "generated",
+      "byte_length": 16,
+      "sha256": "22d0e3c7f12389adf823b71fa464c8b0d5b6fcbf598c9afd7eb90c834c0977db"
+    },
+    {
+      "path": "data/ui/4ec1608003db309e3644c7d41f86ed8e.font.4bpp",
+      "role": "generated",
+      "byte_length": 2112,
+      "sha256": "8b2b105ffcf200673f9b07e87c814dc8ed2def78a3521f1a393d22a3b71e71b7"
+    },
+    {
+      "path": "data/ui/564188fef94bbfb6f42e9fb77db8acb1.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "f52537e420ec6e47d9a136d2849e34e9abfae03ed02cbfb05bd90dd05ecd6ed5"
+    },
+    {
+      "path": "data/ui/59e8278d9407ab57dba825225ebfaa10.palette.bgr555",
+      "role": "generated",
+      "byte_length": 16,
+      "sha256": "88f05ef40cdc06ff1978eaa9a4b7fb0fcbea5f351b7330826721842cfa5498c7"
+    },
+    {
+      "path": "data/ui/5c4f862b181590d53781e1e1ec2f8f60.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "bdc7a5a2096f488422c3c99be688c623e26918de833ce2e3d75a6a9888b5d8b5"
+    },
+    {
+      "path": "data/ui/66b245a5e0d9056ce112d9ae2e0b7ca8.patches.bg2",
+      "role": "generated",
+      "byte_length": 696,
+      "sha256": "a86b990a0bd9e681d72feff6a23ad31d0e9e39346160a533d3d2bf23452fdc52"
+    },
+    {
+      "path": "data/ui/67a15263de04ce6ca89baaf688ecaf26.bg2.map",
+      "role": "generated",
+      "byte_length": 256,
+      "sha256": "bef8494e4d57cabb9c5524aef06c5d5fb3c2850e071757c1093ce1a19c565929"
+    },
+    {
+      "path": "data/ui/6b6ed6e16f2e10de2ce5222e942016ab.palette.bgr555",
+      "role": "generated",
+      "byte_length": 16,
+      "sha256": "88f05ef40cdc06ff1978eaa9a4b7fb0fcbea5f351b7330826721842cfa5498c7"
+    },
+    {
+      "path": "data/ui/7f692e04fe06ff5244d40b49f3d9a564.tiles.2bpp",
+      "role": "generated",
+      "byte_length": 1056,
+      "sha256": "6b0d9d45a9506ebf92dbcad55e44a4c5a5f6860f8b43c2bc4abd1b3ecb72d473"
+    },
+    {
+      "path": "data/ui/83bd9bc305e6591b999bd4e1cab4adcb.patches.bg2",
+      "role": "generated",
+      "byte_length": 534,
+      "sha256": "068964c7d65795b2b99aa26aeae2974466577ffc78e5e20e6cbb06d8fd7b1e27"
+    },
+    {
+      "path": "data/ui/8739815e86bbd169dc2cfcb899a8b4ee.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "b45d3f0e0abaa7f682f29f780ea222cdd74dd93a2d4e74a0e93dd0380f281cb9"
+    },
+    {
+      "path": "data/ui/881f0957273c2f36123ebe1bc2b24f5b.dialogue.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "829f06caca5c3c8dd65ffbd648558b8cc030f2cd920f9f0d37e3c1d3073acea5"
+    },
+    {
+      "path": "data/ui/92048a709b0a1e5309843d798fac14e4.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "e097725d6543ba347b67881d4c6a9efe2c88043c71125e1e92a55d711b7f89fb"
+    },
+    {
+      "path": "data/ui/9395e8e3716ad2ef0ec7970a4fe47b1a.bg2.map",
+      "role": "generated",
+      "byte_length": 1152,
+      "sha256": "7ac30757e044b00fea77c04d7e50b8f0a5a1105d7b94a21aabe33769d1cdb338"
+    },
+    {
+      "path": "data/ui/9617509b04b917e2fbadf17983aa0520.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "7d17cbba26b473f65a25d850b87ff7f227c3de433f304cc7028e10f2800952a2"
+    },
+    {
+      "path": "data/ui/9eb6770b134f6ab14ca56f88714e024a.palette.bgr555",
+      "role": "generated",
+      "byte_length": 16,
+      "sha256": "22d0e3c7f12389adf823b71fa464c8b0d5b6fcbf598c9afd7eb90c834c0977db"
+    },
+    {
+      "path": "data/ui/abf525014aeb233dbb49bf177886a96c.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "3e1b681bad2bc299aad173d64eb5a86ea16fbc068eb1cff349517cd6f6ce2384"
+    },
+    {
+      "path": "data/ui/b45dda28c5767329742d4f478ba344fd.palette.bgr555",
+      "role": "generated",
+      "byte_length": 16,
+      "sha256": "22d0e3c7f12389adf823b71fa464c8b0d5b6fcbf598c9afd7eb90c834c0977db"
+    },
+    {
+      "path": "data/ui/b6615eaa4d7dc9030cd578e07244f5fd.bg2.map",
+      "role": "generated",
+      "byte_length": 1152,
+      "sha256": "075faa55b6f5ab5a4e1b4bfa42e8bffbca486e60b7ded7211dfb8df7d1cb7296"
+    },
+    {
+      "path": "data/ui/cea7022d621d8daf507fc50a9c8fc42e.tiles.2bpp",
+      "role": "generated",
+      "byte_length": 1056,
+      "sha256": "6b0d9d45a9506ebf92dbcad55e44a4c5a5f6860f8b43c2bc4abd1b3ecb72d473"
+    },
+    {
+      "path": "data/ui/d1a15d46f615f85a7cf45acd9c6cf069.bg2.map",
+      "role": "generated",
+      "byte_length": 256,
+      "sha256": "1c23ee459910ec53075461c75cea62958924f989b5c3041d06da5b7b19dfa7ac"
+    },
+    {
+      "path": "data/ui/d1d873142161dbdc5ab0a259dfb09468.bg2.map",
+      "role": "generated",
+      "byte_length": 1152,
+      "sha256": "ff6b155c745c678e626cc295cef427cc612e22ea6ff095ef022d0266ec8c8bac"
+    },
+    {
+      "path": "data/ui/d5f53c35650926b9427a31e65c0507e0.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "ab22d9f2b02adf76817672f89bf5345ad713f8cbb898924fdc203c3b048b7170"
+    },
+    {
+      "path": "data/ui/de1f345d866c91762ffeef6087b2031e.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "70c9a27566a075413ff28397c671d95600e2abbe08d71d935df37793654fed1b"
+    },
+    {
+      "path": "data/ui/dfe6a519165cd9ed60dee2e02b768416.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "bd719f10f353ff5da59d86d272f876bc4edd87dd9cf0d133c4a474ea70a24866"
+    },
+    {
+      "path": "data/ui/f747ac6ab5e6f0d34af7c98b56a53f73.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "334d81bb0dc28acaa906f04dd505615126f89655d26540b8d378a3c406db3bed"
+    },
+    {
+      "path": "include/loom/generated/animation_sets.h",
+      "role": "stable-animation-states",
+      "byte_length": 304,
+      "sha256": "e868de2d70f200f911b74950d804b296ba5c27106b5a365aed5d14e1d78d6447"
+    },
+    {
+      "path": "include/loom/generated/assets.h",
+      "role": "asset-handles",
+      "byte_length": 15088,
+      "sha256": "6d9e1e02582ecf7820ea4bdc1bf842d7fcb89ded25f579b7c15f9876870e59a7"
+    },
+    {
+      "path": "include/loom/generated/audio_cues.h",
+      "role": "stable-audio-cues",
+      "byte_length": 431,
+      "sha256": "92b757a9a85fe3633e94b0a1bd1298a7f9e3ef35cc9a88adfdef748a6fb196c6"
+    },
+    {
+      "path": "include/loom/generated/entities.h",
+      "role": "stable-entity-handles",
+      "byte_length": 4760,
+      "sha256": "69f07c9dd9433caafd794c8a5d982b1eb4ae446f9d660f7c5d730d9940642bb7"
+    },
+    {
+      "path": "include/loom/generated/pools.h",
+      "role": "pool-capacities",
+      "byte_length": 463,
+      "sha256": "c8c488b983b807ae1ce1453907f79231077bea45cc6da6a0cea5dcb46b5a7c79"
+    },
+    {
+      "path": "include/loom/generated/project_data.h",
+      "role": "c-header",
+      "byte_length": 24875,
+      "sha256": "4e42671932e147a205f60366fc036a6a9123003880c67d0ce37101a5bc38354a"
+    },
+    {
+      "path": "include/loom/generated/raster_programs.h",
+      "role": "stable-raster-programs",
+      "byte_length": 436,
+      "sha256": "08bc1fc394f9da5cc16b4a98bcdfd5eb84727bf0cade448f5f606cfc80147298"
+    },
+    {
+      "path": "include/loom/generated/runtime_config.h",
+      "role": "runtime-configuration",
+      "byte_length": 5604,
+      "sha256": "0187118c92e1eb4ff2db7f3b098ea4e0b15dc8e9656a85c37fda3463d0266b79"
+    },
+    {
+      "path": "include/loom/generated/runtime_schedule.h",
+      "role": "runtime-schedule-declarations",
+      "byte_length": 841,
+      "sha256": "2af69f27b26b5ffd02e31375403402899d8ecdb38bdb4fdd377a2dfe293215d1"
+    },
+    {
+      "path": "include/loom/generated/ui.h",
+      "role": "stable-ui-handles",
+      "byte_length": 10065,
+      "sha256": "847442a217d3993031ee10689aa7a522d5cb38652c2fcf89b1c76c9a87c61883"
+    },
+    {
+      "path": "include/loom/generated/user_hooks.h",
+      "role": "user-hook-declarations",
+      "byte_length": 620,
+      "sha256": "c037a30a1189a43542a3a545f0322f60023642af1048c3885dc453da5ba0dc5a"
+    },
+    {
+      "path": "include/loom/generated/variables.h",
+      "role": "stable-variable-handles",
+      "byte_length": 1340,
+      "sha256": "4b9a6e7a5338df5811f411fe03e635d1cc8f892281a225e85502951a8cc5610f"
+    },
+    {
+      "path": "ir/project-ir.json",
+      "role": "canonical-ir",
+      "byte_length": 2200331,
+      "sha256": "0fc44a4167cd9f0094a2e4aa3b7256e5e2a7f1d88f0311cae2c39d20c50a6dba"
+    },
+    {
+      "path": "plan/frame-plan.json",
+      "role": "frame-plan",
+      "byte_length": 479032,
+      "sha256": "714a06e2bdb780b72cf82f1f6680d9eab4ebe6acd8635276f8242579651ece26"
+    },
+    {
+      "path": "plan/graphics-plan.json",
+      "role": "graphics-plan",
+      "byte_length": 100575,
+      "sha256": "32bea7331d1161e12d54d878724e93ffd51af2cb4e7b5de385d3e0ddae3ade95"
+    },
+    {
+      "path": "plan/memory-plan.json",
+      "role": "generated",
+      "byte_length": 32322,
+      "sha256": "eb6a82e61166dac24874794acfbd04511d6d443ab9d080cc3c4b90692c85200d"
+    },
+    {
+      "path": "plan/project-plan.json",
+      "role": "project-plan",
+      "byte_length": 124303,
+      "sha256": "26562f237320f6f1c2d07f19b14805e27cb4eebfde40f39554ed4ade48670ada"
+    },
+    {
+      "path": "plan/ui-plan.json",
+      "role": "ui-plan",
+      "byte_length": 19556,
+      "sha256": "be7f5a605a163b0c1e514a1acff109323c1a1a16c83ac20384d808e3bbd4042c"
+    },
+    {
+      "path": "src/audio_data.c",
+      "role": "portable-audio-catalog",
+      "byte_length": 345,
+      "sha256": "d71f2d20bb6961fc26a603b062db9b396e078a5656f3a48184bbd89e7d0f2156"
+    },
+    {
+      "path": "src/mode1_data.c",
+      "role": "mode1-static-data",
+      "byte_length": 40097,
+      "sha256": "354f6dc00e2532e485be8df9f1a3d8d7fc705fedc654400bde7de92e80ed3519"
+    },
+    {
+      "path": "src/project_data.c",
+      "role": "static-data",
+      "byte_length": 276214,
+      "sha256": "97e67a76d7ccc02685010e996dd0e48305901165d756170ce2e318e25a3d2531"
+    },
+    {
+      "path": "src/runtime_schedule.c",
+      "role": "direct-runtime-schedule",
+      "byte_length": 32447,
+      "sha256": "7bc55b9d7e7c883ee80d1ae8c52836144400657330a7c19de5b85edc88c37ad1"
+    },
+    {
+      "path": "src/ui_data.c",
+      "role": "portable-ui-catalog",
+      "byte_length": 9241,
+      "sha256": "e1a91ab8030abb1924b3a1def96fd458e8c2f187824819d62bf686aaaed9eedf"
+    },
+    {
+      "path": "src/user_hooks.c",
+      "role": "user-hook-glue",
+      "byte_length": 332,
+      "sha256": "9dc20d568ff1a34fa23d9ecec86c58e1a3124613b05fed37d6c69ad4fde77f78"
+    },
+    {
+      "path": "src/variables_data.c",
+      "role": "variable-storage",
+      "byte_length": 1744,
+      "sha256": "6042df439e5f03be452feb0f8f6f2c2ef45038ed96fe72169e48e899ef621e20"
+    },
+    {
+      "path": "target/pvsneslib/asset_table.c",
+      "role": "target-asset-table",
+      "byte_length": 4332,
+      "sha256": "32d6015ce5706ee0723ef7ae1c2e6f93a57b0ea6703461feb996c50dd6c1157d"
+    },
+    {
+      "path": "target/pvsneslib/assets.asm",
+      "role": "target-rom-sections",
+      "byte_length": 18556,
+      "sha256": "b8567a2b2683691509f709b590f31a3579bd0073a87d225fd77c7911a8602093"
+    },
+    {
+      "path": "target/pvsneslib/audio_table.c",
+      "role": "target-audio-table",
+      "byte_length": 442,
+      "sha256": "cd52344a93b091217153a3570461afc00a7ad64e930080b8bb36ae9b8c16fce6"
+    },
+    {
+      "path": "target/pvsneslib/hdr.asm",
+      "role": "target-cartridge-header",
+      "byte_length": 649,
+      "sha256": "5eec55cb3c2f95a8b3597ae124bf43f18eabe0bb0f48e685040ba72d7784363a"
+    },
+    {
+      "path": "target/pvsneslib/raster_table.c",
+      "role": "target-raster-table",
+      "byte_length": 636,
+      "sha256": "aaaa01a0d055a70276dd278f2c7985502500d77c07996ef1f4694524bb3c3336"
+    },
+    {
+      "path": "toolchain/pvsneslib-inputs.json",
+      "role": "tool-inputs",
+      "byte_length": 58328,
+      "sha256": "33f2334bb864c467faa54e95757e1854d758a61a81e0c2009c957fd8c2919ab5"
+    }
+  ]
+}

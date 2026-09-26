@@ -1,0 +1,679 @@
+{
+  "schema_version": 1,
+  "loom_commit": "5599b9c5615160596228f365ecce167a7a973ce8",
+  "paths_relative_to": "testbed/",
+  "toolchain": {
+    "PVSNESLIB_INCLUDE": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/pvsneslib/include",
+    "DEVKITSNES_INCLUDE": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/include",
+    "compiler": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/bin/816-tcc"
+  },
+  "notes": [
+    "Include order is Loom's: runtime/include, backend include, generated include, then the PVSnesLib and devkitsnes include directories.",
+    "Loom compiles each unit as a copy named loom_<sha256(stable_name)[:16]>.c in a scratch directory, so quoted includes never resolve beside the source and __FILE__ is that staged name; no unit relies on a sibling header.",
+    "816-tcc -c writes assembly (.ps), which Loom passes through 816-opt and wla-65816. -F is FastROM (long addressing through the $80 mirror); -H is HiROM.",
+    "The release profile drops loom_install_debug_sources (replay-passthrough.c)."
+  ],
+  "samples": {
+    "cliffside": {
+      "status": "generated",
+      "cartridge": {
+        "mapping": "lorom",
+        "region": "ntsc",
+        "rom_size_kib": 256,
+        "speed": "fastrom",
+        "sram_size_kib": 0,
+        "ui_background": "bg3"
+      },
+      "include_roots": [
+        "loom/runtime/include",
+        "loom/runtime/backends/pvsneslib/include",
+        "loom/examples/cliffside/.loom/generated/include"
+      ],
+      "toolchain_include_roots": [
+        "${PVSNESLIB_INCLUDE}",
+        "${DEVKITSNES_INCLUDE}"
+      ],
+      "target_flags": [
+        "-F"
+      ],
+      "common_flags": [
+        "-Wall"
+      ],
+      "generated_assembly_includes": [
+        "loom/examples/cliffside/.loom/generated/target/pvsneslib/hdr.asm"
+      ],
+      "profiles": {
+        "debug": {
+          "definitions": [
+            "LOOM_BUILD_DEBUG=1",
+            "LOOM_TARGET_PVSNESLIB=1",
+            "LOOM_GENERATED_POOLS=1"
+          ],
+          "c_units": [
+            {
+              "stable_name": ".loom/generated/src/audio_data.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/audio_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/mode1_data.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/mode1_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/runtime_schedule.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/runtime_schedule.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/ui_data.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/ui_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/user_hooks.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/user_hooks.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/variables_data.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/variables_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/asset_table.c",
+              "path": "loom/examples/cliffside/.loom/generated/target/pvsneslib/asset_table.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/audio_table.c",
+              "path": "loom/examples/cliffside/.loom/generated/target/pvsneslib/audio_table.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/raster_table.c",
+              "path": "loom/examples/cliffside/.loom/generated/target/pvsneslib/raster_table.c"
+            },
+            {
+              "stable_name": "project/Code/Portable/cliffside.c",
+              "path": "loom/examples/cliffside/Code/Portable/cliffside.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/frame-transaction.c",
+              "path": "loom/runtime/backends/pvsneslib/src/frame-transaction.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/runtime-adapter.c",
+              "path": "loom/runtime/backends/pvsneslib/src/runtime-adapter.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/startup.c",
+              "path": "loom/runtime/backends/pvsneslib/src/startup.c"
+            },
+            {
+              "stable_name": "runtime/src/actor.c",
+              "path": "loom/runtime/src/actor.c"
+            },
+            {
+              "stable_name": "runtime/src/adventure.c",
+              "path": "loom/runtime/src/adventure.c"
+            },
+            {
+              "stable_name": "runtime/src/animation.c",
+              "path": "loom/runtime/src/animation.c"
+            },
+            {
+              "stable_name": "runtime/src/audio.c",
+              "path": "loom/runtime/src/audio.c"
+            },
+            {
+              "stable_name": "runtime/src/camera.c",
+              "path": "loom/runtime/src/camera.c"
+            },
+            {
+              "stable_name": "runtime/src/combat.c",
+              "path": "loom/runtime/src/combat.c"
+            },
+            {
+              "stable_name": "runtime/src/frame-build.c",
+              "path": "loom/runtime/src/frame-build.c"
+            },
+            {
+              "stable_name": "runtime/src/frame-shell.c",
+              "path": "loom/runtime/src/frame-shell.c"
+            },
+            {
+              "stable_name": "runtime/src/game.c",
+              "path": "loom/runtime/src/game.c"
+            },
+            {
+              "stable_name": "runtime/src/mode1.c",
+              "path": "loom/runtime/src/mode1.c"
+            },
+            {
+              "stable_name": "runtime/src/movement.c",
+              "path": "loom/runtime/src/movement.c"
+            },
+            {
+              "stable_name": "runtime/src/replay-passthrough.c",
+              "path": "loom/runtime/src/replay-passthrough.c"
+            },
+            {
+              "stable_name": "runtime/src/scene.c",
+              "path": "loom/runtime/src/scene.c"
+            },
+            {
+              "stable_name": "runtime/src/ui.c",
+              "path": "loom/runtime/src/ui.c"
+            },
+            {
+              "stable_name": "runtime/src/variables.c",
+              "path": "loom/runtime/src/variables.c"
+            }
+          ],
+          "assembly_units": [
+            "loom/runtime/backends/pvsneslib/src/board.asm",
+            "loom/runtime/backends/pvsneslib/src/body.asm",
+            "loom/runtime/backends/pvsneslib/src/movement.asm",
+            "loom/runtime/backends/pvsneslib/src/oam.asm",
+            "loom/runtime/backends/pvsneslib/src/scene.asm",
+            "loom/runtime/backends/pvsneslib/src/vblank.asm",
+            "loom/examples/cliffside/.loom/generated/target/pvsneslib/assets.asm"
+          ],
+          "argv_816tcc": [
+            "-Iloom/runtime/include",
+            "-Iloom/runtime/backends/pvsneslib/include",
+            "-Iloom/examples/cliffside/.loom/generated/include",
+            "-I${PVSNESLIB_INCLUDE}",
+            "-I${DEVKITSNES_INCLUDE}",
+            "-DLOOM_BUILD_DEBUG=1",
+            "-DLOOM_TARGET_PVSNESLIB=1",
+            "-DLOOM_GENERATED_POOLS=1",
+            "-F",
+            "-Wall",
+            "-c",
+            "<unit>.c",
+            "-o",
+            "<unit>.ps"
+          ]
+        },
+        "release": {
+          "definitions": [
+            "NDEBUG=1",
+            "LOOM_TARGET_PVSNESLIB=1",
+            "LOOM_GENERATED_POOLS=1"
+          ],
+          "c_units": [
+            {
+              "stable_name": ".loom/generated/src/audio_data.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/audio_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/mode1_data.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/mode1_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/runtime_schedule.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/runtime_schedule.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/ui_data.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/ui_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/user_hooks.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/user_hooks.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/variables_data.c",
+              "path": "loom/examples/cliffside/.loom/generated/src/variables_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/asset_table.c",
+              "path": "loom/examples/cliffside/.loom/generated/target/pvsneslib/asset_table.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/audio_table.c",
+              "path": "loom/examples/cliffside/.loom/generated/target/pvsneslib/audio_table.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/raster_table.c",
+              "path": "loom/examples/cliffside/.loom/generated/target/pvsneslib/raster_table.c"
+            },
+            {
+              "stable_name": "project/Code/Portable/cliffside.c",
+              "path": "loom/examples/cliffside/Code/Portable/cliffside.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/frame-transaction.c",
+              "path": "loom/runtime/backends/pvsneslib/src/frame-transaction.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/runtime-adapter.c",
+              "path": "loom/runtime/backends/pvsneslib/src/runtime-adapter.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/startup.c",
+              "path": "loom/runtime/backends/pvsneslib/src/startup.c"
+            },
+            {
+              "stable_name": "runtime/src/actor.c",
+              "path": "loom/runtime/src/actor.c"
+            },
+            {
+              "stable_name": "runtime/src/adventure.c",
+              "path": "loom/runtime/src/adventure.c"
+            },
+            {
+              "stable_name": "runtime/src/animation.c",
+              "path": "loom/runtime/src/animation.c"
+            },
+            {
+              "stable_name": "runtime/src/audio.c",
+              "path": "loom/runtime/src/audio.c"
+            },
+            {
+              "stable_name": "runtime/src/camera.c",
+              "path": "loom/runtime/src/camera.c"
+            },
+            {
+              "stable_name": "runtime/src/combat.c",
+              "path": "loom/runtime/src/combat.c"
+            },
+            {
+              "stable_name": "runtime/src/frame-build.c",
+              "path": "loom/runtime/src/frame-build.c"
+            },
+            {
+              "stable_name": "runtime/src/frame-shell.c",
+              "path": "loom/runtime/src/frame-shell.c"
+            },
+            {
+              "stable_name": "runtime/src/game.c",
+              "path": "loom/runtime/src/game.c"
+            },
+            {
+              "stable_name": "runtime/src/mode1.c",
+              "path": "loom/runtime/src/mode1.c"
+            },
+            {
+              "stable_name": "runtime/src/movement.c",
+              "path": "loom/runtime/src/movement.c"
+            },
+            {
+              "stable_name": "runtime/src/scene.c",
+              "path": "loom/runtime/src/scene.c"
+            },
+            {
+              "stable_name": "runtime/src/ui.c",
+              "path": "loom/runtime/src/ui.c"
+            },
+            {
+              "stable_name": "runtime/src/variables.c",
+              "path": "loom/runtime/src/variables.c"
+            }
+          ],
+          "assembly_units": [
+            "loom/runtime/backends/pvsneslib/src/board.asm",
+            "loom/runtime/backends/pvsneslib/src/body.asm",
+            "loom/runtime/backends/pvsneslib/src/movement.asm",
+            "loom/runtime/backends/pvsneslib/src/oam.asm",
+            "loom/runtime/backends/pvsneslib/src/scene.asm",
+            "loom/runtime/backends/pvsneslib/src/vblank.asm",
+            "loom/examples/cliffside/.loom/generated/target/pvsneslib/assets.asm"
+          ],
+          "argv_816tcc": [
+            "-Iloom/runtime/include",
+            "-Iloom/runtime/backends/pvsneslib/include",
+            "-Iloom/examples/cliffside/.loom/generated/include",
+            "-I${PVSNESLIB_INCLUDE}",
+            "-I${DEVKITSNES_INCLUDE}",
+            "-DNDEBUG=1",
+            "-DLOOM_TARGET_PVSNESLIB=1",
+            "-DLOOM_GENERATED_POOLS=1",
+            "-F",
+            "-Wall",
+            "-c",
+            "<unit>.c",
+            "-o",
+            "<unit>.ps"
+          ]
+        }
+      }
+    },
+    "lantern-road": {
+      "status": "generated",
+      "cartridge": {
+        "mapping": "lorom",
+        "region": "ntsc",
+        "rom_size_kib": 512,
+        "speed": "fastrom",
+        "sram_size_kib": 2,
+        "ui_background": "bg3"
+      },
+      "include_roots": [
+        "loom/runtime/include",
+        "loom/runtime/backends/pvsneslib/include",
+        "loom/examples/lantern-road/.loom/generated/include"
+      ],
+      "toolchain_include_roots": [
+        "${PVSNESLIB_INCLUDE}",
+        "${DEVKITSNES_INCLUDE}"
+      ],
+      "target_flags": [
+        "-F"
+      ],
+      "common_flags": [
+        "-Wall"
+      ],
+      "generated_assembly_includes": [
+        "loom/examples/lantern-road/.loom/generated/target/pvsneslib/hdr.asm"
+      ],
+      "profiles": {
+        "debug": {
+          "definitions": [
+            "LOOM_BUILD_DEBUG=1",
+            "LOOM_TARGET_PVSNESLIB=1",
+            "LOOM_GENERATED_POOLS=1"
+          ],
+          "c_units": [
+            {
+              "stable_name": ".loom/generated/src/audio_data.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/audio_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/mode1_data.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/mode1_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/runtime_schedule.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/runtime_schedule.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/ui_data.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/ui_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/user_hooks.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/user_hooks.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/variables_data.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/variables_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/asset_table.c",
+              "path": "loom/examples/lantern-road/.loom/generated/target/pvsneslib/asset_table.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/audio_table.c",
+              "path": "loom/examples/lantern-road/.loom/generated/target/pvsneslib/audio_table.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/raster_table.c",
+              "path": "loom/examples/lantern-road/.loom/generated/target/pvsneslib/raster_table.c"
+            },
+            {
+              "stable_name": "project/Code/Portable/Hooks/game_update.c",
+              "path": "loom/examples/lantern-road/Code/Portable/Hooks/game_update.c"
+            },
+            {
+              "stable_name": "project/Code/Portable/adventure.c",
+              "path": "loom/examples/lantern-road/Code/Portable/adventure.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/frame-transaction.c",
+              "path": "loom/runtime/backends/pvsneslib/src/frame-transaction.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/runtime-adapter.c",
+              "path": "loom/runtime/backends/pvsneslib/src/runtime-adapter.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/startup.c",
+              "path": "loom/runtime/backends/pvsneslib/src/startup.c"
+            },
+            {
+              "stable_name": "runtime/src/actor.c",
+              "path": "loom/runtime/src/actor.c"
+            },
+            {
+              "stable_name": "runtime/src/adventure.c",
+              "path": "loom/runtime/src/adventure.c"
+            },
+            {
+              "stable_name": "runtime/src/animation.c",
+              "path": "loom/runtime/src/animation.c"
+            },
+            {
+              "stable_name": "runtime/src/audio.c",
+              "path": "loom/runtime/src/audio.c"
+            },
+            {
+              "stable_name": "runtime/src/camera.c",
+              "path": "loom/runtime/src/camera.c"
+            },
+            {
+              "stable_name": "runtime/src/combat.c",
+              "path": "loom/runtime/src/combat.c"
+            },
+            {
+              "stable_name": "runtime/src/frame-build.c",
+              "path": "loom/runtime/src/frame-build.c"
+            },
+            {
+              "stable_name": "runtime/src/frame-shell.c",
+              "path": "loom/runtime/src/frame-shell.c"
+            },
+            {
+              "stable_name": "runtime/src/game.c",
+              "path": "loom/runtime/src/game.c"
+            },
+            {
+              "stable_name": "runtime/src/mode1.c",
+              "path": "loom/runtime/src/mode1.c"
+            },
+            {
+              "stable_name": "runtime/src/movement.c",
+              "path": "loom/runtime/src/movement.c"
+            },
+            {
+              "stable_name": "runtime/src/replay-passthrough.c",
+              "path": "loom/runtime/src/replay-passthrough.c"
+            },
+            {
+              "stable_name": "runtime/src/save.c",
+              "path": "loom/runtime/src/save.c"
+            },
+            {
+              "stable_name": "runtime/src/scene.c",
+              "path": "loom/runtime/src/scene.c"
+            },
+            {
+              "stable_name": "runtime/src/ui.c",
+              "path": "loom/runtime/src/ui.c"
+            },
+            {
+              "stable_name": "runtime/src/variables.c",
+              "path": "loom/runtime/src/variables.c"
+            }
+          ],
+          "assembly_units": [
+            "loom/runtime/backends/pvsneslib/src/board.asm",
+            "loom/runtime/backends/pvsneslib/src/body.asm",
+            "loom/runtime/backends/pvsneslib/src/movement.asm",
+            "loom/runtime/backends/pvsneslib/src/oam.asm",
+            "loom/runtime/backends/pvsneslib/src/scene.asm",
+            "loom/runtime/backends/pvsneslib/src/vblank.asm",
+            "loom/examples/lantern-road/.loom/generated/target/pvsneslib/assets.asm"
+          ],
+          "argv_816tcc": [
+            "-Iloom/runtime/include",
+            "-Iloom/runtime/backends/pvsneslib/include",
+            "-Iloom/examples/lantern-road/.loom/generated/include",
+            "-I${PVSNESLIB_INCLUDE}",
+            "-I${DEVKITSNES_INCLUDE}",
+            "-DLOOM_BUILD_DEBUG=1",
+            "-DLOOM_TARGET_PVSNESLIB=1",
+            "-DLOOM_GENERATED_POOLS=1",
+            "-F",
+            "-Wall",
+            "-c",
+            "<unit>.c",
+            "-o",
+            "<unit>.ps"
+          ]
+        },
+        "release": {
+          "definitions": [
+            "NDEBUG=1",
+            "LOOM_TARGET_PVSNESLIB=1",
+            "LOOM_GENERATED_POOLS=1"
+          ],
+          "c_units": [
+            {
+              "stable_name": ".loom/generated/src/audio_data.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/audio_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/mode1_data.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/mode1_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/runtime_schedule.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/runtime_schedule.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/ui_data.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/ui_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/user_hooks.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/user_hooks.c"
+            },
+            {
+              "stable_name": ".loom/generated/src/variables_data.c",
+              "path": "loom/examples/lantern-road/.loom/generated/src/variables_data.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/asset_table.c",
+              "path": "loom/examples/lantern-road/.loom/generated/target/pvsneslib/asset_table.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/audio_table.c",
+              "path": "loom/examples/lantern-road/.loom/generated/target/pvsneslib/audio_table.c"
+            },
+            {
+              "stable_name": ".loom/generated/target/pvsneslib/raster_table.c",
+              "path": "loom/examples/lantern-road/.loom/generated/target/pvsneslib/raster_table.c"
+            },
+            {
+              "stable_name": "project/Code/Portable/Hooks/game_update.c",
+              "path": "loom/examples/lantern-road/Code/Portable/Hooks/game_update.c"
+            },
+            {
+              "stable_name": "project/Code/Portable/adventure.c",
+              "path": "loom/examples/lantern-road/Code/Portable/adventure.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/frame-transaction.c",
+              "path": "loom/runtime/backends/pvsneslib/src/frame-transaction.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/runtime-adapter.c",
+              "path": "loom/runtime/backends/pvsneslib/src/runtime-adapter.c"
+            },
+            {
+              "stable_name": "runtime/backends/pvsneslib/src/startup.c",
+              "path": "loom/runtime/backends/pvsneslib/src/startup.c"
+            },
+            {
+              "stable_name": "runtime/src/actor.c",
+              "path": "loom/runtime/src/actor.c"
+            },
+            {
+              "stable_name": "runtime/src/adventure.c",
+              "path": "loom/runtime/src/adventure.c"
+            },
+            {
+              "stable_name": "runtime/src/animation.c",
+              "path": "loom/runtime/src/animation.c"
+            },
+            {
+              "stable_name": "runtime/src/audio.c",
+              "path": "loom/runtime/src/audio.c"
+            },
+            {
+              "stable_name": "runtime/src/camera.c",
+              "path": "loom/runtime/src/camera.c"
+            },
+            {
+              "stable_name": "runtime/src/combat.c",
+              "path": "loom/runtime/src/combat.c"
+            },
+            {
+              "stable_name": "runtime/src/frame-build.c",
+              "path": "loom/runtime/src/frame-build.c"
+            },
+            {
+              "stable_name": "runtime/src/frame-shell.c",
+              "path": "loom/runtime/src/frame-shell.c"
+            },
+            {
+              "stable_name": "runtime/src/game.c",
+              "path": "loom/runtime/src/game.c"
+            },
+            {
+              "stable_name": "runtime/src/mode1.c",
+              "path": "loom/runtime/src/mode1.c"
+            },
+            {
+              "stable_name": "runtime/src/movement.c",
+              "path": "loom/runtime/src/movement.c"
+            },
+            {
+              "stable_name": "runtime/src/save.c",
+              "path": "loom/runtime/src/save.c"
+            },
+            {
+              "stable_name": "runtime/src/scene.c",
+              "path": "loom/runtime/src/scene.c"
+            },
+            {
+              "stable_name": "runtime/src/ui.c",
+              "path": "loom/runtime/src/ui.c"
+            },
+            {
+              "stable_name": "runtime/src/variables.c",
+              "path": "loom/runtime/src/variables.c"
+            }
+          ],
+          "assembly_units": [
+            "loom/runtime/backends/pvsneslib/src/board.asm",
+            "loom/runtime/backends/pvsneslib/src/body.asm",
+            "loom/runtime/backends/pvsneslib/src/movement.asm",
+            "loom/runtime/backends/pvsneslib/src/oam.asm",
+            "loom/runtime/backends/pvsneslib/src/scene.asm",
+            "loom/runtime/backends/pvsneslib/src/vblank.asm",
+            "loom/examples/lantern-road/.loom/generated/target/pvsneslib/assets.asm"
+          ],
+          "argv_816tcc": [
+            "-Iloom/runtime/include",
+            "-Iloom/runtime/backends/pvsneslib/include",
+            "-Iloom/examples/lantern-road/.loom/generated/include",
+            "-I${PVSNESLIB_INCLUDE}",
+            "-I${DEVKITSNES_INCLUDE}",
+            "-DNDEBUG=1",
+            "-DLOOM_TARGET_PVSNESLIB=1",
+            "-DLOOM_GENERATED_POOLS=1",
+            "-F",
+            "-Wall",
+            "-c",
+            "<unit>.c",
+            "-o",
+            "<unit>.ps"
+          ]
+        }
+      }
+    },
+    "stack": {
+      "status": "no-generated-output",
+      "note": "Loom has not generated .loom/generated for this sample; only the authored hooks are here. They include loom/generated/* headers that do not exist until the Loom app builds the project.",
+      "authored_units": [
+        "loom/examples/stack/Code/Portable/stack.c"
+      ]
+    }
+  }
+}

@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "generator_version": "0.1.0",
+  "project_id": "0c11f51de00000000000000000000001",
+  "project_manifest_sha256": "9b92feceabd8ec4d59679876c062c23383375ff15e12faa47f25fd2b2be864a6",
+  "generation_ir_sha256": "8b3710909d692d68918a5951c803e53bfaeabedc179846b5bab44eff9fe83121",
+  "files": [
+    {
+      "path": "README.md",
+      "role": "documentation",
+      "byte_length": 1446,
+      "sha256": "16bc480a145097369a6565ffa5c18378892de6beb5e2a8aa71a8b19b1a8b8769"
+    },
+    {
+      "path": "data/mode1/44114baa7fc40aed9fcbf568e85c8d19.obj.4bpp",
+      "role": "generated",
+      "byte_length": 1984,
+      "sha256": "d2954c8759160c622a01da4582e7c4746a5512b0ed6ea7c77f114350639910a0"
+    },
+    {
+      "path": "data/mode1/477f78a077aa470844714fa953bad9bc.obj.pal",
+      "role": "generated",
+      "byte_length": 64,
+      "sha256": "3465b76aaadc0c96910e182905a47095fb575e39dd8e441a2763e36030537161"
+    },
+    {
+      "path": "data/mode1/8643a9ca0bf403de6b32d96f69f4a173.bg1.map",
+      "role": "generated",
+      "byte_length": 4096,
+      "sha256": "dad9677da500c74a866d10d2438281f1f2bf2bdcf2905df174811390d05ddb0d"
+    },
+    {
+      "path": "data/mode1/8c8effd4ec9912616d2d0391b24897e2.bg.pal",
+      "role": "generated",
+      "byte_length": 96,
+      "sha256": "f915781e32fda5ca70c0159ac1444587603d9bead4d3fa330e0755a44a2a9535"
+    },
+    {
+      "path": "data/mode1/95f6cb6b97ff9fe6727d115e67c20be2.bg2.map",
+      "role": "generated",
+      "byte_length": 4096,
+      "sha256": "5d6290cff27f28390807ec8e5f51c155b9c92ff6194eea9a03b424a9fe0b7685"
+    },
+    {
+      "path": "data/ui/1cf29ddff475b6506855ccc6eaaf24de.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "396bb9b0daa6cd764f31da1ea4149bb3e833d9e4a73db6be8a6c00b5c2e089b9"
+    },
+    {
+      "path": "data/ui/27c6b76aa2739aac6f507b08a7270b27.patches.bg2",
+      "role": "generated",
+      "byte_length": 204,
+      "sha256": "905b3a119a7cf7e79e6000a213439ad7406925b98a04b23e842b41b2cf1f38b4"
+    },
+    {
+      "path": "data/ui/2dc098f2de7a7ef9d3530ea5db5c201c.palette.bgr555",
+      "role": "generated",
+      "byte_length": 16,
+      "sha256": "22d0e3c7f12389adf823b71fa464c8b0d5b6fcbf598c9afd7eb90c834c0977db"
+    },
+    {
+      "path": "data/ui/344ff5c026b99e35a8c98c7170d42bff.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "e1b85292ffbccf6b4816562d071d3d4e4d68843c150c5031667bbcc6fea0e66b"
+    },
+    {
+      "path": "data/ui/90f2aeea54a2959bd85e089f63a1e367.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "44303b458a3fceda0e1129a6ba8308636d5254c90e4cf2bc21b87f7ab0122975"
+    },
+    {
+      "path": "data/ui/cbebd92c758a5903dc1d1346f3dc3691.tiles.2bpp",
+      "role": "generated",
+      "byte_length": 1056,
+      "sha256": "6b0d9d45a9506ebf92dbcad55e44a4c5a5f6860f8b43c2bc4abd1b3ecb72d473"
+    },
+    {
+      "path": "data/ui/f7dd60e2de719488a6199040543e8d11.bg2.map",
+      "role": "generated",
+      "byte_length": 2048,
+      "sha256": "70d241ba42c2eaf0837b7929e57953c9853c59636dde52b94353e8cb2a3112a4"
+    },
+    {
+      "path": "include/loom/generated/animation_sets.h",
+      "role": "stable-animation-states",
+      "byte_length": 746,
+      "sha256": "1decf94d6c8e5860fd7ebeeed0255a130ee24926bbc47f3698c7f107e304f914"
+    },
+    {
+      "path": "include/loom/generated/assets.h",
+      "role": "asset-handles",
+      "byte_length": 5893,
+      "sha256": "9f04124ea975848e279bf4be95ddfe6d70e966b4cbcfce515902e89e7b28da26"
+    },
+    {
+      "path": "include/loom/generated/audio_cues.h",
+      "role": "stable-audio-cues",
+      "byte_length": 724,
+      "sha256": "6a81ea531f46e12dd82781d35c1658e04f74779a04215bbd00d3187e6a2eca63"
+    },
+    {
+      "path": "include/loom/generated/entities.h",
+      "role": "stable-entity-handles",
+      "byte_length": 5349,
+      "sha256": "cddb598c62d6691ed0812b2c0a5e1fe9fea93d1b41c1d80c77fce1897a9a6901"
+    },
+    {
+      "path": "include/loom/generated/pools.h",
+      "role": "pool-capacities",
+      "byte_length": 463,
+      "sha256": "c8c488b983b807ae1ce1453907f79231077bea45cc6da6a0cea5dcb46b5a7c79"
+    },
+    {
+      "path": "include/loom/generated/project_data.h",
+      "role": "c-header",
+      "byte_length": 23502,
+      "sha256": "05027994a3d985854c23c96dff7ebdd12936a6d8c25cdbd3008e56fb8af3073f"
+    },
+    {
+      "path": "include/loom/generated/raster_programs.h",
+      "role": "stable-raster-programs",
+      "byte_length": 345,
+      "sha256": "e1e56c8fd5f6de5d6a3169e579ee6db4ab9bec0d321b0778b1c00e60193b18c9"
+    },
+    {
+      "path": "include/loom/generated/runtime_config.h",
+      "role": "runtime-configuration",
+      "byte_length": 5601,
+      "sha256": "46dc194e5e6f636f48db5264d7cb9d4b3b062238ec858bc15e697fe2d380a92f"
+    },
+    {
+      "path": "include/loom/generated/runtime_schedule.h",
+      "role": "runtime-schedule-declarations",
+      "byte_length": 841,
+      "sha256": "2af69f27b26b5ffd02e31375403402899d8ecdb38bdb4fdd377a2dfe293215d1"
+    },
+    {
+      "path": "include/loom/generated/ui.h",
+      "role": "stable-ui-handles",
+      "byte_length": 2217,
+      "sha256": "3e57d20a113ab3db726acf07aa3d5f7e2f0c9b552b712edf3e0d16ca97cea119"
+    },
+    {
+      "path": "include/loom/generated/user_hooks.h",
+      "role": "user-hook-declarations",
+      "byte_length": 521,
+      "sha256": "40162adf1ad98d6644f8c238ad5b655961c21c528f08955f5cd4f8a1082afb22"
+    },
+    {
+      "path": "include/loom/generated/variables.h",
+      "role": "stable-variable-handles",
+      "byte_length": 795,
+      "sha256": "1d9032eff04e214afdc634230dd04613249a5cda781ed369db2a744adeb6c231"
+    },
+    {
+      "path": "ir/project-ir.json",
+      "role": "canonical-ir",
+      "byte_length": 1327683,
+      "sha256": "8b3710909d692d68918a5951c803e53bfaeabedc179846b5bab44eff9fe83121"
+    },
+    {
+      "path": "plan/frame-plan.json",
+      "role": "frame-plan",
+      "byte_length": 148427,
+      "sha256": "c34398624b6c1df2f7d8ec57b36d569f0c3afb47a8b6a10515606cb0b75edf86"
+    },
+    {
+      "path": "plan/graphics-plan.json",
+      "role": "graphics-plan",
+      "byte_length": 26977,
+      "sha256": "7d4315a268352411a1256115a61a58bc674347c8d5a55a1a6f8e6fd1c596b35b"
+    },
+    {
+      "path": "plan/memory-plan.json",
+      "role": "generated",
+      "byte_length": 19228,
+      "sha256": "9f4e632e722ebb1bd327b99dd70ef32cedb0ba45e379156284f1c5a6a84d767b"
+    },
+    {
+      "path": "plan/project-plan.json",
+      "role": "project-plan",
+      "byte_length": 62233,
+      "sha256": "da16a9abea37ce01d96de79cc8bfeb41671cfdf49ee44905d6127de7d5a812a4"
+    },
+    {
+      "path": "plan/ui-plan.json",
+      "role": "ui-plan",
+      "byte_length": 4934,
+      "sha256": "5f89506372366636c046ef9c1828396b8f4675fdecc1c5f5065a99ccb8e938d7"
+    },
+    {
+      "path": "src/audio_data.c",
+      "role": "portable-audio-catalog",
+      "byte_length": 549,
+      "sha256": "a1ca58413b176fa89c9da268e98f201e642743418cd0b646e089b09fedd65fcf"
+    },
+    {
+      "path": "src/mode1_data.c",
+      "role": "mode1-static-data",
+      "byte_length": 28257,
+      "sha256": "35b96e649882ad080d8f72c1ed6ff18c9f6f1bb40e34723f154a93ded1cf3326"
+    },
+    {
+      "path": "src/project_data.c",
+      "role": "static-data",
+      "byte_length": 265091,
+      "sha256": "53972b6bcefa3c430f2c3ec92ca85dcb85d560508235161e60ff2916707c8c4d"
+    },
+    {
+      "path": "src/runtime_schedule.c",
+      "role": "direct-runtime-schedule",
+      "byte_length": 31687,
+      "sha256": "34d50349cead10329e4b6324b2fdbe31fcc807e49108f3f4e464591b9ef680ae"
+    },
+    {
+      "path": "src/ui_data.c",
+      "role": "portable-ui-catalog",
+      "byte_length": 4589,
+      "sha256": "f4e002bbacd371328c3fc5d151ba1d131ef601f202ab677f61cf7094d5dfec6d"
+    },
+    {
+      "path": "src/user_hooks.c",
+      "role": "user-hook-glue",
+      "byte_length": 395,
+      "sha256": "d408be54b180bcb1605261d4e3880576d5fa3cbb45e31b0e4bd54944c8f1e685"
+    },
+    {
+      "path": "src/variables_data.c",
+      "role": "variable-storage",
+      "byte_length": 1225,
+      "sha256": "49daad700c269d08ce484322e4ede25d3b35986c31b98733da4bc65907c07eb0"
+    },
+    {
+      "path": "target/pvsneslib/asset_table.c",
+      "role": "target-asset-table",
+      "byte_length": 1956,
+      "sha256": "27931557a39522916ab7f300d83685055c842350321ab522a73a10a3e55ba27f"
+    },
+    {
+      "path": "target/pvsneslib/assets.asm",
+      "role": "target-rom-sections",
+      "byte_length": 7698,
+      "sha256": "3e32f6cc9ba9320718ec1b3c9d6be1b5c79e94888c842250e372a514c3ddbeb3"
+    },
+    {
+      "path": "target/pvsneslib/audio_table.c",
+      "role": "target-audio-table",
+      "byte_length": 740,
+      "sha256": "a6fd2786956b27ba02ef116c6392cd4b9a83becb677cd1d68223feb080e2d51e"
+    },
+    {
+      "path": "target/pvsneslib/hdr.asm",
+      "role": "target-cartridge-header",
+      "byte_length": 648,
+      "sha256": "7770bbca1f5f52b19a9d9262e269924b089ed53b4c64e34ecf80f59b2580b972"
+    },
+    {
+      "path": "target/pvsneslib/raster_table.c",
+      "role": "target-raster-table",
+      "byte_length": 838,
+      "sha256": "7f43c74ce1deec2a348bc1270eca6a0165dd0456a2e19cd0e3eee73ac00e4c15"
+    },
+    {
+      "path": "toolchain/pvsneslib-inputs.json",
+      "role": "tool-inputs",
+      "byte_length": 47347,
+      "sha256": "43187e65cc4295353a00418515f3502f03bf9830f8623ac5f0767c6cd0d76f88"
+    }
+  ]
+}

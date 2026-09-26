@@ -1,0 +1,1347 @@
+{
+  "build_profiles": [
+    "debug",
+    "release"
+  ],
+  "cartridge": {
+    "mapping": "lorom",
+    "region": "ntsc",
+    "rom_size_kib": 256,
+    "speed": "fastrom",
+    "sram_size_kib": 0,
+    "ui_background": "bg3"
+  },
+  "inputs": {
+    "authored_source_roots": [
+      "Code/Portable",
+      "Code/Target/pvsneslib"
+    ],
+    "generated_assembly_includes": [
+      ".loom/generated/target/pvsneslib/hdr.asm"
+    ],
+    "generated_assembly_sources": [
+      ".loom/generated/target/pvsneslib/assets.asm"
+    ],
+    "generated_c_sources": [
+      ".loom/generated/src/audio_data.c",
+      ".loom/generated/src/ui_data.c",
+      ".loom/generated/src/mode1_data.c",
+      ".loom/generated/src/runtime_schedule.c",
+      ".loom/generated/src/user_hooks.c",
+      ".loom/generated/target/pvsneslib/asset_table.c",
+      ".loom/generated/target/pvsneslib/audio_table.c",
+      ".loom/generated/target/pvsneslib/raster_table.c",
+      ".loom/generated/src/variables_data.c"
+    ],
+    "generated_include_roots": [
+      ".loom/generated/include"
+    ],
+    "loom_install_debug_sources": [
+      "runtime/src/replay-passthrough.c"
+    ],
+    "loom_install_include_roots": [
+      "runtime/include"
+    ],
+    "loom_install_portable_sources": [
+      "runtime/src/actor.c",
+      "runtime/src/adventure.c",
+      "runtime/src/animation.c",
+      "runtime/src/audio.c",
+      "runtime/src/camera.c",
+      "runtime/src/combat.c",
+      "runtime/src/frame-build.c",
+      "runtime/src/frame-shell.c",
+      "runtime/src/game.c",
+      "runtime/src/mode1.c",
+      "runtime/src/movement.c",
+      "runtime/src/scene.c",
+      "runtime/src/ui.c",
+      "runtime/src/variables.c"
+    ],
+    "loom_install_target_include_roots": [
+      "runtime/backends/pvsneslib/include"
+    ],
+    "loom_install_target_sources": [
+      "runtime/backends/pvsneslib/src/board.asm",
+      "runtime/backends/pvsneslib/src/body.asm",
+      "runtime/backends/pvsneslib/src/frame-transaction.c",
+      "runtime/backends/pvsneslib/src/movement.asm",
+      "runtime/backends/pvsneslib/src/oam.asm",
+      "runtime/backends/pvsneslib/src/runtime-adapter.c",
+      "runtime/backends/pvsneslib/src/scene.asm",
+      "runtime/backends/pvsneslib/src/startup.c",
+      "runtime/backends/pvsneslib/src/vblank.asm"
+    ],
+    "normalized_assets": [
+      {
+        "asset_id": "000000000000d46918c56ca8bb7a9678",
+        "asset_segment_handles": [],
+        "byte_length": 178,
+        "disposition": "generated-catalog-input",
+        "owner_id": "612f1edf1d025a31569954ffbc3de721",
+        "path": ".loom/cache/assets/000000000000d46918c56ca8bb7a9678/1c35bf602b0b357b1800f72d21f4156494af1a20940cf2e7578f84ab2c17c6b7/normalized/audio-cues.json",
+        "path_base": "project",
+        "role": "audio-cue-table",
+        "sha256": "83b0a35df66e9ad2e37783ee59c91c8d5a151d6f81bfb9bf72bac08da481b129"
+      },
+      {
+        "asset_id": "000000000000d46918c56ca8bb7a9678",
+        "asset_segment_handles": [],
+        "byte_length": 2002,
+        "disposition": "review-metadata",
+        "owner_id": "612f1edf1d025a31569954ffbc3de721",
+        "path": ".loom/cache/assets/000000000000d46918c56ca8bb7a9678/1c35bf602b0b357b1800f72d21f4156494af1a20940cf2e7578f84ab2c17c6b7/normalized/audio-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "267defc5ef08290eecf1c9f51efc5aab7397a175c5a44a932c30094b08ddfbc7"
+      },
+      {
+        "asset_id": "000000000000d46918c56ca8bb7a9678",
+        "asset_segment_handles": [
+          0
+        ],
+        "byte_length": 756,
+        "disposition": "rom-asset",
+        "owner_id": "612f1edf1d025a31569954ffbc3de721",
+        "path": ".loom/cache/assets/000000000000d46918c56ca8bb7a9678/1c35bf602b0b357b1800f72d21f4156494af1a20940cf2e7578f84ab2c17c6b7/normalized/effect.brr",
+        "path_base": "project",
+        "role": "sound-effect-brr",
+        "sha256": "de485c080bded704384c485523df688b8c143ca316a298988f85257dcf95e375"
+      },
+      {
+        "asset_id": "000000000000d46918c5eca8d7fd85d0",
+        "asset_segment_handles": [],
+        "byte_length": 177,
+        "disposition": "generated-catalog-input",
+        "owner_id": "b302a91845ac680a627ebf3f8497d2b8",
+        "path": ".loom/cache/assets/000000000000d46918c5eca8d7fd85d0/975166b7d7ef90ae8f37da5a90893b815be2004735b13dae002a5688ea3e12d3/normalized/audio-cues.json",
+        "path_base": "project",
+        "role": "audio-cue-table",
+        "sha256": "e36be18f4a10cae07a09fd190cfed8b73367b43e584497df87b13f0acbbc87ec"
+      },
+      {
+        "asset_id": "000000000000d46918c5eca8d7fd85d0",
+        "asset_segment_handles": [],
+        "byte_length": 2004,
+        "disposition": "review-metadata",
+        "owner_id": "b302a91845ac680a627ebf3f8497d2b8",
+        "path": ".loom/cache/assets/000000000000d46918c5eca8d7fd85d0/975166b7d7ef90ae8f37da5a90893b815be2004735b13dae002a5688ea3e12d3/normalized/audio-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "65a28766642ab2b1d877d26bf0277777c44f08f9d43da7c7f93b40edc49b03a1"
+      },
+      {
+        "asset_id": "000000000000d46918c5eca8d7fd85d0",
+        "asset_segment_handles": [
+          1
+        ],
+        "byte_length": 1188,
+        "disposition": "rom-asset",
+        "owner_id": "b302a91845ac680a627ebf3f8497d2b8",
+        "path": ".loom/cache/assets/000000000000d46918c5eca8d7fd85d0/975166b7d7ef90ae8f37da5a90893b815be2004735b13dae002a5688ea3e12d3/normalized/effect.brr",
+        "path_base": "project",
+        "role": "sound-effect-brr",
+        "sha256": "b1fd70ff1042a2c7998d36f609d2b096e9124afb2b5190eda1200cec4c5ca4f4"
+      },
+      {
+        "asset_id": "000000000000d46918c66ca8e87e0290",
+        "asset_segment_handles": [],
+        "byte_length": 179,
+        "disposition": "generated-catalog-input",
+        "owner_id": "a1cd60d36ffaa4efc14080ed2a69cfe2",
+        "path": ".loom/cache/assets/000000000000d46918c66ca8e87e0290/819d07a29d288c329330c4c0d0b0b3e7941b2118ddaf7a175616529530134cde/normalized/audio-cues.json",
+        "path_base": "project",
+        "role": "audio-cue-table",
+        "sha256": "0b2a405683e9cf84a440aee2993d7c6f3e14aaa4b79081a390ae7966883820fc"
+      },
+      {
+        "asset_id": "000000000000d46918c66ca8e87e0290",
+        "asset_segment_handles": [],
+        "byte_length": 2003,
+        "disposition": "review-metadata",
+        "owner_id": "a1cd60d36ffaa4efc14080ed2a69cfe2",
+        "path": ".loom/cache/assets/000000000000d46918c66ca8e87e0290/819d07a29d288c329330c4c0d0b0b3e7941b2118ddaf7a175616529530134cde/normalized/audio-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "b900fabe8f8fff817c4d90e0284d7c197818beefdd67376cf8731528ac3b1d29"
+      },
+      {
+        "asset_id": "000000000000d46918c66ca8e87e0290",
+        "asset_segment_handles": [
+          2
+        ],
+        "byte_length": 630,
+        "disposition": "rom-asset",
+        "owner_id": "a1cd60d36ffaa4efc14080ed2a69cfe2",
+        "path": ".loom/cache/assets/000000000000d46918c66ca8e87e0290/819d07a29d288c329330c4c0d0b0b3e7941b2118ddaf7a175616529530134cde/normalized/effect.brr",
+        "path_base": "project",
+        "role": "sound-effect-brr",
+        "sha256": "4aa1b27dd6bd4818e6a53ac30095beef0fb39a6ccddd6c807b34744b69648e79"
+      },
+      {
+        "asset_id": "000000000000d46918c6eca8f6a8f690",
+        "asset_segment_handles": [],
+        "byte_length": 178,
+        "disposition": "generated-catalog-input",
+        "owner_id": "aa9caa1466bae6a838aa9eba1959c670",
+        "path": ".loom/cache/assets/000000000000d46918c6eca8f6a8f690/5cb1f57a4ff4b1df67caf6e4bb6b949a4b08147914c9c77708055de0752a8ec3/normalized/audio-cues.json",
+        "path_base": "project",
+        "role": "audio-cue-table",
+        "sha256": "11599e216a4d244f924421b349fe2dadc4b3f2cfbce44b721e02ce0eb2ee0b77"
+      },
+      {
+        "asset_id": "000000000000d46918c6eca8f6a8f690",
+        "asset_segment_handles": [],
+        "byte_length": 2005,
+        "disposition": "review-metadata",
+        "owner_id": "aa9caa1466bae6a838aa9eba1959c670",
+        "path": ".loom/cache/assets/000000000000d46918c6eca8f6a8f690/5cb1f57a4ff4b1df67caf6e4bb6b949a4b08147914c9c77708055de0752a8ec3/normalized/audio-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "512742f7f9a2459034dd35eb0f2dcd330baef0cdc8b1bdb47e52662f934e01d1"
+      },
+      {
+        "asset_id": "000000000000d46918c6eca8f6a8f690",
+        "asset_segment_handles": [
+          3
+        ],
+        "byte_length": 1377,
+        "disposition": "rom-asset",
+        "owner_id": "aa9caa1466bae6a838aa9eba1959c670",
+        "path": ".loom/cache/assets/000000000000d46918c6eca8f6a8f690/5cb1f57a4ff4b1df67caf6e4bb6b949a4b08147914c9c77708055de0752a8ec3/normalized/effect.brr",
+        "path_base": "project",
+        "role": "sound-effect-brr",
+        "sha256": "2555fcdb3f4a375a075b4e1a805156d47f7ab02133f2110fc308c89221aa572f"
+      },
+      {
+        "asset_id": "000000000000d46918c76ca9046fa698",
+        "asset_segment_handles": [],
+        "byte_length": 180,
+        "disposition": "generated-catalog-input",
+        "owner_id": "baf9aecd141be870d00f3355d0ded65f",
+        "path": ".loom/cache/assets/000000000000d46918c76ca9046fa698/31ae1912aa0f395f76d3f19dc010000d302a6e6c61ccdcfb77763cf378f7480a/normalized/audio-cues.json",
+        "path_base": "project",
+        "role": "audio-cue-table",
+        "sha256": "03baeb0453cb10d0920bb477375052a7c0f88d48a13496d25d046ad2a614c971"
+      },
+      {
+        "asset_id": "000000000000d46918c76ca9046fa698",
+        "asset_segment_handles": [],
+        "byte_length": 2008,
+        "disposition": "review-metadata",
+        "owner_id": "baf9aecd141be870d00f3355d0ded65f",
+        "path": ".loom/cache/assets/000000000000d46918c76ca9046fa698/31ae1912aa0f395f76d3f19dc010000d302a6e6c61ccdcfb77763cf378f7480a/normalized/audio-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "028224779ec6df1a1d25d746179b2af970c0839b115101c9524b570646a85f6f"
+      },
+      {
+        "asset_id": "000000000000d46918c76ca9046fa698",
+        "asset_segment_handles": [
+          4
+        ],
+        "byte_length": 2862,
+        "disposition": "rom-asset",
+        "owner_id": "baf9aecd141be870d00f3355d0ded65f",
+        "path": ".loom/cache/assets/000000000000d46918c76ca9046fa698/31ae1912aa0f395f76d3f19dc010000d302a6e6c61ccdcfb77763cf378f7480a/normalized/effect.brr",
+        "path_base": "project",
+        "role": "sound-effect-brr",
+        "sha256": "c9658258f3c4c553de3b0a4116159bcf31b7ef8a9b01d358a47c18b4f4f8dcd1"
+      },
+      {
+        "asset_id": "000000000000d46918d8eca7acfe2458",
+        "asset_segment_handles": [],
+        "byte_length": 949,
+        "disposition": "generated-catalog-input",
+        "owner_id": "000000000000d46918d8eca7acfe2458",
+        "path": ".loom/cache/assets/000000000000d46918d8eca7acfe2458/128b0083750d750307ef3034f8dc185d1287510700b3e7fed291aba7dc8cd43a/normalized/animations.json",
+        "path_base": "project",
+        "role": "animation-table",
+        "sha256": "e2fcd93c044c2cdd90b97d54b6fd2ee5bb1e90608a7266b9ad7824723e31dc65"
+      },
+      {
+        "asset_id": "000000000000d46918d8eca7acfe2458",
+        "asset_segment_handles": [
+          5
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "000000000000d46918d8eca7acfe2458",
+        "path": ".loom/cache/assets/000000000000d46918d8eca7acfe2458/128b0083750d750307ef3034f8dc185d1287510700b3e7fed291aba7dc8cd43a/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "a78f48c62475cd58cc7d00c41335603be3e5254b17456765d13eff34446fa869"
+      },
+      {
+        "asset_id": "000000000000d46918d8eca7acfe2458",
+        "asset_segment_handles": [],
+        "byte_length": 4800,
+        "disposition": "generated-catalog-input",
+        "owner_id": "000000000000d46918d8eca7acfe2458",
+        "path": ".loom/cache/assets/000000000000d46918d8eca7acfe2458/128b0083750d750307ef3034f8dc185d1287510700b3e7fed291aba7dc8cd43a/normalized/sprite-frames.json",
+        "path_base": "project",
+        "role": "sprite-frame-table",
+        "sha256": "a7a0871e02053baab97b2235a555f713c08129fc00dc028c93ecaac46209d560"
+      },
+      {
+        "asset_id": "000000000000d46918d8eca7acfe2458",
+        "asset_segment_handles": [
+          6
+        ],
+        "byte_length": 384,
+        "disposition": "rom-asset",
+        "owner_id": "000000000000d46918d8eca7acfe2458",
+        "path": ".loom/cache/assets/000000000000d46918d8eca7acfe2458/128b0083750d750307ef3034f8dc185d1287510700b3e7fed291aba7dc8cd43a/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "936787faf0339d17ae76c651193479f7bf13023d9e19bff0f1621165dab43495"
+      },
+      {
+        "asset_id": "000000000000d46918d8eca7acfe2458",
+        "asset_segment_handles": [],
+        "byte_length": 3185,
+        "disposition": "review-metadata",
+        "owner_id": "000000000000d46918d8eca7acfe2458",
+        "path": ".loom/cache/assets/000000000000d46918d8eca7acfe2458/128b0083750d750307ef3034f8dc185d1287510700b3e7fed291aba7dc8cd43a/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "5d0bca63146a0750a36bf2c007a9a2ecb13e1e71a2055c16325c726160a8b19b"
+      },
+      {
+        "asset_id": "0000000000012e4b18d5149cbe858928",
+        "asset_segment_handles": [],
+        "byte_length": 2648,
+        "disposition": "generated-catalog-input",
+        "owner_id": "0000000000012e4b18d5149cbe858928",
+        "path": ".loom/cache/assets/0000000000012e4b18d5149cbe858928/4d3c2acab850b41fcd32ca965f54fd805771ed6fddef3b7138ba4928505de85d/normalized/animations.json",
+        "path_base": "project",
+        "role": "animation-table",
+        "sha256": "2bf6e2b5049425cec10e86c23fcbc7e054d59e53b82afcf8f18ba8ddd9ef9d3d"
+      },
+      {
+        "asset_id": "0000000000012e4b18d5149cbe858928",
+        "asset_segment_handles": [
+          7
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000012e4b18d5149cbe858928",
+        "path": ".loom/cache/assets/0000000000012e4b18d5149cbe858928/4d3c2acab850b41fcd32ca965f54fd805771ed6fddef3b7138ba4928505de85d/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "d8d28232d61f5e658770c594a5908b1a86252edf68165e3082e33bd9f032e3c5"
+      },
+      {
+        "asset_id": "0000000000012e4b18d5149cbe858928",
+        "asset_segment_handles": [],
+        "byte_length": 14200,
+        "disposition": "generated-catalog-input",
+        "owner_id": "0000000000012e4b18d5149cbe858928",
+        "path": ".loom/cache/assets/0000000000012e4b18d5149cbe858928/4d3c2acab850b41fcd32ca965f54fd805771ed6fddef3b7138ba4928505de85d/normalized/sprite-frames.json",
+        "path_base": "project",
+        "role": "sprite-frame-table",
+        "sha256": "9aef7f3146ec69ae1d1ec383e8570342052036f3cc00dc207e900e1eb85f558c"
+      },
+      {
+        "asset_id": "0000000000012e4b18d5149cbe858928",
+        "asset_segment_handles": [
+          8
+        ],
+        "byte_length": 1152,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000012e4b18d5149cbe858928",
+        "path": ".loom/cache/assets/0000000000012e4b18d5149cbe858928/4d3c2acab850b41fcd32ca965f54fd805771ed6fddef3b7138ba4928505de85d/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "d7caf036f4d20bbb2faaf2b579b62aa33d11a319eab4285baf314e4e630de91d"
+      },
+      {
+        "asset_id": "0000000000012e4b18d5149cbe858928",
+        "asset_segment_handles": [],
+        "byte_length": 7837,
+        "disposition": "review-metadata",
+        "owner_id": "0000000000012e4b18d5149cbe858928",
+        "path": ".loom/cache/assets/0000000000012e4b18d5149cbe858928/4d3c2acab850b41fcd32ca965f54fd805771ed6fddef3b7138ba4928505de85d/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "39ad4636647dec62d08f79ce20f488370da38179aed37a246f71905fd18bfb36"
+      },
+      {
+        "asset_id": "0000000000012e4b18d5949cb788e688",
+        "asset_segment_handles": [
+          9
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000012e4b18d5949cb788e688",
+        "path": ".loom/cache/assets/0000000000012e4b18d5949cb788e688/5227e2fd39ebe95ac0e08273871900cd4e93bda6d7eb35a8857a547a057181d4/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "d8fea7b99a1c90c9a1983837aa5a322c45b5719a50c6f9f9fcf9b924378412dd"
+      },
+      {
+        "asset_id": "0000000000012e4b18d5949cb788e688",
+        "asset_segment_handles": [
+          10
+        ],
+        "byte_length": 1440,
+        "disposition": "rom-asset",
+        "owner_id": "0000000000012e4b18d5949cb788e688",
+        "path": ".loom/cache/assets/0000000000012e4b18d5949cb788e688/5227e2fd39ebe95ac0e08273871900cd4e93bda6d7eb35a8857a547a057181d4/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "af3b43140789df75f51506cb62265607a5d34ea687591df7a35da401c715974d"
+      },
+      {
+        "asset_id": "0000000000012e4b18d5949cb788e688",
+        "asset_segment_handles": [],
+        "byte_length": 10725,
+        "disposition": "review-metadata",
+        "owner_id": "0000000000012e4b18d5949cb788e688",
+        "path": ".loom/cache/assets/0000000000012e4b18d5949cb788e688/5227e2fd39ebe95ac0e08273871900cd4e93bda6d7eb35a8857a547a057181d4/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "dd720cab2a86e1fa09933b0a78b5fc08d1d7a186a05567a60ed695566c9861ed"
+      },
+      {
+        "asset_id": "000000000001795f18d44ed5a7edc130",
+        "asset_segment_handles": [
+          11
+        ],
+        "byte_length": 32,
+        "disposition": "rom-asset",
+        "owner_id": "000000000001795f18d44ed5a7edc130",
+        "path": ".loom/cache/assets/000000000001795f18d44ed5a7edc130/f7ae8efa02f8b2528ae3a2acdb70cb2d633df26b03f8f3a3eda7d15bda1b95ab/normalized/palette.bgr555",
+        "path_base": "project",
+        "role": "palette-bgr555",
+        "sha256": "87eeadbda4f368607bc20e2fce782a55db9e48d116f345d2bdb67c0ed5980e49"
+      },
+      {
+        "asset_id": "000000000001795f18d44ed5a7edc130",
+        "asset_segment_handles": [
+          12
+        ],
+        "byte_length": 480,
+        "disposition": "rom-asset",
+        "owner_id": "000000000001795f18d44ed5a7edc130",
+        "path": ".loom/cache/assets/000000000001795f18d44ed5a7edc130/f7ae8efa02f8b2528ae3a2acdb70cb2d633df26b03f8f3a3eda7d15bda1b95ab/normalized/tiles.4bpp",
+        "path_base": "project",
+        "role": "tiles4bpp",
+        "sha256": "be57bce3813c513b835716bf1565b8688d45dbac546de305311bda6eef77804a"
+      },
+      {
+        "asset_id": "000000000001795f18d44ed5a7edc130",
+        "asset_segment_handles": [],
+        "byte_length": 7562,
+        "disposition": "review-metadata",
+        "owner_id": "000000000001795f18d44ed5a7edc130",
+        "path": ".loom/cache/assets/000000000001795f18d44ed5a7edc130/f7ae8efa02f8b2528ae3a2acdb70cb2d633df26b03f8f3a3eda7d15bda1b95ab/normalized/tileset-review.json",
+        "path_base": "project",
+        "role": "metadata-json",
+        "sha256": "48850c9c952e52a0ce5f1f2d2ad241fe3b7230e384d5fcca7eed9ba45f7dfb5f"
+      }
+    ]
+  },
+  "outputs": {
+    "debug_root": "Build/Debug",
+    "path_base": "project",
+    "release_root": "Build/Release",
+    "rom_extension": "sfc"
+  },
+  "planning": {
+    "asset_segment_count": 25,
+    "capability_id": "pvsneslib-4-6-0-conformance",
+    "frame_path": ".loom/generated/plan/frame-plan.json",
+    "frame_sha256": "c34398624b6c1df2f7d8ec57b36d569f0c3afb47a8b6a10515606cb0b75edf86",
+    "graphics_path": ".loom/generated/plan/graphics-plan.json",
+    "graphics_sha256": "7d4315a268352411a1256115a61a58bc674347c8d5a55a1a6f8e6fd1c596b35b",
+    "memory_path": ".loom/generated/plan/memory-plan.json",
+    "memory_sha256": "9f4e632e722ebb1bd327b99dd70ef32cedb0ba45e379156284f1c5a6a84d767b",
+    "path": ".loom/generated/plan/project-plan.json",
+    "path_base": "project",
+    "rom_section_count": 28,
+    "sha256": "da16a9abea37ce01d96de79cc8bfeb41671cfdf49ee44905d6127de7d5a812a4",
+    "state": "complete",
+    "ui_path": ".loom/generated/plan/ui-plan.json",
+    "ui_sha256": "5f89506372366636c046ef9c1828396b8f4675fdecc1c5f5065a99ccb8e938d7"
+  },
+  "project": {
+    "id": "0c11f51de00000000000000000000001",
+    "name": "Cliffside"
+  },
+  "requested_runtime_modules": [
+    {
+      "id": "frame-shell",
+      "version": "0.1.0"
+    },
+    {
+      "id": "input",
+      "version": "0.1.0"
+    },
+    {
+      "id": "mode1",
+      "version": "0.1.0"
+    },
+    {
+      "id": "animation",
+      "version": "0.1.0"
+    },
+    {
+      "id": "collision",
+      "version": "0.1.0"
+    },
+    {
+      "id": "camera",
+      "version": "0.1.0"
+    },
+    {
+      "id": "triggers",
+      "version": "0.1.0"
+    },
+    {
+      "id": "actors",
+      "version": "0.1.0"
+    },
+    {
+      "id": "game",
+      "version": "0.1.0"
+    },
+    {
+      "id": "variables",
+      "version": "0.1.0"
+    },
+    {
+      "id": "combat",
+      "version": "0.1.0"
+    },
+    {
+      "id": "adventure",
+      "version": "0.1.0"
+    },
+    {
+      "id": "audio",
+      "version": "0.1.0"
+    }
+  ],
+  "schema_version": 1,
+  "selected_runtime_modules": [
+    {
+      "id": "frame-shell",
+      "uses": [
+        {
+          "reason": "every generated cartridge uses the deterministic frame shell"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "input",
+      "uses": [
+        {
+          "reason": "enabled player controller",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000502",
+            "pointer": "/entities/0/components/1"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "mode1",
+      "uses": [
+        {
+          "reason": "top-down-mode1 scene profile",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000040",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000508",
+            "pointer": "/entities/3/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000050b",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000510",
+            "pointer": "/entities/7/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000513",
+            "pointer": "/entities/8/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000515",
+            "pointer": "/entities/9/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000517",
+            "pointer": "/entities/10/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000c003",
+            "pointer": "/entities/11/components/2"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "animation",
+      "uses": [
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000503",
+            "pointer": "/entities/0/components/2"
+          }
+        },
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000050a",
+            "pointer": "/entities/4/components/1"
+          }
+        },
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000050f",
+            "pointer": "/entities/7/components/1"
+          }
+        },
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000512",
+            "pointer": "/entities/8/components/1"
+          }
+        },
+        {
+          "reason": "enabled animation set",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000c002",
+            "pointer": "/entities/11/components/1"
+          }
+        },
+        {
+          "reason": "enabled animation player",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918c36ca8a9c47818",
+            "pointer": "/entities/24/components/1"
+          }
+        },
+        {
+          "reason": "scene activation on arrival (triggers module)"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "collision",
+      "uses": [
+        {
+          "reason": "authored collision layer",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000042",
+            "pointer": "/layers/2"
+          }
+        },
+        {
+          "reason": "player movement uses collision resolution",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000502",
+            "pointer": "/entities/0/components/1"
+          }
+        },
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000504",
+            "pointer": "/entities/0/components/3"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000508",
+            "pointer": "/entities/3/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000050b",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000510",
+            "pointer": "/entities/7/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000513",
+            "pointer": "/entities/8/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000515",
+            "pointer": "/entities/9/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000517",
+            "pointer": "/entities/10/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000c003",
+            "pointer": "/entities/11/components/2"
+          }
+        },
+        {
+          "reason": "scene activation on arrival (triggers module)"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "camera",
+      "uses": [
+        {
+          "reason": "enabled camera or scroll bounds",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000505",
+            "pointer": "/entities/1/components/0"
+          }
+        },
+        {
+          "reason": "enabled camera or scroll bounds",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000050c",
+            "pointer": "/entities/5/components/0"
+          }
+        },
+        {
+          "reason": "enabled camera or scroll bounds",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000050d",
+            "pointer": "/entities/6/components/0"
+          }
+        },
+        {
+          "reason": "scene activation on arrival (triggers module)"
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "triggers",
+      "uses": [
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000506",
+            "pointer": "/entities/2/components/0"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918db6ca7f81fc108",
+            "pointer": "/entities/12/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918dd6ca8073ae938",
+            "pointer": "/entities/13/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918df6ca8164af990",
+            "pointer": "/entities/14/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d16ca825ff7b90",
+            "pointer": "/entities/15/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d36ca834c5b1a8",
+            "pointer": "/entities/16/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d56ca844112138",
+            "pointer": "/entities/17/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d76ca85312e568",
+            "pointer": "/entities/18/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918c96ca8625ba960",
+            "pointer": "/entities/19/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cb6ca871379de0",
+            "pointer": "/entities/20/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cd6ca880277ff0",
+            "pointer": "/entities/21/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cf6ca88f1d68f8",
+            "pointer": "/entities/22/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918c16ca89e3cc360",
+            "pointer": "/entities/23/components/1"
+          }
+        },
+        {
+          "reason": "enabled trigger, scene exit, or spawn point",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918c3eca8ada242d0",
+            "pointer": "/entities/24/components/2"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "adventure",
+      "uses": [
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918dbeca7fc686738",
+            "pointer": "/entities/12/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918ddeca80b7c28e0",
+            "pointer": "/entities/13/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918dfeca81ac5e6d8",
+            "pointer": "/entities/14/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d1eca82a5f3fb8",
+            "pointer": "/entities/15/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d3eca8392d3248",
+            "pointer": "/entities/16/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d5eca848a49f90",
+            "pointer": "/entities/17/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d7eca857972180",
+            "pointer": "/entities/18/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918c9eca866caea60",
+            "pointer": "/entities/19/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cbeca875908c08",
+            "pointer": "/entities/20/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cdeca884aea620",
+            "pointer": "/entities/21/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cfeca893851878",
+            "pointer": "/entities/22/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918c1eca8a2c6ac98",
+            "pointer": "/entities/23/components/2"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "audio",
+      "uses": [
+        {
+          "reason": "sound-effect asset",
+          "source": {
+            "document": "Assets/Audio/jump.loom-asset.json",
+            "owner": "000000000000d46918c56ca8bb7a9678",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "sound-effect asset",
+          "source": {
+            "document": "Assets/Audio/gem.loom-asset.json",
+            "owner": "000000000000d46918c5eca8d7fd85d0",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "sound-effect asset",
+          "source": {
+            "document": "Assets/Audio/stomp.loom-asset.json",
+            "owner": "000000000000d46918c66ca8e87e0290",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "sound-effect asset",
+          "source": {
+            "document": "Assets/Audio/hurt.loom-asset.json",
+            "owner": "000000000000d46918c6eca8f6a8f690",
+            "pointer": ""
+          }
+        },
+        {
+          "reason": "sound-effect asset",
+          "source": {
+            "document": "Assets/Audio/summit.loom-asset.json",
+            "owner": "000000000000d46918c76ca9046fa698",
+            "pointer": ""
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "variables",
+      "uses": [
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000504",
+            "pointer": "/entities/0/components/3"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918dbeca7fc686738",
+            "pointer": "/entities/12/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918ddeca80b7c28e0",
+            "pointer": "/entities/13/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918dfeca81ac5e6d8",
+            "pointer": "/entities/14/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d1eca82a5f3fb8",
+            "pointer": "/entities/15/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d3eca8392d3248",
+            "pointer": "/entities/16/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d5eca848a49f90",
+            "pointer": "/entities/17/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918d7eca857972180",
+            "pointer": "/entities/18/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918c9eca866caea60",
+            "pointer": "/entities/19/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cbeca875908c08",
+            "pointer": "/entities/20/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cdeca884aea620",
+            "pointer": "/entities/21/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918cfeca893851878",
+            "pointer": "/entities/22/components/2"
+          }
+        },
+        {
+          "reason": "collectible",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "000000000000d46918c1eca8a2c6ac98",
+            "pointer": "/entities/23/components/2"
+          }
+        },
+        {
+          "reason": "declared game-state variable",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "0c11f51de00000000000000000000700",
+            "pointer": "/variables/0"
+          }
+        },
+        {
+          "reason": "declared game-state variable",
+          "source": {
+            "document": "Data/variables.loom-vars.json",
+            "owner": "000000000000d46918d9eca7c0d6b558",
+            "pointer": "/variables/1"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "game",
+      "uses": [
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000508",
+            "pointer": "/entities/3/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000050b",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000510",
+            "pointer": "/entities/7/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000513",
+            "pointer": "/entities/8/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000515",
+            "pointer": "/entities/9/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000517",
+            "pointer": "/entities/10/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000c003",
+            "pointer": "/entities/11/components/2"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "actors",
+      "uses": [
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000504",
+            "pointer": "/entities/0/components/3"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000508",
+            "pointer": "/entities/3/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000050b",
+            "pointer": "/entities/4/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000510",
+            "pointer": "/entities/7/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000513",
+            "pointer": "/entities/8/components/2"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000515",
+            "pointer": "/entities/9/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000517",
+            "pointer": "/entities/10/components/1"
+          }
+        },
+        {
+          "reason": "placed actor instance",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de0000000000000000000c003",
+            "pointer": "/entities/11/components/2"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "id": "combat",
+      "uses": [
+        {
+          "reason": "player health",
+          "source": {
+            "document": "Scenes/cliffside.loom-room.json",
+            "owner": "0c11f51de00000000000000000000504",
+            "pointer": "/entities/0/components/3"
+          }
+        }
+      ],
+      "version": "0.1.0"
+    }
+  ],
+  "toolchain": {
+    "archive_sha256": "18654ba0761a7b8ba738807c622cd2b82395ee687ba60c85ccabc39feef0052d",
+    "backend": "pvsneslib",
+    "commit": "1fab4b2a9d31a265805be58bb45c5a46480ea211",
+    "port_contract": 1,
+    "version": "4.6.0"
+  },
+  "unused_requested_runtime_modules": []
+}
