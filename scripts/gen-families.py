@@ -36,6 +36,8 @@ VALUES = {
     "i8": [-128, -127, -3, -1, 0, 1, 2, 100, 127],
     "u16": [0, 1, 2, 255, 256, 1000, 32767, 32768, 40000, 65535],
     "i16": [-32768, -32767, -1000, -256, -1, 0, 1, 2, 255, 32767],
+    "u32": [0, 1, 65535, 65536, 100000, 2147483647, 2147483648, 4294967295],
+    "i32": [-2147483648, -100000, -65536, -1, 0, 1, 65535, 2147483647],
 }
 INT = ("i16",)          # int is 16 bits
 
@@ -133,14 +135,16 @@ def write(path, text):
     path.write_text(text)
 
 
-def arith_family():
+def arith_family(lefts=None, rights_all=None, suffix=""):
+    lefts = lefts or SMALL
+    rights_all = rights_all or SMALL
     n = 0
     for name, op in OPS.items():
-        for ta in SMALL:
+        for ta in lefts:
             runtime, folded = [], []
-            rights = SMALL if op not in ("<<", ">>") else ["u8"]
+            rights = rights_all if op not in ("<<", ">>") else ["u8"]
             for tb in rights:
-                bvals = VALUES[tb] if op not in ("<<", ">>") else [0, 1, 3, 7, 8, 15]
+                bvals = VALUES[tb] if op not in ("<<", ">>") else ([0, 1, 3, 7, 8, 15] if T[promote(ta)][0] == 16 else [0, 1, 8, 15, 16, 31])
                 for a in VALUES[ta]:
                     for b in bvals:
                         r = evaluate(op, a, ta, b, tb)
@@ -151,22 +155,27 @@ def arith_family():
             body = []
             decl = {}
             for i, (ta_, a, tb_, b, v, rt) in enumerate(runtime):
-                body.append(f"  x_{ta_} = {a}; y_{tb_} = {b}; CHECK((x_{ta_} {op} y_{tb_}) == {lit(v, rt)});")
-            declares = "\n".join(f"static volatile {t} x_{t};" for t in SMALL) + "\n" + "\n".join(f"static volatile {t} y_{t};" for t in SMALL)
+                la = lit(a, promote(ta_)) if T[ta_][0] >= 16 else a
+                lb = lit(b, promote(tb_)) if T[tb_][0] >= 16 else b
+                body.append(f"  x_{ta_} = {la}; y_{tb_} = {lb}; CHECK((x_{ta_} {op} y_{tb_}) == {lit(v, rt)});")
+            used = sorted(set(lefts) | set(rights_all), key=list(T).index)
+            declares = "\n".join(f"static volatile {t} x_{t};" for t in used) + "\n" + "\n".join(f"static volatile {t} y_{t};" for t in used)
             # Checks in chunks of 32 per function: 816-tcc gives every
             # comparison its own stack slot and cannot address past 255 bytes.
             chunks = [body[i:i + 32] for i in range(0, len(body), 32)]
             funcs = "".join(f"static void part{k}(void) {{\n" + "\n".join(c) + "\n}\n" for k, c in enumerate(chunks))
             calls = "".join(f"  part{k}();\n" for k in range(len(chunks)))
-            write(ROOT / f"t4-exec/gen-arith/{name}-{ta}.c", HEADER +
+            write(ROOT / f"t4-exec/gen-arith{suffix}/{name}-{ta}.c", HEADER +
                   f"// loomcc-do: run\n// loomcc-int: 16\n"
+                  + ("// loomcc-ref: host16\n// loomcc-note: no 816-tcc reference: its 32-bit type is long long, with its\n"
+                     "// loomcc-note: own helpers and folding bugs (docs/TCC-BUGS.md).\n" if suffix else "") +
                   f"// {ta} {op} (u8, i8, u16, i16) at run time: the operands promote to int or\n"
                   f"// unsigned int (16 bits) and the usual arithmetic conversions apply.\n"
                   '#include "loomcc-test.h"\n' + declares + "\n" + funcs + "int main(void) {\n" + calls + "  return 0;\n}\n")
             # The constant-expression twin: every check as a STATIC_CHECK.
-            checks = [f"STATIC_CHECK((({ta_})({lit(a, promote(ta_)) if T[ta_][0] == 16 else a}) {op} (({tb_})({lit(b, promote(tb_)) if T[tb_][0] == 16 else b}))) == {lit(v, rt)});"
+            checks = [f"STATIC_CHECK((({ta_})({lit(a, promote(ta_)) if T[ta_][0] >= 16 else a}) {op} (({tb_})({lit(b, promote(tb_)) if T[tb_][0] >= 16 else b}))) == {lit(v, rt)});"
                       for (ta_, a, tb_, b, v, rt) in runtime]
-            write(ROOT / f"t3-sema/gen-fold/{name}-{ta}.c", HEADER +
+            write(ROOT / f"t3-sema/gen-fold{suffix}/{name}-{ta}.c", HEADER +
                   f"// loomcc-do: syntax\n// {ta} {op} (u8, i8, u16, i16) as integer constant expressions at 16-bit int.\n"
                   "// loomcc-ref: clang16\n"
                   "// loomcc-note: no 816-tcc reference: its constant folder does unsigned int\n"
@@ -446,17 +455,23 @@ def walk(t, expr):
             return out
 
 
-def declarator_family():
-    r = random.Random(23)
+def declarator_family(seed=23, count=60, qualified=False, subdir="gen-declarator"):
+    r = random.Random(seed)
     n = 0
-    for k in range(60):
+    for k in range(count):
         lines, checks = [], []
         for j in range(8):
             t = gen_type(r, r.randint(2, 5))
             if t[0] == "fn":
                 t = ("ptr", t)
             name = f"v{j}"
-            lines.append(f"extern {decl(t, name)};")
+            d = decl(t, name)
+            if qualified:
+                # Qualifiers do not change sizes: sprinkle const/volatile on
+                # the declarator's pointers and the base type.
+                d = d.replace("*", r.choice(["*", "* const ", "* volatile ", "*"]))
+                d = r.choice(["const ", "volatile ", ""]) + d
+            lines.append(f"extern {d};")
             lines.append(f"typedef {decl(t, f'T{j}')};")
             for expr, st in walk(t, name):
                 if st[0] == "ptr" and st[1][0] == "base" and False:
@@ -471,7 +486,7 @@ def declarator_family():
                         "// Random declarators, their abstract-declarator and typedef twins, and the\n"
                         "// types reached through *, [] and () (sizes relative to the basic types).\n"
                         '#include "loomcc-test.h"\n' + "\n".join(lines) + "\n" + "\n".join(checks) + "\n")
-        write(ROOT / f"t2-parse/gen-declarator/decl-{k:02d}.c", src)
+        write(ROOT / f"t2-parse/{subdir}/decl-{k:02d}.c", src)
         n += 1
     return n
 
@@ -835,8 +850,8 @@ def dispatch_family():
 
 
 if __name__ == "__main__":
-    total = (arith_family() + soa_family() + switch_family() + romwalk_family()
-             + declarator_family() + precedence_family() + conversion_family()
+    total = (arith_family() + arith_family(["u32", "i32"], SMALL + ["u32", "i32"], "32") + soa_family() + switch_family() + romwalk_family()
+             + declarator_family() + declarator_family(29, 40, True, "gen-declarator-qualified") + precedence_family() + conversion_family()
              + layout_family() + designator_family() + truncation_family()
              + flags_family() + lut_family() + subpixel_family() + dispatch_family())
     print(f"wrote {total} generated tests")
