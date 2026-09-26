@@ -1,0 +1,61 @@
+{
+ "sample": "stack",
+ "tick_frames": 1,
+ "provenance": "packaged by loom-automation",
+ "tcc_build": "tcc: 262144 bytes, sha256 7b2d7ede024a6035, IDENTICAL to the automation ROM",
+ "loomcc_build": "loomcc: 262144 bytes, sha256 4be6045388014725, differs from the automation ROM",
+ "units": {
+  "loomcc": [
+   ".loom/generated/src/audio_data.c",
+   ".loom/generated/src/mode1_data.c",
+   ".loom/generated/src/runtime_schedule.c",
+   ".loom/generated/src/ui_data.c",
+   ".loom/generated/src/user_hooks.c",
+   ".loom/generated/src/variables_data.c",
+   ".loom/generated/target/pvsneslib/asset_table.c",
+   ".loom/generated/target/pvsneslib/audio_table.c",
+   ".loom/generated/target/pvsneslib/raster_table.c",
+   "project/Code/Portable/stack.c",
+   "runtime/backends/pvsneslib/src/frame-transaction.c",
+   "runtime/backends/pvsneslib/src/runtime-adapter.c",
+   "runtime/backends/pvsneslib/src/startup.c",
+   "runtime/src/actor.c",
+   "runtime/src/animation.c",
+   "runtime/src/audio.c",
+   "runtime/src/board.c",
+   "runtime/src/camera.c",
+   "runtime/src/frame-build.c",
+   "runtime/src/frame-shell.c",
+   "runtime/src/game.c",
+   "runtime/src/mode1.c",
+   "runtime/src/movement.c",
+   "runtime/src/scene.c",
+   "runtime/src/surface.c",
+   "runtime/src/ui.c",
+   "runtime/src/variables.c"
+  ],
+  "816-tcc": []
+ },
+ "window": [
+  180,
+  967
+ ],
+ "tcc_instructions_per_tick": 6696,
+ "tcc_ticks_in_window": 769,
+ "tcc_lag_in_window_at_tick_frames_1": 18,
+ "tcc_lag_whole_run_at_tick_frames_1": 46,
+ "loomcc_instructions_per_tick": 3581,
+ "loomcc_ticks_in_window": 779,
+ "loomcc_lag_in_window_at_tick_frames_1": 8,
+ "loomcc_lag_whole_run_at_tick_frames_1": 23,
+ "tickcompare": {
+  "distinct_images": [
+   104,
+   104
+  ],
+  "image_sequences_identical": true,
+  "ticks_compared": 968,
+  "witness_differ": [],
+  "shots_compared": 994
+ }
+}

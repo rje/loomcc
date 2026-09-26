@@ -350,3 +350,30 @@ ends). The same inputs go to all three variants.
     $04), not tcc__r0h as pointers do.
   - **NMI cloning**: every function reachable from an interrupt root gets a
     `__nmi` copy with interrupt-private frames and software helpers.
+- 2026-09-26: F29, F30 and F34 fixed (findings from the test suite, now
+  merged into this repository as tests/):
+  - **F29.** A stack-relative offset is 8 bits. Once a function's
+    argument area passes 255 bytes, arguments are read through a long
+    pointer, and a whole-struct push to an 816-tcc callee copies through
+    `[$1c],y`.
+  - **F30.** A re-entering call saves only the caller's own frame words
+    live across it (every active member of a component saves its own). The
+    save uses pushes for 16 bytes or less and an `mvn` block move beyond.
+    A save over 1024 bytes is an error, not silent stack use. libc
+    functions never call back.
+  - **F34, parallel moves at a call.** The hidden struct-result pointer is
+    formed in scratch and stored after the argument move. An index-register
+    argument whose direct-page source the move overwrites is parked on the
+    stack. An 816-tcc result homed on its own high word ($02 or $04) is
+    stored high word first.
+- 2026-09-26: **M9.** Cliffside, Lantern Road and Stack all build with
+  loomcc (every C unit) and behave identically on the tick clock. Change
+  in instructions a tick: Cliffside -31%, Lantern Road -44%, Stack -46%.
+  At 60 Hz each has at most 1% lag frames (RESULTS.md, M9).
+  - **Measurement notes.** Stack's script is shorter than 1000 frames, so
+    its window follows Loom's `full-speed.sh`: boot span + 20 frames to
+    the end. At `tick_frames = 1` the tick count is frames minus lag
+    frames. `measure.py` waits for the machine's load average to fall
+    under its core count before each emulator run: at background priority
+    a saturated machine starves the emulator past its fixed 5-second
+    frame deadline.

@@ -85,14 +85,32 @@ def trace(rom, script, out, extra):
     raise SystemExit("emulator failed eight times")
 
 
-def tick_cost(rom, script, out, frames, ticks):
+def window(script):
+    """Loom's measure is frames 400-1000. A script that ends before frame
+    1000 (Stack's) is measured the way scripts/full-speed.sh measures lag:
+    from the end of its first idle span plus 20 frames to its last frame."""
+    spans = json.loads(Path(script).read_text())
+    total = sum(s[0] for s in spans)
+    if total > 1000:
+        return 400, 1000
+    return spans[0][0] + 20, total - 1
+
+
+def tick_cost(rom, script, out, per):
+    lo, hi = window(script)
     trace(rom, script, out, ["--watches", "lagc:7e0035:2", "--profile", Path(rom).with_suffix(".sym"),
-                             "--profile-from", "400", "--profile-to", "1000"])
+                             "--profile-from", str(lo), "--profile-to", str(hi)])
+    rows = (out / "trace.csv").read_text().splitlines()
+    lagc = [int(r.split(",")[2]) for r in rows[1:]]
+    lag = lagc[hi] - lagc[lo]
+    frames = hi - lo
+    # tick_frames > 1: one tick every `per` frames by design (the lag counter
+    # counts the frames in between). tick_frames = 1: a lag frame is a tick
+    # that took two frames.
+    ticks = frames // per if per > 1 else frames - lag
     p = sh(["python3", HERE / "tickcost.py", out / "profile.txt", frames, ticks])
     per_tick = int(re.search(r"instructions a tick (\d+)", p.stdout).group(1))
-    rows = (out / "trace.csv").read_text().splitlines()
-    lag = [int(r.split(",")[2]) for r in rows[1:]]
-    return per_tick, lag[1000] - lag[400], lag[-1], p.stdout
+    return per_tick, lag, lagc[-1], p.stdout, frames, ticks
 
 
 def main():
@@ -119,14 +137,20 @@ def main():
     units = json.loads((d / "b-lcc/units.json").read_text())
     summary["units"] = {"loomcc": sorted(u for u, h in units.items() if h == "loomcc"),
                         "816-tcc": sorted(u for u, h in units.items() if h == "816-tcc")}
-    ticks = 600 // per
+    lo, hi = window(script)
+    summary["window"] = [lo, hi]
+    counts = {}
     for v, b in [("tcc", "b-tcc"), ("loomcc", "b-lcc")]:
-        pt, lag, lag_all, text = tick_cost(d / b / "loom-project.sfc", script, d / f"p-{v}", 600, ticks)
+        pt, lag, lag_all, text, frames, ticks = tick_cost(d / b / "loom-project.sfc", script, d / f"p-{v}", per)
+        counts[v] = (frames, ticks)
         summary[f"{v}_instructions_per_tick"] = pt
-        summary[f"{v}_lag_400_1000_at_tick_frames_{per}"] = lag
+        summary[f"{v}_ticks_in_window"] = ticks
+        summary[f"{v}_lag_in_window_at_tick_frames_{per}"] = lag
+        summary[f"{v}_lag_whole_run_at_tick_frames_{per}"] = lag_all
         (d / f"cost-{v}.txt").write_text(text)
         shutil.copy(d / f"p-{v}/profile.txt", d / f"profile-{v}.txt")
-    p = sh(["python3", HERE / "perunit.py", d / "b-tcc", d / "profile-tcc.txt", d / "b-lcc", d / "profile-loomcc.txt", 600, ticks])
+    p = sh(["python3", HERE / "perunit.py", d / "b-tcc", d / "profile-tcc.txt", d / "b-lcc", d / "profile-loomcc.txt",
+            counts["tcc"][0], counts["tcc"][1], counts["loomcc"][1]])
     (d / "perunit.md").write_text(p.stdout)
     if not skip_cmp:
         build(copy, runtime, "tcc", d / "d-tcc", "debug")
@@ -145,8 +169,8 @@ def main():
         package(tf1, d)  # may time out after generating: the unit list comes from the reference build
         for v, variant in [("tcc", "tcc"), ("loomcc", "loomcc")]:
             build(tf1, runtime, variant, d / f"t1-{v}", ref=copy)
-            pt, lag, lag_all, _ = tick_cost(d / f"t1-{v}" / "loom-project.sfc", script, d / f"q-{v}", 600, 600)
-            summary[f"{v}_lag_400_1000_at_tick_frames_1"] = lag
+            pt, lag, lag_all, _, _, _ = tick_cost(d / f"t1-{v}" / "loom-project.sfc", script, d / f"q-{v}", 1)
+            summary[f"{v}_lag_in_window_at_tick_frames_1"] = lag
             summary[f"{v}_lag_whole_run_at_tick_frames_1"] = lag_all
             summary[f"{v}_instructions_per_tick_at_tick_frames_1"] = pt
     (d / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")

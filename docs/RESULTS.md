@@ -278,6 +278,91 @@ The C part went from 5,546 to 2,219 instructions a tick (2.5x fewer).
 | **total (excluding waits)** | **11284** | **7957** | **3327** |
 
 
+## M9: Cliffside, Lantern Road and Stack built with loomcc (2026-09-26)
+
+All three of Loom's samples build with loomcc, with no C unit left to
+816-tcc (Cliffside 27 units, Lantern Road 29, Stack 27). Each ROM runs its
+sample's full-speed script to the end with the same behaviour as the 816-tcc
+build. Method as in M8 (`testbed/loom-build/measure.py`):
+- each sample is packaged by `loom-automation` from a scratch copy of
+  Loom's `examples/<sample>` at Loom 0f755e0, whose runtime, examples and
+  scripts are unchanged at 74317ad;
+- each 816-tcc rebuild is **byte-identical** to the ROM Loom packaged;
+- loomcc builds the same units with Loom's hand assembly unchanged.
+
+This measures loomcc after the F29, F30 and F34 fixes. Raw data is in
+`docs/results/m9/<sample>/`: `summary.json`, `perunit.md` and
+`tickcompare.txt`.
+
+### Speed and 60 Hz lag
+
+Instructions a tick use Loom's measure: release ROM, instructions per frame
+minus the wait loops, scaled by frames per tick. The window is frames
+400-1000 of `scripts/full-speed/<sample>.json`. Stack's script ends at
+frame 968, so it is measured the way Loom's `scripts/full-speed.sh`
+measures it: from the end of the boot span plus 20 frames to the last
+frame, which is frames 180-967.
+
+At `tick_frames = 1` a tick that overruns a frame is a lag frame, counted
+by `lag_frame_counter` ($7E0035). Stack ships at `tick_frames = 1`; for
+Cliffside and Lantern Road, a copy with `tick_frames = 1` is built from
+the same sources.
+
+| sample (shipped tick_frames) | 816-tcc instr/tick | loomcc instr/tick | change | lag at tick_frames 1, 816-tcc | lag at tick_frames 1, loomcc |
+|---|---:|---:|---:|---:|---:|
+| Cliffside (2) | 10,622 | **7,346** | -30.8% | 54 of 600 frames (9.0%); 126 in the whole run | **2 (0.3%)**; 22 |
+| Lantern Road (2) | 6,911 | **3,836** | -44.5% | 12 of 600 (2.0%); 39 | **6 (1.0%)**; 20 |
+| Stack (1) | 6,696 | **3,581** | -46.5% | 18 of 787 (2.3%); 46 | **8 (1.0%)**; 23 |
+
+In the Stack window loomcc completes 779 ticks and 816-tcc 769.
+
+Cliffside's numbers are lower than in M8 (816-tcc 11,284 → 10,622, loomcc
+7,956 → 7,346) because Loom's own PERF-004 work moved more of the runtime
+into assembly between the two snapshots. loomcc keeps a 31% cut over the
+faster baseline.
+
+With loomcc every sample runs at 60 Hz with at most 1% lag frames. Only
+Cliffside was over budget with 816-tcc (9% lag); with loomcc it has 2 lag
+frames in 600.
+
+### Behaviour (debug builds, tick clock)
+
+Each comparison uses `tickcompare.py`, as in M8: the frame script is
+converted to the tick clock, then the 108-byte witness is compared after
+every tick and the sequences of distinct presented frames are compared.
+
+| sample | ticks compared | witness bytes that differ | distinct images |
+|---|---:|---:|---|
+| Cliffside | 813 | **0** | 582 = 582, identical |
+| Lantern Road | 1000 | **0** | 303 = 303, identical |
+| Stack | 968 | **0** | 104 = 104, identical |
+
+### Where the instructions went (per unit)
+
+The full tables are in `docs/results/m9/<sample>/perunit.md`. After
+inlining, a callee's work is charged to the unit it was inlined into. Some
+patterns:
+- In every sample, **the C part of the tick falls to 40-51% of 816-tcc's**:
+  Cliffside 5,486 → 2,189, Lantern Road 6,276 → 3,196, Stack 5,251 → 2,136.
+  Here "C part" is everything except the hand assembly, which costs the
+  same in both builds.
+- The biggest single savings are in these units:
+  - `mode1.c` (-528 Cliffside, -513 Lantern Road);
+  - `board.c` (Stack, -721);
+  - `ui.c` (-384 to -445);
+  - `runtime-adapter.c` (about -360 to -415: its wrappers inline away);
+  - the generated `runtime_schedule.c` (-260 to -415).
+- Stack's table has two misleading rows. In the 816-tcc ROM, part of
+  mode1.c's code follows the label `loom_generated_asset_h0010_c0000_end`
+  and has no symbol of its own, so the profiler charges it to `assets.asm`
+  (487). Counted together, mode1 costs 643 under 816-tcc and 317 under
+  loomcc.
+
+Now that the C code has shrunk, the remaining cost is mostly Loom's
+assembly:
+- Cliffside: `body.asm` and `oam.asm`, 4,681 of 7,346;
+- Stack: `board.asm`, `vblank.asm` and `oam.asm`, 1,435 of 3,581.
+
 ## Current table (M7c)
 
 | bench | kind | equal | tcc bytes | tcc instr | tcc clocks | asm bytes | asm instr | asm clocks | loomcc bytes | loomcc instr | loomcc clocks | loomcc/tcc clocks | loomcc/asm clocks | cstack bytes |

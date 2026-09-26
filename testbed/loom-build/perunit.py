@@ -2,7 +2,10 @@
 """Instructions per tick by translation unit, for two builds made by
 build.py (tcc and loomcc), from their profile.txt.
 
-    perunit.py <tcc-build-dir> <tcc-profile.txt> <loomcc-build-dir> <loomcc-profile.txt> <frames> <ticks>
+    perunit.py <tcc-build-dir> <tcc-profile.txt> <loomcc-build-dir> <loomcc-profile.txt> <frames> <ticks> [<loomcc-ticks>]
+
+(At tick_frames = 1 the two builds complete different numbers of ticks in
+the same frames: a lag frame is a tick that took two frames.)
 """
 import json
 import re
@@ -50,7 +53,8 @@ def base(label):
 
 def main():
     tb, tp, lb, lp, frames, ticks = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3]), sys.argv[4], int(sys.argv[5]), int(sys.argv[6])
-    scale = frames / ticks
+    lticks = int(sys.argv[7]) if len(sys.argv) > 7 else ticks
+    scales = {"tcc": frames / ticks, "loomcc": frames / lticks}
     tmap = labels_by_unit(tb)
     lunits = [u for u, how in json.loads((lb / "units.json").read_text()).items() if how == "loomcc"]
     # loomcc: private labels carry the unit index (lcs<tag>_<index>_name);
@@ -73,7 +77,7 @@ def main():
     for which, path, lc in [("tcc", tp, False), ("loomcc", lp, True)]:
         for n, label in profile(path):
             u = unit_of(label, lc)
-            agg.setdefault(u, {"tcc": 0.0, "loomcc": 0.0})[which] += n * scale
+            agg.setdefault(u, {"tcc": 0.0, "loomcc": 0.0})[which] += n * scales[which]
     rows = sorted(agg.items(), key=lambda kv: -(kv[1]["tcc"] - kv[1]["loomcc"]))
     print("| unit | 816-tcc instr/tick | loomcc instr/tick | saved |")
     print("|---|---:|---:|---:|")
