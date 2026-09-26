@@ -1,0 +1,11 @@
+name = "layer_scroll"
+kind = "pair"
+description = "Mode 1 frame build's layer scroll: BG1 on the camera, parallax layers at camera*num/den, a cache for a still camera. 8 calls over three scenes."
+unit_labels = ["loom_pvs_mode1_scroll"]
+helper_labels = ["tcc__mul", "tcc__udiv", "tcc__div"]
+
+[provenance]
+loom_commit = "cbd8c0c"
+c_source = "runtime/src/mode1.c:1264-1331 at cbd8c0c^ (loom_mode1_build_frame's scroll block) plus loom_mode1_scaled and loom_mode1_denominator_shift (mode1.c:919-951)"
+asm_source = "runtime/backends/pvsneslib/src/oam.asm:loom_pvs_mode1_scroll (+ loom_pvs_scroll_scaled) at cbd8c0c; code unchanged at HEAD, whose RAM section (used here) moved from BANK 0 SLOT 1 to BANK $7e SLOT 2"
+notes = "The C is cut to the asm's contract: a drifting layer returns 0xffff at that layer (so the auto-scroll advance and the layer_auto_x/y terms, zero without drift, are dropped) and a completed pass marks the cache valid. Denominators are 1..8 as the scene validator guarantees (the asm's divide by 0 differs from C's)."
