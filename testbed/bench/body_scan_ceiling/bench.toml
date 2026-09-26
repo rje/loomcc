@@ -1,0 +1,11 @@
+name = "body_scan_ceiling"
+kind = "pair"
+description = "Platformer body ceiling scan: the row under the first solid cell between the head and the reach above it. 11 scans over a 24x14 room."
+unit_labels = ["loom_pvs_body_scan_ceiling"]
+helper_labels = []
+
+[provenance]
+loom_commit = "c027cfd"
+c_source = "runtime/src/movement.c:873-887 at c027cfd^ (the ceiling-scan loop in loom_movement_platformer_tick; actor.c:735-749 is the same loop for actor bodies) plus LOOM_MOVEMENT_CELL_AT (include/loom/movement.h:205-218)"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_body_scan_ceiling (+ loom_pvs_body_cell, loom_pvs_body_grid, LOOM_SIGNED_CMP) at c027cfd (unchanged at HEAD)"
+notes = "Verbatim C, including `row_top + (LOOM_MOVEMENT_TILE_PIXELS - 1) >= reach`: LOOM_MOVEMENT_TILE_PIXELS is a loom_u16, so under 816-tcc's 16-bit int that loop test is unsigned, while the asm (and the 32-bit host) compare signed. They differ when exactly one side is negative (a reach above the room, or a head at y <= 0 whose first row_top is -16); every input here keeps head >= 1 and reach >= 0, and the room's top row is solid, so no scan runs past row 0."
