@@ -41,6 +41,7 @@ loomcc-tests [options] [test paths or directories...]
   --refs-only          run only the reference tools (validates the tests)
   --modes LIST         loomcc modes to run: E,syntax,S,ir,rom (default: all that apply)
   --xfail-list FILE    extra expected failures, one per line: `path [mode] # reason`
+                       (mode: a loomcc mode, or ref:<tool> for a reference)
                        (a path may be a directory prefix)
   -j N                 parallel jobs (default 2)
   -v / -vv             print every result / also command lines and tool output on failure
