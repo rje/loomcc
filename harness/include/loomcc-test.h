@@ -35,8 +35,4 @@ typedef unsigned int u32;
 /* Runtime check: abort() when false. */
 #define CHECK(e) do { if (!(e)) abort(); } while (0)
 
-/* Keeps the optimiser from folding a value (all compilers here respect
- * volatile). */
-#define OPAQUE(T, v) (*(volatile T *)&(T){v})
-
 #endif

@@ -81,7 +81,13 @@ pub fn log_cmd(log: &mut String, o: &exec::Output) {
 }
 
 pub fn first_lines(s: &str, n: usize) -> String {
-    let v: Vec<&str> = s.lines().filter(|l| !l.contains("816opt")).take(n).collect();
+    // Drop tool chatter that is present on every run (816-opt banners,
+    // wlalink's bank count and PVSnesLib's duplicate section labels).
+    let v: Vec<&str> = s
+        .lines()
+        .filter(|l| !l.contains("816opt") && !l.contains("OBTAIN_ROMBANKS") && !l.contains("SECTIONSTART_.libc_mem") && !l.contains("SECTIONEND_.libc_mem"))
+        .take(n)
+        .collect();
     v.join("\n")
 }
 

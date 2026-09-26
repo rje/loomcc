@@ -479,7 +479,10 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             let prog = need!(&tools.clang, "clang");
             let mut args = vec!["-std=c17".to_string(), "-pedantic".into(), "-fsyntax-only".into(), "-fno-caret-diagnostics".into()];
             if tool == "clang16" {
+                // Plain char is signed for loomcc and 816-tcc; clang's msp430
+                // default changed between versions, so pin it.
                 args.push("--target=msp430-none-elf".into());
+                args.push("-fsigned-char".into());
             }
             args.push(harness_inc(cfg));
             args.extend(t.options.clone());
@@ -503,6 +506,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             let exe = work.join("host.exe");
             let mut args = vec![
                 "-std=c17".to_string(),
+                "-fsigned-char".into(),
                 "-O1".into(),
                 "-w".into(),
                 // Undefined behaviour traps (no runtime library to load):
@@ -536,7 +540,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             let sources: Vec<String> = std::iter::once(file.clone()).chain(t.extra_sources.iter().cloned()).chain(t.tcc_sources.iter().cloned()).collect();
             for (n, s) in sources.iter().enumerate() {
                 let ll = work.join(format!("s{}.ll", n));
-                let mut args = vec!["--target=msp430-none-elf".to_string(), "-std=c17".into(), "-O0".into(), "-w".into(), "-S".into(), "-emit-llvm".into(), harness_inc(cfg)];
+                let mut args = vec!["--target=msp430-none-elf".to_string(), "-fsigned-char".into(), "-std=c17".into(), "-O0".into(), "-w".into(), "-S".into(), "-emit-llvm".into(), harness_inc(cfg)];
                 args.extend(t.options.clone());
                 args.extend([s.clone(), "-o".into(), ll.display().to_string()]);
                 let out = exec::run(&clang, &args, dir, timeout(t, 60));
