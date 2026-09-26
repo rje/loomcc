@@ -131,6 +131,22 @@ arguments' bytes as one and everything after is shifted. Any variadic
 function (a logging helper, a `printf` port) is affected. Workaround: cast
 `char`-typed arguments to `unsigned` or `int` at the call.
 
+## 6. Converting a pointer to a 32-bit integer loses the bank
+
+Tests: `tests/t5-snes/data/pointer-to-u32.c`, `tests/t5-snes/hw/dma-rom-to-wram.c`
+
+```c
+static const unsigned char table[4] = { 1, 2, 3, 4 };
+unsigned long long a = (unsigned long long)table;   /* 816-tcc's 32-bit type */
+/* a >> 16 is 0xffff or 0: the low word, sign-extended */
+```
+
+816-tcc converts the 24-bit pointer by taking its low word and sign-extending
+it, so the bank is lost. Code that splits an address into DMA source
+registers (`$4302-$4304`) from a pointer gets the wrong bank. The pointer
+itself is right: dereferencing it works. Workaround: take the bank with the
+assembler (`#:label`) or read the pointer's bytes through a union.
+
 ## Also seen (not miscompiles)
 
 - `#if` arithmetic is not done in intmax_t (`#if 65535 + 1 == 65536` is

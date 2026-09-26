@@ -780,6 +780,12 @@ deliberately calls abort()
 
 - `t3-sema/constraint/zero-array-size.c`
 
+### `tcc-bank-wrap` (tcc-rom, 1 test)
+
+816-tcc's stores through p++ wrap within bank $7E
+
+- `t5-snes/data/wram-bank-crossing.c`
+
 ### `tcc-deref-call-spill` (tcc-rom, 1 test)
 
 816-tcc spills f into its stack slot after pushing the arguments (S-relative offset not adjusted), so the call jumps to garbage
@@ -811,6 +817,13 @@ deliberately calls abort()
 816-tcc calls tcc__ashldi3 for variable 32-bit shifts and PVSnesLib's libtcc lacks it
 
 - `t4-exec/arith32/shifts.c`
+
+### `tcc-ptr-to-int32` (tcc-rom, 2 tests)
+
+816-tcc converts a pointer to a 32-bit integer by sign-extending its low word, losing the bank
+
+- `t5-snes/data/pointer-to-u32.c`
+- `t5-snes/hw/dma-rom-to-wram.c`
 
 ### `tcc-t7` (tcc-rom, 6 tests)
 
