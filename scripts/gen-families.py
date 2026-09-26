@@ -16,6 +16,9 @@ Families (weighted toward the patterns Loom's C uses):
   t2-parse/gen-declarator/*.c        random declarators, abstract and typedef twins
   t2-parse/gen-precedence/*.c        random expressions with minimal parentheses
   t3-sema/gen-conversions/*.c        the type of T1 op T2 for every integer pair
+  t3-sema/gen-layout/*.c             random struct layouts per 816-tcc's rules (tcc reference)
+  t2-parse/gen-designators/*.c       array lengths from designated initialisers
+  t4-exec/gen-truncate/*.c           results stored into narrower/other types
 
 Do not edit generated files; change this script and rerun it.
 """
@@ -567,7 +570,129 @@ def conversion_family():
     return n
 
 
+
+
+# ----------------------------------------------------- layout, per 816-tcc
+
+# (C type, size, align) inside structs, per 816-tcc (loomcc PLAN section 1):
+# pointers are 4 bytes and 4-aligned; the 32-bit integer (i32: long for
+# loomcc, long long for 816-tcc) is 4-aligned too.
+LAYOUT_SCALARS = [("u8", 1, 1), ("i8", 1, 1), ("i16", 2, 2), ("u16", 2, 2), ("int", 2, 2), ("i32", 4, 4),
+                  ("u8 *", 4, 4), ("const i16 *", 4, 4), ("void (*)(void)", 4, 4)]
+
+
+def member_decl(ctype, name, dims):
+    suffix = "".join(f"[{d}]" for d in dims)
+    if ctype == "void (*)(void)":
+        return f"void (*{name}{suffix})(void);"
+    return f"{ctype} {name}{suffix};"
+
+
+def gen_struct(r, tag, depth, structs):
+    members = []
+    for i in range(r.randint(1, 6)):
+        if depth > 0 and structs and r.random() < 0.2:
+            sname, ssize, salign, _ = r.choice(structs)
+            dims = [r.choice([2, 3])] if r.random() < 0.3 else []
+            members.append((f"struct {sname}", ssize, salign, f"m{i}", dims))
+            continue
+        c, sz, al = r.choice(LAYOUT_SCALARS)
+        dims = [r.choice([1, 2, 3, 5])] if r.random() < 0.3 else []
+        members.append((c, sz, al, f"m{i}", dims))
+    off, align, offsets = 0, 1, []
+    for c, sz, al, name, dims in members:
+        total = sz
+        for d in dims:
+            total *= d
+        off = (off + al - 1) // al * al
+        offsets.append((name, off))
+        off += total
+        align = max(align, al)
+    size = (off + align - 1) // align * align
+    body = "\n".join("  " + (member_decl(c, name, dims) if not c.startswith("struct") else f"{c} {name}{''.join(f'[{d}]' for d in dims)};")
+                     for c, sz, al, name, dims in members)
+    return tag, size, align, offsets, f"struct {tag} {{\n{body}\n}};"
+
+
+def layout_family():
+    r = random.Random(41)
+    n = 0
+    for k in range(60):
+        structs, text, checks = [], [], []
+        for j in range(6):
+            tag, size, align, offsets, src = gen_struct(r, f"S{k}_{j}", 1, structs)
+            structs.append((tag, size, align, offsets))
+            text.append(src)
+            checks.append(f"STATIC_CHECK(sizeof(struct {tag}) == {size});")
+            checks.append(f"STATIC_CHECK(sizeof(struct {tag}[3]) == {3 * size});")
+            for name, off in offsets:
+                checks.append(f"STATIC_CHECK(offsetof(struct {tag}, {name}) == {off});")
+        src = HEADER + ("// loomcc-do: syntax\n"
+                        "// Random struct shapes laid out by 816-tcc's rules (pointers and 32-bit\n"
+                        "// integers 4-aligned inside structs, size rounded to the largest alignment):\n"
+                        "// the layout Loom's hand-written assembly reads by offset.\n"
+                        "// loomcc-ref: tcc\n"
+                        '#include <stddef.h>\n#include "loomcc-test.h"\n' + "\n".join(text) + "\n" + "\n".join(checks) + "\n")
+        write(ROOT / f"t3-sema/gen-layout/layout-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def designator_family():
+    r = random.Random(43)
+    n = 0
+    for k in range(40):
+        checks, decls = [], []
+        for j in range(6):
+            items, pos, top = [], 0, 0
+            vals = {}
+            for _ in range(r.randint(1, 7)):
+                if r.random() < 0.5:
+                    pos = r.randrange(0, 20)
+                    items.append(f"[{pos}] = {pos + 100}")
+                else:
+                    items.append(f"{pos + 100}")
+                vals[pos] = pos + 100
+                pos += 1
+                top = max(top, pos)
+            decls.append(f"static const i16 a{j}[] = {{ {', '.join(items)} }};")
+            checks.append(f"STATIC_CHECK(sizeof(a{j}) / sizeof(a{j}[0]) == {top});")
+        src = HEADER + ("// loomcc-do: syntax\n"
+                        "// Array length from designated and positional initialisers: the largest\n"
+                        "// index initialised, plus one (6.7.9p22); a later designator may go back.\n"
+                        '#include "loomcc-test.h"\n' + "\n".join(decls) + "\n" + "\n".join(checks) + "\n")
+        write(ROOT / f"t2-parse/gen-designators/desig-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def truncation_family():
+    r = random.Random(47)
+    n = 0
+    small = ["u8", "i8", "u16", "i16"]
+    for src_t in small:
+        for dst_t in small:
+            lines = []
+            for _ in range(24):
+                a, b = r.choice(VALUES[src_t]), r.choice(VALUES[src_t])
+                op = r.choice(["+", "-", "^", "|", "&"])
+                res = evaluate(op, a, src_t, b, src_t)
+                if res is None:
+                    continue
+                v, rt = res
+                lines.append(f"  a = {a}; b = {b}; d = a {op} b; CHECK(d == ({dst_t})({lit(v, rt) if rt in ('u16', 'i16') else v}));")
+            src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n"
+                            f"// {src_t} op {src_t} stored into a {dst_t}: the value converts (wraps) on assignment.\n"
+                            '#include "loomcc-test.h"\n'
+                            f"static volatile {src_t} a, b;\nstatic volatile {dst_t} d;\n"
+                            "int main(void) {\n" + "\n".join(lines) + "\n  return 0;\n}\n")
+            write(ROOT / f"t4-exec/gen-truncate/{src_t}-to-{dst_t}.c", src)
+            n += 1
+    return n
+
+
 if __name__ == "__main__":
     total = (arith_family() + soa_family() + switch_family() + romwalk_family()
-             + declarator_family() + precedence_family() + conversion_family())
+             + declarator_family() + precedence_family() + conversion_family()
+             + layout_family() + designator_family() + truncation_family())
     print(f"wrote {total} generated tests")
