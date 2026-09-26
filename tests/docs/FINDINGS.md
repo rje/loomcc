@@ -44,32 +44,6 @@ Loom's C does not use it: low priority.
 - `va-opt-stringize.c`: `#__VA_OPT__(...)` must stringize the replacement
   (`H3(, 0)` gives `""`); loomcc leaves `#` in the output.
 
-### F23. Preprocessor diagnostics still missing (1fc1258)
-
-| test | rule | loomcc |
-|---|---|---|
-| `t1-pp/variadic/too-few-variadic-args.c` (`M(x)` for `M(X, ...)`) | C17 6.10.3p4 (constraint; C23 relaxes it) | silent |
-| `t1-pp/predef/undef-predefined.c` (`#undef __FILE__`) | 6.10.8p2 (undefined; gcc and clang warn) | silent for `__FILE__` (`__STDC__` is diagnosed) |
-| `t1-pp/mcpp/e_ucn.c` line 6 (`#define macro\U0000001F`) | 6.4.3p2: a UCN may not name a control character | silent |
-
-The wrapped GCC `gcc.dg/cpp` tests also flag `defined` produced by macro
-expansion (`defined.c`) and a directive inside macro arguments
-(`mac-dir-2.c`); both are undefined behaviour that gcc diagnoses, so they are
-quality issues only.
-
-### F27. Constraint violations found by the new T2/T3 tests (cac2523)
-
-| test | rule | loomcc |
-|---|---|---|
-| `t2-parse/errors/array-of-void.c` (`void a[3];`) | 6.7.6.2p1 | accepted |
-| `t2-parse/errors/auto-at-file-scope.c`, `register-at-file-scope.c` | 6.9p2 | accepted |
-| `t2-parse/errors/empty-struct.c` (`struct Empty { };`) | 6.7.2.1p8 (syntax: a member is required) | accepted |
-| `t2-parse/errors/enum-member-repeated.c` (`enum E { A, B, A };`) | 6.7.1 (redeclaration) | accepted |
-| `t2-parse/errors/restrict-on-non-pointer.c` (`restrict int x;`) | 6.7.3p2 | accepted |
-| `t3-sema/constraint/redeclare-different-linkage.c` (`int x; static int x;`) | 6.2.2p7 (undefined; clang errors) | silent |
-| `t3-sema/constraint/sizeof-void.c` | 6.5.3.4p1 | silent |
-| `t3-sema/expr/pointer-compare-mismatch.c` (`int *` == `char *`) | 6.5.9p2 | silent |
-
 ### F28. A function bigger than a ROM bank cannot link (cac2523, rom; low priority)
 
 Csmith seed 239 (`tests/t7-random/run.py --csmith --seeds 239`): loomcc
@@ -78,32 +52,6 @@ compiles `func_1` to 34,570 bytes, and wlalink reports `No room for section
 the hard limit for one SUPERFREE section; loomcc could split huge functions,
 limit inlining into them, or at least say which function is too big.
 816-tcc cannot assemble this program either (its stack offsets overflow).
-
-### F31. A panic on an enumerator of LLONG_MAX (481d369; high priority, a crash)
-
-Tests: `t3-sema/constraint/enum-value-too-large.c`,
-`enum-value-too-large-then-next.c` (and gcc.dg `c11-enum-1.c`).
-`enum big { BIG = 9223372036854775807LL };` makes loomcc panic at
-`crates/sema/src/check.rs:414:17: attempt to add with overflow`, even with
-no enumerator after it. Expected: a diagnostic (6.7.2.2p2: the value must be
-representable as an int; loomcc already warns for values that are merely
-too big for 16 bits).
-
-### F32. Two scope rules give spurious errors (481d369)
-
-- `t3-sema/scope/tag-in-parameter-list.c` (from gcc.dg `struct-in-proto-1.c`):
-  `int f(struct S { int i; } s) { return sizeof(struct S); }`: a tag
-  declared in a function definition's parameter list is in scope, and
-  complete, in the body (6.2.1p4). loomcc: `invalid application of 'sizeof'
-  to an incomplete type 'struct S'`.
-- `t3-sema/scope/inner-extern-composite-type.c` (from gcc.dg `redecl-14.c`):
-  an inner-block `extern IA5 *a[];` completes the element type for that
-  scope (6.2.7p4 composite type); loomcc keeps the file-scope `IA *` and
-  rejects `sizeof(*a[0])`. 816-tcc does the same. Esoteric.
-
-Also seen: after a real error (`void foo(); int foo[] = {0};`, gcc.dg
-`pr69819.c`) loomcc adds a spurious second error on the earlier line
-(`variable has incomplete type 'void ()'`). Cosmetic.
 
 ### F33. Constraint diagnostics missing, from gcc.dg (481d369)
 
@@ -136,6 +84,19 @@ literal. loomcc stops with `stream did not contain valid UTF-8`. The source
 character set is implementation-defined, but 816-tcc and clang accept such
 bytes in literals (passing them through unchanged), and Latin-1 bytes in
 SNES text strings are plausible. Low priority.
+
+### F36. Defining a variadic function is not supported (open; low priority for Loom)
+
+`va_start`/`va_arg`/`va_end` report "variadic functions are not supported by
+the 65816 backend". Calling variadic functions compiled by 816-tcc (printf)
+works. Loom's C defines none.
+
+### F37. Compile time on huge functions (open; low priority)
+
+The debug build takes 90 s at `-S` for `gcc.c-torture/compile/20001226-1.c`
+and over 120 s for `limits-caselabels.c` (10,000 case labels): the backend's
+per-instruction liveness queries are quadratic in function size. Loom's
+largest functions compile in well under a second.
 
 ## Design questions
 
@@ -310,3 +271,91 @@ and stored after the parallel argument move; index-register arguments
 whose direct-page source the move overwrites are parked on the stack; an
 816-tcc result homed on its own high word ($02 or $04) is stored high word
 first. The test passes.
+
+### F23. Preprocessor diagnostics still missing (1fc1258)
+
+| test | rule | loomcc |
+|---|---|---|
+| `t1-pp/variadic/too-few-variadic-args.c` (`M(x)` for `M(X, ...)`) | C17 6.10.3p4 (constraint; C23 relaxes it) | silent |
+| `t1-pp/predef/undef-predefined.c` (`#undef __FILE__`) | 6.10.8p2 (undefined; gcc and clang warn) | silent for `__FILE__` (`__STDC__` is diagnosed) |
+| `t1-pp/mcpp/e_ucn.c` line 6 (`#define macro\U0000001F`) | 6.4.3p2: a UCN may not name a control character | silent |
+
+The wrapped GCC `gcc.dg/cpp` tests also flag `defined` produced by macro
+expansion (`defined.c`) and a directive inside macro arguments
+(`mac-dir-2.c`); both are undefined behaviour that gcc diagnoses, so they are
+quality issues only.
+
+Fixed in loomcc 0da033c: all three are diagnosed (a missing variadic
+argument only when the macro body does not use `__VA_OPT__` or
+`, ## __VA_ARGS__`, which are written for the empty case).
+
+### F27. Constraint violations found by the new T2/T3 tests (cac2523)
+
+| test | rule | loomcc |
+|---|---|---|
+| `t2-parse/errors/array-of-void.c` (`void a[3];`) | 6.7.6.2p1 | accepted |
+| `t2-parse/errors/auto-at-file-scope.c`, `register-at-file-scope.c` | 6.9p2 | accepted |
+| `t2-parse/errors/empty-struct.c` (`struct Empty { };`) | 6.7.2.1p8 (syntax: a member is required) | accepted |
+| `t2-parse/errors/enum-member-repeated.c` (`enum E { A, B, A };`) | 6.7.1 (redeclaration) | accepted |
+| `t2-parse/errors/restrict-on-non-pointer.c` (`restrict int x;`) | 6.7.3p2 | accepted |
+| `t3-sema/constraint/redeclare-different-linkage.c` (`int x; static int x;`) | 6.2.2p7 (undefined; clang errors) | silent |
+| `t3-sema/constraint/sizeof-void.c` | 6.5.3.4p1 | silent |
+| `t3-sema/expr/pointer-compare-mismatch.c` (`int *` == `char *`) | 6.5.9p2 | silent |
+
+Fixed in loomcc 0da033c: errors for the array of void, auto/register at
+file scope, the repeated enumerator, restrict on a non-pointer and the
+linkage conflict; warnings for the empty struct, `sizeof(void)` and the
+distinct pointer comparison. The tests pass.
+
+### F31. A panic on an enumerator of LLONG_MAX (481d369; high priority, a crash)
+
+Tests: `t3-sema/constraint/enum-value-too-large.c`,
+`enum-value-too-large-then-next.c` (and gcc.dg `c11-enum-1.c`).
+`enum big { BIG = 9223372036854775807LL };` makes loomcc panic at
+`crates/sema/src/check.rs:414:17: attempt to add with overflow`, even with
+no enumerator after it. Expected: a diagnostic (6.7.2.2p2: the value must be
+representable as an int; loomcc already warns for values that are merely
+too big for 16 bits).
+
+Fixed in loomcc 0da033c: an implicit enumerator after the largest value is
+an overflow error, not an arithmetic panic. The tests pass.
+
+### F32. Two scope rules give spurious errors (481d369)
+
+- `t3-sema/scope/tag-in-parameter-list.c` (from gcc.dg `struct-in-proto-1.c`):
+  `int f(struct S { int i; } s) { return sizeof(struct S); }`: a tag
+  declared in a function definition's parameter list is in scope, and
+  complete, in the body (6.2.1p4). loomcc: `invalid application of 'sizeof'
+  to an incomplete type 'struct S'`.
+- `t3-sema/scope/inner-extern-composite-type.c` (from gcc.dg `redecl-14.c`):
+  an inner-block `extern IA5 *a[];` completes the element type for that
+  scope (6.2.7p4 composite type); loomcc keeps the file-scope `IA *` and
+  rejects `sizeof(*a[0])`. 816-tcc does the same. Esoteric.
+
+Also seen: after a real error (`void foo(); int foo[] = {0};`, gcc.dg
+`pr69819.c`) loomcc adds a spurious second error on the earlier line
+(`variable has incomplete type 'void ()'`). Cosmetic.
+
+Fixed in loomcc 0da033c (both scope rules; composite types now recurse
+through pointers and array elements). The cosmetic second error after
+`pr69819.c`'s real one remains.
+
+### F35. Compiler crashes found by sweeping 14,304 C files (0da033c)
+
+`loomcc -fsyntax-only` and `-S` over every C file in this suite and the
+fetched GCC testsuites (gcc.dg, gcc.c-torture) found 63 crashes and 8
+timeouts, all in inputs outside Loom's subset:
+
+| class | example | fix |
+|---|---|---|
+| stack overflow (21 files): `va_arg` of a struct type recursed between the aggregate and lvalue lowerings | `931004-2.c` | an error (variadic functions are unsupported, F36) |
+| shift-count underflow (16): a `long long` bit-field wider than 32 bits | `bitfld-3.c`, `920501-3.c` | an error |
+| `#line 18446744073709551616` overflowed the next line number | `cpp/line6.c` | clamped (the warning stays) |
+| initialising a flexible array member wrote past the object | `pr56078.c` | an error (a GNU extension) |
+| a 6x10^17-byte array aborted in allocation | `pr65680.c` | an error: no object may exceed the 16 MiB address space |
+| a switch case range of 2^64 overflowed | `pr34154.c` | 128-bit arithmetic |
+| `-fsyntax-only` quadratic in file-scope declarations (over 60 s) | `limits-externdecl.c` | globals indexed by name (2.5 s) |
+
+Tests: `t3-sema/robust/*.c`, `t5-snes/unsupported/*.c`.
+
+Fixed in loomcc SWEEPHASH.

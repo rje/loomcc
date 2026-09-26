@@ -73,7 +73,7 @@ impl SourceMap {
         let mut line = loc.line;
         if let Some(maps) = self.line_maps.get(&loc.file) {
             if let Some(m) = maps.iter().rev().find(|m| m.phys <= loc.line) {
-                line = m.line + (loc.line - m.phys);
+                line = m.line.saturating_add(loc.line.saturating_sub(m.phys));
                 if let Some(n) = &m.name {
                     name = n.clone();
                 } else if let Some(prev) = maps.iter().rev().filter(|x| x.phys <= m.phys).find_map(|x| x.name.clone()) {
@@ -1016,7 +1016,7 @@ impl Preprocessor {
             .line_maps
             .entry(name.loc.file)
             .or_default()
-            .push(LineMap { phys: next_phys, line: value.min(u32::MAX as u64) as u32, name: new_name });
+            .push(LineMap { phys: next_phys, line: value.min(2147483647) as u32, name: new_name });
     }
 
     /// `_Pragma ( string-literal )`: destringized into a pragma.

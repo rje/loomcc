@@ -471,7 +471,7 @@ impl<'a> Lowerer<'a> {
                 let mut ranges = Vec::new();
                 for (lo, hi, idx) in cases {
                     let b = label_block[idx];
-                    if hi - lo < 64 {
+                    if (*hi as i128) - (*lo as i128) < 64 {
                         for v in *lo..=*hi {
                             list.push((v, b));
                         }
@@ -1112,6 +1112,11 @@ impl<'a> Lowerer<'a> {
                     2 => IrTy::I16,
                     _ => IrTy::I32,
                 };
+                if *unit > 4 || bit + width > unit_ty.bits() {
+                    // A `long long` bit-field: 64-bit types are not supported.
+                    self.error(e.loc, "bit-fields of 64-bit types are not supported by the 65816 backend");
+                    return LV::Reg(self.vreg(IrTy::I16));
+                }
                 match self.lvalue(obj) {
                     LV::Mem(mut a, _, v) => {
                         a.offset += *off as i64;
@@ -1134,12 +1139,22 @@ impl<'a> Lowerer<'a> {
             }
             _ => {
                 // A non-lvalue aggregate (call result): into a temporary.
-                if self.types().is_record(e.ty) {
+                // Only the kinds agg_addr handles itself: its fallback comes
+                // back here.
+                let agg_kind = matches!(
+                    e.kind,
+                    ExprKind::Call(..) | ExprKind::Assign(..) | ExprKind::Cond(..) | ExprKind::Comma(..) | ExprKind::StmtExpr(..)
+                );
+                if self.types().is_record(e.ty) && agg_kind {
                     let a = self.agg_addr(e);
                     let n = self.types().size(e.ty) as u32;
                     return LV::Mem(a, MemTy::Agg(n), false);
                 }
-                self.error(e.loc, "expression is not an lvalue");
+                if matches!(e.kind, ExprKind::VaArg(_)) {
+                    self.value(e); // reports that variadic functions are unsupported
+                } else {
+                    self.error(e.loc, "expression is not an lvalue");
+                }
                 LV::Reg(self.vreg(IrTy::I16))
             }
         }

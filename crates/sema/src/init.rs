@@ -376,6 +376,20 @@ impl Checker {
 
     /// Collects the elements initialising an object of type `ty`.
     pub(crate) fn collect_init(&mut self, ty: Ty, init: &ast::Initializer, offset: u64, out: &mut Vec<InitElem>) {
+        // A flexible array member (typed `T[0]`, like GNU's zero-length
+        // arrays) has no storage in a static object: giving it elements is a
+        // GNU extension loomcc does not support.
+        if matches!(self.types.kind(ty), TyKind::Array(_, None) | TyKind::Array(_, Some(0))) {
+            let empty = matches!(init, ast::Initializer::List(items, _) if items.is_empty());
+            if !empty {
+                let loc = match init {
+                    ast::Initializer::Expr(e) => e.loc,
+                    ast::Initializer::List(_, l) => *l,
+                };
+                self.error(loc, "initialization of a flexible array member is not supported");
+            }
+            return;
+        }
         match init {
             ast::Initializer::Expr(e) => {
                 // A string literal for a char array.
@@ -446,6 +460,10 @@ impl Checker {
         let ExprKind::Str(g) = s.kind else { return };
         let mut bytes = self.globals[g.0 as usize].init.as_ref().unwrap().bytes.clone();
         let n = self.types.size(ty) as usize;
+        if n == 0 {
+            self.error(s.loc, "initialization of a flexible array member is not supported");
+            return;
+        }
         if bytes.len() > n {
             // `char s[3] = "abc"` drops the NUL; longer is an error.
             if bytes.len() > n + self.types.size(self.types.elem(ty).unwrap()) as usize {
@@ -462,6 +480,16 @@ impl Checker {
     fn list_into(&mut self, ty: Ty, items: &[ast::InitItem], idx: &mut usize, offset: u64, out: &mut Vec<InitElem>, braced: bool) {
         match self.types.kind(ty).clone() {
             TyKind::Array(elem, n) => {
+                if matches!(n, None | Some(0)) {
+                    // A flexible array member (see collect_init).
+                    if *idx < items.len() {
+                        self.error(items[*idx].init_loc(), "initialization of a flexible array member is not supported");
+                        if braced {
+                            *idx = items.len();
+                        }
+                    }
+                    return;
+                }
                 let esize = self.types.size(elem);
                 let mut pos: u64 = 0;
                 while *idx < items.len() {
@@ -727,6 +755,13 @@ impl Checker {
                     return;
                 }
                 let size = self.types.size(el.ty) as usize;
+                let need = el.bits.map_or(size, |(_, _, unit)| unit as usize);
+                if off + need > si.bytes.len() {
+                    // Past the end of the object: a flexible array member
+                    // given elements (a GNU extension).
+                    self.error(e.loc, "initialization of a flexible array member is not supported");
+                    return;
+                }
                 match self.eval_const(e) {
                     Some(ConstVal::Int(v)) => {
                         if let Some((bit, width, unit)) = el.bits {

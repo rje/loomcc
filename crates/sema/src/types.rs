@@ -357,7 +357,7 @@ impl Types {
             TyKind::Float(FloatKind::Float) => 4,
             TyKind::Float(_) => 8,
             TyKind::Ptr(_) => self.layout.ptr_size,
-            TyKind::Array(e, n) => self.size(*e) * n.unwrap_or(0),
+            TyKind::Array(e, n) => self.size(*e).saturating_mul(n.unwrap_or(0)),
             TyKind::Func(_) => 1,
             TyKind::Record(r) => self.records[r.0 as usize].size,
             TyKind::Enum(_) => 2,

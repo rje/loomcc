@@ -42,6 +42,9 @@ pub struct Checker {
     /// Tags declared in the most recent function declarator's parameter
     /// list: a definition's body scope inherits them (6.2.1p4).
     pub(crate) param_tags: HashMap<String, Ty>,
+    /// Globals by name (declare_global merges by name; a linear search was
+    /// quadratic in the number of file-scope declarations).
+    pub(crate) global_index: HashMap<String, u32>,
     pub(crate) register_locals: HashSet<LocalId>,
 }
 
@@ -69,6 +72,7 @@ impl Checker {
             interrupt_roots: HashSet::new(),
             kr_names: Vec::new(),
             param_tags: HashMap::new(),
+            global_index: HashMap::new(),
             register_locals: HashSet::new(),
         };
         // __builtin_va_list: a pointer-sized opaque type.
@@ -512,6 +516,14 @@ impl Checker {
                         }
                     }
                 };
+                // The 65816 addresses 16 MiB: no object can be larger.
+                let n = match n {
+                    Some(k) if self.types.size(base).saturating_mul(k) > 0x100_0000 => {
+                        self.error(d.loc, "array is too large (larger than the 16 MiB address space)");
+                        Some(1)
+                    }
+                    other => other,
+                };
                 let a = self.types.array(base, n);
                 self.declarator(inner, a)
             }
@@ -572,7 +584,7 @@ impl Checker {
     /// name.
     pub(crate) fn declare_global(&mut self, name: &str, ty: Ty, linkage: Linkage, is_func: bool, loc: Loc) -> GlobalId {
         // Same name with linkage: merge (search existing globals).
-        let existing = self.globals.iter().position(|g| g.name == name && g.linkage_matches(linkage));
+        let existing = self.global_index.get(name).map(|&i| i as usize).filter(|&i| self.globals[i].linkage_matches(linkage));
         if let Some(i) = existing {
             let g = &self.globals[i];
             let old = g.ty;
@@ -598,6 +610,7 @@ impl Checker {
             address_taken: false,
             func: None,
         });
+        self.global_index.entry(name.to_string()).or_insert((self.globals.len() - 1) as u32);
         GlobalId((self.globals.len() - 1) as u32)
     }
 
