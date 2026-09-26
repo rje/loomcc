@@ -1,0 +1,198 @@
+//! Harness ROMs: assemble compiled units beside harness/rom/harness.asm and
+//! PVSnesLib's crt0/libc, run the ROM in loom-emulator and read the outcome.
+
+use crate::exec;
+use crate::tools::Tools;
+use std::path::{Path, PathBuf};
+use std::time::Duration;
+
+/// The macros every ROM build passes to the compiler.
+pub const ROM_DEFINES: &[&str] =
+    &["-Dmain=loomcc_test_main", "-Dabort=loomcc_test_abort", "-Dexit=loomcc_test_exit", "-DLOOMCC_TEST_ROM=1"];
+
+const DONE_STATUS: i64 = 0x600d;
+const ABORT_STATUS: i64 = 0xdead;
+const EXIT_STATUS: i64 = 0xe817;
+
+pub enum RomOutcome {
+    Pass,
+    Fail(String),
+    /// The harness itself did not work (build or emulator trouble).
+    Broken(String),
+}
+
+pub fn write_hdr(tools: &Tools, dir: &Path) -> Result<(), String> {
+    let pvs = tools.pvsneslib.as_ref().ok_or("no PVSnesLib")?;
+    let text = std::fs::read_to_string(pvs.join("devkitsnes/include/hdr.asm.in")).map_err(|e| e.to_string())?;
+    let mut text = text;
+    for (k, v) in [
+        ("HIROMDEF", ""),
+        ("FASTROMDEF", ".DEFINE FASTROM 1"),
+        ("ROMTITLE", "LOOMCC TESTS"),
+        ("CARTRIDGETYPE", "00"),
+        ("ROMSIZE", "08"),
+        ("SRAMSIZE", "00"),
+        ("COUNTRY", "01"),
+        ("LICENSEECODE", "00"),
+        ("VERSION", "00"),
+        ("ROMBANKS", "8"),
+        ("ROMBANKSIZE", "8000"),
+        ("ROMMODE", "LOROM"),
+        ("ROMSPEED", "FASTROM"),
+    ] {
+        text = text.replace(&format!("@{}@", k), v);
+    }
+    std::fs::write(dir.join("hdr.asm"), text).map_err(|e| e.to_string())
+}
+
+/// 816-tcc + 816-opt: C to a WLA-DX unit.
+pub fn tcc_compile(tools: &Tools, c: &Path, out_asm: &Path, flags: &[String], cwd: &Path, log: &mut String) -> Result<(), String> {
+    let tcc = tools.tcc.as_ref().ok_or("no 816-tcc")?;
+    let opt = tools.tcc_opt.as_ref().ok_or("no 816-opt")?;
+    let ps = out_asm.with_extension("ps");
+    let mut args: Vec<String> = flags.to_vec();
+    args.extend(tools.tcc_includes());
+    args.extend(["-F".into(), "-c".into(), c.display().to_string(), "-o".into(), ps.display().to_string()]);
+    let o = exec::run(tcc, &args, cwd, Duration::from_secs(60));
+    log_cmd(log, &o);
+    if !o.ok() {
+        return Err(format!("816-tcc failed ({}): {}", o.describe(), first_lines(&o.stderr, 5)));
+    }
+    let o = exec::run(opt, &["-i".into(), ps.display().to_string(), "-o".into(), out_asm.display().to_string()], cwd, Duration::from_secs(60));
+    log_cmd(log, &o);
+    if !o.ok() {
+        return Err(format!("816-opt failed ({})", o.describe()));
+    }
+    Ok(())
+}
+
+pub fn log_cmd(log: &mut String, o: &exec::Output) {
+    log.push_str("$ ");
+    log.push_str(&o.cmdline);
+    log.push('\n');
+    if !o.stdout.trim().is_empty() {
+        log.push_str(&first_lines(&o.stdout, 40));
+        log.push('\n');
+    }
+    if !o.stderr.trim().is_empty() {
+        log.push_str(&first_lines(&o.stderr, 40));
+        log.push('\n');
+    }
+}
+
+pub fn first_lines(s: &str, n: usize) -> String {
+    let v: Vec<&str> = s.lines().filter(|l| !l.contains("816opt")).take(n).collect();
+    v.join("\n")
+}
+
+fn read_symbol(sym: &str, name: &str) -> Option<u32> {
+    for line in sym.lines() {
+        let mut it = line.split_whitespace();
+        let (Some(a), Some(n)) = (it.next(), it.next()) else { continue };
+        if n == name {
+            return u32::from_str_radix(a, 16).ok();
+        }
+    }
+    None
+}
+
+/// Assembles `units` (WLA-DX sources already in `dir`) with the harness,
+/// links and runs the ROM.
+pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u32, log: &mut String) -> RomOutcome {
+    macro_rules! tryb {
+        ($e:expr) => {
+            match $e {
+                Ok(v) => v,
+                Err(e) => return RomOutcome::Broken(e.to_string()),
+            }
+        };
+    }
+    tryb!(write_hdr(tools, dir));
+    tryb!(std::fs::copy(tools.harness_rom.join("harness.asm"), dir.join("loomcc_harness.asm")));
+    let wla = tools.wla.as_ref().unwrap();
+    let mut objs = Vec::new();
+    let mut all: Vec<PathBuf> = vec![dir.join("loomcc_harness.asm")];
+    all.extend(units.iter().cloned());
+    for u in &all {
+        let obj = u.with_extension("obj");
+        let o = exec::run(
+            wla,
+            &["-d".into(), "-s".into(), "-x".into(), "-o".into(), obj.display().to_string(), u.display().to_string()],
+            dir,
+            Duration::from_secs(60),
+        );
+        log_cmd(log, &o);
+        if !o.ok() {
+            // An assembler error in a compiled unit is the compiler's fault.
+            let msg = format!("wla-65816 rejected {}: {}", u.file_name().unwrap().to_string_lossy(), first_lines(&o.stderr, 5));
+            return if u.ends_with("loomcc_harness.asm") { RomOutcome::Broken(msg) } else { RomOutcome::Fail(msg) };
+        }
+        objs.push(obj);
+    }
+    let pvs = tools.pvsneslib.as_ref().unwrap();
+    let lib = pvs.join("pvsneslib/lib/LoROM_FastROM");
+    let mut linkfile = String::from("[objects]\n");
+    for o in &objs {
+        linkfile.push_str(&format!("{}\n", o.display()));
+    }
+    for l in ["crt0_snes.obj", "libc.obj", "libm.obj", "libtcc.obj"] {
+        linkfile.push_str(&format!("{}\n", lib.join(l).display()));
+    }
+    tryb!(std::fs::write(dir.join("linkfile"), linkfile));
+    let o = exec::run(
+        tools.wlalink.as_ref().unwrap(),
+        &["-d".into(), "-s".into(), "-A".into(), "-c".into(), "-L".into(), lib.display().to_string(), "linkfile".into(), "test.sfc".into()],
+        dir,
+        Duration::from_secs(60),
+    );
+    log_cmd(log, &o);
+    if !o.ok() || !dir.join("test.sfc").exists() {
+        return RomOutcome::Fail(format!("wlalink failed: {}", first_lines(&o.stderr, 5)));
+    }
+    let sym = tryb!(std::fs::read_to_string(dir.join("test.sym")));
+    let (Some(done), Some(status), Some(result)) =
+        (read_symbol(&sym, "test_done"), read_symbol(&sym, "test_status"), read_symbol(&sym, "test_result"))
+    else {
+        return RomOutcome::Broken("harness symbols missing from test.sym".into());
+    };
+    tryb!(std::fs::write(dir.join("script.json"), format!("[{{\"until\":\"done=1\",\"max\":{}}}]", max_frames)));
+    let o = exec::run(
+        tools.emulator.as_ref().unwrap(),
+        &[
+            "trace".into(),
+            "--rom".into(),
+            "test.sfc".into(),
+            "--script".into(),
+            "script.json".into(),
+            "--out".into(),
+            "emu".into(),
+            "--watches".into(),
+            format!("done:{:06x}:2,status:{:06x}:2,result:{:06x}:s2", done, status, result),
+        ],
+        dir,
+        Duration::from_secs(120),
+    );
+    log_cmd(log, &o);
+    if !o.ok() {
+        return RomOutcome::Broken(format!("loom-emulator failed ({}): {}", o.describe(), first_lines(&o.stderr, 5)));
+    }
+    let csv = tryb!(std::fs::read_to_string(dir.join("emu/trace.csv")));
+    let last = csv.lines().last().unwrap_or("");
+    let cols: Vec<i64> = last.split(',').skip(2).filter_map(|v| v.parse().ok()).collect();
+    if cols.len() != 3 {
+        return RomOutcome::Broken(format!("unreadable trace row `{}`", last));
+    }
+    let (d, s, r) = (cols[0], cols[1], cols[2]);
+    let frames = csv.lines().count().saturating_sub(1);
+    if d != 1 {
+        return RomOutcome::Fail(format!("did not finish within {} frames (status {:04x})", frames, s));
+    }
+    match s {
+        DONE_STATUS if r == 0 => RomOutcome::Pass,
+        DONE_STATUS => RomOutcome::Fail(format!("main returned {}", r)),
+        ABORT_STATUS => RomOutcome::Fail("abort() called".into()),
+        EXIT_STATUS if r == 0 => RomOutcome::Pass,
+        EXIT_STATUS => RomOutcome::Fail(format!("exit({})", r)),
+        other => RomOutcome::Broken(format!("unknown status {:04x}", other)),
+    }
+}

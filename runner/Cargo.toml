@@ -1,0 +1,16 @@
+[package]
+name = "loomcc-tests"
+version = "0.1.0"
+edition = "2021"
+description = "Test runner for the loomcc torture suite"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "loomcc-tests"
+path = "src/main.rs"
+
+[dependencies]
+regex = "1"
+
+[profile.dev]
+opt-level = 1

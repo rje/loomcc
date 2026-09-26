@@ -1,0 +1,6 @@
+/runner/target/
+/external/fetched/
+/work/
+*.sfc
+*.obj
+.DS_Store
