@@ -119,6 +119,16 @@ pub fn log_cmd(log: &mut String, o: &exec::Output) {
     }
 }
 
+/// The error lines of a tool's output (warnings skipped), else its first lines.
+pub fn error_lines(s: &str, n: usize) -> String {
+    let errs: Vec<&str> = s.lines().filter(|l| l.contains("error")).take(n).collect();
+    if errs.is_empty() {
+        first_lines(s, n)
+    } else {
+        errs.join("\n")
+    }
+}
+
 pub fn first_lines(s: &str, n: usize) -> String {
     // Drop tool chatter that is present on every run (816-opt banners,
     // wlalink's bank count and PVSnesLib's duplicate section labels).

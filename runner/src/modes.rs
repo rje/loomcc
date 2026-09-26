@@ -401,7 +401,7 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
             if out.ok() {
                 check_stdout(t, &out.stdout)
             } else {
-                Res::Fail(format!("--run-ir: {} {}", out.describe(), rom::first_lines(&out.stderr, 3)))
+                Res::Fail(format!("--run-ir: {} {}", out.describe(), rom::error_lines(&out.stderr, 3)))
             }
         }
         "rom" => {
@@ -418,7 +418,7 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
                 let out = exec::run(lc, &args, dir, timeout(t, 60));
                 rom::log_cmd(log, &out);
                 if !out.ok() {
-                    return Res::Fail(format!("loomcc -S {} failed ({}): {}", s, out.describe(), rom::first_lines(&out.stderr, 3)));
+                    return Res::Fail(format!("loomcc -S {} failed ({}): {}", s, out.describe(), rom::error_lines(&out.stderr, 3)));
                 }
                 units.push(asm);
             }
