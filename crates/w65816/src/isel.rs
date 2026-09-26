@@ -56,6 +56,11 @@ pub enum Helper {
     DivU16,
     DivS16,
     JslR10,
+    /// Software versions for interrupt context (the multiplier and divider
+    /// registers are not saved by the NMI handler).
+    Mul16Soft,
+    DivU16Soft,
+    DivS16Soft,
 }
 
 pub struct Gen<'a> {
@@ -1585,7 +1590,23 @@ impl<'a> Gen<'a> {
     // ------------------------------------------------------------------ calls
 
     fn call_helper(&mut self, h: Helper) {
+        let h = if self.mi.interrupt_funcs.contains(&self.f.name) {
+            match h {
+                Helper::Mul16 => Helper::Mul16Soft,
+                Helper::DivU16 => Helper::DivU16Soft,
+                Helper::DivS16 => Helper::DivS16Soft,
+                o => o,
+            }
+        } else {
+            h
+        };
         self.helpers.insert(h);
+        if h == Helper::DivS16 {
+            self.helpers.insert(Helper::DivU16);
+        }
+        if h == Helper::DivS16Soft {
+            self.helpers.insert(Helper::DivU16Soft);
+        }
         let name = self.mi.helper_name(h);
         self.i("jsl", Mode::Label(name));
         self.xv = None;

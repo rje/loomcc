@@ -27,6 +27,7 @@ assembly that replaced the C in Loom's history, **loomcc** = this compiler.
 | M6a: IR clean-up (CFG simplify, copy propagation, def retargeting, DCE) | 0.51 | 1.68 | 0.62 | 31/31 |
 | M6b: induction variables and indexes homed in X/Y | 0.50 | 1.66 | 0.62 | 31/31 |
 | M6c: interprocedural direct page (a call clobbers only its callee tree's words), arguments written straight into callee homes | 0.45 | 1.48 | 0.51 | 31/31 |
+| M6d: CPU multiplier/divider in the 16-bit helpers (software versions for interrupt context) | 0.42 | 1.41 | 0.54 | 31/31 |
 
 (Geometric means. Lower is better; asm/tcc clocks is 0.32 for scale.)
 
