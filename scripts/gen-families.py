@@ -19,6 +19,8 @@ Families (weighted toward the patterns Loom's C uses):
   t3-sema/gen-layout/*.c             random struct layouts per 816-tcc's rules (tcc reference)
   t2-parse/gen-designators/*.c       array lengths from designated initialisers
   t4-exec/gen-truncate/*.c           results stored into narrower/other types
+  t4-exec/gen-flags, gen-lut, gen-subpixel, gen-dispatch   flag bytes, ROM lookup
+                                     tables, fixed-point motion, handler tables
 
 Do not edit generated files; change this script and rerun it.
 """
@@ -691,8 +693,150 @@ def truncation_family():
     return n
 
 
+# --------------------------------------------- more Loom-shaped run families
+
+def flags_family():
+    """u8/u16 flag words: set, clear, toggle and test with constant and
+    variable masks, as Loom's per-slot state bytes are used."""
+    r = random.Random(53)
+    n = 0
+    for k in range(16):
+        t = "u8" if k % 2 == 0 else "u16"
+        bits = T[t][0]
+        init = r.getrandbits(bits)
+        v = init
+        ops, lines = [], []
+        for _ in range(20):
+            bit = r.randrange(bits)
+            kind = r.choice(["set", "clear", "toggle", "test", "mask"])
+            m = 1 << bit
+            idx = len(ops)
+            if kind == "set":
+                v |= m
+                lines.append(f"  f = ({t})(f | ({t})(1u << bit[{idx}]));")
+            elif kind == "clear":
+                v &= ~m & ((1 << bits) - 1)
+                lines.append(f"  f = ({t})(f & ({t})~({t})(1u << bit[{idx}]));")
+            elif kind == "toggle":
+                v ^= m
+                lines.append(f"  f ^= ({t})(1u << bit[{idx}]);")
+            elif kind == "test":
+                lines.append(f"  CHECK(((f >> bit[{idx}]) & 1u) == {(v >> bit) & 1});")
+            else:
+                mask = r.getrandbits(bits)
+                lines.append(f"  CHECK((f & {mask}u) == {v & mask}u);")
+            ops.append(bit)
+            lines.append(f"  CHECK(f == {v}u);")
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// Flag words ({t}): set, clear, toggle and test bits chosen at run time.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"static const u8 bit_rom[{len(ops)}] = {{ {', '.join(map(str, ops))} }};\n"
+                        f"static volatile {t} f;\nstatic u8 bit[{len(ops)}];\n"
+                        "int main(void) {\n  u8 i;\n"
+                        f"  for (i = 0; i < {len(ops)}; i++) bit[i] = bit_rom[i];\n"
+                        f"  f = {init}u;\n" + "\n".join(lines) + "\n  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-flags/flags-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def lut_family():
+    """Const lookup tables indexed by u8 expressions, 1-D and 2-D, and tables
+    of pointers to tables (level and animation data)."""
+    r = random.Random(59)
+    n = 0
+    for k in range(14):
+        t = r.choice(["u8", "i8", "u16", "i16"])
+        rows, cols = r.choice([(1, 256), (4, 16), (8, 8), (3, 40), (16, 12)])
+        data = [[wrap(r.getrandbits(16), t) for _ in range(cols)] for _ in range(rows)]
+        probes = []
+        for _ in range(24):
+            i, j = r.randrange(rows), r.randrange(cols)
+            probes.append((i, j, data[i][j]))
+        row_sums = [wrap(sum(row), "i32") for row in data]
+        table = ",\n".join("  { " + ", ".join(str(x) for x in row) + " }" for row in data)
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// A const {rows}x{cols} table of {t} in ROM, read through u8 indices, a row\n"
+                        "// pointer, and a table of row pointers.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"static const {t} lut[{rows}][{cols}] = {{\n{table}\n}};\n"
+                        f"static const {t} *const rowp[{rows}] = {{ {', '.join(f'lut[{i}]' for i in range(rows))} }};\n"
+                        f"static volatile u8 vi, vj;\n"
+                        f"static i32 row_sum(const {t} *row) {{ u16 j; i32 s = 0; for (j = 0; j < {cols}; j++) s += row[j]; return s; }}\n"
+                        "int main(void) {\n  u8 i;\n"
+                        + "\n".join(f"  vi = {i}; vj = {j}; CHECK(lut[vi][vj] == ({t})({v})); CHECK(rowp[vi][vj] == ({t})({v}));" for i, j, v in probes)
+                        + "\n" + f"  for (i = 0; i < {rows}; i++) {{\n"
+                        + "".join(f"    if (i == {i}) CHECK(row_sum(rowp[i]) == (i32){s}LL);\n" for i, s in enumerate(row_sums))
+                        + "  }\n  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-lut/lut-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def subpixel_family():
+    """8.8 and 12.4 subpixel movement with s16 velocities, gravity, clamps and
+    the integer part taken by an arithmetic shift, as Loom's movement does."""
+    r = random.Random(61)
+    n = 0
+    for k in range(12):
+        frac = r.choice([4, 8])
+        pos = r.randrange(-2000, 2000) << frac
+        vel = r.randrange(-300, 300)
+        grav = r.randrange(1, 40)
+        vmax = r.randrange(200, 1200)
+        steps = r.randrange(10, 60)
+        trace = []
+        p, v = pos, vel
+        for s in range(steps):
+            v = v + grav
+            if v > vmax:
+                v = vmax
+            p = wrap(p + v, "i16")
+            if s % 7 == 6:
+                trace.append((s, p, v, p >> frac))
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// Subpixel motion: position in {16 - frac}.{frac} fixed point (s16), velocity\n"
+                        "// clamped to a maximum, integer part by an arithmetic shift.\n"
+                        '#include "loomcc-test.h"\n'
+                        "typedef struct { i16 pos; i16 vel; } Body;\n"
+                        f"static Body b;\nstatic volatile i16 grav = {grav}, vmax = {vmax};\n"
+                        "static void tick(Body *p) {\n  p->vel = (i16)(p->vel + grav);\n  if (p->vel > vmax) p->vel = vmax;\n  p->pos = (i16)(p->pos + p->vel);\n}\n"
+                        f"int main(void) {{\n  u8 s;\n  b.pos = (i16)({wrap(pos, 'i16')}); b.vel = {vel};\n"
+                        f"  for (s = 0; s < {steps}; s++) {{\n    tick(&b);\n"
+                        + "".join(f"    if (s == {s}) {{ CHECK(b.pos == ({lit(pp, 'i16')})); CHECK(b.vel == {vv}); CHECK((b.pos >> {frac}) == ({lit(ip, 'i16')})); }}\n" for s, pp, vv, ip in trace)
+                        + "  }\n  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-subpixel/subpixel-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def dispatch_family():
+    """Tables of function pointers indexed by a small enum (Loom's hook and
+    handler tables), with u8 and s16 arguments and results."""
+    r = random.Random(67)
+    n = 0
+    for k in range(10):
+        count = r.randint(2, 9)
+        consts = [r.randrange(-100, 100) for _ in range(count)]
+        ops = [r.choice(["+", "-", "^"]) for _ in range(count)]
+        funcs = "".join(f"static i16 h{i}(u8 a, i16 b) {{ return (i16)(((i16)a {ops[i]} b) + ({consts[i]})); }}\n" for i in range(count))
+        enum = ", ".join(f"EV_{i}" for i in range(count))
+        checks = []
+        for _ in range(16):
+            e, a, b = r.randrange(count), r.randrange(256), r.randrange(-1000, 1000)
+            x = {"+": a + b, "-": a - b, "^": a ^ b}[ops[e]] + consts[e]
+            checks.append(f"  CHECK(dispatch(EV_{e}, {a}, {b}) == ({lit(wrap(x, 'i16'), 'i16')}));")
+        src = HEADER + ("// loomcc-do: run\n// loomcc-int: agnostic\n// A const table of handlers indexed by an enum, called through a pointer.\n"
+                        '#include "loomcc-test.h"\n' + funcs
+                        + f"enum Ev {{ {enum}, EV_COUNT }};\n"
+                        + f"typedef i16 (*Handler)(u8, i16);\nstatic const Handler handlers[EV_COUNT] = {{ {', '.join(f'h{i}' for i in range(count))} }};\n"
+                        + "static i16 dispatch(enum Ev e, u8 a, i16 b) { return (u8)e < EV_COUNT ? handlers[e](a, b) : 0; }\n"
+                        + "int main(void) {\n" + "\n".join(checks) + "\n  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-dispatch/dispatch-{k:02d}.c", src)
+        n += 1
+    return n
+
+
 if __name__ == "__main__":
     total = (arith_family() + soa_family() + switch_family() + romwalk_family()
              + declarator_family() + precedence_family() + conversion_family()
-             + layout_family() + designator_family() + truncation_family())
+             + layout_family() + designator_family() + truncation_family()
+             + flags_family() + lut_family() + subpixel_family() + dispatch_family())
     print(f"wrote {total} generated tests")
