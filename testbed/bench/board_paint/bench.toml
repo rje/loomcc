@@ -1,0 +1,11 @@
+name = "board_paint"
+kind = "pair"
+description = "Falling-piece stamp/erase: write a 4x4 shape's cells, their tilemap words, the surface's dirty spans and the kept board hash. Two paints on a 10x20 board (a T stamp, an I clipped above the top)."
+unit_labels = ["loom_pvs_board_paint"]
+helper_labels = ["tcc__mul"]
+
+[provenance]
+loom_commit = "e239e1c"
+c_source = "runtime/src/board.c:298-333 at e239e1c^ (loom_board_paint_shape) with loom_board_set 229-245, loom_board_draw_cell 170-200, loom_board_cell 118-122, and runtime/src/surface.c:159-192,287-312 at e239e1c^ (loom_surface_dirty, loom_surface_cell, loom_surface_row, loom_surface_mark), taking the LoomBoardPaint record"
+asm_source = "runtime/backends/pvsneslib/src/board.asm:loom_pvs_board_paint (+ _paint_core, _draw, _rehash, _dirty, _load, _mul) at e239e1c (unchanged at HEAD)"
+notes = "The surface is reached through the record's pointers instead of loom_surface_locate, and the scene checks board.c makes before calling the asm (board handle, kind < kind_count, the surface's row bound) are left out of both. The kept hash update (hash += (kind - old) * (2 * index + 1) while hash_valid) is not in the parent's C: the commit added it with the asm; the C here adds it in loom_board_set so both keep the same hash. The asm multiplies on the $4202/$4203 multiplier (operands < 256) and weights the hash by repeated addition. .BASE LOOM_ROM_BASE is written .BASE $80."
