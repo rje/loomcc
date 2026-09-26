@@ -163,6 +163,103 @@ Remaining t4-exec failures are only the unsupported features (32-bit
 multiply/divide/variable shifts, recursion); t1 failures are `__VA_OPT__`
 details, one deferred-rescan hide-set case, and two mcpp edge diagnostics.
 
+## M8: Cliffside built with loomcc (2026-09-26)
+
+**The whole Cliffside release ROM builds with loomcc**: all 27 C units
+(Loom's portable runtime, the pvsneslib backend C, the generated tables
+and schedule, and the game's own hook) compiled as one program with
+inlining across units, beside Loom's unchanged hand assembly (body.asm,
+oam.asm, scene.asm, movement.asm, board.asm, vblank.asm) and PVSnesLib's
+crt0/libc, linked with wlalink. No unit needed 816-tcc
+(docs/results/m8/units-loomcc.json).
+
+Method (testbed/loom-build): a scratch copy of examples/cliffside was
+packaged by `loom-automation` (open_room + package_release); the runtime
+sources were snapshotted at Loom ec0f2a8 plus the working-tree change
+recorded in docs/results/m8/runtime-provenance.txt. `build.py` rebuilds the
+ROM from that snapshot with Loom's exact pipeline: its 816-tcc build is
+**byte-identical** to the ROM Loom itself packaged, so the loomcc build
+differs only in the compiler. Nothing was written inside the Loom repo.
+
+### Behaviour
+
+A faster build reaches each tick in fewer frames (it boots 15 frames
+sooner, and a tick that lagged no longer does), so the frame-timed script
+presses buttons during different ticks. Like Loom's own scripts/tick-trace.py,
+`tickcompare.py` converts the script to the tick clock (each span's buttons
+held until the tick counter reaches the span's end) and compares:
+
+| check | result |
+|---|---|
+| debug builds: the 108-byte witness `loom_project_debug_state` after every tick (all bytes but `tick_started` at 106) | **813 ticks, 0 differ** |
+| debug builds: the sequence of distinct presented frames | **582 = 582, identical** |
+| release builds: the sequence of distinct presented frames (tick counter from the runtime state) | **all 582 shared images identical and in order**; the 816-tcc trace has one extra trailing image because its run lasted two frames longer |
+
+Frame-for-frame screenshot equality does not hold and cannot: in the
+debug 816-tcc build 34 ticks take three frames where loomcc takes two, so
+the same image is presented one frame later relative to the tick counter.
+Every image and every witness byte agree once time is measured in ticks.
+
+### Speed (Loom's measure: release ROM, frames 400-1000 of scripts/full-speed/cliffside.json)
+
+| | instructions a frame | waiting | instructions a tick |
+|---|---:|---:|---:|
+| 816-tcc (tick_frames 2, 300 ticks) | 7019 | 1377 | **11,284** |
+| loomcc (tick_frames 2, 300 ticks) | 6263 | 2285 | **7,956** (-29.5%) |
+
+The 60 Hz budget is about 8,000 instructions a tick: the loomcc build is
+inside it.
+
+At **tick_frames 1** (same sources, `tick_frames = 1`), lag frames counted by
+`lag_frame_counter` ($7E0035):
+
+| | lag frames in 400-1000 | lag frames, whole run (1626 frames) |
+|---|---:|---:|
+| 816-tcc | 82 (13.7%) | 195 |
+| loomcc | **3 (0.5%)** | 23 |
+
+Memory: loomcc's C code is 72,256 bytes against 816-tcc's 147,737 (0.49x);
+read-only data 5,253 against 4,244; the compiled stack (static frames) takes
+**312 bytes** of bank $7E WRAM.
+
+### Where the gain came from (instructions a tick, by unit)
+
+After inlining, a callee's code counts in the unit it was inlined into (so
+camera.c's work shows up in its callers). Loom's hand assembly is
+unchanged and costs the same in both builds; it is now 5,738 of the 7,956.
+The C part went from 5,546 to 2,219 instructions a tick (2.5x fewer).
+
+| unit | 816-tcc instr/tick | loomcc instr/tick | saved |
+|---|---:|---:|---:|
+| runtime/src/mode1.c | 1042 | 463 | 579 |
+| .loom/generated/src/runtime_schedule.c | 783 | 368 | 415 |
+| runtime/src/ui.c | 585 | 202 | 384 |
+| runtime/backends/pvsneslib/src/runtime-adapter.c | 392 | 31 | 361 |
+| runtime/src/scene.c | 515 | 157 | 358 |
+| runtime/src/animation.c | 308 | 116 | 192 |
+| runtime/src/movement.c | 314 | 125 | 189 |
+| runtime/src/frame-shell.c | 245 | 78 | 167 |
+| runtime/src/actor.c | 245 | 109 | 136 |
+| runtime/src/combat.c | 208 | 77 | 131 |
+| runtime/backends/pvsneslib/src/frame-transaction.c | 97 | 6 | 91 |
+| runtime/src/audio.c | 79 | 1 | 78 |
+| (other) | 267 | 212 | 55 |
+| project/Code/Portable/cliffside.c | 87 | 32 | 55 |
+| (asm / library) | 55 | 1 | 54 |
+| runtime/src/camera.c | 54 | 0 | 54 |
+| runtime/src/frame-build.c | 268 | 234 | 34 |
+| .loom/generated/target/pvsneslib/assets.asm | 11 | 0 | 11 |
+| runtime/src/adventure.c | 6 | 0 | 6 |
+| runtime/src/game.c | 5 | 0 | 5 |
+| runtime/backends/pvsneslib/src/vblank.asm | 234 | 234 | 0 |
+| runtime/backends/pvsneslib/src/scene.asm | 241 | 241 | 0 |
+| (loomcc helpers) | 0 | 1 | -1 |
+| runtime/backends/pvsneslib/src/oam.asm | 1953 | 1959 | -6 |
+| runtime/backends/pvsneslib/src/startup.c | 0 | 6 | -6 |
+| runtime/backends/pvsneslib/src/body.asm | 3289 | 3304 | -15 |
+| **total (excluding waits)** | **11284** | **7957** | **3327** |
+
+
 ## Current table (M7c)
 
 | bench | kind | equal | tcc bytes | tcc instr | tcc clocks | asm bytes | asm instr | asm clocks | loomcc bytes | loomcc instr | loomcc clocks | loomcc/tcc clocks | loomcc/asm clocks | cstack bytes |

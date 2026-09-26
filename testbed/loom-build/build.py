@@ -94,12 +94,13 @@ def main():
     ap.add_argument("--loomcc-flags", default="")
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--profile", default="release", choices=["release", "debug"])
+    ap.add_argument("--reference-build", type=Path, help="take the unit list and build identity from this project copy's packaged build")
     a = ap.parse_args()
     global DEFS
     if a.profile == "debug":
         DEFS = ["-DLOOM_BUILD_DEBUG=1", "-DLOOM_TARGET_PVSNESLIB=1", "-DLOOM_GENERATED_POOLS=1"]
     project, runtime, out = a.project.resolve(), a.runtime.resolve(), a.out.resolve()
-    build_dir = next((project / "Build/Release/project").iterdir())
+    build_dir = next(((a.reference_build or project) / "Build/Release/project").iterdir())
     build = json.loads((build_dir / "loom-project.build.json").read_text())
     units = list(build["cache"]["compiled_units"])
     if a.profile == "debug":
