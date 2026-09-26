@@ -26,12 +26,41 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "external/fetched/gcc/gcc/testsuite/gcc.dg/cpp"
 OUT = ROOT / "external/fetched/gcc-cpp-wrapped"
 OK_OPTS = {"-std=c99", "-std=c11", "-std=c17", "-std=c18", "-std=iso9899:1999", "-std=iso9899:2011",
-           "-pedantic", "-pedantic-errors", "-Wall", ""}
-# GNU-only behaviour (checked by hand): predefined __USER_LABEL_PREFIX__,
+           "-pedantic", "-pedantic-errors", "-Wall", "",
+           # GNU dialects differ from ISO in predefined macros and extensions;
+           # GNU_ONLY and the clang -std=c17 check drop tests that rely on them.
+           "-std=gnu99", "-std=gnu11", "-std=gnu17",
+           # Output-format and diagnostic-location switches that change no tokens.
+           "-P", "-ftrack-macro-expansion=0", "-ftrack-macro-expansion=2", "-Wno-deprecated"}
+# GNU-only behaviour (checked by hand): the gnuNN- dialect tests, #import, #ident, predefined __USER_LABEL_PREFIX__,
 # push_macro/pop_macro and GCC pragmas, the `, ## __VA_ARGS__` extension,
 # named variadic parameters (`args...`), #assert; UCN spelling in -E output
 # (implementation-defined: clang prints UTF-8).
-GNU_ONLY = re.compile(r"__USER_LABEL_PREFIX__|push_macro|pop_macro|GCC dependency|GCC system_header|,\s*##\s*__VA_ARGS__|\w\.\.\.\s*\)|#\s*(assert|unassert)|#\s*include\s*<|\\[uU][0-9a-fA-F]{4}")
+GNU_ONLY = re.compile(r"#\s*(ident|sccs|import)\b|__USER_LABEL_PREFIX__|push_macro|pop_macro|GCC dependency|GCC system_header|,\s*##\s*__VA_ARGS__|\w\.\.\.\s*\)|#\s*(assert|unassert)|#\s*include\s*<|\\[uU][0-9a-fA-F]{4}")
+# Output-pattern tests whose only loomcc mismatch is layout, not tokens.
+COSMETIC = {"spacing1.c": "GCC keeps a line's leading whitespace (` 44 ;`); loomcc's -E output starts lines at the first token"}
+# dg-final { scan-file[-not] NAME.i PATTERN }: PATTERN is a Tcl word, quoted or bare.
+FINAL = re.compile(r'dg-final\s*\{\s*(scan-file(?:-not)?)\s+"?([\w.-]+\.i)"?\s+("(?:[^"\\]|\\.)*"|\S+)\s*\}')
+
+
+def tcl_word(w):
+    """Tcl backslash substitution of a (possibly quoted) word, then the
+    result as a one-line regex (newlines and tabs as escapes)."""
+    if w.startswith('"'):
+        w = w[1:-1]
+    out, i = [], 0
+    while i < len(w):
+        c = w[i]
+        if c == "\\" and i + 1 < len(w):
+            n = w[i + 1]
+            out.append({"n": "\n", "t": "\t"}.get(n, n))
+            i += 2
+        else:
+            out.append(c)
+            i += 1
+    return "".join(out).replace("\n", "\\n").replace("\t", "\\t")
+
+
 DG = re.compile(r'dg-(error|warning|bogus|message)\s+"((?:[^"\\]|\\.)*)"(.*?)\}')
 
 
@@ -46,10 +75,21 @@ def main():
             continue
         opts = re.findall(r'dg-options\s+"([^"]*)"', text) + re.findall(r'dg-options\s+(-\S+)', text)
         flat = " ".join(opts).split()
-        if any(o not in OK_OPTS for o in flat) or re.search(r"dg-(additional-options|require|skip-if|final|xfail)", text):
+        finals = []
+        for line in text.split("\n"):
+            if "dg-final" in line:
+                m = FINAL.search(line)
+                if not m or m.group(2) != src.stem + ".i":
+                    finals = None
+                    break
+                finals.append((m.group(1) == "scan-file", tcl_word(m.group(3))))
+        if finals is None:
+            rejected[src.name] = "dg-final check other than scan-file on the output"
+            continue
+        if any(o not in OK_OPTS for o in flat) or re.search(r"dg-(additional-options|require|skip-if|xfail|set-compiler-env-var)", text):
             rejected[src.name] = "options, requirements or dg-final checks"
             continue
-        if GNU_ONLY.search(text):
+        if GNU_ONLY.search(text) or re.match(r"gnu\d\d-", src.name):
             rejected[src.name] = "GNU-only behaviour or a system header"
             continue
         pedantic_errors = "-pedantic-errors" in flat
@@ -77,11 +117,18 @@ def main():
             rejected[src.name] = "dg diagnostic form not converted"
             continue
         w = OUT / src.name
+        has_diags = bool(directives)
+        if src.name in COSMETIC:
+            directives.append(f"// loomcc-xfail: {COSMETIC[src.name]}")
+        matches = [f"// loomcc-expect-{'match' if want else 'no-match'}: {pat}" for want, pat in finals]
+        if finals:
+            directives.append("// loomcc-note: the expect-match lines are GCC's dg-final scan-file patterns")
+        directives += matches
         w.write_text("// loomcc-do: preprocess\n// loomcc-ref: clang\n"
                      f"// loomcc-source: GCC gcc/testsuite/gcc.dg/cpp/{src.name} (GPL-3.0-or-later; fetched, not vendored)\n"
                      + "\n".join(directives) + ("\n" if directives else "") + f'#include "{src}"\n')
         r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", "clang", "-E", "-P", "-std=c17", "-w", w.name], cwd=OUT, capture_output=True, text=True)
-        if not directives:
+        if not has_diags:
             if r.returncode:
                 rejected[src.name] = "clang rejects it"
                 w.unlink()

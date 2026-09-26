@@ -278,6 +278,17 @@ fn compare_tokens(expected: &str, actual: &str) -> Option<String> {
     ))
 }
 
+/// Checks `loomcc-expect-match` / `-no-match` regexes against `-E` output.
+fn check_matches(t: &Test, output: &str, p: &mut Vec<String>) {
+    let text = pptok::strip_line_markers(output);
+    for (want, re) in &t.expect_match {
+        let found = regex::Regex::new(re).map(|r| r.is_match(&text)).unwrap_or(false);
+        if found != *want {
+            p.push(format!("output {} /{}/", if *want { "does not match" } else { "matches" }, re));
+        }
+    }
+}
+
 /// The shared checks for a front-end run: crash, diagnostics, exit status.
 fn check_frontend(t: &Test, out: &exec::Output, file: &str, strict: bool, tool: &str) -> Vec<String> {
     let mut problems = Vec::new();
@@ -343,6 +354,9 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
                     if let Some(d) = compare_tokens(exp, &out.stdout) {
                         p.push(d);
                     }
+                }
+                if !expects_errors(t) {
+                    check_matches(t, &out.stdout, &mut p);
                 }
             }
             verdict(p)
@@ -510,6 +524,9 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
                     if let Some(d) = compare_tokens(exp, &pptok::strip_line_markers(&out.stdout)) {
                         p.push(d);
                     }
+                }
+                if tool == "clang" {
+                    check_matches(t, &out.stdout, &mut p);
                 }
             }
             verdict(p)

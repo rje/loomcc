@@ -15,7 +15,7 @@ on 2026-09-25 are recorded at the end.
 | mcpp 2.7.2 validation suite (cpp-test) | BSD-2-Clause (Kiyoshi Matsui) | **vendored**: n_* and e_* converted to T1 tests | `tests/t1-pp/mcpp/` (+ LICENSE, README) by `scripts/import-mcpp.py` |
 | GCC `gcc.c-torture/execute` | GPL-3.0-or-later | **fetched, filtered, wrapped**; never copied | `external/classify-gcc-torture.py`, `external/gcc-torture-execute.list` |
 | GCC `gcc.c-torture/compile` | GPL-3.0-or-later | **fetched, filtered, wrapped** as compile tests: 512 of 2016 (static filter, then clang -std=c17 -pedantic-errors -Werror=vla at 16-bit int) | `external/classify-gcc-compile.py`, `external/gcc-torture-compile.list` |
-| GCC `gcc.dg/cpp` | GPL-3.0-or-later | **fetched, filtered, wrapped** as preprocess tests: 49 (dg-do preprocess, standard-C options only, dg-error/dg-warning converted to located directives, GNU-only behaviour excluded, clang must agree) | `external/wrap-gcc-cpp.py`, `external/gcc-dg-cpp.list` |
+| GCC `gcc.dg/cpp` | GPL-3.0-or-later | **fetched, filtered, wrapped** as preprocess tests: 61 (dg-do preprocess, standard-C options only, dg-error/dg-warning converted to located directives, dg-final scan-file patterns converted to `loomcc-expect-match`, GNU-only behaviour excluded, clang must agree) | `external/wrap-gcc-cpp.py`, `external/gcc-dg-cpp.list` |
 | c-testsuite (`tests/single-exec`) | harness MIT; individual tests carry their origins' licences (ISC from scc, LGPL-2.1 from tinycc, others) | **fetched, filtered, wrapped** (mixed per-test licences); 163 selected | `external/wrap-suite.py c-testsuite`, `external/c-testsuite.list` |
 | chibicc `test/` | MIT (Rui Ueyama) | evaluated with the same wrapper: 0 of 41 survive (GNU extensions, floating point, and every remaining file fails under 816-tcc's 16-bit int or front end) | `external/chibicc.rejected` |
 | TinyCC `tests/tests2` | LGPL-2.1 | **fetched, filtered, wrapped**, output compared through the harness printf; 32 selected | `external/wrap-suite.py tcc-tests2`, `external/tcc-tests2.list` |
@@ -116,5 +116,18 @@ silently assume 32-bit `int` (they fail under host16).
 
 ## Next
 
-- `gcc.dg/cpp` tests with dg-final scan patterns (188 skipped now).
+- `gcc.dg/cpp`: done as far as it applies. The earlier "188 skipped" was the
+  whole options/requirements/dg-final bucket; only 67 files have dg-final
+  checks. Of the 315 `dg-do preprocess` tests (of 510 .c files), 61 are wrapped. The rest (see
+  `external/gcc-dg-cpp.rejected`): 169 use options with no loomcc
+  equivalent — GCC's dump modes (`-dU` 22, `-dD`/`-dM`/`-dI`/`-dN`, `-M`,
+  `-C`/`-CC`, `-fdebug-cpp`, `-H`), C89/C90/C23 dialects, `-traditional-cpp`,
+  `-Wtraditional` and other GCC-only warnings, `-remap`/`-F`, or an
+  environment variable (`SOURCE_DATE_EPOCH`); 32 use diagnostic forms that
+  do not convert (target selectors, relative lines); 37 are GNU-only (the
+  gnuNN- dialect tests, `#import`, `#ident`, `, ## __VA_ARGS__`, ...); 12
+  clang itself disagrees with; 4 clang rejects. Of the dg-final tests, 7 are
+  wrapped (`_Pragma4`, `_Pragma5`, `19990228-1`, `cmdlne-P`, `paste17`,
+  `spacing1`, `spacing2`); `spacing1` is an XFAIL for loomcc (GCC keeps a
+  line's leading whitespace; tokens agree).
 - `gcc.dg` C tests with dg-error lines as T3 constraint tests.

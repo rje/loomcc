@@ -1,19 +1,25 @@
 # gcc.dg/cpp tests wrapped by external/wrap-gcc-cpp.py
 19951227-1.c
 19960224-1.c
+19990228-1.c
 20000207-1.c
 20000207-2.c
 20000301-1.c
 20000725-1.c
 20020927-1.c
 _Pragma2.c
+_Pragma4.c
+_Pragma5.c
 c11-vararg-1.c
 c11-warning-4.c
 c99-pedantic.c
 c99.c
+cmdlne-P.c
 counter-1.c
 defined.c
 error-1.c
+gnuc99-pedantic.c
+gnuc99.c
 hash1.c
 if-5.c
 if-div.c
@@ -34,7 +40,11 @@ macro5.c
 macro7.c
 mi4.c
 paste11.c
+paste12.c
+paste13.c
+paste14.c
 paste15.c
+paste17.c
 pr28227.c
 pr32868.c
 pr34859.c
@@ -45,6 +55,8 @@ pr61977.c
 redef1.c
 redef4.c
 skipping.c
+spacing1.c
+spacing2.c
 ucnid-4-utf8.c
 ucnid-9-utf8.c
 undef2.c

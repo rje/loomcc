@@ -103,6 +103,10 @@ pub struct Test {
     /// Expected stdout of a run test (`loomcc-expect-output: FILE` or
     /// `loomcc-expect-stdout:` lines, each ending in a newline).
     pub expect_output: Option<Vec<u8>>,
+    /// `loomcc-expect-match: RE` / `loomcc-expect-no-match: RE`: regexes the
+    /// `-E` output must (not) match, line markers stripped (GCC's dg-final
+    /// scan-file patterns).
+    pub expect_match: Vec<(bool, String)>,
 }
 
 pub fn parse(path: &Path, text: &str) -> Result<Option<Test>, String> {
@@ -125,6 +129,7 @@ pub fn parse(path: &Path, text: &str) -> Result<Option<Test>, String> {
         max_frames: None,
         skip_modes: Vec::new(),
         expect_output: None,
+        expect_match: Vec::new(),
     };
     let mut stdout_lines: Option<String> = None;
     let mut expect_lines: Vec<String> = Vec::new();
@@ -211,6 +216,10 @@ pub fn parse(path: &Path, text: &str) -> Result<Option<Test>, String> {
             "expect-output" => {
                 let f = path.parent().unwrap().join(value.trim());
                 t.expect_output = Some(std::fs::read(&f).map_err(|e| err(&format!("{}: {}", f.display(), e)))?);
+            }
+            "expect-match" | "expect-no-match" => {
+                Regex::new(&value).map_err(|e| err(&format!("bad regex: {}", e)))?;
+                t.expect_match.push((name == "expect-match", value.clone()));
             }
             "note" | "source" | "licence" | "license" => {}
             other => return Err(err(&format!("unknown directive loomcc-{}", other))),

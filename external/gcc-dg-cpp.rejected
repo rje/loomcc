@@ -1,7 +1,6 @@
 # gcc.dg/cpp preprocess tests not wrapped, and why
 19940712-1.c	dg diagnostic form not converted
 19951025-1.c	dg diagnostic form not converted
-19990228-1.c	options, requirements or dg-final checks
 20000129-1.c	dg diagnostic form not converted
 20000209-1.c	dg diagnostic form not converted
 20000419-1.c	GNU-only behaviour or a system header
@@ -13,8 +12,6 @@ Wtrigraphs.c	options, requirements or dg-final checks
 Wunused.c	options, requirements or dg-final checks
 _Pragma1.c	clang disagrees: missing error at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/_Pragma1.c:18 (directive
 _Pragma3.c	GNU-only behaviour or a system header
-_Pragma4.c	options, requirements or dg-final checks
-_Pragma5.c	options, requirements or dg-final checks
 arith-1.c	clang rejects it
 arith-3.c	options, requirements or dg-final checks
 assert2.c	options, requirements or dg-final checks
@@ -55,7 +52,6 @@ cmdlne-C2.c	options, requirements or dg-final checks
 cmdlne-C3.c	options, requirements or dg-final checks
 cmdlne-M-2.c	options, requirements or dg-final checks
 cmdlne-M.c	options, requirements or dg-final checks
-cmdlne-P.c	options, requirements or dg-final checks
 cmdlne-dD-M.c	options, requirements or dg-final checks
 cmdlne-dD-dM.c	options, requirements or dg-final checks
 cmdlne-dD.c	options, requirements or dg-final checks
@@ -102,28 +98,26 @@ endif-pedantic1.c	options, requirements or dg-final checks
 endif-pedantic2.c	options, requirements or dg-final checks
 expr-overflow-1.c	GNU-only behaviour or a system header
 expr.c	options, requirements or dg-final checks
-extratokens.c	options, requirements or dg-final checks
+extratokens.c	GNU-only behaviour or a system header
 extratokens2.c	options, requirements or dg-final checks
 fpreprocessed.c	options, requirements or dg-final checks
-gnu11-elifdef-1.c	options, requirements or dg-final checks
-gnu11-elifdef-2.c	options, requirements or dg-final checks
-gnu11-elifdef-3.c	options, requirements or dg-final checks
-gnu11-elifdef-4.c	options, requirements or dg-final checks
-gnu11-scope-1.c	options, requirements or dg-final checks
-gnu11-warning-1.c	options, requirements or dg-final checks
-gnu11-warning-2.c	options, requirements or dg-final checks
+gnu11-elifdef-1.c	GNU-only behaviour or a system header
+gnu11-elifdef-2.c	GNU-only behaviour or a system header
+gnu11-elifdef-3.c	GNU-only behaviour or a system header
+gnu11-elifdef-4.c	GNU-only behaviour or a system header
+gnu11-scope-1.c	GNU-only behaviour or a system header
+gnu11-warning-1.c	GNU-only behaviour or a system header
+gnu11-warning-2.c	GNU-only behaviour or a system header
 gnu11-warning-3.c	options, requirements or dg-final checks
-gnu11-warning-4.c	options, requirements or dg-final checks
-gnu17-scope-1.c	options, requirements or dg-final checks
+gnu11-warning-4.c	GNU-only behaviour or a system header
+gnu17-scope-1.c	GNU-only behaviour or a system header
 gnu23-warning-1.c	options, requirements or dg-final checks
 gnu23-warning-2.c	options, requirements or dg-final checks
 gnu89-scope-1.c	options, requirements or dg-final checks
-gnu99-scope-1.c	options, requirements or dg-final checks
+gnu99-scope-1.c	GNU-only behaviour or a system header
 gnuc89-pedantic.c	options, requirements or dg-final checks
 gnuc89.c	options, requirements or dg-final checks
-gnuc99-pedantic.c	options, requirements or dg-final checks
-gnuc99.c	options, requirements or dg-final checks
-ident-1.c	options, requirements or dg-final checks
+ident-1.c	GNU-only behaviour or a system header
 if-1.c	dg diagnostic form not converted
 if-2.c	dg diagnostic form not converted
 if-cexp.c	dg diagnostic form not converted
@@ -132,13 +126,13 @@ if-mpar.c	dg diagnostic form not converted
 if-oppr2.c	clang rejects it
 if-paren.c	dg diagnostic form not converted
 if-shift.c	clang rejects it
-import1.c	options, requirements or dg-final checks
-import2.c	options, requirements or dg-final checks
+import1.c	GNU-only behaviour or a system header
+import2.c	GNU-only behaviour or a system header
 include2.c	GNU-only behaviour or a system header
 include2a.c	dg diagnostic form not converted
-include6.c	options, requirements or dg-final checks
+include6.c	GNU-only behaviour or a system header
 lexident.c	options, requirements or dg-final checks
-line1.c	options, requirements or dg-final checks
+line1.c	clang disagrees: output does not match /baz/
 line2.c	dg diagnostic form not converted
 line5.c	options, requirements or dg-final checks
 line6.c	dg diagnostic form not converted
@@ -152,7 +146,7 @@ maccom5.c	options, requirements or dg-final checks
 maccom6.c	options, requirements or dg-final checks
 macspace1.c	options, requirements or dg-final checks
 macspace2.c	dg diagnostic form not converted
-macsyntx.c	options, requirements or dg-final checks
+macsyntx.c	GNU-only behaviour or a system header
 macsyntx2.c	GNU-only behaviour or a system header
 mi5.c	options, requirements or dg-final checks
 mi7.c	options, requirements or dg-final checks
@@ -163,14 +157,10 @@ normalize-2.c	options, requirements or dg-final checks
 normalize-4.c	options, requirements or dg-final checks
 paste1.c	dg diagnostic form not converted
 paste10.c	GNU-only behaviour or a system header
-paste12-2.c	options, requirements or dg-final checks
-paste12.c	options, requirements or dg-final checks
-paste13.c	options, requirements or dg-final checks
-paste14-2.c	options, requirements or dg-final checks
-paste14.c	options, requirements or dg-final checks
-paste17.c	options, requirements or dg-final checks
-paste8-2.c	options, requirements or dg-final checks
-paste8.c	options, requirements or dg-final checks
+paste12-2.c	clang disagrees: missing error at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/paste12-2.c:9 (directive
+paste14-2.c	clang disagrees: missing error at /Users/rje/src/rust/loomcc-tests/external/fetched/gcc/gcc/testsuite/gcc.dg/cpp/paste14-2.c:7 (directive
+paste8-2.c	GNU-only behaviour or a system header
+paste8.c	GNU-only behaviour or a system header
 poison.c	dg diagnostic form not converted
 pr101638.c	options, requirements or dg-final checks
 pr111965-1.c	options, requirements or dg-final checks
@@ -202,8 +192,6 @@ redef2.c	options, requirements or dg-final checks
 redef3.c	options, requirements or dg-final checks
 skipping2.c	dg diagnostic form not converted
 source_date_epoch-3.c	options, requirements or dg-final checks
-spacing1.c	options, requirements or dg-final checks
-spacing2.c	options, requirements or dg-final checks
 strify1.c	dg diagnostic form not converted
 subframework1.c	options, requirements or dg-final checks
 syshdr.c	dg diagnostic form not converted
@@ -233,9 +221,9 @@ unc2.c	dg diagnostic form not converted
 unc3.c	dg diagnostic form not converted
 unc4.c	dg diagnostic form not converted
 undef-opt-1.c	options, requirements or dg-final checks
-vararg2.c	options, requirements or dg-final checks
+vararg2.c	GNU-only behaviour or a system header
 vararg3.c	GNU-only behaviour or a system header
-vararg4.c	options, requirements or dg-final checks
+vararg4.c	GNU-only behaviour or a system header
 warn-comments-2.c	options, requirements or dg-final checks
 warn-comments-3.c	options, requirements or dg-final checks
 warn-comments.c	options, requirements or dg-final checks

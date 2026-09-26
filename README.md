@@ -130,6 +130,7 @@ Directives live in comments so every compiler ignores them; each is
 | `loomcc-ref-diverges: <tool> [code] <reason>` | that reference tool is known to disagree (XFAIL for it); codes are listed in docs/DIVERGENCES.md |
 | `loomcc-expect-stdout: <text>` | run tests: one line of expected printed output (lines joined with newlines, each ending in one) |
 | `loomcc-expect-output: <file>` | run tests: the expected output is this file's bytes |
+| `loomcc-expect-match: <regex>` / `loomcc-expect-no-match: <regex>` | preprocess tests: the `-E` output, line markers removed, must (not) match (Rust regex syntax; GCC's dg-final scan-file patterns) |
 | `loomcc-int: agnostic \| 16` | run tests: whether the result is the same with 32-bit int (required for `run`) |
 | `loomcc-skip-mode: ir rom host ...` | modes or references that do not apply |
 | `loomcc-extra-sources: b.c` | more C sources, compiled by the compiler under test and linked in |
