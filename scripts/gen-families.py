@@ -640,7 +640,7 @@ def gen_struct(r, tag, depth, structs):
 def layout_family():
     r = random.Random(41)
     n = 0
-    for k in range(60):
+    for k in range(66):
         structs, text, checks = [], [], []
         for j in range(6):
             tag, size, align, offsets, src = gen_struct(r, f"S{k}_{j}", 1, structs)
@@ -861,7 +861,7 @@ def loops_family():
     stops, early exits (Loom's per-slot and per-tile loops)."""
     r = random.Random(71)
     n = 0
-    for k in range(20):
+    for k in range(32):
         t = r.choice(["u8", "u16", "i16", "i8"])
         start = wrap(r.randrange(-200, 300), t)
         step = r.choice([1, 2, 3, 5, -1, -2, -4])
@@ -930,7 +930,7 @@ def sort_family():
     for several sizes and key types; stable."""
     r = random.Random(79)
     n = 0
-    for k in range(18):
+    for k in range(24):
         t = r.choice(["u8", "i8", "u16", "i16"])
         size = r.choice([2, 3, 5, 8, 13, 24, 32])
         keys = [wrap(r.randrange(-40000, 70000), t) if r.random() < 0.8 else 0 for _ in range(size)]
@@ -993,7 +993,7 @@ def tilemap_family():
     coordinates: x >> 3, y >> 3, row * width + column, solid-tile tests."""
     r = random.Random(89)
     n = 0
-    for k in range(15):
+    for k in range(20):
         w, h = r.choice([(16, 14), (32, 8), (20, 10), (64, 4), (12, 12)])
         tiles = [r.choice([0, 0, 0, 1, 2, 3, 7, 255]) for _ in range(w * h)]
         probes = []
@@ -1122,7 +1122,7 @@ def fsm_family():
     an input sequence: Loom's generated state machines."""
     r = random.Random(103)
     n = 0
-    for k in range(12):
+    for k in range(20):
         ns, ni = r.randint(2, 8), r.randint(2, 5)
         nxt = [[r.randrange(ns) for _ in range(ni)] for _ in range(ns)]
         act = [[r.randrange(0, 5) for _ in range(ni)] for _ in range(ns)]
