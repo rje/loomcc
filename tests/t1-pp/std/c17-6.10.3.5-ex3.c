@@ -1,6 +1,6 @@
 // loomcc-do: preprocess
 // loomcc-note: C17 6.10.3.5 EXAMPLE 3 (redefinition and rescanning).
-// loomcc-ref-diverges: tcc paints z[0] repeatedly and runs out of memory on `h 5)`
+// loomcc-ref-diverges: tcc [tcc-blue-paint] 816-tcc re-expands z (z[0][0][0]) and then fails with "memory full" on `h 5)`
 #define x 3
 #define f(a) f(x * (a))
 #undef x

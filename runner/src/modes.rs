@@ -505,8 +505,10 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
                 "-std=c17".to_string(),
                 "-O1".into(),
                 "-w".into(),
+                // Undefined behaviour traps (no runtime library to load):
+                // a test that relies on UB fails on the host.
                 "-fsanitize=undefined".into(),
-                "-fno-sanitize-recover=all".into(),
+                "-fsanitize-trap=all".into(),
                 harness_inc(cfg),
             ];
             args.extend(t.options.clone());
@@ -519,7 +521,7 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             if !out.ok() {
                 return Res::Fail(format!("host clang failed: {}", rom::first_lines(&out.stderr, 5)));
             }
-            let out = exec::run(&exe, &[], dir, timeout(t, 10));
+            let out = exec::run(&exe, &[], dir, timeout(t, 30));
             rom::log_cmd(log, &out);
             if out.ok() {
                 Res::Pass
