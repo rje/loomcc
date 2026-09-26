@@ -34,6 +34,8 @@ enum Src {
     /// The value lives in an index register.
     X,
     Y,
+    /// A folded load: read from its address in place.
+    Mem(VReg),
 }
 
 /// Where a memory access goes after address preparation.
@@ -166,6 +168,9 @@ impl<'a> Gen<'a> {
                 if self.al.forwarded[r.0 as usize] {
                     return Src::InA;
                 }
+                if self.al.folded[r.0 as usize].is_some() {
+                    return Src::Mem(*r);
+                }
                 match self.home(*r) {
                     Home::Dp(d) => Src::Dp(d + 2 * k as u8),
                     Home::Frame(off) => Src::Abs(self.frame_expr(off + 2 * k)),
@@ -206,6 +211,12 @@ impl<'a> Gen<'a> {
             Src::Abs(e) => self.i(mnem, Mode::Abs(e.clone())),
             Src::Long(e) => self.i(mnem, Mode::Long(e.clone())),
             Src::InA => self.errors.push(format!("{}: internal: {} with operand in A", self.f.name, mnem)),
+            Src::Mem(r) => {
+                let addr = self.al.folded[r.0 as usize].clone().unwrap();
+                let keep = mnem != "lda";
+                let p = self.place(&addr, keep);
+                self.mem_op(mnem, &p, 0);
+            }
             Src::X | Src::Y => {
                 // Through the scratch word.
                 self.i(if *s == Src::X { "stx" } else { "sty" }, Mode::Dp(XY_SPILL));
@@ -256,7 +267,7 @@ impl<'a> Gen<'a> {
             Src::X => return,
             Src::Y => self.i("tyx", Mode::Implied),
             Src::InA => self.i("tax", Mode::Implied),
-            Src::Long(_) => {
+            Src::Long(_) | Src::Mem(_) => {
                 self.lda(o, 0);
                 self.i("tax", Mode::Implied);
             }
@@ -281,7 +292,7 @@ impl<'a> Gen<'a> {
             Src::Y => return,
             Src::X => self.i("txy", Mode::Implied),
             Src::InA => self.i("tay", Mode::Implied),
-            Src::Long(_) => {
+            Src::Long(_) | Src::Mem(_) => {
                 self.lda(o, 0);
                 self.i("tay", Mode::Implied);
             }
@@ -380,7 +391,7 @@ impl<'a> Gen<'a> {
         let f = self.f;
         // Block order: as numbered, skipping unreachable blocks.
         let reach = reachable(f);
-        self.order = (0..f.blocks.len()).filter(|&b| reach[b]).collect();
+        self.order = layout(f, &reach);
         let mi = self.mi;
         let info = mi.funcs.get(&f.name).expect("function info");
         if abi_entry {
@@ -604,7 +615,7 @@ impl<'a> Gen<'a> {
             Inst::Conv { kind, dst, src, from } => self.gen_conv(*kind, *dst, src, *from),
             Inst::Load { dst, addr, volatile } => {
                 let t = self.f.ty(*dst);
-                if self.dead(*dst) && !*volatile {
+                if (self.dead(*dst) && !*volatile) || self.al.folded[dst.0 as usize].is_some() {
                     return;
                 }
                 let place = self.place(addr, false);
@@ -683,8 +694,11 @@ impl<'a> Gen<'a> {
             }
             self.acc = None;
             self.sta_reg(dst, 0);
-            self.lda(pa, 1);
-            self.sta_reg(dst, 1);
+            let same_home = matches!(pa, Operand::Reg(r) if self.home(*r) == self.home(dst) && self.home(dst) != Home::None);
+            if !same_home {
+                self.lda(pa, 1);
+                self.sta_reg(dst, 1);
+            }
             return;
         }
         if t == IrTy::I32 {
@@ -993,7 +1007,7 @@ impl<'a> Gen<'a> {
         } else {
             // The multiplicand must be addressable for the adds.
             let s = match self.src(a, 0) {
-                Src::InA | Src::Long(_) | Src::X | Src::Y => {
+                Src::InA | Src::Long(_) | Src::X | Src::Y | Src::Mem(_) => {
                     self.i("sta", Mode::Dp(SCRATCH_WORD));
                     Src::Dp(SCRATCH_WORD)
                 }
@@ -1454,8 +1468,10 @@ impl<'a> Gen<'a> {
                 }
                 self.acc = None;
                 self.sta_reg(dst, 0);
-                self.lda(&Operand::Reg(*p), 1);
-                self.sta_reg(dst, 1);
+                if self.home(*p) != self.home(dst) || self.home(dst) == Home::None {
+                    self.lda(&Operand::Reg(*p), 1);
+                    self.sta_reg(dst, 1);
+                }
             }
             other => {
                 let (lo, bank) = match other {
@@ -2380,4 +2396,43 @@ pub fn reachable(f: &Func) -> Vec<bool> {
         }
     }
     seen
+}
+
+/// Block order: greedy traces so a block's preferred successor follows it
+/// (the taken side of a two-way branch is the one not placed yet, so loop
+/// latches fall out of the loop and `if` bodies fall through).
+pub fn layout(f: &Func, reach: &[bool]) -> Vec<usize> {
+    let n = f.blocks.len();
+    let mut placed = vec![false; n];
+    let mut order = Vec::new();
+    let preds = f.preds();
+    for start in 0..n {
+        if placed[start] || !reach[start] {
+            continue;
+        }
+        let mut b = start;
+        loop {
+            placed[b] = true;
+            order.push(b);
+            let next = match &f.blocks[b].term {
+                Term::Jmp(t) => Some(*t),
+                Term::Br { t, f: fb, .. } | Term::BrCmp { t, f: fb, .. } => {
+                    // Prefer the successor with no other unplaced
+                    // predecessor, then the true side.
+                    let cands = [*t, *fb];
+                    cands
+                        .iter()
+                        .copied()
+                        .filter(|c| !placed[c.0 as usize])
+                        .min_by_key(|c| preds[c.0 as usize].iter().filter(|p| !placed[p.0 as usize]).count())
+                }
+                _ => None,
+            };
+            match next {
+                Some(nb) if !placed[nb.0 as usize] && reach[nb.0 as usize] => b = nb.0 as usize,
+                _ => break,
+            }
+        }
+    }
+    order
 }

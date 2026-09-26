@@ -101,6 +101,9 @@ pub struct Alloc {
     /// Kept in A from its definition to its single use in the next
     /// instruction.
     pub forwarded: Vec<bool>,
+    /// Loads used once, by the next instruction, as its second operand: the
+    /// address, read in place by that instruction (`sbc [dp],y`).
+    pub folded: Vec<Option<Addr>>,
     pub uses: Vec<u32>,
     /// Frame layout.
     pub param_offsets: Vec<u32>,
@@ -182,8 +185,9 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8
         v
     };
 
-    // 1. Forwarding.
+    // 1. Forwarding and load folding.
     let mut forwarded = vec![false; n];
+    let mut folded: Vec<Option<Addr>> = vec![None; n];
     for (bi, b) in f.blocks.iter().enumerate() {
         for (k, inst) in b.insts.iter().enumerate() {
             let Some(d) = inst.def() else { continue };
@@ -192,6 +196,25 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8
             }
             if !defines_in_a(f, inst) {
                 continue;
+            }
+            // A load feeding the second operand of the next instruction is
+            // read in place there.
+            if let Inst::Load { dst, addr, volatile: false } = inst {
+                if f.ty(*dst) == IrTy::I16 && addr.regs().iter().all(|r| !forwarded[r.0 as usize]) {
+                    let is = |o: &Operand| o == &Operand::Reg(d);
+                    let second = match b.insts.get(k + 1) {
+                        Some(Inst::Bin { op: BinOp::Add | BinOp::Sub | BinOp::And | BinOp::Or | BinOp::Xor, dst: bd, a, b: bb }) => {
+                            is(bb) && !is(a) && f.ty(*bd) == IrTy::I16
+                        }
+                        Some(Inst::Cmp { ty: IrTy::I16, a, b: bb, .. }) => is(bb) && !is(a),
+                        Some(_) => false,
+                        None => matches!(&b.term, Term::BrCmp { ty: IrTy::I16, a, b: bb, .. } if is(bb) && !is(a)),
+                    };
+                    if second {
+                        folded[d.0 as usize] = Some(addr.clone());
+                        continue;
+                    }
+                }
             }
             let ok = match b.insts.get(k + 1) {
                 Some(next) => accepts_a(f, next, d),
@@ -204,7 +227,7 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8
     }
 
     // 2. Interference among the values that need homes.
-    let needs: Vec<bool> = (0..n).map(|i| !forwarded[i] && (uses[i] > 0 || is_param[i])).collect();
+    let needs: Vec<bool> = (0..n).map(|i| !forwarded[i] && folded[i].is_none() && (uses[i] > 0 || is_param[i])).collect();
     let mut adj: Vec<Vec<u32>> = vec![Vec::new(); n];
     let add_edge = |a: u32, b: u32, adj: &mut Vec<Vec<u32>>| {
         if a != b && !adj[a as usize].contains(&b) {
@@ -450,7 +473,7 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8
         off += s.size;
     }
     let frame_size = off.div_ceil(2) * 2;
-    Alloc { homes, forwarded, uses, param_offsets, sret_offset, slot_offsets, frame_size, dp_used, param_copies }
+    Alloc { homes, forwarded, folded, uses, param_offsets, sret_offset, slot_offsets, frame_size, dp_used, param_copies }
 }
 
 /// Can `v` live in `reg` from its definitions to its last uses?
