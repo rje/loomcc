@@ -280,7 +280,10 @@ def measure(bench, variant, outdir):
     unit_sections = {n: r for n, r in section_ranges(symbols, UNIT_PREFIX).items() if is_rom(r[0])}
     unit_ranges = list(unit_sections.values())
     helper_ranges = []
+    names = {n for _, n in symbols}
     for helper in config.get("helper_labels", []):
+        if helper not in names:
+            continue  # not linked in this variant (nothing calls it)
         address = symbol_address(symbols, helper)
         section = enclosing_section(symbols, address)
         helper_ranges.append(section if section else (address, address + 1))
