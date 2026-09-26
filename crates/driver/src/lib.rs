@@ -2,6 +2,11 @@
 
 pub mod testbed;
 
+/// loomcc's own freestanding headers (stddef.h, stdint.h, stdio.h, ...).
+pub fn builtin_include_dir() -> std::path::PathBuf {
+    std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("include")
+}
+
 use loomcc_pp::{Diag, Level, Options, Preprocessor, SourceMap, Token};
 use std::path::Path;
 
@@ -66,4 +71,47 @@ pub fn check(path: &Path, opts: &Options) -> Result<Checked, String> {
     let name = path.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
     let (unit, diags) = loomcc_sema::check(&parsed.unit, &name, loomcc_sema::types::Layout::snes());
     Ok(Checked { parsed, unit, diags })
+}
+
+/// Every diagnostic from compiling a set of files.
+pub struct Compiled {
+    pub module: Option<loomcc_ir::Module>,
+    pub messages: String,
+    pub failed: bool,
+}
+
+/// Front end + lowering for a whole program (all translation units at once).
+pub fn compile_ir(paths: &[std::path::PathBuf], opts: &Options) -> Compiled {
+    let mut units = Vec::new();
+    let mut sources = Vec::new();
+    let mut messages = String::new();
+    let mut failed = false;
+    for p in paths {
+        match check(p, opts) {
+            Ok(c) => {
+                messages.push_str(&c.render_all());
+                failed |= c.has_errors();
+                sources.push(c.parsed.pre.sources);
+                units.push(c.unit);
+            }
+            Err(e) => {
+                messages.push_str(&format!("loomcc: {}\n", e));
+                failed = true;
+            }
+        }
+    }
+    if failed {
+        return Compiled { module: None, messages, failed };
+    }
+    let (m, diags) = loomcc_ir::lower::lower_units(&units);
+    for (ui, d) in &diags {
+        messages.push_str(&sources[*ui].render(d));
+        messages.push('\n');
+        failed |= d.level == Level::Error;
+    }
+    if let Err(e) = loomcc_ir::verify::verify_module(&m) {
+        messages.push_str(&format!("loomcc: internal IR error: {}\n", e));
+        failed = true;
+    }
+    Compiled { module: Some(m), messages, failed }
 }

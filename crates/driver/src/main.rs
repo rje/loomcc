@@ -9,6 +9,7 @@ struct Args {
     pp: Options,
     mode: Mode,
     output: Option<PathBuf>,
+    nostdinc: bool,
 }
 
 #[derive(PartialEq)]
@@ -19,10 +20,16 @@ enum Mode {
     SyntaxOnly,
     /// Parse and print the AST back as C.
     PrintAst,
+    /// Whole program to IR, printed.
+    EmitIr,
+    /// Whole program to WLA-DX assembly.
+    Assembly,
+    /// Whole program to IR, then run `main` in the interpreter.
+    Interpret,
 }
 
 fn parse_args() -> Result<Args, String> {
-    let mut args = Args { inputs: Vec::new(), pp: Options { target_macros: true, ..Default::default() }, mode: Mode::Preprocess, output: None };
+    let mut args = Args { inputs: Vec::new(), pp: Options { target_macros: true, ..Default::default() }, mode: Mode::Preprocess, output: None, nostdinc: false };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
         let mut value = |flag: &str, rest: &str| -> Result<String, String> {
@@ -50,10 +57,18 @@ fn parse_args() -> Result<Args, String> {
             args.mode = Mode::Preprocess;
         } else if a == "-fsyntax-only" {
             args.mode = Mode::SyntaxOnly;
+        } else if a == "--emit-ir" {
+            args.mode = Mode::EmitIr;
+        } else if a == "-S" {
+            args.mode = Mode::Assembly;
+        } else if a == "--interpret" {
+            args.mode = Mode::Interpret;
         } else if a == "--print-ast" {
             args.mode = Mode::PrintAst;
         } else if a == "--tokens" {
             args.mode = Mode::Tokens;
+        } else if a == "-nostdinc" {
+            args.nostdinc = true;
         } else if a == "--no-target-macros" {
             args.pp.target_macros = false;
         } else if a == "-o" {
@@ -66,6 +81,9 @@ fn parse_args() -> Result<Args, String> {
     }
     if args.inputs.is_empty() {
         return Err("no input files".into());
+    }
+    if !args.nostdinc {
+        args.pp.system_dirs.push(loomcc::builtin_include_dir());
     }
     Ok(args)
 }
@@ -80,6 +98,56 @@ fn main() -> ExitCode {
     };
     let mut failed = false;
     let mut out = String::new();
+    if matches!(args.mode, Mode::EmitIr | Mode::Assembly | Mode::Interpret) {
+        let c = loomcc::compile_ir(&args.inputs, &args.pp);
+        eprint!("{}", c.messages);
+        if c.failed {
+            return ExitCode::from(1);
+        }
+        let m = c.module.unwrap();
+        match args.mode {
+            Mode::EmitIr => out = loomcc_ir::print_module(&m),
+            Mode::Interpret => {
+                let mut mc = loomcc_ir::interp::Machine::new(&m);
+                let r = mc.run_main("main");
+                print!("{}", r.out);
+                return match r.exit {
+                    Ok(code) => ExitCode::from((code & 0xff) as u8),
+                    Err(e) => {
+                        eprintln!("loomcc: interpreter: {}", e);
+                        ExitCode::from(125)
+                    }
+                };
+            }
+            _ => {
+                let tag = args
+                    .output
+                    .as_ref()
+                    .or(args.inputs.first())
+                    .and_then(|p| p.file_stem())
+                    .map(|s| s.to_string_lossy().to_string())
+                    .unwrap_or_else(|| "unit".into());
+                let o = loomcc_w65816::compile_module(&m, &loomcc_w65816::Options { tag, ..Default::default() });
+                for e in &o.errors {
+                    eprintln!("loomcc: error: {}", e);
+                }
+                if !o.errors.is_empty() {
+                    return ExitCode::from(1);
+                }
+                out = o.asm;
+            }
+        }
+        match &args.output {
+            Some(p) => {
+                if let Err(e) = std::fs::write(p, out) {
+                    eprintln!("loomcc: {}: {}", p.display(), e);
+                    return ExitCode::from(1);
+                }
+            }
+            None => print!("{}", out),
+        }
+        return ExitCode::SUCCESS;
+    }
     for input in &args.inputs {
         let mut pp = Preprocessor::new(args.pp.clone());
         let toks = match pp.run_file(input) {
@@ -119,7 +187,7 @@ fn main() -> ExitCode {
             continue;
         }
         match args.mode {
-            Mode::SyntaxOnly | Mode::PrintAst => unreachable!(),
+            Mode::SyntaxOnly | Mode::PrintAst | Mode::EmitIr | Mode::Assembly | Mode::Interpret => unreachable!(),
             Mode::Preprocess => out.push_str(&loomcc_pp::print::print_tokens(&toks)),
             Mode::Tokens => {
                 for t in &toks {
