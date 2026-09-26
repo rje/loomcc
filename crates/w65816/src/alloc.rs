@@ -104,6 +104,8 @@ pub struct Alloc {
     /// Loads used once, by the next instruction, as its second operand: the
     /// address, read in place by that instruction (`sbc [dp],y`).
     pub folded: Vec<Option<Addr>>,
+    /// 8-bit values whose 16-bit home always has a zero high byte.
+    pub clean8: Vec<bool>,
     pub uses: Vec<u32>,
     /// Frame layout.
     pub param_offsets: Vec<u32>,
@@ -473,7 +475,8 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8
         off += s.size;
     }
     let frame_size = off.div_ceil(2) * 2;
-    Alloc { homes, forwarded, folded, uses, param_offsets, sret_offset, slot_offsets, frame_size, dp_used, param_copies }
+    let clean8 = clean8(f);
+    Alloc { homes, forwarded, folded, clean8, uses, param_offsets, sret_offset, slot_offsets, frame_size, dp_used, param_copies }
 }
 
 /// Can `v` live in `reg` from its definitions to its last uses?
@@ -502,4 +505,46 @@ fn reg_free(f: &Func, lv: &Liveness, v: VReg, reg: IdxReg) -> bool {
         }
     }
     true
+}
+
+/// 8-bit registers whose every definition leaves a zero high byte in the
+/// 16-bit home (constants, compare results, masks, zero-extended shifts).
+pub fn clean8(f: &Func) -> Vec<bool> {
+    let n = f.vregs.len();
+    let mut c: Vec<bool> = (0..n).map(|i| f.vregs[i] == IrTy::I8).collect();
+    for r in f.param_regs.iter().flatten() {
+        c[r.0 as usize] = false;
+    }
+    let op = |o: &Operand, c: &[bool]| match o {
+        Operand::Imm(v) => (v & 0xffff) < 0x100,
+        Operand::Reg(r) => c[r.0 as usize],
+        _ => false,
+    };
+    loop {
+        let mut changed = false;
+        for b in &f.blocks {
+            for i in &b.insts {
+                let Some(d) = i.def() else { continue };
+                if !c[d.0 as usize] {
+                    continue;
+                }
+                let ok = match i {
+                    Inst::Mov { src, .. } => op(src, &c),
+                    Inst::Cmp { .. } => true,
+                    Inst::Bin { op: BinOp::And, a, b, .. } => op(a, &c) || op(b, &c),
+                    Inst::Bin { op: BinOp::Or | BinOp::Xor, a, b, .. } => op(a, &c) && op(b, &c),
+                    Inst::Bin { op: BinOp::ShrU, .. } => true,
+                    Inst::Conv { kind: ConvKind::Trunc, .. } => false,
+                    _ => false,
+                };
+                if !ok {
+                    c[d.0 as usize] = false;
+                    changed = true;
+                }
+            }
+        }
+        if !changed {
+            return c;
+        }
+    }
 }

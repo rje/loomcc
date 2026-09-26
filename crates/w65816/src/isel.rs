@@ -661,6 +661,32 @@ impl<'a> Gen<'a> {
                 if self.dead(*dst) {
                     return;
                 }
+                // Branch-free forms: the carry of a compare is the answer.
+                let narrow = matches!(ty, IrTy::I16) || (*ty == IrTy::I8 && self.is_clean8(a) && (b.imm().is_some() || self.is_clean8(b)));
+                let bzero = b.imm().map(|v| v & 0xffff) == Some(0);
+                if narrow && !self.fwd(b) && (matches!(cc, Cond::Eq | Cond::Ne) && bzero || matches!(cc, Cond::LtU | Cond::GeU)) {
+                    self.lda(a, 0);
+                    if bzero && matches!(cc, Cond::Eq | Cond::Ne) {
+                        self.i("cmp", Mode::Imm(w(1)));
+                    } else {
+                        let sb = self.src(b, 0);
+                        self.op_src("cmp", &sb);
+                    }
+                    // C = (a >= b) unsigned; for `!= 0`, C = (a >= 1).
+                    self.i("lda", Mode::Imm(w(0)));
+                    self.i("rol", Mode::Acc);
+                    if matches!(cc, Cond::Eq | Cond::LtU) {
+                        self.i("eor", Mode::Imm(w(1)));
+                    }
+                    self.acc = None;
+                    self.flags_a = true;
+                    let t = self.f.ty(*dst);
+                    self.sta_reg(*dst, 0);
+                    if self.width(t) == 2 {
+                        self.stz_reg(*dst, 1);
+                    }
+                    return;
+                }
                 let (lt, lf, end) = (self.fresh(), self.fresh(), self.fresh());
                 self.cond_branch(*cc, *ty, a, b, &lt, &lf, Some(&lf));
                 self.label(lf.clone());
@@ -726,6 +752,15 @@ impl<'a> Gen<'a> {
             Inst::Call { dst, callee, args, arg_tys, sret } => self.gen_call(*dst, callee, args, arg_tys, sret.as_ref()),
             Inst::Memcpy { dst, src, size } => self.gen_memcpy(dst, src, *size),
             Inst::Memset { dst, val, size } => self.gen_memset(dst, *val, *size),
+        }
+    }
+
+    /// An 8-bit value whose 16-bit home has a zero high byte.
+    fn is_clean8(&self, o: &Operand) -> bool {
+        match o {
+            Operand::Reg(r) => self.al.clean8[r.0 as usize],
+            Operand::Imm(v) => (v & 0xffff) < 0x100,
+            _ => false,
         }
     }
 
@@ -1180,7 +1215,7 @@ impl<'a> Gen<'a> {
             }
             ConvKind::Zext => {
                 self.lda(src, 0);
-                if from == IrTy::I8 {
+                if from == IrTy::I8 && !self.is_clean8(src) {
                     self.i("and", Mode::Imm(w(0xff)));
                     self.acc = None;
                 }
@@ -2098,7 +2133,8 @@ impl<'a> Gen<'a> {
             std::mem::swap(&mut a, &mut b);
             cc = cc.swap();
         }
-        let eight = ty == IrTy::I8;
+        // 8-bit operands whose high bytes are known zero compare in 16 bits.
+        let eight = ty == IrTy::I8 && !(self.is_clean8(&a) && (b.imm().is_some() || self.is_clean8(&b)) && !cc.is_signed());
         let bi = b.imm().map(|v| if eight { v & 0xff } else { v & 0xffff });
         // Compare with zero: flags from a load.
         if bi == Some(0) && !eight {
@@ -2507,6 +2543,10 @@ pub fn layout(f: &Func, reach: &[bool]) -> Vec<usize> {
                 }
                 _ => None,
             };
+            // A join block waits until its earlier predecessors (the other
+            // arm of an if) are placed, so both arms reach it with short
+            // branches.
+            let next = next.filter(|c| preds[c.0 as usize].iter().all(|p| placed[p.0 as usize] || p.0 >= c.0 || p.0 as usize == b));
             match next {
                 Some(nb) if !placed[nb.0 as usize] && reach[nb.0 as usize] => b = nb.0 as usize,
                 _ => break,
