@@ -12,6 +12,7 @@ answer is.
 - `docs/DIVERGENCES.md`: where clang and 816-tcc disagree with the suite, and why
 - `docs/FINDINGS.md`: loomcc bugs the suite has found
 - `docs/SOURCES.md`: external suites considered, licences, what was reused
+- `docs/TCC-BUGS.md`: 816-tcc miscompiles found on the way, with reproducers
 
 ## Quick start
 
@@ -183,8 +184,15 @@ tests/t6-loom/     Loom's runtime and generated C
 tests/t7-random/   randomised differential testing (scripts, seeds)
 external/          fetch scripts and filter lists for external suites (fetched/ is ignored)
 vendor/            permissively licensed tests copied in, with their licences
-scripts/           authoring aids
+harness/libc/      minimal stdio.h/stdlib.h/string.h for wrapped external suites
+scripts/           authoring aids: gen-families.py (generated test families),
+                   rom-output.py (what a test prints on the SNES), tcc-layout.py,
+                   import-mcpp.py, divergences.py, split-bundle.py
 ```
+
+Generated tests (`gen-*` directories) come from `scripts/gen-families.py`;
+edit the script, not the files. Every generated expectation is checked by
+the reference tools like any hand-written one.
 
 ## For the loomcc agent
 
