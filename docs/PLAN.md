@@ -235,15 +235,20 @@ at d88b68b (`tests/t6-loom/loom-d88b68b/PROVENANCE`).
 
 ## T7: randomised differential testing (running)
 
-`tests/t7-random/gen.py` generates UB-free self-checking programs in
-loomcc's subset (8/16/32-bit integers, arrays, calls, loops, `if`,
-`switch`; `--narrow` for 8/16-bit only); `tests/t7-random/run.py` computes
-each program's checksum with host16, then runs loomcc (`ir`, `rom`) and the
-816-tcc ROM, and reports LIKELY LOOMCC BUGs. See tests/t7-random/README.md,
-including the Csmith/YARPGen configuration and the cvise interestingness test
-for when those tools are installed (they are not on this machine yet). The
-first campaign (60 `--narrow` seeds) found no loomcc disagreement; 40 of the
-programs are kept in `tests/t7-random/corpus`.
+- `tests/t7-random/gen.py`: our own UB-free generator (8/16/32-bit integers,
+  arrays, calls, loops, `if`, `switch`; `--narrow` for 8/16-bit only).
+- Csmith 2.3.0 through `run.py --csmith` with a 16-bit-int `csmith.h`
+  (Csmith's safe math, a 16-bit checksum).
+- `tests/t7-random/run.py` computes each program's checksum with host16,
+  runs loomcc (`ir`, `rom`) and a reference (816-tcc's ROM for gen.py,
+  host16 for Csmith), and reports LIKELY LOOMCC BUGs, ignoring features
+  loomcc reports as "not supported yet".
+- `tests/t7-random/reduce.py` reduces a disagreeing program with C-Reduce
+  and writes a T4-ready test.
+- `tests/t7-random/corpus`: 40 generated programs kept as regression tests.
+
+See tests/t7-random/README.md. YARPGen is not packaged for Homebrew; it can
+be added the same way as Csmith.
 
 ## Maintenance
 

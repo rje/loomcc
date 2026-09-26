@@ -29,23 +29,33 @@ programs are full of constant subexpressions; it also rejects some 32-bit
 `corpus/` holds 40 generated `--narrow` programs as permanent regression
 tests (their 816-tcc failures are declared `tcc-t7`).
 
-## Csmith, YARPGen and reduction
+## Csmith
 
-Neither Csmith nor YARPGen is installed on this machine. When they are:
+`run.py --csmith` generates with Csmith 2.3.0 (`brew install csmith`):
 
-- Csmith: `csmith --no-float --no-longlong --no-math64 --no-bitfields
-  --no-packed-struct --no-volatile-pointers --max-funcs 4 --no-argc
-  --max-struct-fields 4` and a `csmith.h` shim that maps `platform_generic`
-  types to loomcc's (int8..int32; `uint64_t` must not appear) and
-  `transparent_crc` to the same 16-bit fold as gen.py; the checksum is
-  computed by host16 exactly as above. Csmith's safe-math wrappers already
-  avoid UB, but assume 32-bit `int` in places, so programs that fail under
-  host16 but pass natively are discarded.
-- YARPGen v1 (C mode) with `--std=c99 -b 16` style limits; the same host16
-  oracle.
+```sh
+tests/t7-random/run.py --csmith --seeds 1-200 -j 3
+```
 
-Reduction: cvise (`brew install cvise`) or C-Reduce with an interestingness
-test that (1) compiles with clang -fsanitize=undefined natively without a
-trap, (2) still gives host16's checksum under host16 and the 816-tcc ROM,
-and (3) still makes loomcc's `ir` or `rom` disagree. A reduced case becomes
-a T4 test named after the seed (`t4-exec/random/seed-<n>.c`).
+Flags: `--no-argc --no-longlong --no-math64 --no-bitfields --no-packed-struct
+--no-float --max-funcs 4 --max-block-size 3`. Programs include
+`tests/t7-random/csmith/csmith.h` (found first on the include path), which
+sets 16-bit-int limits so that Csmith's own safe-math wrappers
+(`safe_math_16.h`, its safe_math.h without the 64-bit and floating-point
+parts) guard every 16-bit operation, and replaces the CRC32 checksum with a
+16-bit fold. The reference is host16; 816-tcc is not used (its `long`,
+which Csmith's 32-bit constants need, is 16 bits).
+
+## Reduction
+
+`reduce.py FAILING.c --mode ir|rom` reduces a disagreeing program with
+C-Reduce (`brew install creduce`; cvise has no Homebrew formula). The
+interestingness test keeps a candidate only if clang (16-bit int) accepts it
+with the usual UB-signalling warnings made errors, it keeps the checksum
+scaffolding, host16 runs it to completion, and loomcc's chosen mode still
+disagrees with host16's checksum. The result is written with the runner
+header and `EXPECTED` from host16, ready to become a T4 test.
+
+It was checked with a deliberately broken loomcc (a wrapper that makes
+`--run-ir` fail on any program containing `^`): a 330-line generated
+program reduced to a few lines around one `^`.
