@@ -194,6 +194,42 @@ an object the toolchain lays out (no section spans a bank), so this matters
 only for code that addresses WRAM absolutely, as some engines do for big
 buffers. Worth a sentence in loomcc's documentation either way.
 
+### F34. A struct-returning call loses a scalar argument staged in $00 (rom; b63113c)
+
+Found by `tests/t7-random/run.py --shapes --small --no-foreign` (seed 7:
+no big frames, no foreign calls, so neither F29 nor F30) and still failing
+after their fix. C-Reduce took it to 579 bytes with an out-of-bounds store it
+introduced; the hand-cleaned form is
+`tests/t4-exec/call/struct-return-with-scalar-argument.c`. The IR interpreter
+passes; the ROM fails.
+
+For `f = h(f, a)`, where `E h(E i, u16 k)` returns a struct, the caller
+emits
+
+```
+  lda.w a          ; k staged in $00
+  sta.b $00
+  ...              ; struct argument copied into h's frame
+  lda.w #lcc_cstack_u0
+  sta.b $1c        ; hidden result pointer
+  ...
+  lda.b $1c
+  sta.b $00        ; result pointer into $00/$02: overwrites k
+  lda.b $1e
+  sta.b $02
+  lda.b $00
+  sta.b $04        ; "k" into its argument slot: now the frame address
+  jsl lcb_h
+```
+
+The argument moves into $00-$04 are a parallel copy done in sequence
+without checking that a source is also a destination. With `g.d != 0` in
+place of `g.d || 0` in h, h's frame layout changes, k is no longer staged
+in $00, and the program passes, so the failure depends on where the
+register allocator puts the staged value. The fix belongs where the call's
+argument moves are ordered: sequence the moves (or go through a temporary)
+so that none overwrites a source still to be read.
+
 ## Fixed
 
 - **F24 the interpreter lacked libc functions** (`strcpy` in c-testsuite
