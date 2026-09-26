@@ -12,7 +12,7 @@ as loomcc's matching mode exists; until then its tests are UNSUPPORTED.
 | T3 semantics | M3 | `syntax` / `syntax` | clang --target=msp430 (16-bit int) and 816-tcc -c; layout pinned to 816-tcc | 300 | 87 (seeded) |
 | T4 execute | M4 (ir), M5 (rom) | `run` / `ir`, `rom` | host clang (width-agnostic tests), host16 (msp430 IR under lli), 816-tcc ROM in loom-emulator | 600 | 155 own + 450 GCC torture (fetched) |
 | T5 SNES-specific | M5-M6 | `run` with `tcc-sources`/`asm-sources` | 816-tcc ROM, hand assembly | 100 | 9 (seeded) |
-| T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | 31 units (stage 1) |
+| T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | 31 units (stage 1), 4 differential drivers (stage 2) |
 | T7 randomised | M4 onwards | generated `run` tests | host16 checksum vs loomcc ir/rom vs 816-tcc ROM | continuous | generator + 40-program corpus |
 
 Counts: `./run-tests --list | cut -d' ' -f1 | sort -u | wc -l`, or the
@@ -213,17 +213,25 @@ addressing mode, every compare-and-branch idiom, 8-bit regions).
 Oracle: the same programs built entirely with 816-tcc (`tcc-rom`) and,
 for asm interop, hand-computed expectations.
 
-## T6: Loom-realistic (stage 1 running)
+## T6: Loom-realistic (stages 1 and 2 running)
 
 Loom's runtime C, generated C and hooks, copied from /Users/rje/src/rust/loom
-with the source path and commit in each file's header (`loomcc-source`).
-Stage 1: `compile` every unit with Loom's real include paths and defines
-(the testbed in loomcc/testbed does the same; this tier adds the
-expectation that the output assembles). Stage 2: `run` harnesses that drive
-pure functions of the runtime (math, fixed point, collision, animation
-tables) with inputs and compare to the same functions built by 816-tcc
-(`tcc-rom`) and by host16. Stage 3 belongs to loomcc's M8: a Loom sample ROM
-built with loomcc passing Loom's own ROM tests.
+at d88b68b (`tests/t6-loom/loom-d88b68b/PROVENANCE`).
+
+- Stage 1 (`tests/t6-loom/compile`): `compile` every unit with Loom's include
+  paths and debug definitions; the output must assemble. 31 units.
+- Stage 2 (`tests/t6-loom/run`): differential runs. A driver `#include`s one
+  runtime unit (so its static helpers are callable), calls its functions over
+  grids of inputs and fixed call sequences, and prints the results through the
+  harness printf. The expected output is what the same driver prints when
+  816-tcc builds it (captured with `scripts/rom-output.py`), so loomcc must
+  agree with Loom's current compiler on Loom's own code. Drivers cast `char`
+  results to `unsigned` before printing (816-tcc bug 5 in docs/TCC-BUGS.md).
+  Units so far: game.c (RNG, timers), adventure.c (flags, gates, actions,
+  request queue), camera.c (facing sign, auto-scroll step, approach),
+  animation.c (direction selection).
+- Stage 3 belongs to loomcc's M8: a Loom sample ROM built with loomcc passing
+  Loom's own ROM tests.
 
 ## T7: randomised differential testing (running)
 
