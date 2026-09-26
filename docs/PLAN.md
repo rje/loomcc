@@ -8,10 +8,10 @@ as loomcc's matching mode exists; until then its tests are UNSUPPORTED.
 | tier | loomcc milestone | action / mode | oracle | target | now |
 |---|---|---|---|---|---|
 | T1 preprocessor | M1 | `preprocess` / `E` | the C standard's text and examples; clang -E -P and 816-tcc -E as cross-checks; mcpp's validation suite | 400 | 458 (392 own + 66 mcpp) |
-| T2 lexing and parsing | M2 | `syntax` / `syntax` | clang --target=msp430 -fsyntax-only, 816-tcc -c | 300 | 79 (seeded) |
-| T3 semantics | M3 | `syntax` / `syntax` | clang --target=msp430 (16-bit int) and 816-tcc -c; layout pinned to 816-tcc | 300 | 87 (seeded) |
-| T4 execute | M4 (ir), M5 (rom) | `run` / `ir`, `rom` | host clang (width-agnostic tests), host16 (msp430 IR under lli), 816-tcc ROM in loom-emulator | 600 | 155 own + 450 GCC torture (fetched) |
-| T5 SNES-specific | M5-M6 | `run` with `tcc-sources`/`asm-sources` | 816-tcc ROM, hand assembly | 100 | 9 (seeded) |
+| T2 lexing and parsing | M2 | `syntax` / `syntax` | clang --target=msp430 -fsyntax-only, 816-tcc -c | 300 | 309 (hand-written + generated declarator, precedence and designator families) |
+| T3 semantics | M3 | `syntax` / `syntax` | clang --target=msp430 (16-bit int) and 816-tcc -c; layout pinned to 816-tcc | 300 | 303 (hand-written + generated folding, conversion and 816-tcc layout families) |
+| T4 execute | M4 (ir), M5 (rom) | `run` / `ir`, `rom` | host clang (width-agnostic tests), host16 (msp430 IR under lli), 816-tcc ROM in loom-emulator | 600 | 607 own (half generated, Loom-shaped) + 450 GCC torture + 212 output-compared (c-testsuite, tcc tests2, LLVM), all fetched |
+| T5 SNES-specific | M5-M6 | `run` with `tcc-sources`/`asm-sources` | 816-tcc ROM, hand assembly | 100 | 15 |
 | T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | 31 units (stage 1), 4 differential drivers (stage 2) |
 | T7 randomised | M4 onwards | generated `run` tests | host16 checksum vs loomcc ir/rom vs 816-tcc ROM | continuous | generator + 40-program corpus |
 
