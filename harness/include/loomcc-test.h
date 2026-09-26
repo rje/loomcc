@@ -26,6 +26,15 @@ typedef int i32;
 typedef unsigned int u32;
 #endif
 
+/* An absolute 24-bit SNES address as a pointer (implementation-defined
+ * conversion): the constant needs a 32-bit type, long long for 816-tcc and
+ * long for loomcc. */
+#if defined(__TINYC__)
+#define LT_ADDR(T, a) ((T *)a##LL)
+#else
+#define LT_ADDR(T, a) ((T *)a##UL)
+#endif
+
 /* A static assertion every compiler here understands (816-tcc has no
  * _Static_assert): a negative array size is a constraint violation. */
 #define LT_CAT_(a, b) a##b

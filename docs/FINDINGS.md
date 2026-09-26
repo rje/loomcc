@@ -105,6 +105,17 @@ loomcc now ships its own headers (1fc1258; `t3-sema/headers/stdint-widths.c`
 passes), but Loom's build puts devkitsnes/include on the `-I` path. Which
 headers win for Loom units is worth checking in the driver.
 
+### Q3. Pointers that step across the $7E/$7F WRAM boundary
+
+`t5-snes/data/wram-bank-crossing.c` (XFAIL). WRAM is one 128 KiB block, so
+a pointer walking up from `$7E:FFF8` could continue into `$7F:0000`. loomcc
+(since bfdacc7, "no bank copy on pointer steps") increments only the low 16
+bits, so `p` after 16 steps is `$7E:0008`; 816-tcc keeps the pointer right
+but its stores through `*p++` wrap within bank `$7E`. Neither can happen for
+an object the toolchain lays out (no section spans a bank), so this matters
+only for code that addresses WRAM absolutely, as some engines do for big
+buffers. Worth a sentence in loomcc's documentation either way.
+
 ## Fixed
 
 - **F1 `#line` ignored**: fixed in 1fc1258 (all `t1-pp/line/*` pass).
