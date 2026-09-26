@@ -1,0 +1,5 @@
+name = "micro_switch"
+kind = "micro"
+description = "switch: a dense 12-case switch (13 calls), a sparse 8-case switch over scattered 16-bit keys (16 calls), a 3-state tokenizer over a 37-byte string."
+unit_labels = ["dense", "sparse", "tokens"]
+helper_labels = []

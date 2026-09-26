@@ -1,0 +1,5 @@
+name = "micro_muldiv"
+kind = "micro"
+description = "Multiply by constants and variables (signed and unsigned), divide/modulo by constants (/16, /10 digit loop, /3, %7, signed /4 /3 %5) and by variables (signed and unsigned)."
+unit_labels = ["mul_const", "mul_var_sum", "mul_signed", "div_const", "div_signed_const", "div_var", "div_var_signed"]
+helper_labels = ["tcc__mul", "tcc__div", "tcc__udiv"]

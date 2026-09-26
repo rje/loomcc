@@ -1,0 +1,5 @@
+name = "micro_math"
+kind = "micro"
+description = "16-bit math: a clamped sub-pixel axis step, signed/unsigned compare mixes, an LFSR, popcount, sum of absolute differences, 8-bit saturating add, signed-char sum."
+unit_labels = ["step_axis", "compare_mix", "lfsr", "popcount", "abs_diff_sum", "sat_add_u8", "sum_s8"]
+helper_labels = []

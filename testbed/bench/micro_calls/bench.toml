@@ -1,0 +1,5 @@
+name = "micro_calls"
+kind = "micro"
+description = "Calls: a chain of small static functions (7 calls deep per chain), 9 mixed-width arguments, pointer out-parameters, and 12 calls through a const table of function pointers."
+unit_labels = ["chain", "many_args", "split", "minmax", "run_hooks"]
+helper_labels = ["tcc__jsl_ind_r9"]

@@ -1,0 +1,5 @@
+name = "micro_index"
+kind = "micro"
+description = "Array indexing: map[y][x] over a 16x12 u8 map through a const table, a 2-D u16 relaxation sweep, a histogram hist[a[i] >> 4]++, an in-place u16 reverse."
+unit_labels = ["map_weight", "cost_sweep", "histogram", "reverse_u16"]
+helper_labels = ["tcc__mul"]

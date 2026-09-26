@@ -1,0 +1,6 @@
+name = "micro_struct"
+kind = "micro"
+description = "Struct access in 816-tcc layouts: a[i].f over a 20-byte struct with a pointer field, the same walk by pointer through ->def, a linked list, struct copy and return by value."
+unit_labels = ["actors_step", "actors_score", "list_sum", "box_union"]
+helper_labels = ["tcc__mul", "memcpy"]
+notes = "816-tcc copies structs with memcpy; the driver's assignment of box_union's result may also call memcpy, which is counted as helper instructions."

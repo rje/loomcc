@@ -1,0 +1,5 @@
+name = "micro_loops"
+kind = "micro"
+description = "Loops: sum u16/u8 arrays (indexed and pointer-walk), memset-like u8/u16 fills, a byte copy, a triangular nested loop."
+unit_labels = ["sum_u16", "sum_u8", "fill_u8", "fill_u16", "copy_u8", "nested"]
+helper_labels = []
