@@ -35,11 +35,18 @@ fn sizes_match_816_tcc() {
         struct BF2 { unsigned char a:2; unsigned char b:7; };
         struct BF3 { unsigned short x; unsigned a:1; };
         union U { unsigned char b[3]; unsigned short w; };
+        struct P { unsigned char a : 4; unsigned b : 4; };
+        struct Q { unsigned short a : 15; unsigned short b : 2; };
+        struct R { char c; unsigned x : 1; };
+        struct S0 { unsigned a : 3; unsigned : 0; unsigned b : 3; };
+        struct T { unsigned char a : 3; unsigned : 0; unsigned char b : 3; };
+        struct O { int x : 4; int y : 12; int z : 1; };
         u16 sizes[] = { sizeof(S), sizeof(B), sizeof(C), sizeof(int), sizeof(void*), sizeof(void(*)(void)),
-                        sizeof(struct BF), sizeof(struct BF2), sizeof(struct BF3), sizeof(union U) };");
+                        sizeof(struct BF), sizeof(struct BF2), sizeof(struct BF3), sizeof(union U),
+                        sizeof(struct P), sizeof(struct Q), sizeof(struct R), sizeof(struct S0), sizeof(struct T), sizeof(struct O) };");
     let b = global_bytes(&u, "sizes");
     let words: Vec<u16> = b.chunks(2).map(|c| u16::from_le_bytes([c[0], c[1]])).collect();
-    assert_eq!(words, vec![12, 2, 12, 2, 4, 4, 6, 2, 4, 4]);
+    assert_eq!(words, vec![12, 2, 12, 2, 4, 4, 6, 2, 4, 4, 4, 4, 4, 4, 2, 4]);
 }
 
 #[test]

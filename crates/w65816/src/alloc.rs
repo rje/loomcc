@@ -299,9 +299,14 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], call_clobbers_all: bool) -> Alloc {
             param_copies.push((so, homes[r.0 as usize], IrTy::Ptr));
         }
     }
-    // 5. IR slots after the spills.
+    // 5. IR slots after the spills; a struct parameter's slot is its
+    // parameter area (the caller or the ABI entry copied the bytes there).
     let mut slot_offsets = Vec::new();
-    for s in &f.slots {
+    for (si, s) in f.slots.iter().enumerate() {
+        if let Some(pi) = f.param_slots.iter().position(|p| *p == Some(SlotId(si as u32))) {
+            slot_offsets.push(param_offsets[pi]);
+            continue;
+        }
         let a = s.align.clamp(1, 2);
         off = off.div_ceil(a) * a;
         slot_offsets.push(off);

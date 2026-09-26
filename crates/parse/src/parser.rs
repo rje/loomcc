@@ -830,7 +830,10 @@ impl<'a> Parser<'a> {
     fn direct_declarator(&mut self, abstract_ok: bool) -> PResult<Declarator> {
         let loc = self.loc();
         let t = self.peek().clone();
-        if t.kind == TokenKind::Ident && !is_keyword(&t.text) && !(abstract_ok && self.is_typedef_name(&t.text)) {
+        // After declaration specifiers, an identifier is the declared name
+        // even when it is also a typedef name (the specifiers would have
+        // taken it as the type otherwise): `int f(int T)`.
+        if t.kind == TokenKind::Ident && !is_keyword(&t.text) {
             self.next();
             return Ok(Declarator { kind: DeclaratorKind::Ident(Some(t.text.to_string())), loc });
         }

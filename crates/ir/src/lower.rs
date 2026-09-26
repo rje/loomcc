@@ -9,8 +9,16 @@ use std::collections::HashMap;
 /// Lowers checked units into one module (whole program). Statics are made
 /// unique per unit; external names are shared.
 pub fn lower_units(units: &[hir::Unit]) -> (Module, Vec<(usize, Diag)>) {
+    lower_units_prefixed(units, "")
+}
+
+/// As `lower_units`, with `prefix` in every private symbol so separately
+/// compiled objects never share a static's name.
+pub fn lower_units_prefixed(units: &[hir::Unit], prefix: &str) -> (Module, Vec<(usize, Diag)>) {
     let mut m = Module::default();
     let mut diags = Vec::new();
+    let clean: String = prefix.chars().map(|c| if c.is_ascii_alphanumeric() || c == '_' { c } else { '_' }).collect();
+    PREFIX.with(|p| *p.borrow_mut() = clean);
     for (ui, u) in units.iter().enumerate() {
         let mut ds = Vec::new();
         lower_unit(u, ui, &mut m, &mut ds);
@@ -52,6 +60,10 @@ pub fn lower_units(units: &[hir::Unit]) -> (Module, Vec<(usize, Diag)>) {
     (m, diags)
 }
 
+thread_local! {
+    static PREFIX: std::cell::RefCell<String> = const { std::cell::RefCell::new(String::new()) };
+}
+
 /// The assembler symbol for a global.
 pub fn symbol_name(unit: &hir::Unit, unit_index: usize, g: GlobalId) -> String {
     let gl = unit.global(g);
@@ -59,7 +71,8 @@ pub fn symbol_name(unit: &hir::Unit, unit_index: usize, g: GlobalId) -> String {
         gl.name.clone()
     } else {
         let clean: String = gl.name.chars().map(|c| if c.is_ascii_alphanumeric() || c == '_' { c } else { '_' }).collect();
-        format!("lcs{}_{}", unit_index, clean.trim_start_matches('_'))
+        let pre = PREFIX.with(|p| p.borrow().clone());
+        format!("lcs{}{}_{}", pre, unit_index, clean.trim_start_matches('_'))
     }
 }
 
@@ -1195,11 +1208,22 @@ impl<'a> Lowerer<'a> {
                 }
             },
             ExprKind::PtrAdd(base, idx, scale) => {
+                // Indexing an array from its start: a negative index would be
+                // undefined, so the index may use the 65816's indexed modes
+                // (which carry into the bank byte). Anything else with a
+                // signed index may legally go backwards: compute the address
+                // with 16-bit arithmetic, which wraps inside the bank.
+                let array_start = matches!(&base.kind, ExprKind::AddrOf(inner) if self.types().is_array(inner.ty));
                 let a = self.ptr_addr(base);
                 let it = self.ity(idx.ty, idx.loc);
                 let signed = self.is_signed(idx.ty);
                 let i = self.value(idx);
                 let i = self.conv(i, it, IrTy::I16, signed);
+                if signed && !array_start && i.imm().is_none() {
+                    let with = self.add_index(a, i, *scale as u32);
+                    let v = self.addr_value(with);
+                    return self.operand_addr(v);
+                }
                 self.add_index(a, i, *scale as u32)
             }
             ExprKind::Cast(inner) if self.types().is_ptr(inner.ty) => self.ptr_addr(inner),

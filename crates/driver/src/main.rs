@@ -61,7 +61,7 @@ fn parse_args() -> Result<Args, String> {
             args.mode = Mode::EmitIr;
         } else if a == "-S" {
             args.mode = Mode::Assembly;
-        } else if a == "--interpret" {
+        } else if a == "--interpret" || a == "--run-ir" {
             args.mode = Mode::Interpret;
         } else if a == "--print-ast" {
             args.mode = Mode::PrintAst;
@@ -99,7 +99,15 @@ fn main() -> ExitCode {
     let mut failed = false;
     let mut out = String::new();
     if matches!(args.mode, Mode::EmitIr | Mode::Assembly | Mode::Interpret) {
-        let c = loomcc::compile_ir(&args.inputs, &args.pp);
+        let tag = args
+            .output
+            .as_ref()
+            .or(args.inputs.first())
+            .and_then(|p| p.file_stem())
+            .map(|s| s.to_string_lossy().to_string())
+            .unwrap_or_else(|| "unit".into());
+        let prefix = if args.mode == Mode::Assembly { format!("{}_", tag) } else { String::new() };
+        let c = loomcc::compile_ir_prefixed(&args.inputs, &args.pp, &prefix);
         eprint!("{}", c.messages);
         if c.failed {
             return ExitCode::from(1);

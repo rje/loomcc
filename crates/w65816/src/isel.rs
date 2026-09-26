@@ -1079,7 +1079,7 @@ impl<'a> Gen<'a> {
 
     fn place_needs_a(&self, addr: &Addr) -> bool {
         let base_needs = match &addr.base {
-            Base::Reg(p) => !matches!(self.home(*p), Home::Dp(_)),
+            Base::Reg(p) => !matches!(self.home(*p), Home::Dp(_)) || addr.offset < 0 || addr.offset >= 0x8000,
             _ => false,
         };
         let idx_needs = match addr.index {
@@ -1154,6 +1154,42 @@ impl<'a> Gen<'a> {
                         } else {
                             Place::LongX(expr)
                         }
+                    }
+                }
+            }
+            Base::Reg(p) if addr.offset < 0 || addr.offset >= 0x8000 => {
+                // A negative offset must wrap in the bank: add it in 16 bits
+                // into a scratch pointer (Y would carry into the bank byte).
+                let idx_in_a = addr.index.map_or(false, |(r, _)| self.al.forwarded[r.0 as usize]);
+                let held = self.acc.clone();
+                if idx_in_a {
+                    self.i("tax", Mode::Implied);
+                }
+                self.acc = None;
+                let s0 = self.src(&Operand::Reg(*p), 0);
+                self.op_src("lda", &s0);
+                self.i("clc", Mode::Implied);
+                self.i("adc", Mode::Imm(w(addr.offset)));
+                self.i("sta", Mode::Dp(SCRATCH_PTR));
+                let s1 = self.src(&Operand::Reg(*p), 1);
+                self.op_src("lda", &s1);
+                self.i("sta", Mode::Dp(SCRATCH_PTR + 2));
+                if idx_in_a {
+                    self.i("txa", Mode::Implied);
+                    self.acc = held;
+                    self.xv = None;
+                }
+                match addr.index {
+                    None => Place::Ind(SCRATCH_PTR),
+                    Some((r, s)) => {
+                        if s == 1 && !self.al.forwarded[r.0 as usize] {
+                            self.ldy(&Operand::Reg(r));
+                        } else {
+                            self.scaled_index_in_a(r, s, 0);
+                            self.i("tay", Mode::Implied);
+                            self.yv = None;
+                        }
+                        Place::IndY(SCRATCH_PTR)
                     }
                 }
             }
@@ -1530,9 +1566,44 @@ impl<'a> Gen<'a> {
             }
             return;
         }
-        // 816-tcc ABI: push right to left.
+        // 816-tcc ABI: push right to left; a struct goes on the stack whole.
+        let kinds: Vec<ParamKind> = match callee {
+            Callee::Direct(n) => self.mi.externs.get(n).cloned().unwrap_or_default(),
+            Callee::Indirect(_) => Vec::new(),
+        };
         let mut pushed = 0u32;
         for (i, a) in args.iter().enumerate().rev() {
+            if let Some(ParamKind::Aggregate(n)) = kinds.get(i) {
+                let n = *n;
+                let addr = match a {
+                    Operand::Reg(r) => Addr { base: Base::Reg(*r), offset: 0, index: None },
+                    Operand::Global(g, o) => Addr { base: Base::Global(g.clone()), offset: *o, index: None },
+                    Operand::Slot(sl, o) => Addr { base: Base::Slot(*sl), offset: *o, index: None },
+                    Operand::Imm(v) => Addr { base: Base::Abs(*v as u32), offset: 0, index: None },
+                };
+                self.addr_to_dp(&addr, SCRATCH_PTR2);
+                self.i("tsc", Mode::Implied);
+                self.i("sec", Mode::Implied);
+                self.i("sbc", Mode::Imm(w(n as i64)));
+                self.i("tcs", Mode::Implied);
+                let mut k = 0;
+                while k < n {
+                    self.i("ldy", Mode::Imm(w(k as i64)));
+                    if n - k == 1 {
+                        self.i8("sep", Mode::Imm(Expr::Num(0x20)));
+                        self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
+                        self.i("sta", Mode::Sr((k + 1) as u8));
+                        self.i8("rep", Mode::Imm(Expr::Num(0x20)));
+                    } else {
+                        self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
+                        self.i("sta", Mode::Sr((k + 1) as u8));
+                    }
+                    k += 2;
+                }
+                self.forget();
+                pushed += n;
+                continue;
+            }
             let t = arg_tys.get(i).copied().unwrap_or(IrTy::I16);
             match t {
                 IrTy::I8 => {

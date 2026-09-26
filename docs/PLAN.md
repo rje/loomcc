@@ -157,18 +157,20 @@ suite runs with each pass on and off.
 
 ## 3. The C subset Loom needs (measured over runtime + generated + hooks)
 
-~29,000 lines. Used: `char/short/int/unsigned`, `signed char`, typedefs,
-structs (nested, arrays of structs, pointers to structs, struct assignment),
-2 unions, 2 enums, arrays (1-D and 2-D), pointers incl. function pointers
-(31 uses; hook tables, callbacks), `const` tables with brace initialisers
-(119 indexed initialisers), `static` (611: file-scope helpers and tables),
-`extern` (128), `switch` (12), `do/while`, `?:` (208), `sizeof` (53),
-bit-fields (≤ 8 declarations), casts, compound assignment, `for` loops.
-Preprocessor: `#define/#if/#ifdef/#ifndef/#elif/#else/#endif/#include/
-#error/#undef`, one `##` paste (LOOM_STATIC_ASSERT), no `#` stringizing, no
-variadics, no `long`, no floating point in the target build (2 mentions are
-comments or host-only), no varargs, no `goto`, no recursion expected (checked
-by the call graph).
+~30,200 lines in 98 files (clang AST survey of every unit, testbed/README.md).
+Used: `char/short/int/unsigned`, `signed char`, typedefs, structs (nested,
+arrays of structs, pointers to structs, struct assignment at 3 sites), one
+union in compiled code, one anonymous enum (stack.c), arrays (one 2-D),
+pointers, `const` tables with brace initialisers, `static` (file-scope
+helpers and tables), `extern`, `switch`, one `do/while`, `?:`, `sizeof`,
+casts, compound assignment, comma operators, ~52 `volatile` (hardware
+registers). Preprocessor: `#define/#if/#ifdef/#ifndef/#elif/#else/#endif/
+#include/#error/#undef`, one `##` paste (LOOM_STATIC_ASSERT).
+
+Absent: **function pointers** (hook dispatch is a generated `switch`),
+bit-fields, compound literals, designated initialisers, static locals,
+struct returns and by-value struct parameters, recursion, `long`, floating
+point, varargs, `goto`, inline asm, `#` stringizing, `_Static_assert`.
 
 The spike implements C17 in the front end broadly (so conformance tests
 parse and check) and narrows the backend to what Loom needs first:
@@ -204,6 +206,22 @@ integers; floating point and 64-bit are out of scope (diagnosed).
    and adds the edges so frames stay disjoint. Without the scan, an
    external call is assumed to reach every exported function.
 
+## 5b. Driver interface (stable; loomcc-tests drives it)
+
+```
+loomcc [-I dir] [-iquote dir] [-isystem dir] [-D n[=v]] [-U n] [-nostdinc] MODE inputs... [-o out]
+  -E              preprocess (default mode)
+  --tokens        one preprocessing token per line
+  -fsyntax-only   parse and type-check
+  --print-ast     parse and print the AST back as C
+  --emit-ir       whole program (all inputs) to IR text
+  --run-ir        whole program to IR, run main() in the interpreter (alias --interpret)
+  -S              whole program to one WLA-DX .asm (tag = output stem)
+```
+loomcc's own freestanding headers (`crates/driver/include`: stddef, stdint,
+stdbool, limits, stdarg, stdio, stdlib, string, assert) are searched last
+unless `-nostdinc`.
+
 ## 6. Milestones
 
 | M | Deliverable | Validation |
@@ -213,7 +231,7 @@ integers; floating point and 64-bit are out of scope (diagnosed).
 | M2 | parser | 100% of testbed parses; AST round trip |
 | M3 | sema | testbed type-checks; layout probe equals 816-tcc |
 | M4 | IR + interpreter | differential suite vs host clang |
-| M5 | **first end-to-end**: benchmark functions compiled, linked beside crt0, run in loom-emulator, measured against 816-tcc and hand asm | results equal interpreter; RESULTS.md table |
+| M5 | **first end-to-end**: benchmark functions compiled, linked beside crt0, run in loom-emulator, measured against 816-tcc and hand asm | results equal interpreter; RESULTS.md table — **done 2026-09-26: 31/31 equal, 0.54x tcc clocks** |
 | M6 | backend quality: allocation, addressing modes, compare/branch, 8-bit | RESULTS.md gap per benchmark |
 | M7 | optimiser + whole-program (inlining, static frames) | RESULTS.md |
 | M8 | whole Loom runtime compiles; a sample ROM built with loomcc | the sample's ROM test / tick trace equals the 816-tcc build |
@@ -268,3 +286,22 @@ ends). The same inputs go to all three variants.
     `.BASE $00` around the RAMSECTION.
   - The preprocessor's clang -E / 816-tcc -E equality stays a committed
     cargo test that skips when the tools are absent.
+- 2026-09-26: M1-M5 done. Front end: all 114 Loom units token-equal to clang
+  -E and 816-tcc -E, parse, round-trip, type-check with no diagnostics; 6,290
+  struct sizes/offsets equal 816-tcc's. Backend first cut (no optimiser):
+  31/31 benchmarks equal across host/tcc/asm/loomcc; loomcc at 0.54x the
+  clocks of 816-tcc and 1.76x the hand assembly (geomeans). loomcc-tests:
+  767/874 pass (t4 fails are only 32-bit mul/div/shift and recursion).
+  Fixed from loomcc-tests FINDINGS: F9 (parameter named like a typedef),
+  F11 (816-tcc bit-field units: a bit-field joins the current unit only
+  when the previous member is a bit-field of the same unit size), F12
+  (indexed modes carry into the bank byte, so a signed index on a runtime
+  pointer and negative constant offsets use 16-bit address arithmetic),
+  F13 (struct parameters live in the parameter area), F14 (private symbols
+  carry the output stem), F16 (struct arguments pushed whole on 816-tcc
+  calls).
+  Call graph: calls to code outside the module no longer add edges to every
+  exported function (that made any exported function calling PVSnesLib look
+  recursive); only functions named as callbacks (to come from scanning the
+  .asm inputs) get those edges. Indirect calls reach address-taken
+  functions.

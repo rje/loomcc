@@ -390,56 +390,57 @@ impl Types {
     /// alignment, bit-fields packed LSB-first into units of the declared
     /// type, a field that would straddle its unit starting the next one).
     pub fn layout_record(&mut self, id: RecordId, members: Vec<(Option<String>, Ty, Option<u32>)>) {
+        // 816-tcc allocates bit-fields in whole storage units of their
+        // declared type: a bit-field joins the current unit only when the
+        // previous member was a bit-field with the same unit size and it
+        // fits; otherwise it opens a new unit at the next aligned offset.
+        // A zero-width bit-field closes the unit.
         let is_union = self.records[id.0 as usize].is_union;
         let mut fields = Vec::new();
-        let mut offset: u64 = 0; // in bits
-        let mut size_bits: u64 = 0;
+        let mut next: u64 = 0; // next free byte (structs)
+        let mut size: u64 = 0;
         let mut align: u64 = 1;
+        // (byte offset, unit bytes, bits used)
+        let mut unit: Option<(u64, u64, u32)> = None;
         for (name, ty, width) in members {
             let fsize = self.size(ty);
             let falign = self.align(ty);
             match width {
+                Some(0) => {
+                    unit = None;
+                }
                 Some(w) => {
-                    let unit_bits = fsize * 8;
-                    if w == 0 {
-                        // Zero width: pad to the next unit.
-                        if !is_union {
-                            offset = offset.div_ceil(unit_bits) * unit_bits;
+                    let (off, bit) = match unit {
+                        Some((o, u, used)) if !is_union && u == fsize && used + w <= (u * 8) as u32 => {
+                            unit = Some((o, u, used + w));
+                            (o, used)
                         }
-                        continue;
-                    }
-                    let start = if is_union { 0 } else { offset };
-                    let unit_start = (start / unit_bits) * unit_bits;
-                    let (unit_start, bit) = if start + w as u64 > unit_start + unit_bits {
-                        (unit_start + unit_bits, 0)
-                    } else {
-                        (unit_start, (start - unit_start) as u32)
+                        _ => {
+                            let o = if is_union { 0 } else { next.div_ceil(falign) * falign };
+                            unit = Some((o, fsize, w));
+                            if !is_union {
+                                next = o + fsize;
+                            }
+                            (o, 0)
+                        }
                     };
-                    // Bytes: the unit's byte offset must be aligned to the
-                    // field type's alignment.
-                    let byte = unit_start / 8;
-                    fields.push(Field { name, ty, offset: byte, bits: Some((bit, w, fsize as u32)) });
-                    let end = unit_start + bit as u64 + w as u64;
-                    if !is_union {
-                        offset = end;
-                    }
-                    size_bits = size_bits.max(end);
+                    fields.push(Field { name, ty, offset: off, bits: Some((bit, w, fsize as u32)) });
+                    size = size.max(off + fsize);
                     align = align.max(falign);
                 }
                 None => {
-                    let start_bits = if is_union { 0 } else { offset };
-                    let byte = start_bits.div_ceil(8).div_ceil(falign) * falign;
-                    fields.push(Field { name, ty, offset: byte, bits: None });
-                    let end = (byte + fsize) * 8;
+                    unit = None;
+                    let o = if is_union { 0 } else { next.div_ceil(falign) * falign };
+                    fields.push(Field { name, ty, offset: o, bits: None });
                     if !is_union {
-                        offset = end;
+                        next = o + fsize;
                     }
-                    size_bits = size_bits.max(end);
+                    size = size.max(o + fsize);
                     align = align.max(falign);
                 }
             }
         }
-        let size = size_bits.div_ceil(8).div_ceil(align) * align;
+        let size = size.div_ceil(align) * align;
         let r = &mut self.records[id.0 as usize];
         r.fields = fields;
         r.size = size;

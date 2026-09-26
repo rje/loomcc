@@ -82,6 +82,10 @@ pub struct Compiled {
 
 /// Front end + lowering for a whole program (all translation units at once).
 pub fn compile_ir(paths: &[std::path::PathBuf], opts: &Options) -> Compiled {
+    compile_ir_prefixed(paths, opts, "")
+}
+
+pub fn compile_ir_prefixed(paths: &[std::path::PathBuf], opts: &Options, prefix: &str) -> Compiled {
     let mut units = Vec::new();
     let mut sources = Vec::new();
     let mut messages = String::new();
@@ -103,7 +107,7 @@ pub fn compile_ir(paths: &[std::path::PathBuf], opts: &Options) -> Compiled {
     if failed {
         return Compiled { module: None, messages, failed };
     }
-    let (m, diags) = loomcc_ir::lower::lower_units(&units);
+    let (m, diags) = loomcc_ir::lower::lower_units_prefixed(&units, prefix);
     for (ui, d) in &diags {
         messages.push_str(&sources[*ui].render(d));
         messages.push('\n');

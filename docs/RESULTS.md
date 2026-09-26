@@ -23,19 +23,130 @@ assembly that replaced the C in Loom's history, **loomcc** = this compiler.
 | phase | loomcc/tcc clocks | loomcc/asm clocks (pairs) | loomcc/tcc bytes | equal |
 |---|---:|---:|---:|---:|
 | M5: first backend, no optimiser | 0.54 | 1.76 | 0.63 | 31/31 |
+| M5 + correctness fixes from loomcc-tests (F11-F16) | 0.54 | 1.76 | 0.63 | 31/31 |
 
 (Geometric means. Lower is better; asm/tcc clocks is 0.32 for scale.)
 
-## Current table (phase M5)
+
+## Side by side: where the remaining gap comes from
+
+### movement_box_blocked (Loom f0a6cd0): 816-tcc 279,504 clocks, loomcc 163,112, hand asm 95,936
+
+The inner loop, `for (x = first_x; x <= last_x; ++x) if (row[x] != 0) return 1;`:
+
+816-tcc reloads every value from the stack and materialises the compare as a
+0/1 in X before branching (about 30 instructions per cell):
+
+```
+__local_11:
+lda -10 + __locals + 1,s      ; x
+sta.b tcc__r0
+lda -4 + __locals + 1,s       ; last_x
+sta.b tcc__r1
+ldx #1
+lda.b tcc__r0
+sec
+sbc.b tcc__r1
+tay
+beq ++
+bcc ++
++ dex
+...                           ; stx r5 / txa / bne / brl, then row[x] through a
+                              ; freshly built 4-byte pointer, then x++ via the stack
+```
+
+loomcc (12 instructions per cell): values live in direct page, the compare
+branches directly, the byte is read through `[dp],y`:
+
+```
+__b12: lda.b $0c        ; x
+       cmp.b $08        ; last_x
+       beq __b13
+       bcs __b15
+__b13: ldy.b $0c
+       lda [$00],y      ; row[x]
+       and.w #$ff
+       bne __b16        ; solid
+       bra __b17        ; -> __b14 (a jump chain)
+__b14: lda.b $0c
+       inc a
+       sta.b $0c
+       bra __b12
+```
+
+Hand assembly (5 instructions per cell): the loop counter *is* Y, the loop runs
+in 8-bit accumulator mode, and the exit test falls through:
+
+```
+loom_pvs_movement_cell:
+  cpy.b tcc__r2
+  beq loom_pvs_movement_read
+  bcs loom_pvs_movement_row_next
+loom_pvs_movement_read:
+  lda.b [tcc__r5],y
+  beq loom_pvs_movement_next_cell
+  brl loom_pvs_movement_solid
+loom_pvs_movement_next_cell:
+  iny
+  bra loom_pvs_movement_cell
+```
+
+The remaining gap, in order of size:
+
+1. **No register allocation to X/Y.** The hand code keeps the induction
+   variable in Y (`iny`, `cpy`); loomcc keeps it in a direct-page word and
+   reloads it (`lda $0c; inc a; sta $0c` + `ldy $0c`).
+2. **No loop optimisation.** The hand code hoists the row multiply out of the
+   loop and strength-reduces it to an add per row; loomcc calls its multiply
+   helper once per row (the C does the multiply there).
+3. **Block layout and jump threading.** `bne solid; bra __b17` then `__b17`
+   jumps to `__b14`: two taken branches per cell that a layout pass removes.
+4. **8-bit regions.** The hand loop reads the byte in 8-bit mode (`lda [r5],y;
+   beq`) instead of `lda; and #$ff; bne`.
+5. **Argument traffic.** The 816-tcc ABI entry copies each stack argument to
+   the static frame and the body copies it again into direct page; the hand
+   code reads its arguments with `lda n,s` where they are.
+
+The same five items account for most of the gap in the other pairs
+(player_tick, camera_follow and board_* also pay for copies of pointers that
+the IR does not yet propagate).
+
+### Why loomcc is already 1.85x faster than 816-tcc
+
+- values in direct page instead of stack reloads (`lda.b $0c` 4 cycles vs
+  `lda n,s` + `sta r0` + reload);
+- compare-and-branch fused (`cmp; bcc`) instead of a 0/1 materialised in X;
+- `a[i].f` as one indexed access (`lda arr+off,x`, `[dp],y`) instead of a
+  `tcc__mul` call and a 4-byte pointer built per access;
+- multiplication by constants as shifts and adds;
+- internal calls write arguments straight into the callee's frame (no
+  pushes, no pops, no frame set-up);
+- `x == 0` as `lda; beq` (2 instructions instead of ~11).
+
+## External test suite (loomcc-tests, 2026-09-26)
+
+| tier | total | pass | fail | xfail |
+|---|---:|---:|---:|---:|
+| t1-pp | 458 | 379 | 77 | 2 |
+| t2-parse | 79 | 75 | 4 | 0 |
+| t3-sema | 86 | 77 | 8 | 1 |
+| t4-exec | 234 | 220 | 10 | 4 |
+| t5-snes | 17 | 17 | 0 | 0 |
+
+t4 failures are the two unsupported features (32-bit multiply/divide/shift,
+recursion); t1-t3 failures are missing diagnostics and preprocessor
+conformance details (loomcc-tests docs/FINDINGS.md F1-F10).
+
+## Current table (M5 + fixes)
 
 | bench | kind | equal | tcc bytes | tcc instr | tcc clocks | asm bytes | asm instr | asm clocks | loomcc bytes | loomcc instr | loomcc clocks | loomcc/tcc clocks | loomcc/asm clocks | cstack bytes |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | actor_body_step | pair | yes | 3613 | 5571 | 243808 | 1331 | 2033 | 161492 | 2223 | 3112 | 190292 | 0.78 | 1.18 | 24 |
 | animation_pass | pair | yes | 404 | 6031 | 214404 | 307 | 2913 | 120660 | 304 | 3064 | 107676 | 0.50 | 0.89 | 16 |
-| board_drop | pair | yes | 3733 | 10585 | 246772 | 1011 | 1842 | 51536 | 2264 | 6820 | 173920 | 0.70 | 3.37 | 76 |
-| board_fill | pair | yes | 2477 | 8511 | 222912 | 558 | 2308 | 64244 | 1487 | 4507 | 131936 | 0.59 | 2.05 | 48 |
+| board_drop | pair | yes | 3733 | 10585 | 246772 | 1011 | 1842 | 51536 | 2344 | 6884 | 175752 | 0.71 | 3.41 | 76 |
+| board_fill | pair | yes | 2477 | 8511 | 222912 | 558 | 2308 | 64244 | 1567 | 4635 | 135636 | 0.61 | 2.11 | 48 |
 | board_fit | pair | yes | 568 | 10404 | 232208 | 346 | 2232 | 66228 | 384 | 6552 | 151776 | 0.65 | 2.29 | 22 |
-| board_paint | pair | yes | 3061 | 7953 | 188976 | 746 | 1381 | 39052 | 1856 | 4876 | 125544 | 0.66 | 3.21 | 64 |
+| board_paint | pair | yes | 3061 | 7953 | 188976 | 746 | 1381 | 39052 | 1936 | 4940 | 127376 | 0.67 | 3.26 | 64 |
 | body_probe_x | pair | yes | 739 | 6813 | 154716 | 242 | 2082 | 51572 | 495 | 3561 | 90492 | 0.58 | 1.75 | 16 |
 | body_scan_ceiling | pair | yes | 422 | 5533 | 127932 | 186 | 2037 | 48848 | 253 | 2843 | 69520 | 0.54 | 1.42 | 8 |
 | body_scan_floor | pair | yes | 979 | 9451 | 213520 | 301 | 3146 | 75280 | 562 | 4563 | 112772 | 0.53 | 1.50 | 20 |
@@ -51,8 +162,8 @@ assembly that replaced the C in Loom's history, **loomcc** = this compiler.
 | player_sprite | pair | yes | 545 | 2928 | 67216 | 236 | 711 | 25288 | 406 | 1189 | 34396 | 0.51 | 1.36 | 30 |
 | player_tick | pair | yes | 8995 | 8135 | 200464 | 2750 | 2606 | 81004 | 5461 | 4115 | 117400 | 0.59 | 1.45 | 58 |
 | scene_trigger_scan | pair | yes | 386 | 8287 | 217380 | 145 | 2300 | 64964 | 229 | 4103 | 111852 | 0.51 | 1.72 | 10 |
-| solid_actor_query | pair | yes | 1749 | 9750 | 230524 | 536 | 3549 | 111652 | 1100 | 4228 | 110888 | 0.48 | 0.99 | 38 |
-| surface_flush | pair | yes | 2040 | 8420 | 217636 | 677 | 1727 | 49360 | 1335 | 4324 | 121716 | 0.56 | 2.47 | 58 |
+| solid_actor_query | pair | yes | 1749 | 9750 | 230524 | 536 | 3549 | 111652 | 1116 | 4376 | 115152 | 0.50 | 1.03 | 38 |
+| surface_flush | pair | yes | 2040 | 8420 | 217636 | 677 | 1727 | 49360 | 1342 | 4336 | 122116 | 0.56 | 2.47 | 58 |
 | witness_hash | pair | yes | 126 | 8388 | 231036 | 72 | 2310 | 47956 | 100 | 3116 | 84460 | 0.37 | 1.76 | 6 |
 | micro_calls | micro | yes | 872 | 2882 | 80444 | - | - | - | 757 | 1434 | 45188 | 0.56 | - | 20 |
 | micro_index | micro | yes | 840 | 8803 | 220124 | - | - | - | 446 | 4529 | 101564 | 0.46 | - | 8 |
@@ -65,6 +176,6 @@ assembly that replaced the C in Loom's history, **loomcc** = this compiler.
 31 benchmarks, 31 with identical result words in every variant.
 
 Geometric means, loomcc relative to 816-tcc (all benchmarks): clocks 0.54x, instructions 0.49x, bytes 0.63x.
-Geometric means, loomcc relative to hand assembly (the 24 pairs): clocks 1.76x, instructions 1.84x, bytes 1.78x.
+Geometric means, loomcc relative to hand assembly (the 24 pairs): clocks 1.76x, instructions 1.84x, bytes 1.79x.
 For scale, hand assembly relative to 816-tcc: clocks 0.32x.
 Compiled-stack WRAM: largest single benchmark 76 bytes; sum over all 782 bytes.
