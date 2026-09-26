@@ -5,7 +5,7 @@ what loomcc did, with the loomcc commit it was seen at. Entries move to
 "Fixed" with the commit that fixed them; tests are never edited to match
 loomcc. The runner prints the build time of the loomcc binary it ran.
 
-Latest full run: loomcc cac2523 (build of 2026-09-26 09:06 UTC): 2434 results, 2399 PASS, 21 FAIL.
+Latest full run: loomcc 179dd28 (build of 2026-09-26 12:10 UTC): 2436 results, 2410 PASS, 18 FAIL (all preprocessor and constraint diagnostics: F3, F4, F23, F27). F20 and F24 still reproduce through the wrapped external suites.
 
 ## Open
 
@@ -56,27 +56,6 @@ The wrapped GCC `gcc.dg/cpp` tests also flag `defined` produced by macro
 expansion (`defined.c`) and a directive inside macro arguments
 (`mac-dir-2.c`); both are undefined behaviour that gcc diagnoses, so they are
 quality issues only.
-
-### F25. Re-entrant calls through 816-tcc code corrupt unit locals (rom; build of 2026-09-26 ~08:00)
-
-Test: `t5-snes/interop/reentrant-chain.c`. `unit_step` (loomcc) calls
-`tcc_step` (816-tcc) which calls `unit_step` again, three levels deep; each
-activation keeps a local (`mine`) live across the call. Expected 213 (host,
-host16 and the 816-tcc-only ROM agree); loomcc's ROM fails the CHECK. This is
-the case loomcc PLAN section 8 names: a call into foreign code can re-enter
-the unit, so a function reachable that way cannot keep its locals in one
-static frame (or must save it around external calls).
-
-### F26. 32-bit results from 816-tcc functions lose their high word (cac2523, rom)
-
-Tests: `t5-snes/interop/i32-across-abi.c` (line 12),
-`t5-snes/interop/shared-struct-array.c` (line 17). Calling an 816-tcc
-function that returns a 32-bit integer (its `long long`, loomcc's `long`):
-`tcc_i32_add(100000, -30000)` comes back as 4464 (70000 & 0xffff),
-`tcc_u32_mix(7, 0x12345678, -1)` as 0x567e. The 816-tcc ABI returns the
-high word in `tcc__r0h` (DP $02); loomcc reads only `tcc__r0`. (Passing
-32-bit arguments to 816-tcc and returning 32-bit results to it both work:
-`tcc_calls_scale(-70000)` gives the right value.)
 
 ### F27. Constraint violations found by the new T2/T3 tests (cac2523)
 
@@ -161,3 +140,28 @@ headers win for Loom units is worth checking in the driver.
   deep-recursion-safe thread).
 - **Q1 32-bit member alignment**: loomcc now aligns 32-bit members to 4
   like 816-tcc (1fc1258); `t3-sema/layout/thirty-two-bit-member.c` passes.
+
+### F25. Re-entrant calls through 816-tcc code corrupt unit locals (rom; build of 2026-09-26 ~08:00)
+
+Test: `t5-snes/interop/reentrant-chain.c`. `unit_step` (loomcc) calls
+`tcc_step` (816-tcc) which calls `unit_step` again, three levels deep; each
+activation keeps a local (`mine`) live across the call. Expected 213 (host,
+host16 and the 816-tcc-only ROM agree); loomcc's ROM fails the CHECK. This is
+the case loomcc PLAN section 8 names: a call into foreign code can re-enter
+the unit, so a function reachable that way cannot keep its locals in one
+static frame (or must save it around external calls).
+
+Fixed in loomcc 179dd28; the tests pass.
+
+### F26. 32-bit results from 816-tcc functions lose their high word (cac2523, rom)
+
+Tests: `t5-snes/interop/i32-across-abi.c` (line 12),
+`t5-snes/interop/shared-struct-array.c` (line 17). Calling an 816-tcc
+function that returns a 32-bit integer (its `long long`, loomcc's `long`):
+`tcc_i32_add(100000, -30000)` comes back as 4464 (70000 & 0xffff),
+`tcc_u32_mix(7, 0x12345678, -1)` as 0x567e. The 816-tcc ABI returns the
+high word in `tcc__r0h` (DP $02); loomcc reads only `tcc__r0`. (Passing
+32-bit arguments to 816-tcc and returning 32-bit results to it both work:
+`tcc_calls_scale(-70000)` gives the right value.)
+
+Fixed in loomcc 179dd28; the tests pass.
