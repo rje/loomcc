@@ -305,3 +305,26 @@ ends). The same inputs go to all three variants.
   recursive); only functions named as callbacks (to come from scanning the
   .asm inputs) get those edges. Indirect calls reach address-taken
   functions.
+- 2026-09-26 (loomcc-tests findings, correctness first):
+  - F-loop (loop-carried late init): global copy propagation of a register
+    now requires the copy to dominate every use (dominator tree in
+    loomcc-opt); a value copied at the end of an iteration and read at the
+    start of the next is no longer replaced by the next iteration's source.
+  - F18: `(unsigned)&((T *)0)->m` folds to a constant (6.6p10 allows it;
+    gcc, clang and 816-tcc do; Loom's actor.c static assertions need it).
+  - F17: no preprocessor panic on an unterminated macro call in a computed
+    `#include` (error instead). `#line` (with macro-expanded operands,
+    decimal digit sequences, file renaming for `__FILE__` and diagnostics)
+    and `_Pragma` are implemented, plus the directive-constraint and lexical
+    diagnostics of F5-F8.
+  - **Decision Q1 (32-bit struct members):** loomcc's 32-bit integer
+    (`long`) and `long long` align to **4** inside structs, as 816-tcc aligns
+    its 32-bit `long long`; `struct { char c; long l; }` is 8 bytes in both,
+    so a 32-bit field shared through a typedef lays out the same.
+  - **Decision Q2 (int32_t):** loomcc ships its own freestanding standard
+    headers (stddef, stdint, stdbool, limits, stdarg, stdio, stdlib,
+    string, assert) and searches them *before* `-I` directories for `<...>`
+    includes (they are the implementation's headers; `-nostdinc` turns this
+    off). devkitsnes's `stdint.h` would make `int32_t` a `long long`
+    (64-bit in loomcc) and typedefs `int16_t` twice; loomcc's `int32_t` is
+    `long` (32 bits), `int16_t` is `short`.

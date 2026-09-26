@@ -48,6 +48,16 @@ pub struct SourceFile {
 #[derive(Debug, Default, Clone)]
 pub struct SourceMap {
     pub files: Vec<SourceFile>,
+    /// `#line` mappings per file: from physical line `phys` on, line numbers
+    /// count from `line` and the file is called `name` (when set).
+    pub line_maps: HashMap<u32, Vec<LineMap>>,
+}
+
+#[derive(Debug, Clone)]
+pub struct LineMap {
+    pub phys: u32,
+    pub line: u32,
+    pub name: Option<String>,
 }
 
 impl SourceMap {
@@ -56,11 +66,27 @@ impl SourceMap {
         (self.files.len() - 1) as u32
     }
 
-    pub fn describe(&self, loc: Loc) -> String {
-        match self.files.get(loc.file as usize) {
-            Some(f) => format!("{}:{}:{}", f.name, loc.line, loc.col),
-            None => format!("<unknown>:{}:{}", loc.line, loc.col),
+    /// The (file name, line) a location reports after `#line`.
+    pub fn logical(&self, loc: Loc) -> (String, u32) {
+        let base = self.files.get(loc.file as usize).map(|f| f.name.clone()).unwrap_or_else(|| "<unknown>".into());
+        let mut name = base;
+        let mut line = loc.line;
+        if let Some(maps) = self.line_maps.get(&loc.file) {
+            if let Some(m) = maps.iter().rev().find(|m| m.phys <= loc.line) {
+                line = m.line + (loc.line - m.phys);
+                if let Some(n) = &m.name {
+                    name = n.clone();
+                } else if let Some(prev) = maps.iter().rev().filter(|x| x.phys <= m.phys).find_map(|x| x.name.clone()) {
+                    name = prev;
+                }
+            }
         }
+        (name, line)
+    }
+
+    pub fn describe(&self, loc: Loc) -> String {
+        let (name, line) = self.logical(loc);
+        format!("{}:{}:{}", name, line, loc.col)
     }
 
     pub fn render(&self, d: &Diag) -> String {
@@ -82,6 +108,10 @@ pub struct Options {
     pub include_dirs: Vec<PathBuf>,
     /// `-isystem` / built-in directories, searched last.
     pub system_dirs: Vec<PathBuf>,
+    /// The implementation's own standard headers: searched *first* for
+    /// `<...>` includes (so `<stdint.h>` is loomcc's, not an SDK's that
+    /// assumes another compiler's type sizes).
+    pub implementation_dirs: Vec<PathBuf>,
     /// `-D name[=value]` and `-U name`, in command-line order.
     pub defines: Vec<Define>,
     /// Predefine the loomcc target macros (`__loomcc__`, `__65816__`, ...).
@@ -162,6 +192,8 @@ pub struct Preprocessor {
     pub included: Vec<PathBuf>,
     /// Nesting of argument pre-expansion: `#` directives are not processed there.
     in_arg_expansion: usize,
+    /// The `#` of the directive being processed (for diagnostics).
+    directive_loc: Loc,
 }
 
 impl Preprocessor {
@@ -179,6 +211,7 @@ impl Preprocessor {
             counter: 0,
             included: Vec::new(),
             in_arg_expansion: 0,
+            directive_loc: Loc::default(),
         };
         pp.predefine();
         pp
@@ -376,8 +409,26 @@ impl Preprocessor {
                     f.guard_state = GuardState::NoGuard;
                 }
             }
+            if t.kind == TokenKind::Other && (&*t.text == "\"" || &*t.text == "'") && self.in_arg_expansion == 0 {
+                self.error(t.loc, format!("missing terminating {} character", t.text));
+            }
+            if t.kind == TokenKind::Char && t.text.trim_start_matches(|c: char| c != '\'') == "''" && self.in_arg_expansion == 0 {
+                self.error(t.loc, "empty character constant");
+            }
+            if t.kind == TokenKind::Ident && self.in_arg_expansion == 0 && (t.is_ident("__VA_ARGS__") || t.is_ident("__VA_OPT__")) {
+                self.diags.push(Diag::warning(t.loc, format!("{} can only appear in the expansion of a C99 variadic macro", t.text)));
+            }
+            if t.kind == TokenKind::Ident && (t.is_ident("__has_include") || t.is_ident("__has_include_next")) {
+                self.error(t.loc, format!("{} may only be used in #if and #elif", t.text));
+            }
             if t.kind == TokenKind::Ident {
                 if let Some(t) = self.try_expand(t) {
+                    if t.is_ident("_Pragma") && !t.hide.contains("_Pragma") {
+                        if let Some(p) = self.pragma_operator(&t) {
+                            return p;
+                        }
+                        continue;
+                    }
                     return t;
                 }
                 continue;
@@ -469,13 +520,17 @@ impl Preprocessor {
     fn builtin_token(&mut self, b: Builtin, t: &Token) -> Token {
         let (kind, text) = match b {
             Builtin::File => {
-                let name = self
-                    .current_file()
-                    .map(|f| self.sources.files[f.file as usize].name.clone())
-                    .unwrap_or_default();
+                let name = match self.current_file() {
+                    Some(f) => {
+                        let loc = Loc { file: f.file, ..t.loc };
+                        let loc = if t.loc.file == f.file { t.loc } else { loc };
+                        self.sources.logical(loc).0
+                    }
+                    None => String::new(),
+                };
                 (TokenKind::Str, quote_string(&name))
             }
-            Builtin::Line => (TokenKind::Number, t.loc.line.to_string()),
+            Builtin::Line => (TokenKind::Number, self.sources.logical(t.loc).1.to_string()),
             Builtin::Counter => {
                 let c = self.counter;
                 self.counter += 1;
@@ -734,6 +789,7 @@ impl Preprocessor {
     // Directives
 
     fn directive(&mut self, hash: Token) {
+        self.directive_loc = hash.loc;
         let name = match self.peek_raw() {
             Some(t) if !t.bol => self.next_raw(),
             _ => return, // null directive
@@ -766,11 +822,13 @@ impl Preprocessor {
             "undef" => {
                 let line = self.read_line();
                 match line.first() {
+                    Some(t) if t.is_ident("defined") => self.error(t.loc, "\"defined\" cannot be used as a macro name"),
                     Some(t) if t.kind == TokenKind::Ident => {
                         self.macros.remove(&*t.text);
                     }
                     _ => self.error(name.loc, "macro name missing"),
                 }
+                self.no_extra(&line, 1, "undef");
             }
             "include" | "include_next" | "import" => self.include(&name),
             "if" => {
@@ -785,8 +843,10 @@ impl Preprocessor {
             }
             "ifdef" | "ifndef" => {
                 let line = self.read_line();
+                let what = name.text.to_string();
+                self.no_extra(&line, 1, &what);
                 let (defined, guard) = match line.first() {
-                    Some(t) if t.kind == TokenKind::Ident => (self.macros.contains_key(&*t.text), Some(t.text.clone())),
+                    Some(t) if t.kind == TokenKind::Ident => (self.macros.contains_key(&*t.text) || matches!(&*t.text, "__has_include" | "__has_include_next"), Some(t.text.clone())),
                     _ => {
                         self.error(name.loc, "macro name missing");
                         (false, None)
@@ -829,7 +889,8 @@ impl Preprocessor {
                 }
             }
             "else" => {
-                self.skip_line();
+                let line = self.read_line();
+                self.no_extra(&line, 0, "else");
                 let Some(c) = self.conds.last_mut() else {
                     self.error(name.loc, "#else without #if");
                     return;
@@ -847,7 +908,8 @@ impl Preprocessor {
                 }
             }
             "endif" => {
-                self.skip_line();
+                let line = self.read_line();
+                self.no_extra(&line, 0, "endif");
                 let depth = self.files.last().map_or(0, |f| f.cond_depth);
                 if self.conds.len() <= depth {
                     self.error(name.loc, "#endif without #if");
@@ -864,7 +926,8 @@ impl Preprocessor {
                 }
             }
             "line" => {
-                self.skip_line();
+                let line = self.read_line();
+                self.line_directive(&name, &line);
             }
             "error" => {
                 let line = self.read_line();
@@ -897,6 +960,110 @@ impl Preprocessor {
                 self.error(name.loc, format!("invalid preprocessing directive #{}", name.text));
                 self.skip_line();
             }
+        }
+    }
+
+    fn line_directive(&mut self, name: &Token, line: &[Token]) {
+        let next_phys = line.last().map_or(name.loc.line, |t| t.loc.line) + 1;
+        let toks = self.expand_list(line);
+        let Some(first) = toks.first() else {
+            self.error(name.loc, "#line directive requires a simple digit sequence");
+            return;
+        };
+        if first.kind != TokenKind::Number || !first.text.bytes().all(|b| b.is_ascii_digit()) {
+            self.error(first.loc, "#line directive requires a simple digit sequence");
+            return;
+        }
+        let value: u64 = first.text.parse().unwrap_or(u64::MAX);
+        if value == 0 || value > 2147483647 {
+            self.diags.push(Diag::warning(first.loc, "#line directive requires a positive integer argument no larger than 2147483647"));
+        }
+        let mut new_name = None;
+        if let Some(f) = toks.get(1) {
+            if f.kind != TokenKind::Str || !f.text.starts_with('"') {
+                self.error(f.loc, "invalid filename for #line directive");
+                return;
+            }
+            match expr::decode_escapes(&f.text[1..f.text.len() - 1]) {
+                Ok(units) => new_name = Some(String::from_utf8_lossy(&units.iter().map(|u| *u as u8).collect::<Vec<u8>>()).into_owned()),
+                Err(m) => {
+                    self.error(f.loc, m);
+                    return;
+                }
+            }
+        }
+        if let Some(extra) = toks.get(2) {
+            self.error(extra.loc, "extra tokens at end of #line directive");
+            return;
+        }
+        self.sources
+            .line_maps
+            .entry(name.loc.file)
+            .or_default()
+            .push(LineMap { phys: next_phys, line: value.min(u32::MAX as u64) as u32, name: new_name });
+    }
+
+    /// `_Pragma ( string-literal )`: destringized into a pragma.
+    fn pragma_operator(&mut self, op: &Token) -> Option<Token> {
+        let lp = self.next_raw();
+        if !lp.is_punct(Punct::LParen) {
+            self.error(op.loc, "_Pragma takes a parenthesized string literal");
+            self.unget(lp);
+            return None;
+        }
+        let st = self.next_raw();
+        if st.kind != TokenKind::Str || !(st.text.starts_with('"') || st.text.starts_with("L\"")) {
+            self.error(op.loc, "_Pragma takes a parenthesized string literal");
+            if !st.is_punct(Punct::RParen) {
+                // Skip to the closing parenthesis on this line.
+                loop {
+                    let t = self.next_raw();
+                    if t.is_eof() || t.is_punct(Punct::RParen) {
+                        break;
+                    }
+                }
+            }
+            return None;
+        }
+        let rp = self.next_raw();
+        if !rp.is_punct(Punct::RParen) {
+            self.error(op.loc, "missing ')' after _Pragma operand");
+            self.unget(rp);
+            return None;
+        }
+        let q = st.text.find('"').unwrap();
+        let body = &st.text[q + 1..st.text.len() - 1];
+        let mut text = String::new();
+        let mut chars = body.chars().peekable();
+        while let Some(c) = chars.next() {
+            if c == '\\' {
+                if let Some(&n) = chars.peek() {
+                    if n == '"' || n == '\\' {
+                        text.push(n);
+                        chars.next();
+                        continue;
+                    }
+                }
+            }
+            text.push(c);
+        }
+        let text = text.trim().to_string();
+        if text == "once" {
+            if let Some(f) = self.current_file() {
+                let p = self.sources.files[f.file as usize].path.clone();
+                self.pragma_once.insert(p);
+            }
+            return None;
+        }
+        let mut t = Token::new(TokenKind::Pragma, text, op.loc);
+        t.bol = true;
+        Some(t)
+    }
+
+    fn no_extra(&mut self, line: &[Token], skip: usize, what: &str) {
+        if let Some(t) = line.get(skip) {
+            let loc = t.loc;
+            self.error(loc, format!("extra tokens at end of #{} directive", what));
         }
     }
 
@@ -947,7 +1114,7 @@ impl Preprocessor {
     fn define(&mut self) {
         let line = self.read_line();
         let Some(name) = line.first() else {
-            self.error(Loc::default(), "macro name missing");
+            self.error(self.directive_loc, "macro name missing");
             return;
         };
         if name.kind != TokenKind::Ident {
@@ -988,6 +1155,14 @@ impl Preprocessor {
                     self.error(t.loc, "invalid macro parameter");
                     return;
                 }
+                if ps.contains(&t.text) {
+                    self.error(t.loc, format!("duplicate macro parameter \"{}\"", t.text));
+                    return;
+                }
+                if &*t.text == "__VA_ARGS__" {
+                    self.error(t.loc, "__VA_ARGS__ can only appear in the expansion of a C99 variadic macro");
+                    return;
+                }
                 ps.push(t.text.clone());
                 i += 1;
                 if line.get(i).map_or(false, |t| t.is_punct(Punct::Ellipsis)) {
@@ -1015,7 +1190,71 @@ impl Preprocessor {
             }
             params = Some(ps);
         }
+        if params.is_none() {
+            if let Some(t) = line.get(1) {
+                if !t.space && !t.is_punct(Punct::LParen) {
+                    self.diags.push(Diag::warning(t.loc, "ISO C99 requires whitespace after the macro name"));
+                }
+            }
+        }
+        if &*name.text == "__VA_ARGS__" || &*name.text == "__VA_OPT__" {
+            self.error(name.loc, format!("{} cannot be used as a macro name", name.text));
+            return;
+        }
         let mut body: Vec<Token> = line[i..].to_vec();
+        for (k, t) in body.iter().enumerate() {
+            if (t.is_ident("__VA_ARGS__") || t.is_ident("__VA_OPT__")) && !variadic {
+                self.error(t.loc, format!("{} can only appear in the expansion of a C99 variadic macro", t.text));
+                return;
+            }
+            if params.is_some() && t.is_punct(Punct::Hash) {
+                let ok = body.get(k + 1).map_or(false, |n| {
+                    n.kind == TokenKind::Ident
+                        && (params.as_ref().unwrap().iter().any(|p| **p == *n.text) || (variadic && (n.is_ident("__VA_ARGS__") || n.is_ident("__VA_OPT__"))))
+                });
+                if !ok {
+                    self.error(t.loc, "'#' is not followed by a macro parameter");
+                    return;
+                }
+            }
+        }
+        if variadic {
+            // __VA_OPT__ must be followed by a balanced parenthesised group
+            // and may not nest.
+            let mut k = 0;
+            while k < body.len() {
+                if body[k].is_ident("__VA_OPT__") {
+                    if !body.get(k + 1).map_or(false, |t| t.is_punct(Punct::LParen)) {
+                        self.error(body[k].loc, "__VA_OPT__ must be followed by '('");
+                        return;
+                    }
+                    let mut depth = 0;
+                    let mut j = k + 1;
+                    let mut closed = false;
+                    while j < body.len() {
+                        if body[j].is_punct(Punct::LParen) {
+                            depth += 1;
+                        } else if body[j].is_punct(Punct::RParen) {
+                            depth -= 1;
+                            if depth == 0 {
+                                closed = true;
+                                break;
+                            }
+                        } else if body[j].is_ident("__VA_OPT__") {
+                            self.error(body[j].loc, "__VA_OPT__ may not appear inside __VA_OPT__");
+                            return;
+                        }
+                        j += 1;
+                    }
+                    if !closed {
+                        self.error(body[k].loc, "unterminated __VA_OPT__");
+                        return;
+                    }
+                    k = j;
+                }
+                k += 1;
+            }
+        }
         if let Some(first) = body.first_mut() {
             first.space = false;
         }
@@ -1031,7 +1270,7 @@ impl Preprocessor {
         let m = Macro { name: name.text.clone(), params, variadic, body, builtin: None };
         if let Some(old) = self.macros.get(&*name.text) {
             if !same_definition(old, &m) {
-                self.diags.push(Diag::warning(name.loc, format!("\"{}\" redefined", name.text)));
+                self.error(name.loc, format!("\"{}\" redefined with a different replacement list", name.text));
             }
         }
         self.macros.insert(name.text.clone(), Rc::new(m));
@@ -1041,6 +1280,15 @@ impl Preprocessor {
         let mut line = self.read_line();
         if line.is_empty() {
             self.error(directive.loc, "#include expects \"FILENAME\" or <FILENAME>");
+            return;
+        }
+        if line[0].kind == TokenKind::Str && line.len() > 1 {
+            let loc = line[1].loc;
+            self.error(loc, "extra tokens at end of #include directive");
+            line.truncate(1);
+        }
+        if line[0].is_punct(Punct::Lt) && !line.iter().any(|t| t.is_punct(Punct::Gt)) {
+            self.error(directive.loc, "missing terminating '>' character");
             return;
         }
         if !(line[0].kind == TokenKind::Str && line.len() == 1) {
@@ -1063,7 +1311,11 @@ impl Preprocessor {
                 line = expanded;
             }
         }
-        let spelled = line[0].text.to_string();
+        let Some(first) = line.first() else {
+            self.error(directive.loc, "#include expects \"FILENAME\" or <FILENAME>");
+            return;
+        };
+        let spelled = first.text.to_string();
         let (angled, name) = if spelled.starts_with('<') && spelled.ends_with('>') {
             (true, spelled[1..spelled.len() - 1].to_string())
         } else if spelled.starts_with('"') && spelled.ends_with('"') && spelled.len() >= 2 {
@@ -1117,6 +1369,9 @@ impl Preprocessor {
 
     fn search_dirs(&self, angled: bool) -> Vec<PathBuf> {
         let mut dirs = Vec::new();
+        if angled {
+            dirs.extend(self.opts.implementation_dirs.iter().cloned());
+        }
         if !angled {
             dirs.extend(self.opts.quote_dirs.iter().cloned());
         }
@@ -1206,9 +1461,16 @@ impl Preprocessor {
                 // Collect up to the matching ')'.
                 let mut j = i + 2;
                 let mut spelled = String::new();
+                let mut operand = Vec::new();
                 while j < line.len() && !line[j].is_punct(Punct::RParen) {
                     spelled.push_str(&line[j].text);
+                    operand.push(line[j].clone());
                     j += 1;
+                }
+                if !(spelled.starts_with('<') || spelled.starts_with('"')) {
+                    // A macro that names the header.
+                    let e = self.expand_list(&operand);
+                    spelled = e.iter().map(|t| t.text.to_string()).collect();
                 }
                 let found = if spelled.starts_with('<') && spelled.ends_with('>') {
                     self.find_include(&spelled[1..spelled.len() - 1], true, false).is_some()

@@ -126,19 +126,16 @@ the IR does not yet propagate).
   pushes, no pops, no frame set-up);
 - `x == 0` as `lda; beq` (2 instructions instead of ~11).
 
-## External test suite (loomcc-tests, 2026-09-26)
+## External test suite (loomcc-tests)
 
-| tier | total | pass | fail | xfail |
-|---|---:|---:|---:|---:|
-| t1-pp | 458 | 379 | 77 | 2 |
-| t2-parse | 79 | 75 | 4 | 0 |
-| t3-sema | 86 | 77 | 8 | 1 |
-| t4-exec | 234 | 220 | 10 | 4 |
-| t5-snes | 17 | 17 | 0 | 0 |
+| run | t1-pp | t2-parse | t3-sema | t4-exec | t5-snes | t6-loom | t7-random | total pass |
+|---|---|---|---|---|---|---|---|---|
+| M5 (2026-09-26) | 379/458 | 75/79 | 77/86 | 220/234 | 17/17 | - | - | 767/874 |
+| M6c + correctness fixes (F17, F18, loop, Q1, Q2, diagnostics) | 448/458 | 79/79 | 85/87 | 299/316 | 17/17 | 31/31 | 80/80 | 1039/1068 |
 
-t4 failures are the two unsupported features (32-bit multiply/divide/shift,
-recursion); t1-t3 failures are missing diagnostics and preprocessor
-conformance details (loomcc-tests docs/FINDINGS.md F1-F10).
+Remaining t4-exec failures are only the unsupported features (32-bit
+multiply/divide/variable shifts, recursion); t1 failures are `__VA_OPT__`
+details, one deferred-rescan hide-set case, and two mcpp edge diagnostics.
 
 ## Current table (M5 + fixes)
 

@@ -958,6 +958,10 @@ impl<'a> Parser<'a> {
     /// After `{`: items up to and including `}`.
     fn init_list_items(&mut self) -> PResult<Vec<InitItem>> {
         let mut items = Vec::new();
+        if self.is_p(Punct::RBrace) {
+            let loc = self.loc();
+            self.diags.push(Diag::warning(loc, "use of an empty initializer is a C23 extension"));
+        }
         while !self.is_p(Punct::RBrace) {
             let mut designators = Vec::new();
             loop {
@@ -1218,7 +1222,9 @@ impl<'a> Parser<'a> {
     /// A label may precede `}` in C23; accept it as an empty statement.
     fn stmt_or_empty_label(&mut self) -> PResult<Stmt> {
         if self.is_p(Punct::RBrace) {
-            return Ok(Stmt { kind: StmtKind::Expr(None), loc: self.loc() });
+            let loc = self.loc();
+            self.diags.push(Diag::warning(loc, "label at end of compound statement is a C23 extension"));
+            return Ok(Stmt { kind: StmtKind::Expr(None), loc });
         }
         // C23 allows a declaration after a label; wrap it in a block.
         let t = self.peek().clone();

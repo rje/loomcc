@@ -83,6 +83,11 @@ pub(crate) fn is_ident_continue(c: u8) -> bool {
 /// Lexes one file into preprocessing tokens, ending with an `Eof` token.
 /// Newlines are not tokens: a token that starts a line has `bol` set.
 pub fn tokenize(text: &str, file: u32, diags: &mut Vec<Diag>) -> Vec<Token> {
+    let body = text.trim_end_matches(['\n', '\r']);
+    if body.ends_with('\\') {
+        let line = body.matches('\n').count() as u32 + 1;
+        diags.push(Diag::warning(Loc { file, line, col: 1 }, "backslash-newline at end of file"));
+    }
     let s = splice(text);
     let b = &s.bytes;
     let n = b.len();

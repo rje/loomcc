@@ -54,6 +54,9 @@ impl<'a> P<'a> {
     fn comma(&mut self) -> Result<Val, String> {
         let mut v = self.cond()?;
         while self.eat(Punct::Comma) {
+            if self.skip == 0 {
+                return Err("comma operator in operand of #if".into());
+            }
             v = self.cond()?;
         }
         Ok(v)
@@ -155,6 +158,18 @@ impl<'a> P<'a> {
                     (sx >> y) as u64
                 };
                 return Ok(Val { v, unsigned: a.unsigned });
+            }
+            Punct::Plus | Punct::Minus | Punct::Star if !unsigned => {
+                let r = match p {
+                    Punct::Plus => sx.checked_add(sy),
+                    Punct::Minus => sx.checked_sub(sy),
+                    _ => sx.checked_mul(sy),
+                };
+                match r {
+                    Some(v) => v as u64,
+                    None if self.skip > 0 => 0,
+                    None => return Err("integer overflow in preprocessor expression".into()),
+                }
             }
             Punct::Plus => x.wrapping_add(y),
             Punct::Minus => x.wrapping_sub(y),
@@ -283,6 +298,17 @@ pub fn char_value(text: &str) -> Result<(i64, String), String> {
     let units = decode_escapes(body)?;
     if units.is_empty() {
         return Err("empty character constant".into());
+    }
+    if prefix.is_empty() && units.len() > 4 {
+        return Err("character constant too long for its type".into());
+    }
+    let limit: u32 = match prefix.as_str() {
+        "" | "u8" => 0xff,
+        "u" | "L" => 0xffff,
+        _ => u32::MAX,
+    };
+    if units.iter().any(|&u| u > limit) {
+        return Err("escape sequence out of range".into());
     }
     if prefix.is_empty() {
         // Multi-character constants: big-endian packing like GCC.

@@ -38,6 +38,8 @@ pub struct Checker {
     pub(crate) static_local_count: u32,
     pub unit_name: String,
     pub interrupt_roots: HashSet<String>,
+    pub(crate) kr_names: Vec<String>,
+    pub(crate) register_locals: HashSet<LocalId>,
 }
 
 pub(crate) struct DeclInfo {
@@ -62,6 +64,8 @@ impl Checker {
             static_local_count: 0,
             unit_name: unit_name.to_string(),
             interrupt_roots: HashSet::new(),
+            kr_names: Vec::new(),
+            register_locals: HashSet::new(),
         };
         // __builtin_va_list: a pointer-sized opaque type.
         let vl = c.types.ptr(Types::CHAR);
@@ -196,6 +200,21 @@ impl Checker {
 
     fn keyword_type(&mut self, k: &ast::BaseKeywords, loc: Loc) -> Ty {
         let unsigned = k.unsigned > 0;
+        let bases = [k.void, k.char, k.float, k.double, k.bool_, k.int128].iter().filter(|&&c| c > 0).count()
+            + (k.int > 0 && (k.void + k.char + k.float + k.bool_ + k.int128 + k.double) > 0) as usize;
+        let bad = bases > 1
+            || k.void > 1
+            || k.char > 1
+            || k.int > 1
+            || k.short > 1
+            || k.long > 2
+            || (k.short > 0 && k.long > 0)
+            || ((k.short > 0 || k.long > 0) && (k.char + k.void + k.float + k.bool_) > 0)
+            || (k.long > 1 && k.double > 0)
+            || ((k.signed > 0 || k.unsigned > 0) && (k.void + k.float + k.double + k.bool_) > 0);
+        if bad {
+            self.error(loc, "cannot combine these type specifiers");
+        }
         if k.signed > 0 && unsigned {
             self.error(loc, "both 'signed' and 'unsigned' in declaration specifiers");
         }
@@ -338,6 +357,16 @@ impl Checker {
                     }
                 }
             }
+            for i in 0..fields.len() {
+                if let Some(n) = &fields[i].0 {
+                    if fields[..i].iter().any(|f| f.0.as_ref() == Some(n)) {
+                        self.error(s.loc, format!("duplicate member '{}'", n));
+                    }
+                }
+                if matches!(self.types.kind(fields[i].1), TyKind::Array(_, Some(0))) && fields[i].2.is_none() && i + 1 < fields.len() {
+                    self.error(s.loc, "flexible array member must be the last member");
+                }
+            }
             if let TyKind::Record(r) = self.types.kind(ty).clone() {
                 self.types.layout_record(r, fields);
             }
@@ -434,6 +463,10 @@ impl Checker {
                     Some(e) => {
                         let x = self.expr(e);
                         match self.eval_int(&x) {
+                            Some(0) => {
+                                self.warn(d.loc, "zero size arrays are an extension");
+                                Some(0)
+                            }
                             Some(v) if v >= 0 => Some(v as u64),
                             Some(_) => {
                                 self.error(d.loc, "array has negative size");
@@ -470,6 +503,7 @@ impl Checker {
                     // K&R: types come from the declaration list (default int).
                     pinfo.push((Some(n.clone()), Types::INT, d.loc));
                 }
+                self.kr_names = old_names.clone();
                 let ret = self.types.unqual(base);
                 let sig = FuncSig { ret, params: ptys, variadic: *variadic, proto: !*unprototyped && old_names.is_empty() };
                 let f = self.types.func(sig);
@@ -606,6 +640,9 @@ impl Checker {
                     continue;
                 }
                 let is_definition = self.at_file_scope() && (storage != Some(Storage::Extern) || id.init.is_some());
+                if is_definition && self.types.is_void(info.ty) {
+                    self.error(info.loc, format!("variable '{}' has incomplete type 'void'", name));
+                }
                 if is_definition {
                     self.globals[gid.0 as usize].defined = true;
                 }
@@ -650,6 +687,9 @@ impl Checker {
                 ty = Types::INT;
             }
             let lid = self.new_local(&name, ty, false, info.loc);
+            if storage == Some(Storage::Register) {
+                self.register_locals.insert(lid);
+            }
             let mut init_stmts = Vec::new();
             if let Some(init) = &id.init {
                 init_stmts = self.local_initializer(lid, ty, init, info.loc);
@@ -695,6 +735,13 @@ impl Checker {
                     }
                 }
             }
+        }
+        for n in std::mem::take(&mut self.kr_names) {
+            if !f.old_params.iter().any(|d| d.declarators.iter().any(|id| id.declarator.name() == Some(n.as_str()))) {
+                self.warn(f.loc, format!("type of '{}' defaults to 'int'", n));
+            }
+        }
+        if !f.old_params.is_empty() {
             if let TyKind::Func(mut sig) = self.types.kind(info.ty).clone() {
                 sig.params = info.params.iter().map(|p| p.1).collect();
                 sig.proto = false;

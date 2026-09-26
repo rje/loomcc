@@ -90,7 +90,7 @@ fn parse_args() -> Result<Args, String> {
         return Err("no input files".into());
     }
     if !args.nostdinc {
-        args.pp.system_dirs.push(loomcc::builtin_include_dir());
+        args.pp.implementation_dirs.push(loomcc::builtin_include_dir());
     }
     Ok(args)
 }
@@ -188,9 +188,6 @@ fn main() -> ExitCode {
             failed |= diags.iter().any(|d| d.level == loomcc_pp::Level::Error);
             if args.mode == Mode::PrintAst {
                 out.push_str(&loomcc_parse::print::print_unit(&unit));
-                continue;
-            }
-            if failed {
                 continue;
             }
             let name = input.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();

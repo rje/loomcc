@@ -132,7 +132,7 @@ pub struct Layout {
 
 impl Layout {
     pub fn snes() -> Layout {
-        Layout { ptr_size: 4, ptr_align: 4, long_size: 4, long_align: 2, llong_align: 2 }
+        Layout { ptr_size: 4, ptr_align: 4, long_size: 4, long_align: 4, llong_align: 4 }
     }
 
     /// Natural 65816 layout (pointers aligned to two) — for experiments on

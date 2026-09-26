@@ -147,6 +147,15 @@ impl Checker {
         let tu = self.types.unqual(to);
         let fu = self.types.unqual(e.ty);
         if self.types.is_arith(tu) && self.types.is_arith(fu) {
+            if let (ExprKind::IntConst(v), true) = (&e.kind, self.types.is_integer(tu) && !matches!(self.types.kind(tu), TyKind::Bool)) {
+                let w = self.wrap_to(*v, tu);
+                // A negative value into an unsigned type is idiomatic (-1u);
+                // flag values that change within the signedness.
+                let fits_unsigned = !self.types.is_signed(tu) && (*v as u64 & crate::expr::mask(self.types.bits(tu))) as i64 == w;
+                if w != *v && !(fits_unsigned && *v < 0 && *v >= -(1i64 << (self.types.bits(tu) - 1))) && self.types.is_signed(tu) {
+                    self.warn(loc, format!("implicit conversion from '{}' to '{}' changes value from {} to {} (overflow)", self.types.display(fu), self.types.display(tu), v, w));
+                }
+            }
             return self.convert(e, to);
         }
         if self.types.is_ptr(tu) {
@@ -663,6 +672,9 @@ impl Checker {
         if !self.types.is_complete(pt) && !self.types.is_void(pt) {
             self.error(loc, format!("arithmetic on a pointer to an incomplete type '{}'", self.types.display(pt)));
         }
+        if self.types.is_void(pt) || self.types.is_func(pt) {
+            self.warn(loc, "arithmetic on a pointer to void or a function is a GNU extension");
+        }
         let scale = if self.types.is_void(pt) || self.types.is_func(pt) { 1 } else { self.types.size(pt) };
         let it = self.promote(i.ty);
         let mut i = self.convert(i, it);
@@ -697,6 +709,11 @@ impl Checker {
                 if !x.is_lvalue() && !self.types.is_func(x.ty) {
                     self.error(loc, "cannot take the address of an rvalue");
                     return x;
+                }
+                if let ExprKind::Local(l) = &x.kind {
+                    if self.register_locals.contains(l) {
+                        self.error(loc, "address of register variable requested");
+                    }
                 }
                 self.mark_address_taken(&x);
                 // &*p → p
@@ -938,6 +955,19 @@ impl Checker {
             let signed = self.types.is_signed(t);
             let bits = self.types.bits(t);
             let (up, uq) = ((p as u64) & mask(bits), (q as u64) & mask(bits));
+            if signed {
+                let exact = match bop {
+                    BinOp::Add => Some(p as i128 + q as i128),
+                    BinOp::Sub => Some(p as i128 - q as i128),
+                    BinOp::Mul => Some(p as i128 * q as i128),
+                    _ => None,
+                };
+                if let Some(e) = exact {
+                    if e != self.wrap_to(e as i64, t) as i128 {
+                        self.warn(loc, format!("overflow in expression; result is {} with type '{}'", self.wrap_to(e as i64, t), self.types.display(t)));
+                    }
+                }
+            }
             let v = match bop {
                 BinOp::Add => Some(p.wrapping_add(q)),
                 BinOp::Sub => Some(p.wrapping_sub(q)),
