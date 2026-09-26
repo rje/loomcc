@@ -2,7 +2,7 @@
 # external/fetch.sh <suite>... : download external test suites into
 # external/fetched/<suite> (git-ignored; never committed, never vendored).
 #
-# Suites: gcc-torture, tcc-tests2, llvm-singlesource, c-testsuite, chibicc, mcpp.
+# Suites: gcc-torture, gcc-dg, tcc-tests2, llvm-singlesource, c-testsuite, chibicc, mcpp.
 # See docs/SOURCES.md for each suite's licence and how it is used.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
@@ -27,6 +27,14 @@ for suite in "$@"; do
       sparse https://github.com/gcc-mirror/gcc.git gcc \
         /COPYING3 /gcc/testsuite/gcc.c-torture/execute /gcc/testsuite/gcc.c-torture/compile \
         /gcc/testsuite/gcc.dg/cpp ;;
+    gcc-dg)
+      # gcc.dg's top-level C tests (dg-error lines become T3 constraint
+      # tests); added to the gcc-torture checkout. GPL: fetched only.
+      "$0" gcc-torture
+      if [ ! -d "$dest/gcc/gcc/testsuite/gcc.dg" ] || [ -z "$(ls "$dest/gcc/gcc/testsuite/gcc.dg"/*.c 2>/dev/null | head -1)" ]; then
+        taskpolicy -b nice -n 19 git -C "$dest/gcc" sparse-checkout add '/gcc/testsuite/gcc.dg/*.c'
+      fi
+      echo "gcc-dg: $(ls "$dest/gcc/gcc/testsuite/gcc.dg"/*.c | wc -l | tr -d ' ') files" ;;
     tcc-tests2)
       # LGPL-2.1: fetched only.
       sparse https://repo.or.cz/tinycc.git tinycc /COPYING /tests/tests2 ;;

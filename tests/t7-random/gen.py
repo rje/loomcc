@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 """loomcc-gen: a small Csmith-style generator of self-checking C programs.
 
-    tests/t7-random/gen.py SEED [--stmts N] [--narrow] > prog.c
+    tests/t7-random/gen.py SEED [--stmts N] [--narrow] [--shapes] > prog.c
 
 --narrow uses only 8- and 16-bit types.
+--shapes adds the shapes behind F29 and F30: structs of up to ~500 bytes
+(scalar fields plus an array member) as globals, passed and returned by
+value and by pointer; a deep chain of distinct functions (6-24 levels,
+no recursion), each with a struct copy and a local array of up to 1 KiB,
+passing a struct down by value; functions with 8-16 parameters; and calls
+into foreign code at every level (`printf("%s", "")`, which prints nothing
+and on the ROM is 816-tcc code; -DT7_NO_FOREIGN leaves them out). --small keeps every struct under
+about 110 bytes (clear of F29's 8-bit stack offsets).
 
 The program uses only what loomcc's back end supports first (8/16/32-bit
 integers, arrays, structs, calls, loops, switch; no floating point, no
@@ -35,7 +43,7 @@ UNSIGNED = {"u8": "u8", "i8": "u8", "u16": "u16", "i16": "u16", "u32": "u32", "i
 
 
 class Gen:
-    def __init__(self, seed, stmts, narrow=False):
+    def __init__(self, seed, stmts, narrow=False, shapes=False):
         global TYPES
         if narrow:  # 8- and 16-bit only: what every back end handles first
             TYPES = {k: v for k, v in TYPES.items() if v[0] <= 16}
@@ -46,6 +54,9 @@ class Gen:
         self.arrays = []    # (name, type, size)
         self.funcs = []     # (name, ret type, [param types])
         self.out = []
+        self.shapes = shapes
+        self.small = False
+        self.structs = []   # (name, [(field, type)], (array field, type, size))
 
     def lit(self, t):
         bits, signed = TYPES[t]
@@ -171,6 +182,8 @@ class Gen:
             size = self.r.randint(2, 9)
             self.arrays.append((f"a{i}", t, size))
             o.append(f"static {t} a{i}[{size}] = {{ {', '.join(self.lit(t) for _ in range(size))} }};")
+        if self.shapes:
+            self.shape_decls()
         for i in range(self.r.randint(1, 4)):
             ret = self.r.choice(list(TYPES))
             params = [self.r.choice(list(TYPES)) for _ in range(self.r.randint(0, 3))]
@@ -187,6 +200,8 @@ class Gen:
             o.append(f"  return {self.expr(ret, env, 3)};")
             o.append("}")
             self.funcs.append((f"f{i}", ret, params))
+        if self.shapes:
+            self.shape_funcs()
         o.append("static u16 checksum(void) {")
         o.append("  u16 c = 0;")
         o.append("  u8 k;")
@@ -196,13 +211,16 @@ class Gen:
             o.append(f"  for (k = 0; k < {size}; k++) c = (u16)(1u * c * 31u + (u16)({n}[k]) + (u16)((u32)({n}[k]) >> 16));")
         o.append("  return c;")
         o.append("}")
-        o.append("#ifdef LOOMCC_T7_PRINT")
-        o.append("int printf(const char *, ...);")
-        o.append("#endif")
+        if not self.shapes:
+            o.append("#ifdef LOOMCC_T7_PRINT")
+            o.append("int printf(const char *, ...);")
+            o.append("#endif")
         o.append("int main(void) {")
         o.append("  i16 i1, i2, i3, i4;")
         for _ in range(self.stmts):
             o.append(self.stmt([], 3, 1))
+            if self.shapes and self.r.random() < 0.5:
+                o.append(self.shape_stmt([], 1))
         o.append("#ifdef LOOMCC_T7_PRINT")
         o.append('  printf("%u\\n", (unsigned)checksum());')
         o.append("  return 0;")
@@ -212,6 +230,130 @@ class Gen:
         o.append("}")
         return "\n".join(o) + "\n"
 
+    # --shapes ----------------------------------------------------------
+    def struct_fields(self, prefix, st):
+        name, fields, (an, at, asz) = st
+        return [(f"{prefix}.{f}", t) for f, t in fields], (f"{prefix}.{an}", at, asz)
+
+    def shape_decls(self):
+        o = self.out
+        o.append("int printf(const char *, ...);")
+        o.append("#ifdef T7_NO_FOREIGN")
+        o.append("#define T7_FOREIGN() ((void)0)")
+        o.append("#else")
+        o.append('#define T7_FOREIGN() printf("%s", "")')
+        o.append("#endif")
+        for i in range(self.r.randint(1, 3)):
+            fields = [(f"f{j}", self.r.choice(list(TYPES))) for j in range(self.r.randint(1, 5))]
+            at = self.r.choice(["u8", "i8", "u16", "i16"])
+            asz = self.r.choice([self.r.randint(1, 20), self.r.randint(100, 250)])
+            if self.small:  # every struct well under the 8-bit stack offset
+                asz = min(asz, self.r.randint(20, 100)) // (2 if at in ("u16", "i16") else 1)
+            st = (f"S{i}", fields, ("arr", at, asz))
+            self.structs.append(st)
+            o.append(f"typedef struct S{i} {{ " + " ".join(f"{t} {f};" for f, t in fields) + f" {at} arr[{asz}]; }} S{i};")
+        for i, st in enumerate(self.structs):
+            for k in range(self.r.randint(1, 2)):
+                g = f"gs{i}_{k}"
+                sc, arr = self.struct_fields(g, st)
+                inits = [self.lit(t) for _, t in st[1]]
+                o.append(f"static {st[0]} {g} = {{ {', '.join(inits)}, {{ {', '.join(self.lit(arr[1]) for _ in range(min(arr[2], 6)))} }} }};")
+                self.globals += sc
+                self.arrays.append(arr)
+
+    def struct_globals(self, st):
+        return [n for n, _ in self.globals if n.startswith("gs") and n.split("_")[0] == "gs" + st[0][1:]]
+
+    def shape_funcs(self):
+        o = self.out
+        # By value in, by value out.
+        self.sfuncs = []
+        for i, st in enumerate(self.structs):
+            sc, arr = self.struct_fields("v", st)
+            env = [(f"l{n}", t) for n, t in sc]  # placeholder, rewritten below
+            o.append(f"static {st[0]} sv{i}({st[0]} v, u16 k) {{")
+            o.append("  i16 i1, i2, i3, i4;")
+            o.append(f"  {st[0]} lv = v;")
+            lsc, larr = self.struct_fields("lv", st)
+            saved = self.arrays
+            self.arrays = self.arrays + [larr]
+            env = lsc + [("k", "u16")]
+            for _ in range(self.r.randint(1, 3)):
+                o.append(self.stmt(env, 1, 1))
+            o.append(f"  lv.arr[k % {larr[2]}u] = ({larr[1]})(lv.arr[{larr[2] - 1}] + k);")
+            o.append("  T7_FOREIGN();")
+            o.append("  return lv;")
+            o.append("}")
+            # By pointer: read-only.
+            o.append(f"static u16 sp{i}(const {st[0]} *p) {{")
+            o.append(f"  u16 c = (u16)p->arr[{larr[2] - 1}];")
+            o.append("  u8 k;")
+            for f, t in st[1]:
+                o.append(f"  c = (u16)(1u * c * 7u + (u16)p->{f});")
+            o.append(f"  for (k = 0; k < {larr[2]}; k += 3) c = (u16)(c + (u16)p->arr[k]);")
+            o.append("  return c;")
+            o.append("}")
+            self.arrays = saved
+        # Many parameters.
+        n = self.r.randint(8, 16)
+        ptypes = [self.r.choice(list(TYPES)) for _ in range(n)]
+        self.many = ("many", ptypes)
+        o.append("static u16 many(" + ", ".join(f"{t} q{j}" for j, t in enumerate(ptypes)) + ") {")
+        o.append("  u16 c = 0;")
+        for j in range(n):
+            o.append(f"  c = (u16)(1u * c * 3u + (u16)q{j} + (u16)((u32)q{j} >> 16));")
+        o.append("  T7_FOREIGN();")
+        o.append("  return c;")
+        o.append("}")
+        # The deep chain: chain0 calls chain1 ... chainD-1, each distinct.
+        depth = self.r.randint(6, 24)
+        st = self.r.choice(self.structs)
+        self.chain = (depth, st)
+        for d in range(depth - 1, -1, -1):
+            bufsz = self.r.choice([4, 16, self.r.randint(64, 1024)])
+            bt = self.r.choice(["u8", "u16"])
+            o.append(f"static u16 chain{d}(u16 x, {st[0]} v) {{")
+            o.append("  i16 i1, i2, i3, i4;")
+            o.append("  u16 k;")
+            o.append(f"  {bt} buf[{bufsz}];")
+            o.append(f"  {st[0]} lv = v;")
+            lsc, larr = self.struct_fields("lv", st)
+            saved = self.arrays
+            self.arrays = self.arrays + [larr, ("buf", bt, bufsz)]
+            o.append(f"  for (k = 0; k < {bufsz}u; k++) buf[k] = ({bt})(1u * x * k + {d}u);")
+            env = lsc + [("x", "u16")]
+            for _ in range(self.r.randint(0, 2)):
+                o.append(self.stmt(env, 1, 1))
+            o.append("  T7_FOREIGN();")
+            if d == depth - 1:
+                o.append(f"  return (u16)(x + (u16)lv.arr[{larr[2] - 1}] + buf[{bufsz - 1}]);")
+            else:
+                o.append(f"  k = chain{d + 1}((u16)(1u * x * 5u + 1u), lv);")
+                o.append("  T7_FOREIGN();")
+                o.append(f"  return (u16)(k + x + (u16)lv.arr[x % {larr[2]}u] + buf[x % {bufsz}u]);")
+            o.append("}")
+            self.arrays = saved
+
+    def shape_stmt(self, env, indent):
+        pad = "  " * indent
+        k = self.r.random()
+        i = self.r.randrange(len(self.structs))
+        st = self.structs[i]
+        gs = [n for n in {g.split(".")[0] for g, _ in self.globals if g.startswith(f"gs{i}_")}]
+        g, h = self.r.choice(gs), self.r.choice(gs)
+        t = self.r.choice([n for n, _ in self.globals if not n.startswith("gs")] or ["g0"])
+        tt = dict(self.globals).get(t, "u16")
+        if k < 0.3:
+            return f"{pad}{g} = sv{i}({h}, {self.expr('u16', env, 2)});"
+        if k < 0.5:
+            return f"{pad}{t} = ({tt})(({tt}){t} + ({tt})sp{i}(&{g}));"
+        if k < 0.75:
+            args = ", ".join(self.expr(p, env, 1) for p in self.many[1])
+            return f"{pad}{t} = ({tt})many({args});"
+        depth, cst = self.chain
+        cg = self.r.choice(sorted({n.split(".")[0] for n, _ in self.globals if n.startswith(f"gs{self.structs.index(cst)}_")}))
+        return f"{pad}{t} = ({tt})chain0({self.expr('u16', env, 1)}, {cg});"
+
 
 def main(argv):
     if len(argv) < 2:
@@ -219,7 +361,9 @@ def main(argv):
         return 2
     seed = int(argv[1])
     stmts = int(argv[argv.index("--stmts") + 1]) if "--stmts" in argv else 12
-    sys.stdout.write(Gen(seed, stmts, narrow="--narrow" in argv).program())
+    g = Gen(seed, stmts, narrow="--narrow" in argv, shapes="--shapes" in argv)
+    g.small = "--small" in argv
+    sys.stdout.write(g.program())
     return 0
 
 

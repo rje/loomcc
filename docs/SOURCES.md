@@ -16,6 +16,7 @@ on 2026-09-25 are recorded at the end.
 | GCC `gcc.c-torture/execute` | GPL-3.0-or-later | **fetched, filtered, wrapped**; never copied | `external/classify-gcc-torture.py`, `external/gcc-torture-execute.list` |
 | GCC `gcc.c-torture/compile` | GPL-3.0-or-later | **fetched, filtered, wrapped** as compile tests: 512 of 2016 (static filter, then clang -std=c17 -pedantic-errors -Werror=vla at 16-bit int) | `external/classify-gcc-compile.py`, `external/gcc-torture-compile.list` |
 | GCC `gcc.dg/cpp` | GPL-3.0-or-later | **fetched, filtered, wrapped** as preprocess tests: 61 (dg-do preprocess, standard-C options only, dg-error/dg-warning converted to located directives, dg-final scan-file patterns converted to `loomcc-expect-match`, GNU-only behaviour excluded, clang must agree) | `external/wrap-gcc-cpp.py`, `external/gcc-dg-cpp.list` |
+| GCC `gcc.dg` (top level) | GPL-3.0-or-later | **fetched, filtered, wrapped** as T3 constraint tests: 186 (dg-do compile with dg-error lines, standard-C options only, each dg-error a `loomcc-diagnostic` at its line, no GNU extensions, floating point or VLAs, clang must agree and accept the rest under -pedantic-errors) | `external/fetch.sh gcc-dg`, `external/wrap-gcc-dg-errors.py`, `external/gcc-dg-errors.list` |
 | c-testsuite (`tests/single-exec`) | harness MIT; individual tests carry their origins' licences (ISC from scc, LGPL-2.1 from tinycc, others) | **fetched, filtered, wrapped** (mixed per-test licences); 163 selected | `external/wrap-suite.py c-testsuite`, `external/c-testsuite.list` |
 | chibicc `test/` | MIT (Rui Ueyama) | evaluated with the same wrapper: 0 of 41 survive (GNU extensions, floating point, and every remaining file fails under 816-tcc's 16-bit int or front end) | `external/chibicc.rejected` |
 | TinyCC `tests/tests2` | LGPL-2.1 | **fetched, filtered, wrapped**, output compared through the harness printf; 32 selected | `external/wrap-suite.py tcc-tests2`, `external/tcc-tests2.list` |
@@ -130,4 +131,7 @@ silently assume 32-bit `int` (they fail under host16).
   wrapped (`_Pragma4`, `_Pragma5`, `19990228-1`, `cmdlne-P`, `paste17`,
   `spacing1`, `spacing2`); `spacing1` is an XFAIL for loomcc (GCC keeps a
   line's leading whitespace; tokens agree).
-- `gcc.dg` C tests with dg-error lines as T3 constraint tests.
+- `gcc.dg` dg-error tests: done (186 wrapped; `external/gcc-dg-errors.rejected`
+  gives the reason for each of the 1,022 others: 599 need options loomcc has
+  no equivalent for, most of the rest use GNU extensions, floating point or
+  VLAs, or clang disagrees).

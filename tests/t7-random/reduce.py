@@ -61,6 +61,9 @@ def main(argv):
     prog = work / "prog.c"
     prog.write_text(body_of(text))
     extra = [f"-I{CSMITH_DIR}"] if csmith else []
+    # Keep the test's other -D options (e.g. --shapes --no-foreign's -DT7_NO_FOREIGN).
+    om = re.search(r"^// loomcc-options:(.*)$", text, re.M)
+    extra += [o for o in (om.group(1).split() if om else []) if o.startswith("-D") and not o.startswith("-DEXPECTED=")]
     check = work / "interesting.py"
     keep = KEEP_CSMITH if csmith else KEEP_GEN
     check.write_text(f"""#!/usr/bin/env python3
@@ -92,7 +95,7 @@ t.write_text("// loomcc-do: run\\n// loomcc-int: 16\\n// loomcc-options: " + opt
 r = subprocess.run([{str(ROOT / 'run-tests')!r}, "--modes", {mode!r}, "--work", "rw", str(t.resolve())], capture_output=True, text=True)
 # Interesting only if loomcc built and ran it and got a different checksum
 # (an abort or a failed CHECK), not if it rejected the program.
-bad = " 1 FAIL" in r.stdout and ("abort() called" in r.stdout or "CHECK failed" in r.stdout)
+bad = " 1 FAIL" in r.stdout and ("abort() called" in r.stdout or "CHECK failed" in r.stdout or "main returned" in r.stdout)
 sys.exit(0 if bad else 1)
 """)
     check.chmod(check.stat().st_mode | stat.S_IEXEC)
@@ -100,10 +103,11 @@ sys.exit(0 if bad else 1)
     if first.returncode != 0:
         print("the program is not interesting to begin with (loomcc agrees with host16, or host16 rejects it)")
         return 1
-    subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", "creduce", "--n", "2", str(check), "prog.c"], cwd=work)
+    subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", "creduce", "--n", "1" if mode == "rom" else "2", str(check), "prog.c"], cwd=work)
     ck = host16_checksum(work / "prog.c", work, extra)
     header = (f"// loomcc-do: run\n// loomcc-int: 16\n// loomcc-options: -DEXPECTED={ck}u"
-              + (" -I%ROOT%/tests/t7-random/csmith" if csmith else "") + "\n"
+              + (" -I%ROOT%/tests/t7-random/csmith" if csmith else "")
+              + "".join(" " + e for e in extra if e.startswith("-D")) + "\n"
               f"// loomcc-note: reduced by tests/t7-random/reduce.py from {src.name}; loomcc {mode} disagreed with host16\n")
     out.write_text(header + (work / "prog.c").read_text())
     print(f"reduced program: {out}")

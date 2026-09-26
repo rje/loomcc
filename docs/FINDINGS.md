@@ -79,6 +79,56 @@ the hard limit for one SUPERFREE section; loomcc could split huge functions,
 limit inlining into them, or at least say which function is too big.
 816-tcc cannot assemble this program either (its stack offsets overflow).
 
+### F31. A panic on an enumerator of LLONG_MAX (481d369; high priority, a crash)
+
+Tests: `t3-sema/constraint/enum-value-too-large.c`,
+`enum-value-too-large-then-next.c` (and gcc.dg `c11-enum-1.c`).
+`enum big { BIG = 9223372036854775807LL };` makes loomcc panic at
+`crates/sema/src/check.rs:414:17: attempt to add with overflow`, even with
+no enumerator after it. Expected: a diagnostic (6.7.2.2p2: the value must be
+representable as an int; loomcc already warns for values that are merely
+too big for 16 bits).
+
+### F32. Two scope rules give spurious errors (481d369)
+
+- `t3-sema/scope/tag-in-parameter-list.c` (from gcc.dg `struct-in-proto-1.c`):
+  `int f(struct S { int i; } s) { return sizeof(struct S); }`: a tag
+  declared in a function definition's parameter list is in scope, and
+  complete, in the body (6.2.1p4). loomcc: `invalid application of 'sizeof'
+  to an incomplete type 'struct S'`.
+- `t3-sema/scope/inner-extern-composite-type.c` (from gcc.dg `redecl-14.c`):
+  an inner-block `extern IA5 *a[];` completes the element type for that
+  scope (6.2.7p4 composite type); loomcc keeps the file-scope `IA *` and
+  rejects `sizeof(*a[0])`. 816-tcc does the same. Esoteric.
+
+Also seen: after a real error (`void foo(); int foo[] = {0};`, gcc.dg
+`pr69819.c`) loomcc adds a spurious second error on the earlier line
+(`variable has incomplete type 'void ()'`). Cosmetic.
+
+### F33. Constraint diagnostics missing, from gcc.dg (481d369)
+
+`external/wrap-gcc-dg-errors.py` wraps 186 of GCC's gcc.dg compile tests
+that expect errors (each dg-error becomes `loomcc-diagnostic` at its line;
+clang must agree, and must accept the rest of the file under
+-pedantic-errors -Werror=vla). loomcc passes 101. Besides F31 and F32, 82
+fail because loomcc accepts a line silently. Grouped (first missing line
+per test; the list is in the run output):
+
+| group | tests (gcc.dg) | rule |
+|---|---|---|
+| redeclarations | `decl-2`, `decl-3` (enumerator), `decl-4` (parameter), `redecl-2` (block scope), `redecl-12`, `redecl-13`, `redecl-18`, `redecl-22`, `pr117757-1`, `pr123716`, `pr15360-1`, `noreturn-6` | 6.7p3, 6.2.7 |
+| incomplete and invalid types | `array-7`, `pr123461-1`, `pr65050` (array of incomplete element), `pr63549`, `pr69483` (object of incomplete type), `pr27953`, `c99-array-nonobj-1`, `c99-flex-array-*` (6 tests: no named members, in a union, nested, initialised), `struct-empty-3`, `pr67432` (`enum {}`), `c99-tag-4`, `pr14475` (forward enum), `incomplete-typedef-1`, `pr108043` (compound literal of function type), `pr105149`, `pr100532-1` | 6.7.2.1, 6.7.2.2, 6.7.2.3, 6.7.6.2, 6.5.2.5 |
+| constant expressions | `case-const-3`, `enum-const-3`, `enum3`, `bitfld-14`, `c99-const-expr-5/6/10`, `c11-static-assert-3`, `c99-init-3`, `c99-intconst-2` (`#if` constant too large) | 6.6, 6.8.4.2, 6.7.2.2 |
+| declarations and specifiers | `anon-struct-9`, `anon-struct-15` (duplicate members through anonymous structs), `c11-anon-struct-3`, `declspec-8`, `funcdef-storage-1`, `register-var-3`, `c11-noreturn-5`, `c99-restrict-1/3`, `c99-arraydecl-1/3`, `c99-bool-2`, `c99-impl-int-1`, `c11-parm-omit-1`, `c11-stdarg-1`, `va-arg-4` (`f(...)`), `nested-func-3`, `pr113262` | 6.7, 6.7.3, 6.7.4, 6.9.1 |
+| expressions and conversions | `Wincompatible-pointer-types-5`, `diag-aka-4`, `c99-func-4` (`char *p = __func__`), `lvalue-7`, `pointer-arith-4/8` (void arithmetic and `sizeof(void)`), `bitfld-12` (`offsetof` a bit-field), `c99-array-lval-5`, `c11-generic-2` (two defaults), `pr45750`, `Wreturn-mismatch-3`, `pr29521-2` (`return` with a void expression) | 6.5, 6.5.16.1, 6.8.6.4 |
+| other | `c11-uni-string-2` (`L"a" u8"b"`), `c11-static-assert-8` (C23 form), `c11-binary-constants-2`, `c99-init-2` (GNU range designator), `extra-semi-3`, `large-size-array`, `large-size-array-3`, `vla-18`, `pr30551-3` (`void main(char)`) | various; the last group is partly quality, not constraint |
+
+Some of these overlap F27. None changes code generation for valid code;
+they matter for users who expect loomcc to catch their mistakes the way gcc
+and clang do. The tests are run with
+`./run-tests external/fetched/gcc-dg-errors-wrapped` (after
+`external/fetch.sh gcc-dg && external/wrap-gcc-dg-errors.py`).
+
 ### F20. Source files must be UTF-8 (65be77e, still in 1fc1258)
 
 GCC torture `execute/20000227-1.c` has a raw 0xFF byte inside a string

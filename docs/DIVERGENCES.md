@@ -114,6 +114,7 @@ generator. Codes:
 | `tcc-no-for-decl` | no declarations in `for (...)` (C99) | tests keep loop counters at block scope for 816-tcc's sake |
 | `tcc-no-array-static`, `tcc-no-static-assert`, `tcc-no-c11-align`, `tcc-no-noreturn`, `tcc-no-generic`, `tcc-empty-init` | missing C99/C11 features, or GNU `= {}` accepted | |
 | `tcc-tag-scope` | a struct tag redeclared in an inner block is rejected as a redefinition | |
+| `tcc-inner-extern` | an inner-scope `extern` that completes an array type does not give the identifier the composite type there | |
 | `tcc-lax-decl`, `tcc-lax-switch`, `tcc-lax-types`, `tcc-lax-init`, `tcc-lax-register`, `tcc-lax-sizeof`, `tcc-lax-return`, `tcc-zero-array`, `tcc-void-arith`, `tcc-implicit-int`, `tcc-implicit-function`, `tcc-no-overflow-diag` | constraint violations 816-tcc accepts silently (duplicate members, conflicting types, duplicate `case`, void objects, `&register`, `sizeof` of a bit-field or function, `return;` in an int function, `int a[0]`, `void *` arithmetic, implicit int and implicit declarations, constant overflow) | diagnostics only |
 
 GCC torture execute tests that 816-tcc gets wrong are listed, with reasons,
@@ -342,7 +343,13 @@ deliberately calls abort()
 - `t2-parse/decl/kr-undeclared-param.c`
 - `t2-parse/errors/missing-type-c99.c`
 
-### `tcc-lax-decl` (tcc, 18 tests)
+### `tcc-inner-extern` (tcc, 1 test)
+
+816-tcc keeps the outer, incomplete type
+
+- `t3-sema/scope/inner-extern-composite-type.c`
+
+### `tcc-lax-decl` (tcc, 20 tests)
 
 816-tcc accepts this silently
 
@@ -361,6 +368,8 @@ deliberately calls abort()
 - `t3-sema/constraint/bitfield-wider-than-int.c`
 - `t3-sema/constraint/conflicting-types.c`
 - `t3-sema/constraint/duplicate-member.c`
+- `t3-sema/constraint/enum-value-too-large-then-next.c`
+- `t3-sema/constraint/enum-value-too-large.c`
 - `t3-sema/constraint/redeclare-different-linkage.c`
 - `t3-sema/constraint/redefinition.c`
 - `t3-sema/constraint/void-object.c`
