@@ -1,0 +1,11 @@
+name = "scene_trigger_scan"
+kind = "pair"
+description = "Trigger scan box test: bit mask of the triggers under the player box. Ten triggers, nine probes."
+unit_labels = ["loom_pvs_scene_intersect_mask"]
+helper_labels = []
+
+[provenance]
+loom_commit = "7b4d960"
+c_source = "runtime/src/scene.c:234-246 at 7b4d960^ (the box test inside loom_scene_check_triggers' trigger loop, gathered into a mask; 7b4d960 keeps the same test as the host rendition loom_scene_intersect_mask, scene.c:145-164)"
+asm_source = "runtime/backends/pvsneslib/src/scene.asm:loom_pvs_scene_intersect_mask at 7b4d960 (at HEAD only the 24-byte stride became a .DEFINE; code otherwise unchanged)"
+notes = "The C compares signed 16-bit values; the asm tests the sign of the 16-bit difference, so the two differ only when an edge difference overflows 16 bits (scene coordinates stay within +-16384). The parent loop also validated records and applied visibility per trigger; 7b4d960 moved those out of the per-tick path, so they are not part of either side."
