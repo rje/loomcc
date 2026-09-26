@@ -233,6 +233,38 @@ pub fn link_and_run(tools: &Tools, dir: &Path, units: &[PathBuf], max_frames: u3
     if !o.ok() {
         return RomOutcome::Broken(format!("loom-emulator failed ({}): {}", o.describe(), first_lines(&o.stderr, 5)));
     }
+    if std::env::var_os("LOOMCC_TESTS_DUMP_OUTPUT").is_some() {
+        // Authoring aid (scripts/rom-output.py): read the printed output back
+        // from WRAM into output.bin, with one watch per 4 bytes.
+        if let Some(buf) = read_symbol(&sym, "loomcc_out_buf") {
+            let watches: Vec<String> = (0..1024u32).map(|i| format!("b{}:{:06x}:4", i, buf + 4 * i)).collect();
+            let args: Vec<String> = vec![
+                "trace".into(),
+                "--rom".into(),
+                "test.sfc".into(),
+                "--script".into(),
+                "script.json".into(),
+                "--out".into(),
+                "emu-dump".into(),
+                "--watches".into(),
+                format!("done:{:06x}:2,len:{:06x}:2,{}", done, outlen, watches.join(",")),
+            ];
+            let d = exec::run(tools.emulator.as_ref().unwrap(), &args, dir, Duration::from_secs(300));
+            log_cmd(log, &d);
+            if let Ok(csv) = std::fs::read_to_string(dir.join("emu-dump/trace.csv")) {
+                let last: Vec<i64> = csv.lines().last().unwrap_or("").split(',').skip(2).filter_map(|v| v.parse().ok()).collect();
+                if last.len() == 1026 {
+                    let len = last[1] as usize;
+                    let mut bytes = Vec::new();
+                    for w in &last[2..] {
+                        bytes.extend_from_slice(&(*w as u32).to_le_bytes());
+                    }
+                    bytes.truncate(len.min(4096));
+                    let _ = std::fs::write(dir.join("output.bin"), bytes);
+                }
+            }
+        }
+    }
     let csv = tryb!(std::fs::read_to_string(dir.join("emu/trace.csv")));
     let last = csv.lines().last().unwrap_or("");
     let cols: Vec<i64> = last.split(',').skip(2).filter_map(|v| v.parse().ok()).collect();

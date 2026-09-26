@@ -1,6 +1,6 @@
 # 816-tcc miscompiles
 
-Three code-generation bugs in 816-tcc 0.9.25 (PVSnesLib devkitsnes, with
+Code-generation bugs in 816-tcc 0.9.25 (PVSnesLib devkitsnes, with
 816-opt 2.0.0), found while building this suite's references. Each silently
 produces wrong code, and each appears in ordinary C. Loom's runtime and
 generator do not use these patterns, but user hooks could. Each reproducer is
@@ -114,6 +114,22 @@ sizeof(a + 0)     /* must be sizeof(short *) == 4; 816-tcc says 20 */
 `a + 0` is a pointer (the array decays), but 816-tcc keeps the array type
 for the operand of `sizeof`. Only code that takes `sizeof` of such an
 expression is affected (rare; `sizeof(&a[0])` is correct).
+
+## 5. `char` arguments to variadic functions are not promoted
+
+Test: `tests/t4-exec/stdio/printf-char-arguments.c`
+
+```c
+unsigned char a = 1, b = 2;
+printf("%u %u %u\n", a, b, 3);    /* prints "513 3 0" */
+```
+
+C promotes a `char` argument in the variable part of a call to `int`
+(6.5.2.2p7). 816-tcc pushes it as the single byte it pushes for a
+prototyped `u8` parameter, so the callee's `va_arg(ap, int)` reads two
+arguments' bytes as one and everything after is shifted. Any variadic
+function (a logging helper, a `printf` port) is affected. Workaround: cast
+`char`-typed arguments to `unsigned` or `int` at the call.
 
 ## Also seen (not miscompiles)
 
