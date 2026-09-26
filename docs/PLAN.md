@@ -7,12 +7,12 @@ as loomcc's matching mode exists; until then its tests are UNSUPPORTED.
 
 | tier | loomcc milestone | action / mode | oracle | target | now |
 |---|---|---|---|---|---|
-| T1 preprocessor | M1 | `preprocess` / `E` | the C standard's text and examples; clang -E -P and 816-tcc -E as cross-checks; mcpp's validation suite | 400 | 458 (392 own + 66 mcpp) |
+| T1 preprocessor | M1 | `preprocess` / `E` | the C standard's text and examples; clang -E -P and 816-tcc -E as cross-checks; mcpp's validation suite | 400 | 460 (394 own + 66 mcpp) + 61 GCC gcc.dg/cpp, fetched |
 | T2 lexing and parsing | M2 | `syntax` / `syntax` | clang --target=msp430 -fsyntax-only, 816-tcc -c | 300 | 309 (hand-written + generated declarator, precedence and designator families) |
 | T3 semantics | M3 | `syntax` / `syntax` | clang --target=msp430 (16-bit int) and 816-tcc -c; layout pinned to 816-tcc | 300 | 303 (hand-written + generated folding, conversion and 816-tcc layout families) |
-| T4 execute | M4 (ir), M5 (rom) | `run` / `ir`, `rom` | host clang (width-agnostic tests), host16 (msp430 IR under lli), 816-tcc ROM in loom-emulator | 600 | 607 own (half generated, Loom-shaped) + 450 GCC torture + 212 output-compared (c-testsuite, tcc tests2, LLVM), all fetched |
-| T5 SNES-specific | M5-M6 | `run` with `tcc-sources`/`asm-sources` | 816-tcc ROM, hand assembly | 100 | 15 |
-| T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | 31 units (stage 1), 9 differential drivers (stage 2) |
+| T4 execute | M4 (ir), M5 (rom) | `run` / `ir`, `rom` | host clang (width-agnostic tests), host16 (msp430 IR under lli), 816-tcc ROM in loom-emulator | 600 | 609 own (half generated, Loom-shaped) + 450 GCC torture + 212 output-compared (c-testsuite, tcc tests2, LLVM), all fetched |
+| T5 SNES-specific | M5-M6 | `run` with `tcc-sources`/`asm-sources` | 816-tcc ROM, hand assembly | 100 | 30 (bank-crossing and far data, CPU modes at calls, NMI-shared code, assembly calling C and C calling assembly, hardware ports, DMA, 816-tcc interop) |
+| T6 Loom-realistic | M8 | `compile`, then `run` | 816-tcc build of the same files; Loom ROM tests | Loom's whole runtime | 31 units (stage 1), 12 differential drivers (stage 2) + the Q2 header check |
 | T7 randomised | M4 onwards | generated `run` tests | host16 checksum vs loomcc ir/rom vs 816-tcc ROM | continuous | generator + 40-program corpus |
 
 Counts: `./run-tests --list | cut -d' ' -f1 | sort -u | wc -l`, or the
@@ -232,8 +232,11 @@ at d88b68b (`tests/t6-loom/loom-d88b68b/PROVENANCE`).
   animation.c (direction selection), movement.c (the per-tick subpixel
   step), ui.c (number formatting for project UI patches), mode1.c (scroll
   clamping, parallax scaling, auto-scroll drift, stream limits), actor.c
-  (direction vectors), scene.c with Loom's own scene.asm (the trigger box
-  scan, C calling the hand-written assembly). `scripts/t6-stubs.py` writes
+  (direction vectors; the solid list, the floor query and the carry of
+  riders), scene.c with Loom's own scene.asm (the trigger box scan, C
+  calling the hand-written assembly; and the whole per-tick trigger check
+  with the generated adventure kit faked), ui.c's patch predicates, variants,
+  meter fill and value scans. `scripts/t6-stubs.py` writes
   link stubs for symbols a unit references but the driver never reaches
   (wlalink -d usually drops them, so most drivers need none). A driver's
   output must fit the harness's 4 KiB buffer; rom-output.py refuses a run

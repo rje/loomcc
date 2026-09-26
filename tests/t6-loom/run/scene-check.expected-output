@@ -1,0 +1,34 @@
+-20,10: =0 in0 once0 taken0 idle1 ap2844 d0 c0 ph0
+-10,10: a0- h10 h11 =0 in1 once0 taken0 idle0 ap2844 d2 c0 ph0
+0,10: a0- h10 h11 =0 in1 once0 taken0 idle0 ap2844 d4 c0 ph0
+10,10: a0- h10 h11 =0 in1 once0 taken0 idle0 ap2844 d6 c0 ph0
+20,10: a0- h10 h11 a1- h12 =0 in3 once2 taken0 idle0 ap2844 d9 c0 ph0
+20,10: a0- h10 h11 =0 in3 once2 taken0 idle0 ap2844 d11 c0 ph0
+30,10: =0 in2 once2 taken0 idle0 ap2844 d11 c0 ph0
+40,10: a2+ s9=0 h13 =0 in4 once0 taken4 idle0 ap2844 d12 c1 ph0
+40,10: =0 in0 once0 taken4 idle1 ap2844 d12 c1 ph0
+40,10: s9=0 =0 in0 once0 taken4 idle1 ap5688 d12 c1 ph0
+50,10: a3+ h14 h15 =0 in8 once0 taken4 idle0 ap5688 d14 c1 ph0
+60,10: a3- =0 in8 once0 taken4 idle0 ap5688 d14 c1 ph0
+70,10: a3- =0 in8 once0 taken4 idle0 ap5688 d14 c1 ph0
+70,10: a3+ h14 h15 =0 in8 once0 taken4 idle0 ap5688 d16 c1 ph0
+80,10: a3- a5- h16 =0 in28 once0 taken4 idle0 ap5688 d17 c1 ph0
+90,10: a5- h16 =0 in20 once0 taken4 idle0 ap5688 d18 c1 ph0
+100,10: a5- h16 =0 in20 once0 taken4 idle0 ap5688 d19 c1 ph0
+110,10: a6+ s12=0 h17 =0 in40 once40 taken44 idle0 ap5688 d20 c2 ph0
+120,10: =0 in0 once0 taken44 idle1 ap5688 d20 c2 ph0
+130,10: a7- =3 in0 once0 taken44 idle0 ap5688 d20 c2 ph0
+140,10: a7- =3 in0 once0 taken44 idle0 ap5688 d20 c2 ph0
+150,10: a7- =3 in0 once0 taken44 idle0 ap5688 d20 c2 ph0
+160,10: a8- h20 =0 in100 once0 taken44 idle0 ap5688 d21 c2 ph0
+170,10: =0 in0 once0 taken44 idle1 ap5688 d21 c2 ph0
+-60,-20: =0 in0 once0 taken44 idle1 ap5688 d21 c2 ph0
+-60,-20: =0 in0 once0 taken44 idle1 ap5688 d21 c2 ph0
+-60,-20: s9=0 s12=0 =0 in0 once0 taken44 idle1 ap8532 d21 c2 ph0
+160,10: a8- h20 =0 in100 once0 taken44 idle0 ap8532 d22 c2 ph0
+200,10: a9- h18 r0 =0 in200 once0 taken44 idle0 ap8532 d23 c2 ph1
+220,10: a10- h999 =3 in200 once0 taken44 idle0 ap8532 d23 c2 ph0
+240,10: a11- =4 in800 once0 taken44 idle0 ap8532 d23 c2 ph0
+250,10: a13- r0 =0 in2000 once0 taken44 idle0 ap8532 d23 c2 ph1
+0,0: s9=0 =3 in2000 once0 taken44 idle0 ap9059 d23 c2 ph1
+1,0: =0 in0 once0 taken44 idle1 ap9059 d23 c2 ph1

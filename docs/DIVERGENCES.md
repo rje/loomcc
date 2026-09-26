@@ -842,11 +842,12 @@ deliberately calls abort()
 
 - `t4-exec/stdio/printf-char-arguments.c`
 
-### `uncoded` (tcc-rom, 3 tests)
+### `uncoded` (tcc-rom, 4 tests)
 
 deliberately calls abort()
 
 - `t4-exec/smoke/xfail-harness-detects-abort.c`
 - `t4-exec/smoke/xfail-harness-detects-nonzero.c`
 - `t4-exec/stdio/output-mismatch-detected.c`
+- `t5-snes/interop/big-frame-foreign-call.c`
 

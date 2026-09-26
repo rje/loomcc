@@ -5,7 +5,7 @@ what loomcc did, with the loomcc commit it was seen at. Entries move to
 "Fixed" with the commit that fixed them; tests are never edited to match
 loomcc. The runner prints the build time of the loomcc binary it ran.
 
-Latest full run: loomcc 179dd28 (build of 2026-09-26 12:10 UTC): 2436 results, 2410 PASS, 18 FAIL (all preprocessor and constraint diagnostics: F3, F4, F23, F27). F20 and F24 still reproduce through the wrapped external suites.
+Latest full run: loomcc 481d369 (build of 2026-09-26 12:41 UTC; 810f627 and 69b0b91 change only docs): 2845 results (the tiers plus the wrapped c-testsuite and gcc.dg/cpp), 2813 PASS, 22 FAIL, 10 XFAIL. The 22 are F3, F4, F23 (with the gcc.dg/cpp tests that echo it) and F27; nothing new in T1-T3. Two new code generation findings, F29 and F30, came from rerunning the wrapped tcc tests2 (`130_large_argument.c`, which passed on the build of 08:16 UTC). F20 still reproduces; F24 is fixed.
 
 ## Open
 
@@ -87,13 +87,40 @@ character set is implementation-defined, but 816-tcc and clang accept such
 bytes in literals (passing them through unchanged), and Latin-1 bytes in
 SNES text strings are plausible. Low priority.
 
-### F24. The interpreter lacks libc functions the ROM has (1fc1258, `ir`)
+### F29. Stack-relative offsets past 255 wrap (rom; release build of 08:16 UTC and 481d369)
 
-c-testsuite `00180.c` and tcc tests2 `29_array_address.c` (wrapped
-external suites) call `strcpy`: the ROM links PVSnesLib's libc and passes;
-`--run-ir` stops with `call to undefined function 'strcpy'`. The interpreter
-implements printf/puts/putchar; it would need the mem*/str* functions
-PVSnesLib provides as well (harness/libc/string.h lists them).
+Test: `t4-exec/call/struct-arg-300-bytes.c` (CHECK at line 15; ir, host,
+host16 and 816-tcc's ROM pass). A 300-byte struct passed by value: the
+callee copies its parameter from the stack with `lda n,s`, and the 65816's
+stack-relative mode takes an 8-bit offset. loomcc emits the offset modulo
+256 (`lda 254,s` is followed by `lda 0,s`, `lda 2,s` ... for bytes 256 and
+up of the argument area), so everything past the first 252 bytes of
+arguments is read from the wrong place. Silent wrong code. It needs a
+different addressing path once the offset passes 255 (`tsc`, add, and a
+direct-page or long-indirect copy, or a block move). Loom passes nothing
+this large, so it is low risk for Loom, but any function with more than
+about 250 bytes of parameters is affected.
+
+### F30. The frame save around foreign calls copies the whole unit, one word at a time (rom; 481d369)
+
+Tests: `t5-snes/interop/big-frame-foreign-call.c` (does not link:
+`No room for section "lcc.loomcc_test_main" (48120 bytes)`), and tcc tests2
+`130_large_argument.c` (wrapped external suite; it passed on the build of
+08:16 UTC). The F25 fix saves the unit's static frame area on the hardware
+stack around every call into foreign code (here printf, compiled by
+816-tcc). The save is the entire unit's `lcc.cstack` area (every function's
+frame, 10,778 bytes in 130_large_argument), not the caller's live slots, and
+it is unrolled: `lda.w`/`pha` per word before the call and `pla`/`sta.w`
+per word after it, about 8 bytes of code per word per call site. One
+function with a 6,000-byte local array makes `main`, which has almost no
+locals of its own, 48 KB of code for two printf calls. The same save puts
+that many bytes on the SNES hardware stack in bank 0, which a stack in low
+RAM cannot hold for frames of this size. Suggestions: save only the frames
+of functions that can be re-entered (the ones reachable from the callee's
+callbacks) and only their live slots; save with a loop or `mvn` block move
+to a separate save stack rather than the hardware stack. Loom's Cliffside
+build works (its frames are small), so this is a scaling problem; it
+turns into a link failure or a stack overflow as units grow.
 
 ## Design questions
 
@@ -102,8 +129,9 @@ PVSnesLib provides as well (harness/libc/string.h lists them).
 devkitsnes's `stddef.h` (and `stdint.h`) choose `typedef long long int
 int32_t;` when `__65816__` is defined; under loomcc `long long` is 64 bits.
 loomcc now ships its own headers (1fc1258; `t3-sema/headers/stdint-widths.c`
-passes), but Loom's build puts devkitsnes/include on the `-I` path. Which
-headers win for Loom units is worth checking in the driver.
+passes), but Loom's build puts devkitsnes/include on the `-I` path.
+Answered in 481d369: loomcc's headers win under Loom's include order;
+`t6-loom/run/q2-int32-widths.c` checks it with the T6 drivers' options.
 
 ### Q3. Pointers that step across the $7E/$7F WRAM boundary
 
@@ -118,6 +146,9 @@ buffers. Worth a sentence in loomcc's documentation either way.
 
 ## Fixed
 
+- **F24 the interpreter lacked libc functions** (`strcpy` in c-testsuite
+  `00180.c` and tcc tests2 `29_array_address.c` under `--run-ir`): fixed in
+  481d369; both pass.
 - **F1 `#line` ignored**: fixed in 1fc1258 (all `t1-pp/line/*` pass).
 - **F2 `_Pragma` not implemented**: fixed in 1fc1258.
 - **F4, the diagnostic half** (`__VA_OPT__` nested, without `(`, unbalanced,
