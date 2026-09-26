@@ -1,0 +1,11 @@
+name = "witness_hash"
+kind = "pair"
+description = "Board hash for the debug witness: the sum of cell * (2 * index + 1) over 90 cells of two 10x20 boards (a whole board runs past a frame through 816-tcc)."
+unit_labels = ["loom_pvs_board_hash"]
+helper_labels = ["tcc__mul"]
+
+[provenance]
+loom_commit = "e239e1c"
+c_source = "runtime/src/board.c at e239e1c (the host #else branch of loom_board_hash: the weighted-sum loop); at e239e1c^ (board.c:523-541) the hash was djb2, which the same commit replaced"
+asm_source = "runtime/backends/pvsneslib/src/board.asm:loom_pvs_board_hash at e239e1c (unchanged at HEAD)"
+notes = "Not the parent's C: the commit changed the hash function and moved it to asm together, so the C is the replacement's own host rendition (the one Loom's host suites run). The asm multiplies by repeated addition (cells are kinds < 16); the C multiplies (tcc__mul). The hash cache (hash_valid) is outside both. .BASE LOOM_ROM_BASE is written .BASE $80."
