@@ -1,0 +1,11 @@
+name = "movement_box_blocked"
+kind = "pair"
+description = "Tile-collision probe: is any 16-pixel cell under a box solid? 24 boxes over a 20x14 room."
+unit_labels = ["loom_pvs_movement_box_blocked"]
+helper_labels = ["tcc__mul"]
+
+[provenance]
+loom_commit = "f0a6cd0"
+c_source = "runtime/src/movement.c:98-117 at f0a6cd0^ (inside loom_movement_box_blocked)"
+asm_source = "runtime/backends/pvsneslib/src/movement.asm:loom_pvs_movement_box_blocked at f0a6cd0 (unchanged at HEAD)"
+notes = "The C adds a 16-bit row offset to the pointer; the asm carries into the bank. Equal for grids inside one bank."
