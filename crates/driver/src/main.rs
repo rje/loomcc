@@ -15,6 +15,10 @@ struct Args {
 enum Mode {
     Preprocess,
     Tokens,
+    /// Parse (and, once sema exists, type-check) only.
+    SyntaxOnly,
+    /// Parse and print the AST back as C.
+    PrintAst,
 }
 
 fn parse_args() -> Result<Args, String> {
@@ -44,6 +48,10 @@ fn parse_args() -> Result<Args, String> {
             args.pp.defines.push(Define::Unset(value("-U", rest)?));
         } else if a == "-E" {
             args.mode = Mode::Preprocess;
+        } else if a == "-fsyntax-only" {
+            args.mode = Mode::SyntaxOnly;
+        } else if a == "--print-ast" {
+            args.mode = Mode::PrintAst;
         } else if a == "--tokens" {
             args.mode = Mode::Tokens;
         } else if a == "--no-target-macros" {
@@ -86,7 +94,22 @@ fn main() -> ExitCode {
             eprintln!("{}", pp.sources.render(d));
         }
         failed |= pp.has_errors();
+        if matches!(args.mode, Mode::SyntaxOnly | Mode::PrintAst) {
+            if pp.has_errors() {
+                continue;
+            }
+            let (unit, diags) = loomcc_parse::parse(&toks);
+            for d in &diags {
+                eprintln!("{}", pp.sources.render(d));
+            }
+            failed |= diags.iter().any(|d| d.level == loomcc_pp::Level::Error);
+            if args.mode == Mode::PrintAst {
+                out.push_str(&loomcc_parse::print::print_unit(&unit));
+            }
+            continue;
+        }
         match args.mode {
+            Mode::SyntaxOnly | Mode::PrintAst => unreachable!(),
             Mode::Preprocess => out.push_str(&loomcc_pp::print::print_tokens(&toks)),
             Mode::Tokens => {
                 for t in &toks {
