@@ -176,6 +176,15 @@ their `static short hidden` `lcs0_hidden`, so the second unit reads the
 first unit's variable (1, not 2). 816-tcc avoids this with
 `tccs_{WLA_FILENAME}_name`; loomcc needs a per-unit prefix too.
 
+### F16. Struct by value across the 816-tcc ABI (same build, `rom` mode)
+
+Test: `t5-snes/interop/struct-by-value.c`, line 15: 816-tcc code calls the
+unit's `struct V unit_swap(struct V v)` (argument copied whole onto the
+stack, result through the hidden first-argument pointer) and checks the
+result and that its own `a` is unchanged. The loomcc build fails the check;
+the 816-tcc-only build passes. (Calls in the other direction, loomcc to
+816-tcc with struct arguments and returns, pass.)
+
 ### F15. Not yet supported (tracked, not bugs)
 
 `rom` mode rejects 32-bit multiply, divide and shift, and recursion
