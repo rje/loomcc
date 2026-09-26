@@ -243,3 +243,28 @@ ends). The same inputs go to all three variants.
 ## 9. Log
 
 - 2026-09-25: plan written from 816-tcc output and the PVSnesLib symbol map.
+- 2026-09-25 (review notes folded in):
+  - `char` is **signed** in 816-tcc (`char c = -1` widens with `ora #$ff00`);
+    Loom uses `loom_s8`/`loom_u8` = `signed char`/`unsigned char`, so plain
+    `char` matters only for strings. loomcc: plain char signed.
+  - Bit-fields (816-tcc output): allocated LSB first in units of the declared
+    type (`unsigned` = 16 bits); a field that would straddle a unit boundary
+    starts the next unit; `{unsigned a:3,b:5,c:9; unsigned char d;}` is 6
+    bytes with c at offset 2 and d at 4; `{unsigned char a:2,b:7;}` is 2.
+    loomcc follows this (SysV-style with 16-bit `int`), checked by a
+    layout probe.
+  - WRAM budget: static frames cost WRAM and Loom pins WRAM byte counts, so
+    RESULTS.md reports the compiled-stack total beside the cycle numbers.
+  - NMI: C runs in interrupt context. adapter.c registers
+    `loom_pvs_vblank` with `nmiSet`, and it calls DMA, display and raster
+    helpers. PVSnesLib's NMI saves $00-$2F to `tcc__registers_nmi_isr`
+    ($100, $30 bytes), so DP scratch is safe; static frames are not.
+    loomcc treats the argument of `nmiSet` (and `#pragma loomcc interrupt`)
+    as an interrupt root: every function reachable from it gets frames in a
+    separate region, and a function reachable from both contexts is cloned
+    (one copy per context) rather than shared.
+  - Never add RAM in bank 0 slot 1 (SNESMOD's direct page overflowed once
+    when low RAM grew): the compiled stack lives in `BANK $7E SLOT 2` with
+    `.BASE $00` around the RAMSECTION.
+  - The preprocessor's clang -E / 816-tcc -E equality stays a committed
+    cargo test that skips when the tools are absent.
