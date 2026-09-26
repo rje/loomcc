@@ -100,14 +100,32 @@ def main():
     if a.profile == "debug":
         DEFS = ["-DLOOM_BUILD_DEBUG=1", "-DLOOM_TARGET_PVSNESLIB=1", "-DLOOM_GENERATED_POOLS=1"]
     project, runtime, out = a.project.resolve(), a.runtime.resolve(), a.out.resolve()
-    build_dir = next(((a.reference_build or project) / "Build/Release/project").iterdir())
-    build = json.loads((build_dir / "loom-project.build.json").read_text())
-    units = list(build["cache"]["compiled_units"])
+    rel = (a.reference_build or project) / "Build/Release/project"
+    build_dir = next(rel.iterdir()) if rel.exists() and any(rel.iterdir()) else None
+    if build_dir is not None:
+        build = json.loads((build_dir / "loom-project.build.json").read_text())
+        units = list(build["cache"]["compiled_units"])
+    else:
+        # No packaged ROM (loom-automation's release step can time out at
+        # background priority after generating the sources): derive the
+        # unit list the way pvs_project.rs does, sorted by stable name, with
+        # the build identity last.
+        inputs = json.loads((project / ".loom/generated/toolchain/pvsneslib-inputs.json").read_text())["inputs"]
+        names = set(inputs["generated_c_sources"] + inputs["generated_assembly_sources"]
+                    + inputs["loom_install_portable_sources"] + inputs["loom_install_target_sources"])
+        for root in inputs["authored_source_roots"]:
+            for f in sorted((project / root).rglob("*")):
+                if f.suffix in (".c", ".asm"):
+                    names.add("project/" + str(f.relative_to(project)))
+        units = sorted(names) + ["generated/build-identity.asm"]
     if a.profile == "debug":
         # The debug profile adds the replay passthrough (Loom's
         # loom_install_debug_sources) in sorted position.
         units.insert(units.index("runtime/src/scene.c"), "runtime/src/replay-passthrough.c")
-    lst = lst_units(build_dir / "loom-project.lst")
+    if build_dir is not None:
+        lst = lst_units(build_dir / "loom-project.lst")
+    else:
+        lst = {"generated/build-identity.asm": '.include "hdr.asm"\n\n.SECTION "loom.build.identity" SUPERFREE KEEP\nloom_build_identity_start:\n  .db "loomcc-testbed"\nloom_build_identity_end:\n  .db 0\n.ENDS\n'}
     gen = project / ".loom/generated"
     roots = [runtime / "include", runtime / "backends/pvsneslib/include", gen / "include",
              PVS / "pvsneslib/include", PVS / "devkitsnes/include"]
@@ -170,6 +188,9 @@ def main():
         shutil.copy(stage / f, out / f)
     (out / "units.json").write_text(json.dumps(record, indent=1) + "\n")
     rom = (out / "loom-project.sfc").read_bytes()
+    if build_dir is None:
+        print(f"{a.variant}: {len(rom)} bytes, sha256 {hashlib.sha256(rom).hexdigest()[:16]} (no packaged ROM to compare)")
+        return
     ref = (build_dir / "loom-project.sfc").read_bytes()
     if a.profile == "debug":
         print(f"{a.variant} debug: {len(rom)} bytes, sha256 {hashlib.sha256(rom).hexdigest()[:16]}")

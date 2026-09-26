@@ -37,7 +37,7 @@ EMULATOR = Path(os.environ.get(
 #   $LOOMCC -S [-I dir]... [-D def]... unit.c -o unit.asm
 LOOMCC = os.environ.get("LOOMCC", str(REPO / "target/debug/loomcc"))
 
-NICE = ["nice", "-n", "19"]
+NICE = ["taskpolicy", "-b", "nice", "-n", "19"]
 DONE = 0x600D
 MAX_FRAMES = 1200
 SCANLINE_CLOCKS = 1364
@@ -217,7 +217,15 @@ def emulate(rom, sym, out, watches, profile=None):
                   "--watches", ",".join(f"{n}:{a:06x}:{w}" for n, a, w in watches)]
     if profile:
         cmd += ["--profile", sym, "--profile-from", profile[0], "--profile-to", profile[1]]
-    result = run(cmd)
+    # MesenCore gives up on a frame after five seconds of wall time, which a
+    # background-priority run can exceed: retry those.
+    for attempt in range(4):
+        try:
+            result = run(cmd)
+            break
+        except BenchError as error:
+            if "NoFrame" not in str(error) or attempt == 3:
+                raise
     (out / "emulator.log").write_text(result.stdout + result.stderr)
     rows = (out / "trace.csv").read_text().splitlines()
     header = rows[0].split(",")
