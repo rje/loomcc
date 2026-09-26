@@ -156,11 +156,19 @@ fn real_main() -> Result<i32, String> {
     // Discover tests.
     let tests_dir = root.join("tests");
     let mut files = Vec::new();
+    // Listed tests of external suites that are not fetched (reported UNSUPPORTED).
+    let mut not_fetched: Vec<(String, String)> = Vec::new();
     if paths.is_empty() {
         walk(&tests_dir, &mut files);
     } else {
         for p in &paths {
             let p = if p.is_relative() { std::env::current_dir().unwrap().join(p) } else { p.clone() };
+            if !p.exists() {
+                if let Some(listed) = unfetched_suite(&root, &p) {
+                    not_fetched.extend(listed);
+                    continue;
+                }
+            }
             let p = p.canonicalize().map_err(|e| format!("{}: {}", p.display(), e))?;
             if p.is_dir() {
                 walk(&p, &mut files);
@@ -206,6 +214,16 @@ fn real_main() -> Result<i32, String> {
         }
     }
 
+    let mut unfetched_jobs = Vec::new();
+    for (id, why) in not_fetched {
+        let tier = tier_of(&id);
+        if tiers.as_ref().map_or(true, |ts| ts.iter().any(|t| tier.starts_with(t.as_str())))
+            && filter.as_ref().map_or(true, |f| id.contains(f.as_str()))
+        {
+            unfetched_jobs.push(modes::Job::not_fetched(id, why));
+        }
+    }
+
     let work = work.unwrap_or_else(|| std::env::temp_dir().join(format!("loomcc-tests-{}", std::process::id())));
     std::fs::create_dir_all(&work).map_err(|e| format!("{}: {}", work.display(), e))?;
     let work = work.canonicalize().unwrap();
@@ -224,6 +242,7 @@ fn real_main() -> Result<i32, String> {
             Ok(t) => jobs_list.extend(modes::plan(i, id, path, t, &cfg)),
         }
     }
+    jobs_list.extend(unfetched_jobs);
     if list {
         for j in &jobs_list {
             println!("{} [{}]", j.id, j.mode);
@@ -286,6 +305,50 @@ fn real_main() -> Result<i32, String> {
         println!("scratch kept in {}", work.display());
     }
     Ok(if bad { 1 } else { 0 })
+}
+
+/// A wrapper directory under external/fetched/ that does not exist: the
+/// suite is not fetched. Returns (test id, reason) for every test its
+/// committed list names, or None if the path is not such a directory.
+fn unfetched_suite(root: &Path, p: &Path) -> Option<Vec<(String, String)>> {
+    // Neither p nor fetched/ need exist, so normalise p lexically.
+    let mut abs = PathBuf::new();
+    for c in p.components() {
+        match c {
+            std::path::Component::CurDir => {}
+            std::path::Component::ParentDir => {
+                abs.pop();
+            }
+            c => abs.push(c),
+        }
+    }
+    let rel = abs.strip_prefix(root.join("external/fetched")).ok()?.to_path_buf();
+    let dir = rel.components().next()?.as_os_str().to_str()?.to_string();
+    let (list, fetch) = match dir.as_str() {
+        "gcc-wrapped" => ("gcc-torture-execute", "gcc-torture; external/classify-gcc-torture.py"),
+        "gcc-compile-wrapped" => ("gcc-torture-compile", "gcc-torture; external/classify-gcc-compile.py"),
+        "gcc-cpp-wrapped" => ("gcc-dg-cpp", "gcc-torture; external/wrap-gcc-cpp.py"),
+        "gcc-dg-errors-wrapped" => ("gcc-dg-errors", "gcc-dg; external/wrap-gcc-dg-errors.py"),
+        d => {
+            let suite = d.strip_prefix("wrapped-")?;
+            let text = std::fs::read_to_string(root.join(format!("external/{}.list", suite))).ok()?;
+            return Some(listed(&dir, &text, &format!("not fetched: external/fetch.sh {}, then external/wrap-suite.py --from-list {}", fetch_name(suite), suite)));
+        }
+    };
+    let text = std::fs::read_to_string(root.join(format!("external/{}.list", list))).ok()?;
+    Some(listed(&dir, &text, &format!("not fetched: external/fetch.sh {}", fetch)))
+}
+
+fn fetch_name(suite: &str) -> &str {
+    if suite.starts_with("llvm-") { "llvm-singlesource" } else { suite }
+}
+
+fn listed(dir: &str, text: &str, why: &str) -> Vec<(String, String)> {
+    text.lines()
+        .map(str::trim)
+        .filter(|l| !l.is_empty() && !l.starts_with('#'))
+        .map(|n| (format!("ext-{}/{}", dir, n), why.to_string()))
+        .collect()
 }
 
 pub fn tier_of(id: &str) -> String {

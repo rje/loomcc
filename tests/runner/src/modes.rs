@@ -22,11 +22,16 @@ pub struct Job {
     pub path: PathBuf,
     pub test: Option<Test>,
     pub broken: Option<String>,
+    /// Set for a listed external test whose suite is not fetched.
+    pub unsupported: Option<String>,
 }
 
 impl Job {
     pub fn broken(_i: usize, id: String, e: String) -> Job {
-        Job { tier: crate::tier_of(&id), id, mode: "parse".into(), path: PathBuf::new(), test: None, broken: Some(e) }
+        Job { tier: crate::tier_of(&id), id, mode: "parse".into(), path: PathBuf::new(), test: None, broken: Some(e), unsupported: None }
+    }
+    pub fn not_fetched(id: String, why: String) -> Job {
+        Job { tier: crate::tier_of(&id), id, mode: "fetch".into(), path: PathBuf::new(), test: None, broken: None, unsupported: Some(why) }
     }
     pub fn is_ref(&self) -> bool {
         self.mode.starts_with("ref:")
@@ -61,6 +66,7 @@ pub fn plan(_i: usize, id: &str, path: &Path, t: &Test, cfg: &Config) -> Vec<Job
         path: path.to_path_buf(),
         test: Some(t.clone()),
         broken: None,
+        unsupported: None,
     };
     if cfg.run_loomcc {
         let modes: Vec<&str> = match t.action {
@@ -163,6 +169,11 @@ pub fn execute(job: &Job, cfg: &Config) -> Outcome {
     if let Some(e) = &job.broken {
         o.status = Status::Unresolved;
         o.detail = e.clone();
+        return o;
+    }
+    if let Some(why) = &job.unsupported {
+        o.status = Status::Unsupported;
+        o.detail = why.clone();
         return o;
     }
     let t = job.test.as_ref().unwrap();

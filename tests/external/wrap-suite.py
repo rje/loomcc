@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Wraps a fetched external suite as runner tests, keeping those that apply.
 
-    external/wrap-suite.py tcc-tests2 | llvm-unittests | llvm-regression | chibicc | c-testsuite
+    external/wrap-suite.py [--from-list] tcc-tests2 | llvm-unittests | llvm-regression | chibicc | c-testsuite
+
+With --from-list, writes wrappers for exactly the tests external/<suite>.list
+names (after external/fetch.sh), without re-running the reference tools or
+rewriting the list: the way to run the selected tests on a fresh checkout.
 
 The suites are fetched by external/fetch.sh and are never copied into this
 repository (tcc's tests are LGPL; the others keep their own licences, see
@@ -69,10 +73,19 @@ def suites():
 
 
 def main(argv):
+    from_list = "--from-list" in argv
+    argv = [a for a in argv if a != "--from-list"]
     if len(argv) != 2 or argv[1] not in suites():
         print(__doc__, file=sys.stderr)
         return 2
     name = argv[1]
+    keep = None
+    if from_list:
+        keep = {l.strip() for l in (ROOT / f"external/{name}.list").read_text().splitlines()
+                if l.strip() and not l.startswith("#")}
+        if not suites()[name]:
+            print(f"{name}: not fetched (external/fetch.sh)", file=sys.stderr)
+            return 1
     out = FETCHED / f"wrapped-{name}"
     if out.exists():
         shutil.rmtree(out)
@@ -80,6 +93,8 @@ def main(argv):
     rejected = {}
     candidates = []
     for src, expect, _ in suites()[name]:
+        if keep is not None and src.name not in keep:
+            continue
         text = src.read_text(errors="replace")
         why = EXCLUDE.get(src.name) or static_reason(text)
         if why:
@@ -110,6 +125,12 @@ def main(argv):
         w = out / src.name
         w.write_text("\n".join(lines) + "\n")
         candidates.append(w)
+    if keep is not None:
+        missing = keep - {w.name for w in candidates}
+        for n in sorted(missing):
+            print(f"{name}: listed {n} not wrapped ({rejected.get(n, 'not in the fetched suite')})", file=sys.stderr)
+        print(f"{name}: {len(candidates)} wrappers from the list; run with tests/run-tests external/fetched/wrapped-{name}")
+        return 1 if missing else 0
     print(f"{name}: {len(candidates)} of {len(suites()[name])} pass the static filter")
     js = out / "_refs.json"
     subprocess.run([str(ROOT / "run-tests"), "--refs-only", "--refs", "host,tcc-rom", "-j", "2", "--json", str(js), str(out)],
