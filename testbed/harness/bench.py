@@ -259,7 +259,17 @@ def measure(bench, variant, outdir):
     run_from = max(i for i in range(start) if phases[i] <= 1) + 1 if start else 0
     run_to = next(i for i, p in enumerate(phases) if p >= 3)
 
-    second = emulate(rom, sym, outdir / "profile", watch, profile=(run_from, run_to + 1))
+    # The profiler charges each instruction to the nearest label below it and
+    # ignores labels starting "__", "_far", "_skip" or holding "@". A label
+    # "sec:<name>" at every ROM section start makes sure no section's code is
+    # charged to a label from another section; classification below is by
+    # the label's address.
+    profile_sym = sym.with_name("profile.sym")
+    extra = [f"{a:08x} sec:{n[len('SECTIONSTART_'):]}" for a, n in symbols
+             if n.startswith("SECTIONSTART_") and is_rom(a)]
+    profile_sym.write_text(sym.read_text() + "\n".join(extra) + "\n")
+    symbols = read_symbols(profile_sym)
+    second = emulate(rom, profile_sym, outdir / "profile", watch, profile=(run_from, run_to + 1))
     if second[-1] != last:
         raise BenchError("the profiled run differs from the first run")
     frames, per_frame, counts = read_profile(outdir / "profile" / "profile.txt")
