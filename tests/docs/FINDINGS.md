@@ -137,41 +137,6 @@ character set is implementation-defined, but 816-tcc and clang accept such
 bytes in literals (passing them through unchanged), and Latin-1 bytes in
 SNES text strings are plausible. Low priority.
 
-### F29. Stack-relative offsets past 255 wrap (rom; release build of 08:16 UTC and 481d369)
-
-Test: `t4-exec/call/struct-arg-300-bytes.c` (CHECK at line 15; ir, host,
-host16 and 816-tcc's ROM pass). A 300-byte struct passed by value: the
-callee copies its parameter from the stack with `lda n,s`, and the 65816's
-stack-relative mode takes an 8-bit offset. loomcc emits the offset modulo
-256 (`lda 254,s` is followed by `lda 0,s`, `lda 2,s` ... for bytes 256 and
-up of the argument area), so everything past the first 252 bytes of
-arguments is read from the wrong place. Silent wrong code. It needs a
-different addressing path once the offset passes 255 (`tsc`, add, and a
-direct-page or long-indirect copy, or a block move). Loom passes nothing
-this large, so it is low risk for Loom, but any function with more than
-about 250 bytes of parameters is affected.
-
-### F30. The frame save around foreign calls copies the whole unit, one word at a time (rom; 481d369)
-
-Tests: `t5-snes/interop/big-frame-foreign-call.c` (does not link:
-`No room for section "lcc.loomcc_test_main" (48120 bytes)`), and tcc tests2
-`130_large_argument.c` (wrapped external suite; it passed on the build of
-08:16 UTC). The F25 fix saves the unit's static frame area on the hardware
-stack around every call into foreign code (here printf, compiled by
-816-tcc). The save is the entire unit's `lcc.cstack` area (every function's
-frame, 10,778 bytes in 130_large_argument), not the caller's live slots, and
-it is unrolled: `lda.w`/`pha` per word before the call and `pla`/`sta.w`
-per word after it, about 8 bytes of code per word per call site. One
-function with a 6,000-byte local array makes `main`, which has almost no
-locals of its own, 48 KB of code for two printf calls. The same save puts
-that many bytes on the SNES hardware stack in bank 0, which a stack in low
-RAM cannot hold for frames of this size. Suggestions: save only the frames
-of functions that can be re-entered (the ones reachable from the callee's
-callbacks) and only their live slots; save with a loop or `mvn` block move
-to a separate save stack rather than the hardware stack. Loom's Cliffside
-build works (its frames are small), so this is a scaling problem; it
-turns into a link failure or a stack overflow as units grow.
-
 ## Design questions
 
 ### Q2. PVSnesLib's `int32_t` under loomcc
@@ -193,42 +158,6 @@ but its stores through `*p++` wrap within bank `$7E`. Neither can happen for
 an object the toolchain lays out (no section spans a bank), so this matters
 only for code that addresses WRAM absolutely, as some engines do for big
 buffers. Worth a sentence in loomcc's documentation either way.
-
-### F34. A struct-returning call loses a scalar argument staged in $00 (rom; b63113c)
-
-Found by `tests/t7-random/run.py --shapes --small --no-foreign` (seed 7:
-no big frames, no foreign calls, so neither F29 nor F30) and still failing
-after their fix. C-Reduce took it to 579 bytes with an out-of-bounds store it
-introduced; the hand-cleaned form is
-`tests/t4-exec/call/struct-return-with-scalar-argument.c`. The IR interpreter
-passes; the ROM fails.
-
-For `f = h(f, a)`, where `E h(E i, u16 k)` returns a struct, the caller
-emits
-
-```
-  lda.w a          ; k staged in $00
-  sta.b $00
-  ...              ; struct argument copied into h's frame
-  lda.w #lcc_cstack_u0
-  sta.b $1c        ; hidden result pointer
-  ...
-  lda.b $1c
-  sta.b $00        ; result pointer into $00/$02: overwrites k
-  lda.b $1e
-  sta.b $02
-  lda.b $00
-  sta.b $04        ; "k" into its argument slot: now the frame address
-  jsl lcb_h
-```
-
-The argument moves into $00-$04 are a parallel copy done in sequence
-without checking that a source is also a destination. With `g.d != 0` in
-place of `g.d || 0` in h, h's frame layout changes, k is no longer staged
-in $00, and the program passes, so the failure depends on where the
-register allocator puts the staged value. The fix belongs where the call's
-argument moves are ordered: sequence the moves (or go through a temporary)
-so that none overwrites a source still to be read.
 
 ## Fixed
 
@@ -293,3 +222,91 @@ high word in `tcc__r0h` (DP $02); loomcc reads only `tcc__r0`. (Passing
 `tcc_calls_scale(-70000)` gives the right value.)
 
 Fixed in loomcc 179dd28; the tests pass.
+
+### F29. Stack-relative offsets past 255 wrap (rom; release build of 08:16 UTC and 481d369)
+
+Test: `t4-exec/call/struct-arg-300-bytes.c` (CHECK at line 15; ir, host,
+host16 and 816-tcc's ROM pass). A 300-byte struct passed by value: the
+callee copies its parameter from the stack with `lda n,s`, and the 65816's
+stack-relative mode takes an 8-bit offset. loomcc emits the offset modulo
+256 (`lda 254,s` is followed by `lda 0,s`, `lda 2,s` ... for bytes 256 and
+up of the argument area), so everything past the first 252 bytes of
+arguments is read from the wrong place. Silent wrong code. It needs a
+different addressing path once the offset passes 255 (`tsc`, add, and a
+direct-page or long-indirect copy, or a block move). Loom passes nothing
+this large, so it is low risk for Loom, but any function with more than
+about 250 bytes of parameters is affected.
+
+Fixed in loomcc e247f27: the prologue reads arguments through a long
+pointer once the argument area passes 255 bytes, and a whole-struct push
+to an 816-tcc callee copies through `[$1c],y`. The tests pass.
+
+### F30. The frame save around foreign calls copies the whole unit, one word at a time (rom; 481d369)
+
+Tests: `t5-snes/interop/big-frame-foreign-call.c` (does not link:
+`No room for section "lcc.loomcc_test_main" (48120 bytes)`), and tcc tests2
+`130_large_argument.c` (wrapped external suite; it passed on the build of
+08:16 UTC). The F25 fix saves the unit's static frame area on the hardware
+stack around every call into foreign code (here printf, compiled by
+816-tcc). The save is the entire unit's `lcc.cstack` area (every function's
+frame, 10,778 bytes in 130_large_argument), not the caller's live slots, and
+it is unrolled: `lda.w`/`pha` per word before the call and `pla`/`sta.w`
+per word after it, about 8 bytes of code per word per call site. One
+function with a 6,000-byte local array makes `main`, which has almost no
+locals of its own, 48 KB of code for two printf calls. The same save puts
+that many bytes on the SNES hardware stack in bank 0, which a stack in low
+RAM cannot hold for frames of this size. Suggestions: save only the frames
+of functions that can be re-entered (the ones reachable from the callee's
+callbacks) and only their live slots; save with a loop or `mvn` block move
+to a separate save stack rather than the hardware stack. Loom's Cliffside
+build works (its frames are small), so this is a scaling problem; it
+turns into a link failure or a stack overflow as units grow.
+
+Fixed in loomcc e247f27: only the caller's own frame words live across
+the call are saved (every active member of a recursive component saves
+its own frame), with pushes for 16 bytes or less and an `mvn` block move
+beyond; a save over 1024 bytes is an error diagnostic, not silent stack
+use; libc functions are known not to call back. The tests pass (and
+`130_large_argument.c` again).
+
+### F34. A struct-returning call loses a scalar argument staged in $00 (rom; b63113c)
+
+Found by `tests/t7-random/run.py --shapes --small --no-foreign` (seed 7:
+no big frames, no foreign calls, so neither F29 nor F30) and still failing
+after their fix. C-Reduce took it to 579 bytes with an out-of-bounds store it
+introduced; the hand-cleaned form is
+`tests/t4-exec/call/struct-return-with-scalar-argument.c`. The IR interpreter
+passes; the ROM fails.
+
+For `f = h(f, a)`, where `E h(E i, u16 k)` returns a struct, the caller
+emits
+
+```
+  lda.w a          ; k staged in $00
+  sta.b $00
+  ...              ; struct argument copied into h's frame
+  lda.w #lcc_cstack_u0
+  sta.b $1c        ; hidden result pointer
+  ...
+  lda.b $1c
+  sta.b $00        ; result pointer into $00/$02: overwrites k
+  lda.b $1e
+  sta.b $02
+  lda.b $00
+  sta.b $04        ; "k" into its argument slot: now the frame address
+  jsl lcb_h
+```
+
+The argument moves into $00-$04 are a parallel copy done in sequence
+without checking that a source is also a destination. With `g.d != 0` in
+place of `g.d || 0` in h, h's frame layout changes, k is no longer staged
+in $00, and the program passes, so the failure depends on where the
+register allocator puts the staged value. The fix belongs where the call's
+argument moves are ordered: sequence the moves (or go through a temporary)
+so that none overwrites a source still to be read.
+
+Fixed in loomcc aeeb0c2: the hidden result pointer is formed in scratch
+and stored after the parallel argument move; index-register arguments
+whose direct-page source the move overwrites are parked on the stack; an
+816-tcc result homed on its own high word ($02 or $04) is stored high word
+first. The test passes.
