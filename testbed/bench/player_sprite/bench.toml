@@ -1,0 +1,11 @@
+name = "player_sprite"
+kind = "pair"
+description = "The player's sprite (and its metasprite parts) moving in Mode 1's world tables through the slot index. 12 placements over a 12-sprite scene."
+unit_labels = ["loom_pvs_player_sprite"]
+helper_labels = []
+
+[provenance]
+loom_commit = "5184be9"
+c_source = "runtime/src/mode1.c:1416-1464 at 5184be9^ (loom_mode1_sprite_index + loom_mode1_set_sprite_position, which movement.c called after the assembly player tick)"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_place_sprite and the sprite lookup at the end of loom_pvs_player_tail at 5184be9 (unchanged at HEAD, HEAD's copy used), plus loom_pvs_mode1_bind for setup"
+notes = "loom_pvs_player_sprite is a benchmark entry (not Loom code): it loads x/y into r1/r1h and the slot into Y from the arguments, where the tail had them from the tick and the movement scene, then runs the tail's lookup and jsr verbatim. The C returns no status (the asm has none) but keeps its initialized/scene and slot-range checks; the asm checks neither. Slots used are all <= 127."
