@@ -434,6 +434,46 @@ deliberately calls abort()
 - `t3-sema/promote/long-vs-unsigned-int.c`
 - `t3-sema/promote/sizes.c`
 
+### `tcc-mcpp` (tcc, 35 tests)
+
+816-tcc fails this mcpp test: missing error at e_12_8.c:6 (directive line 6)
+
+- `t1-pp/mcpp/e_12_8.c`
+- `t1-pp/mcpp/e_14.c`
+- `t1-pp/mcpp/e_14_2.c`
+- `t1-pp/mcpp/e_14_3.c`
+- `t1-pp/mcpp/e_14_7.c`
+- `t1-pp/mcpp/e_14_9.c`
+- `t1-pp/mcpp/e_15_3.c`
+- `t1-pp/mcpp/e_16.c`
+- `t1-pp/mcpp/e_17.c`
+- `t1-pp/mcpp/e_17_5.c`
+- `t1-pp/mcpp/e_18_4.c`
+- `t1-pp/mcpp/e_19_3.c`
+- `t1-pp/mcpp/e_23_3.c`
+- `t1-pp/mcpp/e_24_6.c`
+- `t1-pp/mcpp/e_29_3.c`
+- `t1-pp/mcpp/e_31.c`
+- `t1-pp/mcpp/e_31_3.c`
+- `t1-pp/mcpp/e_32_5.c`
+- `t1-pp/mcpp/e_33_2.c`
+- `t1-pp/mcpp/e_7_4.c`
+- `t1-pp/mcpp/e_intmax.c`
+- `t1-pp/mcpp/e_pragma.c`
+- `t1-pp/mcpp/e_ucn.c`
+- `t1-pp/mcpp/n_13_5.c`
+- `t1-pp/mcpp/n_13_7.c`
+- `t1-pp/mcpp/n_2.c`
+- `t1-pp/mcpp/n_21.c`
+- `t1-pp/mcpp/n_26.c`
+- `t1-pp/mcpp/n_27.c`
+- `t1-pp/mcpp/n_3.c`
+- `t1-pp/mcpp/n_4.c`
+- `t1-pp/mcpp/n_7.c`
+- `t1-pp/mcpp/n_9.c`
+- `t1-pp/mcpp/n_pragma.c`
+- `t1-pp/mcpp/n_tlimit.c`
+
 ### `tcc-memory-full` (tcc, 3 tests)
 
 816-tcc fails with 'memory full' when an invocation's arguments continue past the end of a macro

@@ -185,6 +185,36 @@ result and that its own `a` is unchanged. The loomcc build fails the check;
 the 816-tcc-only build passes. (Calls in the other direction, loomcc to
 816-tcc with struct arguments and returns, pass.)
 
+### F17. mcpp suite: panic, and constraint violations not diagnosed (loomcc build of 2026-09-25 23:18)
+
+- `t1-pp/mcpp/e_31_3.c`: **loomcc panics** (exit 101: `index out of bounds:
+  the len is 0 but the index is 0` at crates/pp/src/lib.rs:1066) on an
+  unterminated macro call inside `#include` operands:
+  `#include xstr( glue( header,` followed by `.h))` on the next line.
+  Expected: an error at line 10 (a directive's macro call must complete in
+  its line).
+- Not diagnosed (each is diagnosed by clang -pedantic; mcpp marks all as errors):
+
+| test:line | source | rule |
+|---|---|---|
+| e_15_3:12 | `#ifdef MACRO Junk` | extra tokens (F5) |
+| e_16:8 | `#else MACRO_0` | extra tokens (F5) |
+| e_29_3:10 | `#undef MACRO_0 Junk` | extra tokens (F5) |
+| e_18_4:11 | `#define` | reported at `<built-in>:0` (F7) |
+| e_19_3:14 | `#define OBJ_LIKE (0)` after a different definition | 6.10.3p2 |
+| e_24_6:7 | `#define FUNC( a) # b` | 6.10.3.2p1 (F5) |
+| e_32_5:8 | `#if '\x123' == 0x123` | 6.4.4.4p9: escape out of range for `char` |
+| e_33_2:8 | `#if L'\xabcdef012' == 0xbcdef012` | 6.4.4.4p9 (wchar_t range) |
+| e_35_2:7 | `#if 'abcdefghi'` | multi-character constant too long |
+| e_7_4:8 | `#line 123 L"wide"` | 6.10.4: the file name must be a character string literal (F1) |
+| e_intmax:10 | `#if INTMAX_MAX - INTMAX_MIN` | 6.6p4 overflow (F5) |
+| e_pragma:7 | `_Pragma( This is not a string literal)` | 6.10.9 (F2) |
+| e_ucn:6 | `#define macro\U0000001F` | 6.4.3p2: UCN for a control character |
+
+  (e_19_3 line 14 is the invalid redefinition `#define OBJ_LIKE (0)` of
+  `OBJ_LIKE (1-1)`; loomcc reports the other lines of that test.)
+- `n_7.c`, `n_line.c` (#line: F1), `n_pragma.c` (_Pragma: F2).
+
 ### F15. Not yet supported (tracked, not bugs)
 
 `rom` mode rejects 32-bit multiply, divide and shift, and recursion
