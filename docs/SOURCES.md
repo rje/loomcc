@@ -75,7 +75,7 @@ with
 They report under the tier `ext-gcc-wrapped`. Every wrapped suite:
 
 ```sh
-./run-tests -j 3 external/fetched/gcc-wrapped external/fetched/gcc-compile-wrapped \
+./run-tests -j 2 external/fetched/gcc-wrapped external/fetched/gcc-compile-wrapped \
   external/fetched/gcc-cpp-wrapped external/fetched/wrapped-c-testsuite \
   external/fetched/wrapped-tcc-tests2 external/fetched/wrapped-llvm-unittests \
   external/fetched/wrapped-llvm-regression
