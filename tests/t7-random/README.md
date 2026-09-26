@@ -29,6 +29,27 @@ programs are full of constant subexpressions; it also rejects some 32-bit
 `corpus/` holds 40 generated `--narrow` programs as permanent regression
 tests (their 816-tcc failures are declared `tcc-t7`).
 
+## Shapes (large structs, deep call chains)
+
+`--shapes` adds what F29 and F30 are about: structs of up to ~500 bytes
+(scalar fields and an array member) as globals, passed and returned by
+value and read through pointers; a chain of 6-24 distinct functions (no
+recursion), each copying a struct and filling a local array of up to 1 KiB,
+passing the struct down by value; a function of 8-16 parameters; and a
+call into foreign code (`printf("%s", "")`, 816-tcc code on the ROM) in each.
+816-tcc cannot build frames over 255 bytes, so host16 is the only reference.
+
+```sh
+tests/t7-random/run.py --shapes --seeds 1-60 -j 2                        # everything
+tests/t7-random/run.py --shapes --no-foreign --small --seeds 1-60 -j 2   # clear of F29 and F30
+```
+
+`--no-foreign` compiles the programs with `-DT7_NO_FOREIGN` (no calls into
+816-tcc code, so F30's frame save never happens); `--small` keeps every
+struct under about 110 bytes (clear of F29's 8-bit stack offsets). The
+campaign reports a link failure for code too big for a bank as known
+(F28/F30) rather than as a suspect.
+
 ## Csmith
 
 `run.py --csmith` generates with Csmith 2.3.0 (`brew install csmith`):

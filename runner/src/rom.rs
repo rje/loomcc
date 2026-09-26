@@ -84,6 +84,10 @@ pub fn write_hdr(tools: &Tools, dir: &Path) -> Result<(), String> {
     ] {
         text = text.replace(&format!("@{}@", k), v);
     }
+    // Loom's own hdr.asm names the bank its code runs in; its assembly
+    // (oam.asm, body.asm, board.asm) opens ROM sections with .BASE LOOM_ROM_BASE.
+    // FastROM, as Loom's generated header has it for this mapping.
+    text.push_str("\n.IFNDEF LOOM_ROM_BASE\n.DEFINE LOOM_ROM_BASE $80\n.ENDIF\n");
     std::fs::write(dir.join("hdr.asm"), text).map_err(|e| e.to_string())
 }
 

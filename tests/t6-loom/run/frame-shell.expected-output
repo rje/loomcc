@@ -1,0 +1,14 @@
+valid 1 0 0 0 0 0 0 0 0 0 0 0 0
+11100
+wait before init: 3
+f0 st0 id0 commit100 pres2 missed0 pads2 ok
+f1 st0 id1 commit101 pres0 missed0 pads2 ok
+f2 st0 id2 commit101 pres1 missed1 pads2 ok
+f3 st0 id3 commit103 pres0 missed1 pads2 ok
+busy 7
+f4 st0 id4 commit104 pres0 missed1 pads2 ok
+f5 st0 id5 commit104 pres1 missed2 pads2 ok
+f6 st0 id6 commit106 pres0 missed2 pads2 ok
+f7 st0 id7 commit107 pres0 missed2 pads2 ok
+f8 st0 id8 commit107 pres1 missed3 pads2 ok
+f9 st0 id9 commit109 pres0 missed3 pads2 ok

@@ -12,6 +12,7 @@ the functions under test). The driver names the file in loomcc-asm-sources.
 Rerun it when the driver or the copied Loom sources change.
 """
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -25,7 +26,11 @@ def unknown_labels(test, mode):
     args = [str(ROOT / "run-tests"), "-vv", "-j", "1", "--work", str(work)]
     args += ["--refs", "tcc-rom", "--refs-only"] if mode == "tcc-rom" else ["--modes", mode]
     r = subprocess.run(args + [str(test)], capture_output=True, text=True)
-    return set(re.findall(r'Reference to an unknown label "([^"]+)"', r.stdout + r.stderr))
+    shutil.rmtree(work, ignore_errors=True)
+    out = r.stdout + r.stderr
+    # wlalink: 'Reference to an unknown label "x"', or for a label used in a
+    # computed operand, 'PARSE_STACK: Unresolved reference to "x"'.
+    return set(re.findall(r'(?:Reference to an unknown label|Unresolved reference to) "([^"]+)"', out))
 
 
 def main(argv):
@@ -37,7 +42,7 @@ def main(argv):
     names = set()
     if stubs.exists():
         names |= set(re.findall(r"^(\w+) dsb", stubs.read_text(), re.M))
-    for _ in range(4):
+    for _ in range(16):
         text = (".include \"hdr.asm\"\n; Link stubs for " + test.name + " (scripts/t6-stubs.py): symbols the\n"
                 "; included runtime unit references but the driver never reaches.\n"
                 ".BASE $00\n.RAMSECTION \"t6_stubs_" + re.sub(r"\W", "_", test.stem) + "\" BANK $7E SLOT 2\n"
