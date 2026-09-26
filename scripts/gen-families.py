@@ -21,6 +21,9 @@ Families (weighted toward the patterns Loom's C uses):
   t4-exec/gen-truncate/*.c           results stored into narrower/other types
   t4-exec/gen-flags, gen-lut, gen-subpixel, gen-dispatch   flag bytes, ROM lookup
                                      tables, fixed-point motion, handler tables
+  t4-exec/gen-loops, gen-aabb, gen-sort, gen-ring, gen-tilemap, gen-minmax,
+          gen-outparam               counted loops, box overlap, sprite ordering,
+                                     queues, tile lookups, clamps, out-parameters
 
 Do not edit generated files; change this script and rerun it.
 """
@@ -849,9 +852,234 @@ def dispatch_family():
     return n
 
 
+
+def loops_family():
+    """Counted loops over u8/u16/i16 counters: up and down, steps, wrap-around
+    stops, early exits (Loom's per-slot and per-tile loops)."""
+    r = random.Random(71)
+    n = 0
+    for k in range(20):
+        t = r.choice(["u8", "u16", "i16", "i8"])
+        start = wrap(r.randrange(-200, 300), t)
+        step = r.choice([1, 2, 3, 5, -1, -2, -4])
+        count = r.randrange(1, 60)
+        stop_at = r.choice([None, r.randrange(count)])
+        # simulate: for (i = start, n = 0; n < count; i += step, n++) { if (n == stop) break; acc += i; }
+        i, acc, iters = start, 0, 0
+        for nn in range(count):
+            if stop_at is not None and nn == stop_at:
+                break
+            acc = wrap(acc + i, "u16")
+            iters += 1
+            i = wrap(i + step, t)
+        final_i = i
+        stop = f"    if (n == {stop_at}) break;\n" if stop_at is not None else ""
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// A counted loop over a {t} counter from {start} in steps of {step}, "
+                        f"{count} iterations{'' if stop_at is None else f', leaving at {stop_at}'}.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"static volatile u8 limit = {count};\n"
+                        "int main(void) {\n"
+                        f"  {t} i;\n  u8 n;\n  u16 acc = 0, iters = 0;\n"
+                        f"  for (i = ({t})({start}), n = 0; n < limit; i = ({t})(i + ({step})), n++) {{\n{stop}"
+                        "    acc = (u16)(acc + (u16)i);\n    iters++;\n  }\n"
+                        f"  CHECK(acc == {acc}u);\n  CHECK(iters == {iters});\n"
+                        + (f"  CHECK(i == ({t})({final_i}));\n" if stop_at is None else "")
+                        + "  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-loops/loop-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def aabb_family():
+    """Axis-aligned box overlap tests with s16 coordinates and u8 sizes, the
+    shape of Loom's collision checks."""
+    r = random.Random(73)
+    n = 0
+    for k in range(15):
+        boxes = [(r.randrange(-300, 300), r.randrange(-300, 300), r.randrange(1, 64), r.randrange(1, 64)) for _ in range(8)]
+        pairs = []
+        for a in range(8):
+            for b in range(a + 1, 8):
+                ax, ay, aw, ah = boxes[a]
+                bx, by, bw, bh = boxes[b]
+                hit = ax < bx + bw and bx < ax + aw and ay < by + bh and by < ay + ah
+                pairs.append((a, b, int(hit)))
+        hits = sum(p[2] for p in pairs)
+        rows = ",\n".join(f"  {{ {x}, {y}, {w}, {h} }}" for x, y, w, h in boxes)
+        src = HEADER + ("// loomcc-do: run\n// loomcc-int: agnostic\n// Box overlap with s16 positions and u8 sizes over every pair of 8 boxes.\n"
+                        '#include "loomcc-test.h"\n'
+                        "typedef struct { i16 x, y; u8 w, h; } Box;\n"
+                        f"static const Box boxes[8] = {{\n{rows}\n}};\n"
+                        "static u8 overlap(const Box *a, const Box *b) {\n"
+                        "  return a->x < b->x + b->w && b->x < a->x + a->w && a->y < b->y + b->h && b->y < a->y + a->h;\n}\n"
+                        "int main(void) {\n  u8 a, b, hits = 0;\n"
+                        "  for (a = 0; a < 8; a++)\n    for (b = (u8)(a + 1); b < 8; b++)\n      hits = (u8)(hits + overlap(&boxes[a], &boxes[b]));\n"
+                        f"  CHECK(hits == {hits});\n"
+                        + "".join(f"  CHECK(overlap(&boxes[{a}], &boxes[{b}]) == {h});\n" for a, b, h in pairs if r.random() < 0.3)
+                        + "  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-aabb/aabb-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def sort_family():
+    """Insertion sort of an index array by a key table (sprite ordering by y),
+    for several sizes and key types; stable."""
+    r = random.Random(79)
+    n = 0
+    for k in range(18):
+        t = r.choice(["u8", "i8", "u16", "i16"])
+        size = r.choice([2, 3, 5, 8, 13, 24, 32])
+        keys = [wrap(r.randrange(-40000, 70000), t) if r.random() < 0.8 else 0 for _ in range(size)]
+        order = sorted(range(size), key=lambda i: (keys[i], i))
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// Stable insertion sort of {size} u8 indices by a {t} key table.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"static const {t} key[{size}] = {{ {', '.join(map(str, keys))} }};\n"
+                        f"static const u8 want[{size}] = {{ {', '.join(map(str, order))} }};\n"
+                        f"static u8 idx[{size}];\n"
+                        "int main(void) {\n  u8 i, j, t;\n"
+                        f"  for (i = 0; i < {size}; i++) idx[i] = i;\n"
+                        f"  for (i = 1; i < {size}; i++) {{\n    t = idx[i];\n    j = i;\n"
+                        "    while (j > 0 && key[idx[j - 1]] > key[t]) { idx[j] = idx[j - 1]; j--; }\n    idx[j] = t;\n  }\n"
+                        f"  for (i = 0; i < {size}; i++) CHECK(idx[i] == want[i]);\n  return 0;\n}}\n")
+        write(ROOT / f"t4-exec/gen-sort/sort-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def ring_family():
+    """A u8-indexed ring buffer with power-of-two and other capacities: push,
+    pop, wrap-around, full and empty (Loom's input and audio queues)."""
+    r = random.Random(83)
+    n = 0
+    for k in range(12):
+        cap = r.choice([4, 8, 16, 5, 7, 12])
+        ops, q, out = [], [], []
+        for _ in range(60):
+            if r.random() < 0.55:
+                v = r.randrange(256)
+                ok = len(q) < cap
+                if ok:
+                    q.append(v)
+                ops.append(("push", v, int(ok)))
+            else:
+                if q:
+                    ops.append(("pop", q.pop(0), 1))
+                else:
+                    ops.append(("pop", 0, 0))
+        mod = f"& {cap - 1}" if cap & (cap - 1) == 0 else f"% {cap}"
+        body = []
+        for op, v, ok in ops:
+            if op == "push":
+                body.append(f"  CHECK(push({v}) == {ok});")
+            else:
+                body.append(f"  CHECK(pop(&v) == {ok});" + (f" CHECK(v == {v});" if ok else ""))
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// A ring buffer of {cap} u8 entries indexed by u8 head/tail ({mod.split()[0]} wrap).\n"
+                        '#include "loomcc-test.h"\n'
+                        f"#define CAP {cap}\nstatic u8 buf[CAP];\nstatic u8 head, tail, count;\n"
+                        f"static u8 push(u8 v) {{ if (count == CAP) return 0; buf[tail] = v; tail = (u8)((tail + 1) {mod}); count++; return 1; }}\n"
+                        f"static u8 pop(u8 *v) {{ if (!count) return 0; *v = buf[head]; head = (u8)((head + 1) {mod}); count--; return 1; }}\n"
+                        "int main(void) {\n  u8 v = 0;\n" + "\n".join(body) + "\n  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-ring/ring-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def tilemap_family():
+    """A const tilemap (u8 tiles, width a power of two or not) read at pixel
+    coordinates: x >> 3, y >> 3, row * width + column, solid-tile tests."""
+    r = random.Random(89)
+    n = 0
+    for k in range(15):
+        w, h = r.choice([(16, 14), (32, 8), (20, 10), (64, 4), (12, 12)])
+        tiles = [r.choice([0, 0, 0, 1, 2, 3, 7, 255]) for _ in range(w * h)]
+        probes = []
+        for _ in range(24):
+            px, py = r.randrange(-8, w * 8 + 8), r.randrange(-8, h * 8 + 8)
+            if 0 <= px < w * 8 and 0 <= py < h * 8:
+                t = tiles[(py >> 3) * w + (px >> 3)]
+            else:
+                t = 1   # outside: solid
+            probes.append((px, py, t, int(t != 0 and t != 255)))
+        rows = ",\n".join("  " + ", ".join(str(tiles[y * w + x]) for x in range(w)) for y in range(h))
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// A {w}x{h} tilemap in ROM read at s16 pixel coordinates; outside the map is solid.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"#define W {w}\n#define H {h}\nstatic const u8 map[W * H] = {{\n{rows}\n}};\n"
+                        "static u8 tile_at(i16 px, i16 py) {\n  if (px < 0 || py < 0 || px >= W * 8 || py >= H * 8) return 1;\n"
+                        "  return map[(u16)(py >> 3) * W + (u16)(px >> 3)];\n}\n"
+                        "static u8 solid(i16 px, i16 py) { u8 t = tile_at(px, py); return t != 0 && t != 255; }\n"
+                        "int main(void) {\n"
+                        + "".join(f"  CHECK(tile_at({px}, {py}) == {t}); CHECK(solid({px}, {py}) == {s});\n" for px, py, t, s in probes)
+                        + "  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-tilemap/tilemap-{k:02d}.c", src)
+        n += 1
+    return n
+
+
+def minmax_family():
+    """min/max/clamp/abs helpers on each small type, as macros and functions."""
+    n = 0
+    for t in ["u8", "i8", "u16", "i16"]:
+        vals = VALUES[t]
+        lines = []
+        for a in vals:
+            for b in vals[::3]:
+                lo, hi = min(a, b), max(a, b)
+                lines.append(f"  x = {lit(a, promote(t)) if T[t][0] == 16 else a}; y = {lit(b, promote(t)) if T[t][0] == 16 else b}; "
+                             f"CHECK(MIN(x, y) == ({t})({lo})); CHECK(max_fn(x, y) == ({t})({hi}));")
+        clamp = []
+        for a in vals:
+            lo, hi = (10, 200) if not T[t][1] else (-100, 100)
+            c = min(max(a, lo), hi)
+            clamp.append(f"  x = {lit(a, promote(t)) if T[t][0] == 16 else a}; CHECK(clamp_fn(x, {lo}, {hi}) == ({t})({c}));")
+        if T[t][1]:
+            for a in vals:
+                if a == -(1 << (T[t][0] - 1)):
+                    continue
+                clamp.append(f"  x = {lit(a, promote(t)) if T[t][0] == 16 else a}; CHECK(abs_fn(x) == ({t})({abs(a)}));")
+        src = HEADER + (f"// loomcc-do: run\n// loomcc-int: agnostic\n// min, max, clamp{' and abs' if T[t][1] else ''} on {t}.\n"
+                        '#include "loomcc-test.h"\n#define MIN(a, b) ((a) < (b) ? (a) : (b))\n'
+                        f"static volatile {t} x, y;\n"
+                        f"static {t} max_fn({t} a, {t} b) {{ return a > b ? a : b; }}\n"
+                        f"static {t} clamp_fn({t} v, {t} lo, {t} hi) {{ return v < lo ? lo : v > hi ? hi : v; }}\n"
+                        + (f"static {t} abs_fn({t} v) {{ return ({t})(v < 0 ? -v : v); }}\n" if T[t][1] else "")
+                        + "int main(void) {\n" + "\n".join(lines + clamp) + "\n  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-minmax/minmax-{t}.c", src)
+        n += 1
+    return n
+
+
+def outparam_family():
+    """Functions that return several results through pointers into structs,
+    arrays and locals (Loom's query functions)."""
+    r = random.Random(97)
+    n = 0
+    for k in range(10):
+        vals = [r.randrange(-30000, 30000) for _ in range(r.randint(3, 12))]
+        lo, hi, s = min(vals), max(vals), wrap(sum(vals), "i16")
+        src = HEADER + ("// loomcc-do: run\n// loomcc-int: agnostic\n// Results through pointers to a struct member, an array element and a local.\n"
+                        '#include "loomcc-test.h"\n'
+                        f"static const i16 data[{len(vals)}] = {{ {', '.join(map(str, vals))} }};\n"
+                        "typedef struct { i16 lo; u8 pad; i16 hi; } Range;\n"
+                        "static void scan(const i16 *p, u8 n, i16 *lo, i16 *hi, i16 *sum) {\n"
+                        "  u8 i;\n  *lo = *hi = p[0];\n  *sum = 0;\n"
+                        "  for (i = 0; i < n; i++) { if (p[i] < *lo) *lo = p[i]; if (p[i] > *hi) *hi = p[i]; *sum = (i16)(*sum + p[i]); }\n}\n"
+                        "int main(void) {\n  Range r;\n  i16 sums[3];\n  i16 hi2;\n"
+                        f"  scan(data, {len(vals)}, &r.lo, &r.hi, &sums[1]);\n"
+                        f"  CHECK(r.lo == {lit(lo, 'i16')} && r.hi == {lit(hi, 'i16')} && sums[1] == {lit(s, 'i16')});\n"
+                        f"  scan(data + 1, {len(vals) - 1}, &sums[0], &hi2, &sums[2]);\n"
+                        f"  CHECK(sums[0] == {lit(min(vals[1:]), 'i16')} && hi2 == {lit(max(vals[1:]), 'i16')} && sums[2] == {lit(wrap(sum(vals[1:]), 'i16'), 'i16')});\n"
+                        "  return 0;\n}\n")
+        write(ROOT / f"t4-exec/gen-outparam/outparam-{k:02d}.c", src)
+        n += 1
+    return n
+
+
 if __name__ == "__main__":
     total = (arith_family() + arith_family(["u32", "i32"], SMALL + ["u32", "i32"], "32") + soa_family() + switch_family() + romwalk_family()
              + declarator_family() + declarator_family(29, 40, True, "gen-declarator-qualified") + precedence_family() + conversion_family()
              + layout_family() + designator_family() + truncation_family()
-             + flags_family() + lut_family() + subpixel_family() + dispatch_family())
+             + flags_family() + lut_family() + subpixel_family() + dispatch_family()
+             + loops_family() + aabb_family() + sort_family() + ring_family() + tilemap_family()
+             + minmax_family() + outparam_family())
     print(f"wrote {total} generated tests")
