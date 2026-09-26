@@ -87,7 +87,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/actor_body_step/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 243808
     },
@@ -166,7 +166,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/actor_body_step/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 161492
     },
@@ -228,7 +228,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/actor_body_step/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 190292
     },
@@ -311,7 +311,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/animation_pass/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 214404
     },
@@ -367,7 +367,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/animation_pass/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 120660
     },
@@ -422,7 +422,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/animation_pass/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 107676
     },
@@ -507,7 +507,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/board_drop/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 246772
     },
@@ -570,7 +570,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/board_drop/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 51536
     },
@@ -638,7 +638,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/board_drop/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 173920
     },
@@ -731,7 +731,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/board_fill/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 222912
     },
@@ -792,7 +792,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/board_fill/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 64244
     },
@@ -861,7 +861,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/board_fill/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 131936
     },
@@ -922,7 +922,7 @@
         4,
         5
       ],
-      "rom": "/private/tmp/lccb/all3/board_fit/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 232208
     },
@@ -970,7 +970,7 @@
         4,
         5
       ],
-      "rom": "/private/tmp/lccb/all3/board_fit/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 66228
     },
@@ -1019,7 +1019,7 @@
         4,
         5
       ],
-      "rom": "/private/tmp/lccb/all3/board_fit/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 151776
     },
@@ -1102,7 +1102,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/board_paint/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 188976
     },
@@ -1162,7 +1162,7 @@
         7,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/board_paint/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 39052
     },
@@ -1227,7 +1227,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/board_paint/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 125544
     },
@@ -1295,7 +1295,7 @@
         6,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/body_probe_x/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 154716
     },
@@ -1352,7 +1352,7 @@
         6,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/body_probe_x/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 51572
     },
@@ -1400,7 +1400,7 @@
         6,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/body_probe_x/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 90492
     },
@@ -1464,7 +1464,7 @@
         6,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/body_scan_ceiling/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 127932
     },
@@ -1516,7 +1516,7 @@
         6,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/body_scan_ceiling/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 48848
     },
@@ -1561,7 +1561,7 @@
         6,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/body_scan_ceiling/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 69520
     },
@@ -1633,7 +1633,7 @@
         6,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/body_scan_floor/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 213520
     },
@@ -1692,7 +1692,7 @@
         6,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/body_scan_floor/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 75280
     },
@@ -1742,7 +1742,7 @@
         6,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/body_scan_floor/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 112772
     },
@@ -1857,7 +1857,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/camera_follow/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 239684
     },
@@ -1928,7 +1928,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/camera_follow/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 66584
     },
@@ -2020,7 +2020,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/camera_follow/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 136524
     },
@@ -2088,7 +2088,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/contact_scan/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 195316
     },
@@ -2137,7 +2137,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/contact_scan/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 89748
     },
@@ -2185,7 +2185,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/contact_scan/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 107364
     },
@@ -2284,7 +2284,7 @@
         4,
         5
       ],
-      "rom": "/private/tmp/lccb/all3/display_block/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 123584
     },
@@ -2346,7 +2346,7 @@
         4,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/display_block/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 27608
     },
@@ -2408,7 +2408,7 @@
         4,
         5
       ],
-      "rom": "/private/tmp/lccb/all3/display_block/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 54640
     },
@@ -2506,7 +2506,7 @@
         4,
         5
       ],
-      "rom": "/private/tmp/lccb/all3/layer_scroll/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 214524
     },
@@ -2570,7 +2570,7 @@
         4,
         5
       ],
-      "rom": "/private/tmp/lccb/all3/layer_scroll/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 77696
     },
@@ -2641,7 +2641,7 @@
         4,
         5
       ],
-      "rom": "/private/tmp/lccb/all3/layer_scroll/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 144028
     },
@@ -2725,7 +2725,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/micro_calls/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 80444
     },
@@ -2801,7 +2801,7 @@
         2,
         2
       ],
-      "rom": "/private/tmp/lccb/all3/micro_calls/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 45188
     },
@@ -2880,7 +2880,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/micro_index/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 220124
     },
@@ -2938,7 +2938,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/micro_index/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 101564
     },
@@ -3008,7 +3008,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/micro_loops/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 234132
     },
@@ -3066,7 +3066,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/micro_loops/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 90764
     },
@@ -3152,7 +3152,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/micro_math/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 155716
     },
@@ -3220,7 +3220,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/micro_math/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 79812
     },
@@ -3308,7 +3308,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/micro_muldiv/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 185940
     },
@@ -3392,7 +3392,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/micro_muldiv/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 140028
     },
@@ -3468,7 +3468,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/micro_struct/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 178672
     },
@@ -3525,7 +3525,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/micro_struct/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 55516
     },
@@ -3577,7 +3577,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/micro_switch/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 140404
     },
@@ -3620,7 +3620,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/micro_switch/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 64684
     },
@@ -3715,7 +3715,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/movement_box_blocked/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 279504
     },
@@ -3786,7 +3786,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/movement_box_blocked/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 95936
     },
@@ -3851,7 +3851,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/movement_box_blocked/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 163112
     },
@@ -3961,7 +3961,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/oam_batch/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 240604
     },
@@ -4039,7 +4039,7 @@
         7,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/oam_batch/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 35196
     },
@@ -4109,7 +4109,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/oam_batch/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 126192
     },
@@ -4180,7 +4180,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/oam_finish/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 128864
     },
@@ -4233,7 +4233,7 @@
         7,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/oam_finish/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 24852
     },
@@ -4281,7 +4281,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/oam_finish/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 64608
     },
@@ -4374,7 +4374,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/oam_stage/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 186392
     },
@@ -4437,7 +4437,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/oam_stage/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 50832
     },
@@ -4497,7 +4497,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/oam_stage/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 81760
     },
@@ -4573,7 +4573,7 @@
         3,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/player2_position/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 20512
     },
@@ -4624,7 +4624,7 @@
         3,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/player2_position/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 11952
     },
@@ -4675,7 +4675,7 @@
         3,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/player2_position/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 13116
     },
@@ -4776,7 +4776,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/player_sprite/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 67216
     },
@@ -4838,7 +4838,7 @@
         3,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/player_sprite/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 25288
     },
@@ -4903,7 +4903,7 @@
         3,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/player_sprite/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 34396
     },
@@ -4993,7 +4993,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/player_tick/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 200464
     },
@@ -5093,7 +5093,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/player_tick/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 81004
     },
@@ -5163,7 +5163,7 @@
         5,
         6
       ],
-      "rom": "/private/tmp/lccb/all3/player_tick/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 117400
     },
@@ -5223,7 +5223,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/scene_trigger_scan/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 217380
     },
@@ -5268,7 +5268,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/scene_trigger_scan/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 64964
     },
@@ -5311,7 +5311,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/scene_trigger_scan/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 111852
     },
@@ -5395,7 +5395,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/solid_actor_query/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 230524
     },
@@ -5452,7 +5452,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/solid_actor_query/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 111652
     },
@@ -5514,7 +5514,7 @@
         2,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/solid_actor_query/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 110888
     },
@@ -5618,7 +5618,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/surface_flush/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 217636
     },
@@ -5686,7 +5686,7 @@
         3,
         3
       ],
-      "rom": "/private/tmp/lccb/all3/surface_flush/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 49360
     },
@@ -5756,7 +5756,7 @@
         3,
         4
       ],
-      "rom": "/private/tmp/lccb/all3/surface_flush/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 121716
     },
@@ -5803,7 +5803,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/witness_hash/tcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 231036
     },
@@ -5838,7 +5838,7 @@
         7,
         7
       ],
-      "rom": "/private/tmp/lccb/all3/witness_hash/asm/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 47956
     },
@@ -5879,7 +5879,7 @@
         7,
         8
       ],
-      "rom": "/private/tmp/lccb/all3/witness_hash/loomcc/build/bench.sfc",
+      "rom": "<scratch>",
       "harness_overhead_master_clocks": 480,
       "net_master_clocks": 84460
     },

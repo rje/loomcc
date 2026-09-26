@@ -1,41 +1,41 @@
 600 frames, 7019 instructions a frame
 instr/frame  share  label
-     1155.1  16.5%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank
+     1155.1  16.5%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank
       249.2   3.6%  loom_mode1_build_frame
       235.4   3.4%  loom_pvs_oam_batch_visible
       216.4   3.1%  loom_port_frame_wait
       164.0   2.3%  loom_pvs_pass_loop
       143.8   2.0%  loom_pvs_anim_loop
-      130.1   1.9%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_advance_physical_frame
+      130.1   1.9%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_advance_physical_frame
       127.9   1.8%  loom_pvs_touch_loop
-      120.1   1.7%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_build_frame
+      120.1   1.7%  tccs_<scratch>/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_build_frame
       115.1   1.6%  loom_pvs_oam_batch_next
       110.2   1.6%  loom_pvs_oam_batch_accept
-      105.5   1.5%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_445a2603817be157.asm_loom_scene_check_triggers
+      105.5   1.5%  tccs_<scratch>/m8/b-tcc/stage/loom_445a2603817be157.asm_loom_scene_check_triggers
       100.4   1.4%  loom_generated_runtime_tick
        99.3   1.4%  loom_pvs_tight_cell
-       93.9   1.3%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_move_and_collide
+       93.9   1.3%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_move_and_collide
        82.5   1.2%  loom_pvs_display_apply
        77.8   1.1%  loom_actor_update
        76.6   1.1%  loom_pvs_scene_intersect_loop
        75.2   1.1%  loom_combat_update
        73.2   1.0%  loom_pvs_solid_next_take
        70.6   1.0%  loom_pvs_oam_batch_x_ok
-       70.3   1.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_update
+       70.3   1.0%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_update
        68.8   1.0%  loom_frame_build_submit
-       67.8   1.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_build_render
+       67.8   1.0%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_build_render
        67.3   1.0%  loom_movement_update
        66.0   0.9%  loom_pvs_pass_window
-       63.7   0.9%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_apply
+       63.7   0.9%  tccs_<scratch>/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_apply
        62.8   0.9%  loom_pvs_oam_batch_body
        54.4   0.8%  loom_runtime_tick
        54.0   0.8%  FVBlank
-       50.0   0.7%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_445a2603817be157.asm_loom_scene_player_box
+       50.0   0.7%  tccs_<scratch>/m8/b-tcc/stage/loom_445a2603817be157.asm_loom_scene_player_box
        49.1   0.7%  loom_pvs_oam_batch_stage
-       47.1   0.7%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_column_strip
+       47.1   0.7%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_column_strip
        46.9   0.7%  loom_ui_blocks_gameplay
        45.6   0.7%  loom_mode1_set_sprite_pose
-       45.0   0.6%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_00814d3ca53d39a5.asm_loom_runtime_accept_boundary
+       45.0   0.6%  tccs_<scratch>/m8/b-tcc/stage/loom_00814d3ca53d39a5.asm_loom_runtime_accept_boundary
        43.7   0.6%  update_player
        43.5   0.6%  loom_pvs_pass_air
        42.9   0.6%  loom_scene_move
@@ -44,24 +44,24 @@ instr/frame  share  label
        40.7   0.6%  loom_animation_update
        39.5   0.6%  loom_ui_update
        38.7   0.6%  loom_pvs_oam_batch_fast_high
-       37.9   0.5%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_add_sprites
+       37.9   0.5%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_add_sprites
        37.5   0.5%  loom_frame_build_begin
        35.9   0.5%  loom_pvs_mode1_display
-       35.6   0.5%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_advance_animation
+       35.6   0.5%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_advance_animation
        34.9   0.5%  loom_port_frame_begin
        34.4   0.5%  loom_ui_build_frame
-       34.4   0.5%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_drive_raster
+       34.4   0.5%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_drive_raster
        33.4   0.5%  loom_pvs_oam_batch_loop
        33.0   0.5%  loom_actor_carry_riders
        32.9   0.5%  loom_actor_controller_position
        32.8   0.5%  loom_pvs_scene_intersect_next
-       32.5   0.5%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_read_actions
+       32.5   0.5%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_read_actions
        32.4   0.5%  loom_scene_dispatch_triggers
        31.9   0.5%  loom_pvs_player_tick
        31.6   0.5%  spcProcessStream
        31.0   0.4%  loom_movement_air
        29.9   0.4%  loom_pvs_pass_platformer
-       29.5   0.4%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_apply_raster
+       29.5   0.4%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_apply_raster
        29.0   0.4%  loom_pvs_mode1_scroll
        28.4   0.4%  loom_pvs_camera_update
        28.0   0.4%  loom_pvs_scroll_layer
@@ -74,15 +74,15 @@ instr/frame  share  label
        26.2   0.4%  loom_pvs_tight_core
        25.5   0.4%  loom_pvs_oam_finish_copy_loop
        23.9   0.3%  loom_pvs_oam_batch
-       23.9   0.3%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_advance_player
+       23.9   0.3%  tccs_<scratch>/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_advance_player
        23.1   0.3%  loom_pvs_cam_set
-       22.9   0.3%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_d07beb6357ca0cd1.asm_loom_combat_second_player
+       22.9   0.3%  tccs_<scratch>/m8/b-tcc/stage/loom_d07beb6357ca0cd1.asm_loom_combat_second_player
        22.6   0.3%  loom_pvs_place_sprite
-       22.5   0.3%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_ui_actions
+       22.5   0.3%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_ui_actions
        22.4   0.3%  loom_ui_build_load
        21.1   0.3%  loom_pvs_td_sprite
        20.4   0.3%  loom_audio_process
-       20.0   0.3%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_update_behaviors
+       20.0   0.3%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_update_behaviors
        19.9   0.3%  loom_pvs_td_patrol
        19.8   0.3%  loom_pvs_tight_advance
        18.9   0.3%  loom_pvs_pass_topdown_step
@@ -92,10 +92,10 @@ instr/frame  share  label
        17.7   0.3%  loom_pvs_tight_probe_column
        17.4   0.2%  (unlabelled)
        17.0   0.2%  loom_pvs_inputs_pad
-       16.4   0.2%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_00814d3ca53d39a5.asm_loom_runtime_saturating_add
+       16.4   0.2%  tccs_<scratch>/m8/b-tcc/stage/loom_00814d3ca53d39a5.asm_loom_runtime_saturating_add
        16.2   0.2%  loom_pvs_pass_outside
        15.9   0.2%  loom_pvs_cam_settings_done
-       15.4   0.2%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_dispatch_triggers
+       15.4   0.2%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_dispatch_triggers
        15.3   0.2%  loom_pvs_scroll_cache
        15.2   0.2%  loom_pvs_pass_step
        15.2   0.2%  loom_pvs_tight_write
@@ -108,20 +108,20 @@ instr/frame  share  label
        12.3   0.2%  loom_pvs_cam_clamp
        12.0   0.2%  loom_pvs_anim_next
        11.9   0.2%  loom_pvs_player_slope_feet
-       11.5   0.2%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_651987fdbf4b2e01.asm_loom_audio_increment
+       11.5   0.2%  tccs_<scratch>/m8/b-tcc/stage/loom_651987fdbf4b2e01.asm_loom_audio_increment
        11.5   0.2%  loom_camera_set_facing
        11.3   0.2%  loom_pvs_solid_floor_loop
        11.2   0.2%  loom_pvs_solid_next
        11.1   0.2%  loom_pvs_pass_fast
        11.0   0.2%  consoleVblank
-       10.9   0.2%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_sprite_index
+       10.9   0.2%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_sprite_index
        10.8   0.2%  loom_pvs_player_x_done
        10.6   0.2%  loom_pvs_tight_floor_row
        10.4   0.1%  loom_pvs_scene_intersect_mask
        10.2   0.1%  loom_pvs_tight_x
        10.1   0.1%  memcpy
        10.0   0.1%  loom_port_frame_commit
-       10.0   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_current_view
+       10.0   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_current_view
        10.0   0.1%  loom_pvs_tight_floor_column
         9.9   0.1%  loom_pvs_player_fall
         9.6   0.1%  loom_pvs_scroll_scaled
@@ -129,17 +129,17 @@ instr/frame  share  label
         9.2   0.1%  loom_pvs_oam_finish_hide_next
         9.1   0.1%  loom_pvs_td_move
         9.0   0.1%  loom_camera_update
-        9.0   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_observe_boundary
+        9.0   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_observe_boundary
         8.9   0.1%  loom_pvs_probe_actor_floor
         8.8   0.1%  loom_pvs_tight_x_done
         8.0   0.1%  loom_pvs_cam_region_next
         8.0   0.1%  loom_pvs_pass_done
         7.5   0.1%  loom_pvs_inputs_sample
-        7.5   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_c2e4dfc609f7165f.asm_loom_frame_build_default_display
+        7.5   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_c2e4dfc609f7165f.asm_loom_frame_build_default_display
         7.4   0.1%  loom_pvs_oam_batch_skip
         7.2   0.1%  loom_pvs_tight_velocity_x
         7.0   0.1%  loom_pvs_dma_run
-        6.8   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_max_column
+        6.8   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_max_column
         6.5   0.1%  loom_audio_begin_frame
         6.5   0.1%  loom_pvs_oam_batch_full_dirty
         6.5   0.1%  loom_camera_set_second_target
@@ -157,34 +157,34 @@ instr/frame  share  label
         5.5   0.1%  loom_pvs_animation_pass
         5.5   0.1%  loom_pvs_player_h_gain
         5.4   0.1%  loom_pvs_tight_probe_x
-        5.4   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_max_row
+        5.4   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_max_row
         5.1   0.1%  loom_pvs_tight_velocity_y
         5.0   0.1%  loom_pvs_td_move_y
         5.0   0.1%  loom_scene_update_camera
-        4.9   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_asset_bytes
-        4.7   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_bind_clip
+        4.9   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_asset_bytes
+        4.7   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_bind_clip
         4.6   0.1%  loom_pvs_probe_actor_wall
         4.5   0.1%  loom_pvs_player_jump
-        4.5   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_2a964643600646f4.asm_loom_actor_platformer_step
-        4.5   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_select_player
+        4.5   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_2a964643600646f4.asm_loom_actor_platformer_step
+        4.5   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_select_player
         4.5   0.1%  loom_pvs_body_cell
         4.5   0.1%  loom_pvs_controller_none
         4.5   0.1%  loom_pvs_oam_finish_copy_done
         4.5   0.1%  loom_movement_facing_x
         4.5   0.1%  loom_movement_facing_y
-        4.5   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_c2e4dfc609f7165f.asm_loom_frame_build_next_id
+        4.5   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_c2e4dfc609f7165f.asm_loom_frame_build_next_id
         4.1   0.1%  loom_pvs_tight_scan_floor
         4.0   0.1%  loom_animation_drive
         4.0   0.1%  spcProcess
         4.0   0.1%  loom_actor_set_input
         4.0   0.1%  spcProcessMessages
-        3.8   0.1%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_drive_player
+        3.8   0.1%  tccs_<scratch>/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_drive_player
         3.6   0.1%  loom_pvs_player_x_store
         3.5   0.0%  loom_pvs_player_x_place
         3.4   0.0%  loom_pvs_pass_key
         3.4   0.0%  loom_pvs_solid_floor
         3.4   0.0%  loom_port_dma_stage
-        3.3   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_job
+        3.3   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_6e4ae953cc75289e.asm_loom_mode1_stream_job
         3.2   0.0%  loom_pvs_tight_riding_none
         3.2   0.0%  loom_pvs_solids
         3.2   0.0%  loom_pvs_player_gravity
@@ -214,7 +214,7 @@ instr/frame  share  label
         2.5   0.0%  loom_pvs_tight_floor_lip
         2.5   0.0%  loom_pvs_pass_still
         2.4   0.0%  loom_pvs_scroll_divide
-        2.3   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_state_for
+        2.3   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_state_for
         2.1   0.0%  loom_pvs_tight_x_store
         2.0   0.0%  loom_pvs_solid_next_none
         2.0   0.0%  loom_pvs_anim_done
@@ -228,7 +228,7 @@ instr/frame  share  label
         1.9   0.0%  loom_pvs_player_slope
         1.8   0.0%  loom_pvs_td_patrol_leg
         1.8   0.0%  loom_pvs_td_patrol_step
-        1.8   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_prepare_dma_source
+        1.8   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_prepare_dma_source
         1.7   0.0%  loom_pvs_tight_probe_none
         1.7   0.0%  loom_pvs_td_move_x_free
         1.7   0.0%  loom_pvs_tight_probe_left_loop
@@ -245,14 +245,14 @@ instr/frame  share  label
         1.0   0.0%  loom_pvs_dma_run_done
         1.0   0.0%  loom_generated_adventure_visibility_epoch
         1.0   0.0%  loom_pvs_td_key
-        1.0   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_process_audio
-        1.0   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_submit_frame
+        1.0   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_process_audio
+        1.0   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_a24269344fd3358b.asm_loom_generated_phase_submit_frame
         1.0   0.0%  loom_pvs_solid_wall
         1.0   0.0%  loom_animation_drive_slot
         1.0   0.0%  loom_pvs_dma_run_job
         1.0   0.0%  loom_pvs_td_intent_x
         0.9   0.0%  loom_port_audio_enqueue
-        0.9   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_player_index
+        0.9   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_player_index
         0.9   0.0%  loom_pvs_oam_finish_forget_loop
         0.8   0.0%  loom_pvs_td_intent_y
         0.8   0.0%  loom_pvs_tight_gravity
@@ -260,33 +260,33 @@ instr/frame  share  label
         0.8   0.0%  loom_pvs_dma_run_source
         0.8   0.0%  loom_pvs_player_rise
         0.7   0.0%  loom_pvs_scene_intersect_done
-        0.7   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_direction_for
+        0.7   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_b34484891807d6f5.asm_loom_animation_direction_for
         0.7   0.0%  loom_pvs_oam_batch_x_positive
         0.7   0.0%  loom_mode1_stream_block
-        0.7   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_asset_chunk
-        0.6   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_audio_payload
+        0.7   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_asset_chunk
+        0.6   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_audio_payload
         0.6   0.0%  loom_mode1_set_sprite_position
         0.6   0.0%  loom_pvs_td_boxed
         0.6   0.0%  loom_actor_drive_slot
-        0.5   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_2a964643600646f4.asm_loom_actor_behavior_bounce
+        0.5   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_2a964643600646f4.asm_loom_actor_behavior_bounce
         0.5   0.0%  loom_pvs_body_grid
         0.5   0.0%  loom_animation_play
         0.5   0.0%  loom_pvs_tight_floor_column_next
         0.5   0.0%  loom_pvs_oam_begin
         0.4   0.0%  loom_movement_riding
-        0.4   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_651987fdbf4b2e01.asm_loom_audio_enqueue
+        0.4   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_651987fdbf4b2e01.asm_loom_audio_enqueue
         0.4   0.0%  loom_audio_play_effect
         0.4   0.0%  loom_pvs_player_h_accel
         0.4   0.0%  loom_generated_actor_drive_animation
         0.4   0.0%  loom_pvs_td_intents
-        0.4   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_process_input
+        0.4   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_process_input
         0.3   0.0%  loom_pvs_player_free
         0.3   0.0%  loom_pvs_tight_scan_ceiling
         0.3   0.0%  tcc__udiv
         0.3   0.0%  loom_pvs_tight_ceiling_next
-        0.3   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_audio_cue
+        0.3   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_audio_cue
         0.3   0.0%  loom_pvs_tight_cell_solid
-        0.3   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_busy
+        0.3   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_busy
         0.3   0.0%  spcSetSoundDataEntry
         0.3   0.0%  loom_pvs_tight_floor_next
         0.3   0.0%  loom_pvs_actor_core
@@ -296,24 +296,24 @@ instr/frame  share  label
         0.2   0.0%  loom_pvs_actor_fall
         0.2   0.0%  loom_pvs_td_box
         0.2   0.0%  loom_pvs_tight_probe_left
-        0.2   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_2a964643600646f4.asm_loom_actor_window
+        0.2   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_2a964643600646f4.asm_loom_actor_window
         0.2   0.0%  spcPlaySoundEx
         0.2   0.0%  loom_pvs_tight_floor_slope
         0.2   0.0%  loom_pvs_actor_x_done
-        0.2   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_2a964643600646f4.asm_loom_actor_type_at
+        0.2   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_2a964643600646f4.asm_loom_actor_type_at
         0.2   0.0%  loom_pvs_actor_advance
-        0.2   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_651987fdbf4b2e01.asm_loom_audio_find_cue
+        0.2   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_651987fdbf4b2e01.asm_loom_audio_find_cue
         0.2   0.0%  loom_pvs_actor_pointers
         0.2   0.0%  loom_pvs_actor_store_vx
         0.2   0.0%  loom_pvs_actor_velocity_x
         0.2   0.0%  loom_pvs_tight_probe_hit
         0.1   0.0%  loom_pvs_td_box_row
-        0.1   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_chunk_pointer
+        0.1   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_chunk_pointer
         0.1   0.0%  loom_pvs_player_cut_done
         0.1   0.0%  loom_pvs_tight_probe_column_solid
         0.1   0.0%  loom_pvs_pass_slow_actor
         0.1   0.0%  loom_pvs_body_scan_floor
-        0.1   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_top
+        0.1   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_eccbe38e81ada76b.asm_loom_project_ui_top
         0.1   0.0%  loom_pvs_actor_s8
         0.1   0.0%  loom_pvs_body_probe_x_column
         0.1   0.0%  loom_pvs_tight_floor_slope_right
@@ -331,7 +331,7 @@ instr/frame  share  label
         0.0   0.0%  loom_pvs_body_probe_x_right_loop
         0.0   0.0%  loom_pvs_body_probe_x_right_test
         0.0   0.0%  loom_pvs_body_scan_floor_column
-        0.0   0.0%  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_1d47864ea2e3ba72.asm_play
+        0.0   0.0%  tccs_<scratch>/m8/b-tcc/stage/loom_1d47864ea2e3ba72.asm_play
         0.0   0.0%  loom_pvs_actor_advance_done
         0.0   0.0%  loom_mode1_camera_x
         0.0   0.0%  loom_mode1_camera_y
@@ -348,20 +348,20 @@ instr/frame  share  label
         0.0   0.0%  loom_pvs_tight_fell
 
 hottest addresses (executions a frame)
-     82.1  86c7ad  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0xe
-     82.1  86c7b1  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x12
-     82.1  86c7b3  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x14
-     82.1  86c7b5  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x16
-     82.1  86c7b7  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x18
-     82.1  86c7ba  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x1b
-     82.1  86c7bc  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x1d
-     82.1  86c7bd  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x1e
-     82.1  86c7bf  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x20
-     82.1  86c7c0  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x21
-     82.1  86c7c3  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x24
-     82.1  86c7c5  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x26
-     82.1  86c7c6  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x27
-     81.6  86c7cb  tccs_/private/tmp/claude-501/-Users-rje-src-rust-loom/2dd4c5e4-5bcc-48fd-9c68-a75903b1e635/scratchpad/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x2c
+     82.1  86c7ad  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0xe
+     82.1  86c7b1  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x12
+     82.1  86c7b3  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x14
+     82.1  86c7b5  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x16
+     82.1  86c7b7  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x18
+     82.1  86c7ba  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x1b
+     82.1  86c7bc  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x1d
+     82.1  86c7bd  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x1e
+     82.1  86c7bf  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x20
+     82.1  86c7c0  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x21
+     82.1  86c7c3  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x24
+     82.1  86c7c5  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x26
+     82.1  86c7c6  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x27
+     81.6  86c7cb  tccs_<scratch>/m8/b-tcc/stage/loom_195edd3e91355ed3.asm_loom_pvs_runtime_pass_vblank+0x2c
      16.9  810028  (unlabelled)+0x68
      11.0  83cefb  loom_pvs_oam_batch_loop+0x0
      11.0  83cefd  loom_pvs_oam_batch_loop+0x2

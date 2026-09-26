@@ -97,8 +97,9 @@ fn token_equal_to_clang_e() {
 
 #[test]
 fn token_equal_to_816_tcc_e() {
-    let tcc = "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/bin/816-tcc";
-    if !Path::new(tcc).exists() {
+    let tcc = loomcc::testbed::tcc_path();
+    let tcc = tcc.as_path();
+    if !tcc.exists() {
         eprintln!("816-tcc not installed; skipping");
         return;
     }
@@ -158,8 +159,9 @@ fn every_loom_unit_type_checks() {
 /// offsets 816-tcc gives it (asm reads these structs by offset).
 #[test]
 fn struct_layout_matches_816_tcc() {
-    let tcc = "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/bin/816-tcc";
-    if !Path::new(tcc).exists() {
+    let tcc = loomcc::testbed::tcc_path();
+    let tcc = tcc.as_path();
+    if !tcc.exists() {
         eprintln!("816-tcc not installed; skipping");
         return;
     }

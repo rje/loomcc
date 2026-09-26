@@ -3,9 +3,9 @@
   "loom_commit": "5599b9c5615160596228f365ecce167a7a973ce8",
   "paths_relative_to": "testbed/",
   "toolchain": {
-    "PVSNESLIB_INCLUDE": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/pvsneslib/include",
-    "DEVKITSNES_INCLUDE": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/include",
-    "compiler": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/bin/816-tcc"
+    "PVSNESLIB_INCLUDE": "${PVSNESLIB_HOME}/pvsneslib/include",
+    "DEVKITSNES_INCLUDE": "${PVSNESLIB_HOME}/devkitsnes/include",
+    "compiler": "${PVSNESLIB_HOME}/devkitsnes/bin/816-tcc"
   },
   "notes": [
     "Include order is Loom's: runtime/include, backend include, generated include, then the PVSnesLib and devkitsnes include directories.",

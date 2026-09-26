@@ -25,7 +25,10 @@ import sys
 import time
 from pathlib import Path
 
-EMU = "/Users/rje/src/rust/loom/target/debug/loom-emulator"
+EMU = os.environ.get(
+    "LOOM_EMULATOR",
+    str(Path(os.environ.get("LOOM_REPO", Path(__file__).resolve().parents[3] / "loom"))
+        / "target/debug/loom-emulator"))
 BG = ["taskpolicy", "-b", "nice", "-n", "19"]
 
 

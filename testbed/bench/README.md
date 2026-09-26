@@ -31,7 +31,7 @@ prints the markdown table used in BASELINE.md.
 
 Environment overrides: `PVSNESLIB_HOME` (toolchain root, default
 `~/Library/Loom/Toolchains/v0/artifacts/pvsneslib`), `LOOM_EMULATOR`
-(default `/Users/rje/src/rust/loom/target/debug/loom-emulator`), `LOOMCC`
+(default `$LOOM_REPO/target/debug/loom-emulator`), `LOOMCC`
 (default `<repo>/target/debug/loomcc`), `LOOMCC_BENCH_CACHE` (where the
 calibration result is cached, default `$TMPDIR/loomcc-bench`). Every tool and
 emulator run is started under `nice -n 19`.

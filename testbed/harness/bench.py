@@ -23,7 +23,7 @@ TESTBED = HARNESS.parent
 REPO = TESTBED.parent
 
 PVS = Path(os.environ.get(
-    "PVSNESLIB_HOME", "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib"))
+    "PVSNESLIB_HOME", Path.home() / "Library/Loom/Toolchains/v0/artifacts/pvsneslib"))
 TCC = PVS / "devkitsnes/bin/816-tcc"
 WLA = PVS / "devkitsnes/bin/wla-65816"
 WLALINK = PVS / "devkitsnes/bin/wlalink"
@@ -31,8 +31,10 @@ OPT = PVS / "devkitsnes/tools/816-opt"
 LIBDIR = PVS / "pvsneslib/lib/LoROM_FastROM"
 LIBS = ["crt0_snes.obj", "libc.obj", "libm.obj", "libtcc.obj"]
 SYS_INCLUDES = [PVS / "pvsneslib/include", PVS / "devkitsnes/include"]
+# loom-emulator, from a Loom checkout ($LOOM_REPO) built with --features mesen-core.
 EMULATOR = Path(os.environ.get(
-    "LOOM_EMULATOR", "/Users/rje/src/rust/loom/target/debug/loom-emulator"))
+    "LOOM_EMULATOR",
+    Path(os.environ.get("LOOM_REPO", REPO.parent / "loom")) / "target/debug/loom-emulator"))
 # The loomcc variant compiles unit.c with this command:
 #   $LOOMCC -S [-I dir]... [-D def]... unit.c -o unit.asm
 LOOMCC = os.environ.get("LOOMCC", str(REPO / "target/debug/loomcc"))

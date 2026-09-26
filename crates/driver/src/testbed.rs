@@ -8,8 +8,25 @@ pub fn testbed_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../../testbed")
 }
 
-pub const PVSNESLIB_INCLUDE: &str = "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/pvsneslib/include";
-pub const DEVKITSNES_INCLUDE: &str = "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/include";
+/// Loom's PVSnesLib toolchain: `$PVSNESLIB_HOME`, or where Loom installs it
+/// (`~/Library/Loom/Toolchains/v0/artifacts/pvsneslib`).
+pub fn pvsneslib_home() -> PathBuf {
+    if let Some(home) = std::env::var_os("PVSNESLIB_HOME") {
+        return PathBuf::from(home);
+    }
+    let user = std::env::var_os("HOME").map(PathBuf::from).unwrap_or_default();
+    user.join("Library/Loom/Toolchains/v0/artifacts/pvsneslib")
+}
+
+/// 816-tcc from that toolchain (the reference compiler).
+pub fn tcc_path() -> PathBuf {
+    pvsneslib_home().join("devkitsnes/bin/816-tcc")
+}
+
+/// Expands `${PVSNESLIB_HOME}` in a path recorded in units.json.
+fn expand(path: &str) -> String {
+    path.replace("${PVSNESLIB_HOME}", &pvsneslib_home().to_string_lossy())
+}
 
 #[derive(Debug, Clone)]
 pub struct Unit {
@@ -46,9 +63,9 @@ pub fn loom_units() -> Vec<Unit> {
     let mut out = Vec::new();
     let tc = &v["toolchain"];
     let subst = |s: &str| -> PathBuf {
-        let s = s
-            .replace("${PVSNESLIB_INCLUDE}", tc["PVSNESLIB_INCLUDE"].as_str().unwrap_or(PVSNESLIB_INCLUDE))
-            .replace("${DEVKITSNES_INCLUDE}", tc["DEVKITSNES_INCLUDE"].as_str().unwrap_or(DEVKITSNES_INCLUDE));
+        let pvs = expand(tc["PVSNESLIB_INCLUDE"].as_str().unwrap_or("${PVSNESLIB_HOME}/pvsneslib/include"));
+        let devkit = expand(tc["DEVKITSNES_INCLUDE"].as_str().unwrap_or("${PVSNESLIB_HOME}/devkitsnes/include"));
+        let s = expand(&s.replace("${PVSNESLIB_INCLUDE}", &pvs).replace("${DEVKITSNES_INCLUDE}", &devkit));
         let p = PathBuf::from(&s);
         if p.is_absolute() { p } else { root.join(p) }
     };

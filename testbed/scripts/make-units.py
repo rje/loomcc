@@ -2,7 +2,7 @@
 """Writes testbed/loom/units.json: every C translation unit Loom's pvsneslib
 build compiles for each sample, with the flags Loom passes to 816-tcc.
 
-Mirrors /Users/rje/src/rust/loom/crates/loom-toolchain/src/pvs_project.rs at
+Mirrors Loom's crates/loom-toolchain/src/pvs_project.rs at
 Loom commit 5599b9c (resolve_source_units, resolve_include_roots,
 compile_cached_unit, PvsProjectBuildProfile::compiler_definitions,
 TARGET_COMPILER_DEFINITIONS). Paths in the output are relative to testbed/.
@@ -116,9 +116,9 @@ def main():
         "loom_commit": "5599b9c5615160596228f365ecce167a7a973ce8",
         "paths_relative_to": "testbed/",
         "toolchain": {
-            "PVSNESLIB_INCLUDE": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/pvsneslib/include",
-            "DEVKITSNES_INCLUDE": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/include",
-            "compiler": "/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/devkitsnes/bin/816-tcc",
+            "PVSNESLIB_INCLUDE": "${PVSNESLIB_HOME}/pvsneslib/include",
+            "DEVKITSNES_INCLUDE": "${PVSNESLIB_HOME}/devkitsnes/include",
+            "compiler": "${PVSNESLIB_HOME}/devkitsnes/bin/816-tcc",
         },
         "notes": [
             "Include order is Loom's: runtime/include, backend include, generated include, "

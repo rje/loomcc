@@ -21,7 +21,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-LOOM = Path("/Users/rje/src/rust/loom")
+# A Loom checkout with its binaries built (loom-emulator, loom-automation).
+LOOM = Path(os.environ.get("LOOM_REPO", Path(__file__).resolve().parents[3] / "loom"))
 HERE = Path(__file__).resolve().parent
 EMU = LOOM / "target/debug/loom-emulator"
 BG = ["taskpolicy", "-b", "nice", "-n", "19"]

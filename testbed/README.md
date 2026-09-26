@@ -21,17 +21,17 @@ below describes them.
 
 ## loom/ — Loom's C at commit 5599b9c
 
-`/Users/rje/src/rust/loom` HEAD `5599b9c5615160596228f365ecce167a7a973ce8`
+`$LOOM_REPO` HEAD `5599b9c5615160596228f365ecce167a7a973ce8`
 (2026-09-25 21:51). Copied from the commit, not the working tree (which had a
 modified `oam.asm`):
 
 ```sh
-git -C /Users/rje/src/rust/loom archive 5599b9c \
+git -C $LOOM_REPO archive 5599b9c \
     runtime/src runtime/include runtime/backends/pvsneslib/src \
     runtime/backends/pvsneslib/include runtime/backends/pvsneslib/hdr.asm \
   | tar -x -C testbed/loom
 for s in cliffside lantern-road stack; do
-  git -C /Users/rje/src/rust/loom archive 5599b9c examples/$s/Code | tar -x -C testbed/loom
+  git -C $LOOM_REPO archive 5599b9c examples/$s/Code | tar -x -C testbed/loom
 done
 ```
 
@@ -81,7 +81,7 @@ in the Loom app and press Build & Run (or Test); that writes
 sample out of the repo and run loom-automation on it:
 
 ```sh
-repo=/Users/rje/src/rust/loom
+repo=$LOOM_REPO
 rsync -a --exclude Build --exclude .loom $repo/examples/stack/ /tmp/gen/stack/
 room=$(cd /tmp/gen/stack && ls Scenes/*.loom-room.json | head -1)
 cat > /tmp/gen/script.json <<EOF
@@ -140,7 +140,7 @@ their commits, licences, and which tests matter for a 16-bit-int compiler.
 
 ## pvsneslib/
 
-From `/Users/rje/Library/Loom/Toolchains/v0/artifacts/pvsneslib/snes-examples`
+From `$PVSNESLIB_HOME/snes-examples`
 (PVSnesLib 4.6.0, as installed by Loom's toolchain v0), zlib licence
 (`pvsneslib/LICENSE.pvsneslib-zlib.txt`, the toolchain's
 `pvsneslib/pvsneslib_license.txt`). C sources and the headers/`.inc` files
