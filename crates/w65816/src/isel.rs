@@ -1919,15 +1919,15 @@ impl<'a> Gen<'a> {
                 }
             }
         }
+        // The hidden result pointer is formed in scratch now (its address
+        // may read argument sources) but written to a direct-page home only
+        // after the parallel move below: written first, it would overwrite
+        // sources still to be read (F34).
+        let mut sret_dp: Option<u8> = None;
         if let Some(sa) = sret {
             self.addr_to_dp(sa, SCRATCH_PTR);
             match info.sret_home {
-                Some(Home::Dp(d)) => {
-                    for k in 0..2u8 {
-                        self.i("lda", Mode::Dp(SCRATCH_PTR + 2 * k));
-                        self.i("sta", Mode::Dp(d + 2 * k));
-                    }
-                }
+                Some(Home::Dp(d)) => sret_dp = Some(d),
                 Some(Home::Frame(o)) => {
                     for k in 0..2u32 {
                         self.i("lda", Mode::Dp(SCRATCH_PTR + 2 * k as u8));
@@ -1937,6 +1937,32 @@ impl<'a> Gen<'a> {
                 _ => {}
             }
         }
+        // Every direct-page word this call's staging writes.
+        let mut dp_targets: Vec<u8> = Vec::new();
+        for (d, _, words) in &dp_moves {
+            for k in 0..*words {
+                dp_targets.push(d + 2 * k as u8);
+            }
+        }
+        if let Some(d) = sret_dp {
+            dp_targets.extend([d, d + 2]);
+        }
+        // Index-register arguments are loaded last; one whose source is a
+        // direct-page word about to be overwritten is parked on the stack
+        // first and pulled into its register at the end.
+        let mut xy_parked: Vec<Home> = Vec::new();
+        for (h, src) in &xy_moves {
+            let rd: Vec<u8> = (0..1).filter_map(|k| match self.src(src, k) {
+                Src::Dp(d) => Some(d),
+                _ => None,
+            }).collect();
+            if rd.iter().any(|d| dp_targets.contains(d)) {
+                self.lda(src, 0);
+                self.i("pha", Mode::Implied);
+                xy_parked.push(*h);
+            }
+        }
+        xy_moves.retain(|(h, _)| !xy_parked.contains(h));
         // Direct-page targets: parallel move.
         let reads = |o: &Operand, g: &Self| -> Vec<u8> {
             match o {
@@ -1997,6 +2023,16 @@ impl<'a> Gen<'a> {
                 self.i("sta", Mode::Dp(d + 2 * k as u8));
             }
             self.acc = None;
+        }
+        if let Some(d) = sret_dp {
+            for k in 0..2u8 {
+                self.i("lda", Mode::Dp(SCRATCH_PTR + 2 * k));
+                self.i("sta", Mode::Dp(d + 2 * k));
+            }
+            self.acc = None;
+        }
+        for h in xy_parked.into_iter().rev() {
+            self.i(if h == Home::X { "plx" } else { "ply" }, Mode::Implied);
         }
         // Index registers last (X and Y may swap).
         let xs = xy_moves.iter().find(|m| m.0 == Home::X).map(|m| m.1.clone());
@@ -2096,7 +2132,11 @@ impl<'a> Gen<'a> {
             // in the frame was just overwritten by the restore, so store it
             // again from the saved registers.
             self.forget();
-            if let Some(d) = dst {
+            // A result homed in the direct page is untouched by the restore
+            // (and may itself sit on $02/$04, so those no longer hold the
+            // result's high word): only frame and register homes are stored
+            // again.
+            if let Some(d) = dst.filter(|d| !matches!(self.home(*d), Home::Dp(_))) {
                 let t = self.f.ty(d);
                 self.i("lda", Mode::Dp(0x18));
                 self.acc = None;
@@ -2305,9 +2345,16 @@ impl<'a> Gen<'a> {
         self.acc = None;
         if let Some(d) = dst {
             let t = self.f.ty(d);
-            for k in 0..self.width(t) {
-                // 816-tcc returns a 32-bit integer's high word in tcc__r1.
-                self.i("lda", Mode::Dp(if k == 1 && t == IrTy::I32 { 4 } else { 2 * k as u8 }));
+            // 816-tcc returns a 32-bit integer's high word in tcc__r1.
+            let src = |k: u32| if k == 1 && t == IrTy::I32 { 4u8 } else { 2 * k as u8 };
+            let mut order: Vec<u32> = (0..self.width(t)).collect();
+            // A result homed where its own high word arrives ($02 for a
+            // pointer, $04 for a long) takes the high word first.
+            if order.len() == 2 && self.home(d) == Home::Dp(src(1)) {
+                order.reverse();
+            }
+            for k in order {
+                self.i("lda", Mode::Dp(src(k)));
                 self.acc = None;
                 self.sta_reg(d, k);
             }
