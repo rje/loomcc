@@ -6,9 +6,21 @@ Copyleft tests (GPL, LGPL) are never vendored: `external/fetch.sh <suite>`
 downloads them into `external/fetched/` (git-ignored), and the repository
 holds only scripts, filter lists and wrappers that refer to them by path.
 
-`external/fetch.sh gcc-torture tcc-tests2 llvm-singlesource c-testsuite chibicc mcpp`
-fetches everything (sparse, shallow clones; about 100 MB). Commits fetched
-on 2026-09-25 are recorded at the end.
+`external/fetch.sh gcc-torture gcc-dg tcc-tests2 llvm-singlesource c-testsuite chibicc mcpp`
+fetches everything (sparse, shallow clones; about 100 MB) at the commits
+recorded at the end (override with `GCC_REV`, `TINYCC_REV`, `LLVM_TS_REV`,
+`C_TESTSUITE_REV`, `CHIBICC_REV`; `HEAD` for the newest).
+
+After fetching, `external/wrap-suite.py --from-list <suite>` writes the
+wrappers for exactly the tests the committed `.list` names, without
+re-running the selection; the GCC scripts regenerate theirs. A wrapper
+directory that does not exist (suite not fetched) makes the runner report
+every listed test UNSUPPORTED.
+
+What is in the repository: mcpp's tests (BSD-2-Clause, below), Csmith's
+16-bit safe-math header (BSD-style, `tests/t7-random/csmith/`), and in
+loomcc's `testbed/conformance/` the non-TinyCC c-testsuite tests (MIT/ISC)
+and chibicc's tests (MIT). Everything GPL or LGPL is fetched.
 
 | suite | licence | decision | where |
 |---|---|---|---|
@@ -17,7 +29,7 @@ on 2026-09-25 are recorded at the end.
 | GCC `gcc.c-torture/compile` | GPL-3.0-or-later | **fetched, filtered, wrapped** as compile tests: 512 of 2016 (static filter, then clang -std=c17 -pedantic-errors -Werror=vla at 16-bit int) | `external/classify-gcc-compile.py`, `external/gcc-torture-compile.list` |
 | GCC `gcc.dg/cpp` | GPL-3.0-or-later | **fetched, filtered, wrapped** as preprocess tests: 61 (dg-do preprocess, standard-C options only, dg-error/dg-warning converted to located directives, dg-final scan-file patterns converted to `loomcc-expect-match`, GNU-only behaviour excluded, clang must agree) | `external/wrap-gcc-cpp.py`, `external/gcc-dg-cpp.list` |
 | GCC `gcc.dg` (top level) | GPL-3.0-or-later | **fetched, filtered, wrapped** as T3 constraint tests: 186 (dg-do compile with dg-error lines, standard-C options only, each dg-error a `loomcc-diagnostic` at its line, no GNU extensions, floating point or VLAs, clang must agree and accept the rest under -pedantic-errors) | `external/fetch.sh gcc-dg`, `external/wrap-gcc-dg-errors.py`, `external/gcc-dg-errors.list` |
-| c-testsuite (`tests/single-exec`) | harness MIT; individual tests carry their origins' licences (ISC from scc, LGPL-2.1 from tinycc, others) | **fetched, filtered, wrapped** (mixed per-test licences); 163 selected | `external/wrap-suite.py c-testsuite`, `external/c-testsuite.list` |
+| c-testsuite (`tests/single-exec`) | harness MIT; individual tests carry their origins' licences (ISC from scc, LGPL-2.1 from tinycc, others) | **fetched, filtered, wrapped** (mixed per-test licences); 163 selected. loomcc's `testbed/conformance/` vendors only the 151 non-TinyCC tests; the 69 LGPL TinyCC-origin tests are fetched | `external/wrap-suite.py c-testsuite`, `external/c-testsuite.list` |
 | chibicc `test/` | MIT (Rui Ueyama) | evaluated with the same wrapper: 0 of 41 survive (GNU extensions, floating point, and every remaining file fails under 816-tcc's 16-bit int or front end) | `external/chibicc.rejected` |
 | TinyCC `tests/tests2` | LGPL-2.1 | **fetched, filtered, wrapped**, output compared through the harness printf; 32 selected | `external/wrap-suite.py tcc-tests2`, `external/tcc-tests2.list` |
 | LLVM test-suite `SingleSource/UnitTests`, `Regression/C` | Apache-2.0 WITH LLVM-exception (older files NCSA) | **fetched, filtered, wrapped** (output compared); 11 + 5 selected; small, so not vendored | `external/wrap-suite.py llvm-unittests / llvm-regression` |

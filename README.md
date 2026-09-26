@@ -124,11 +124,20 @@ tests/run-tests --tier t1,t2,t3,t4 --modes E,syntax,ir   # no toolchain needed
 tests/run-tests                                # everything that applies
 ```
 
-Tiers that build ROMs need `PVSNESLIB_HOME` and `loom-emulator`. The GPL
-and LGPL suites (GCC torture and dg tests, TinyCC's tests2) are not in the
-repository: `tests/external/fetch.sh` downloads them into
-`tests/external/fetched/` and wrapper scripts select the tests that apply
-(see [tests/docs/SOURCES.md](tests/docs/SOURCES.md)).
+Tiers that build ROMs need `PVSNESLIB_HOME` and `loom-emulator`. No GPL
+or LGPL code is in the repository. The external suites (GCC torture and dg
+tests, TinyCC's tests2, c-testsuite including its TinyCC-derived tests,
+LLVM's single-source tests) are downloaded at pinned revisions and wrapped:
+
+```sh
+tests/external/fetch.sh c-testsuite
+tests/external/wrap-suite.py --from-list c-testsuite
+tests/run-tests tests/external/fetched/wrapped-c-testsuite
+```
+
+Unfetched suites report UNSUPPORTED. See
+[tests/docs/SOURCES.md](tests/docs/SOURCES.md) and
+[THIRD_PARTY.md](THIRD_PARTY.md).
 
 ## Layout
 
