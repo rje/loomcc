@@ -123,9 +123,12 @@ in `external/gcc-torture-execute.tcc-xfail` (an `--xfail-list` for the
 
 clang with `--target=msp430-none-elf` (`clang16`, `host16`) differs from the
 SNES target in pointer size (`clang16-ptr16`: 2 bytes, not 4) and in plain
-`char` signedness (pinned with `-fsigned-char`). The LLVM interpreter under
-`host16` ignores `byval` (`lli-byval`: a callee's writes to a struct
-parameter reach the caller's object).
+`char` signedness (pinned with `-fsigned-char`). `harness/host16/fixup.py`
+works around the LLVM interpreter's gaps under `host16`: it ignores `byval`
+(a callee's writes to a struct parameter would reach the caller's object),
+it keeps host pointers in memory (so pointers are widened and aggregate copy
+lengths recomputed), it zero-extends narrow GEP indices, it has no
+`freeze`, and its `ptrtoint` to i16 does not truncate the address.
 
 ## Execute references
 
@@ -173,12 +176,6 @@ deliberately calls abort()
 - `t4-exec/smoke/xfail-harness-detects-abort.c`
 - `t4-exec/smoke/xfail-harness-detects-nonzero.c`
 - `t4-exec/stdio/output-mismatch-detected.c`
-
-### `lli-byval` (host16, 1 test)
-
-the LLVM interpreter ignores byval: the callee writes the caller's struct
-
-- `t4-exec/struct/pass-by-value.c`
 
 ### `uncoded` (host16, 3 tests)
 
@@ -825,6 +822,12 @@ deliberately calls abort()
 - `t7-random/corpus/seed-35.c`
 - `t7-random/corpus/seed-37.c`
 - `t7-random/corpus/seed-38.c`
+
+### `tcc-vararg-char` (tcc-rom, 1 test)
+
+816-tcc pushes a char variadic argument as one byte
+
+- `t4-exec/stdio/printf-char-arguments.c`
 
 ### `uncoded` (tcc-rom, 3 tests)
 

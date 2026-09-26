@@ -48,13 +48,15 @@ def host16_checksum(src, work, extra=(), init=None):
                        capture_output=True, text=True)
     if r.returncode:
         raise RuntimeError("clang: " + r.stderr[-500:])
-    ll.write_text(ll.read_text().replace("p:16:16", "p:64:64").replace(" optnone", ""))
+    fix = ROOT / "harness/host16/fixup.py"
+    pre = work / (src.stem + ".pre.ll")
+    subprocess.run([sys.executable, str(fix), "pre", str(ll), str(pre)], check=True)
     opt = work / (src.stem + ".opt.ll")
-    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "opt"), "-S", "-passes=instcombine<no-verify-fixpoint>", str(ll), "-o", str(opt)],
+    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "opt"), "-S", "-passes=instcombine<no-verify-fixpoint>", str(pre), "-o", str(opt)],
                        capture_output=True, text=True)
     if r.returncode:
         raise RuntimeError("opt: " + r.stderr[-500:])
-    opt.write_text(re.sub(r"= freeze (\S+) (.+)$", r"= bitcast \1 \2 to \1", opt.read_text(), flags=re.M))
+    subprocess.run([sys.executable, str(fix), "post", str(opt), str(opt)], check=True)
     r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "lli"), "-force-interpreter", str(opt)], capture_output=True, text=True, timeout=120)
     if r.returncode:
         raise RuntimeError(f"lli exit {r.returncode}: " + r.stderr[-300:])

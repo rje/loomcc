@@ -1,5 +1,4 @@
 // loomcc-do: run
-// loomcc-ref-diverges: host16 [lli-byval] the LLVM interpreter ignores byval: the callee writes the caller's struct
 // loomcc-int: agnostic
 #include "loomcc-test.h"
 struct P { i16 x, y; };

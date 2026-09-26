@@ -612,18 +612,23 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
                 }
                 dst
             };
-            // The LLVM interpreter keeps host pointers in memory: widen the
-            // msp430 data layout's 16-bit pointers so they survive a store.
-            let text = std::fs::read_to_string(&linked).unwrap_or_default().replace("p:16:16", "p:64:64").replace(" optnone", "");
-            let widened = work.join("widened.ll");
-            let _ = std::fs::write(&widened, text);
-            // lli's interpreter zero-extends GEP indices narrower than 32
-            // bits; instcombine rewrites them to the (now 64-bit) index type.
-            let opt = need!(&tools.llvm_opt, "opt");
+            // harness/host16/fixup.py adapts the msp430 IR to lli's interpreter
+            // (pointer width, byval copies, aggregate copy lengths, GEP index
+            // widths through instcombine, freeze).
+            let fix = cfg.tools.harness_rom.parent().unwrap().join("host16/fixup.py");
+            let pre = work.join("host16.pre.ll");
             let patched = work.join("host16.ll");
+            let py = std::path::PathBuf::from("python3");
+            let out = exec::run(&py, &[fix.display().to_string(), "pre".into(), linked.display().to_string(), pre.display().to_string()], work, timeout(t, 60));
+            rom::log_cmd(log, &out);
+            if !out.ok() {
+                return Res::Unresolved(format!("host16 fixup failed: {}", rom::first_lines(&out.stderr, 3)));
+            }
+            let opt = need!(&tools.llvm_opt, "opt");
+            let opted = work.join("host16.opt.ll");
             let out = exec::run(
                 &opt,
-                &["-S".into(), "-passes=instcombine<no-verify-fixpoint>".into(), widened.display().to_string(), "-o".into(), patched.display().to_string()],
+                &["-S".into(), "-passes=instcombine<no-verify-fixpoint>".into(), pre.display().to_string(), "-o".into(), opted.display().to_string()],
                 work,
                 timeout(t, 180),
             );
@@ -631,14 +636,11 @@ fn run_ref(tool: &str, job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut
             if !out.ok() {
                 return Res::Unresolved(format!("opt failed: {}", rom::first_lines(&out.stderr, 3)));
             }
-            // ... and the interpreter has no `freeze`: a same-type bitcast is equivalent here.
-            let freeze = regex::Regex::new(r"= freeze (\S+) (.+)$").unwrap();
-            let text: String = std::fs::read_to_string(&patched)
-                .unwrap_or_default()
-                .lines()
-                .map(|l| freeze.replace(l, "= bitcast $1 $2 to $1").into_owned() + "\n")
-                .collect();
-            let _ = std::fs::write(&patched, text);
+            let out = exec::run(&py, &[fix.display().to_string(), "post".into(), opted.display().to_string(), patched.display().to_string()], work, timeout(t, 60));
+            rom::log_cmd(log, &out);
+            if !out.ok() {
+                return Res::Unresolved(format!("host16 fixup failed: {}", rom::first_lines(&out.stderr, 3)));
+            }
             let out = exec::run(&lli, &["-force-interpreter".into(), patched.display().to_string()], work, timeout(t, 180));
             rom::log_cmd(log, &out);
             if out.ok() {
