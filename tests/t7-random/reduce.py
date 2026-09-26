@@ -12,8 +12,8 @@ interestingness test keeps a candidate only when
 2. host16 runs it to completion and gives the same checksum C whether
    uninitialised locals start as zeros or as a pattern (a read of an
    uninitialised local is the UB C-Reduce most often introduces);
-3. loomcc (the chosen mode) run with -DEXPECTED=C fails, i.e. it still
-   disagrees with host16.
+3. loomcc (the chosen mode) builds it, runs it with -DEXPECTED=C and
+   aborts: it still disagrees with host16 (a compile error does not count).
 
 The reduced program is written with the runner header, with EXPECTED set
 from host16, ready to become a permanent T4 test.
@@ -73,7 +73,7 @@ p = Path("prog.c")
 text = p.read_text()
 if not all(k in text for k in {keep!r}):
     sys.exit(1)
-r = subprocess.run(["clang", "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-fsyntax-only",
+r = subprocess.run(["clang", "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-pedantic-errors", "-fsyntax-only",
                     "-I{ROOT / 'harness/include'}", "-DLOOMCC_T7_PRINT=1", *extra, *{UB_WARNINGS!r}, "prog.c"],
                    capture_output=True)
 if r.returncode:
@@ -90,7 +90,10 @@ t = Path("cand.c")
 opts = " ".join(["-DEXPECTED=%du" % ck] + [e.replace({str(CSMITH_DIR)!r}, "%ROOT%/tests/t7-random/csmith") for e in extra])
 t.write_text("// loomcc-do: run\\n// loomcc-int: 16\\n// loomcc-options: " + opts + "\\n// loomcc-ref:\\n" + p.read_text())
 r = subprocess.run([{str(ROOT / 'run-tests')!r}, "--modes", {mode!r}, "--work", "rw", str(t.resolve())], capture_output=True, text=True)
-sys.exit(0 if " 1 FAIL" in r.stdout and "not supported" not in r.stdout else 1)
+# Interesting only if loomcc built and ran it and got a different checksum
+# (an abort or a failed CHECK), not if it rejected the program.
+bad = " 1 FAIL" in r.stdout and ("abort() called" in r.stdout or "CHECK failed" in r.stdout)
+sys.exit(0 if bad else 1)
 """)
     check.chmod(check.stat().st_mode | stat.S_IEXEC)
     first = subprocess.run([str(check)], cwd=work)

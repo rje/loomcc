@@ -38,11 +38,19 @@ tests/t7-random/run.py --csmith --seeds 1-200 -j 2
 ```
 
 Flags: `--no-argc --no-longlong --no-math64 --no-bitfields --no-packed-struct
---no-float --max-funcs 4 --max-block-size 3`. Programs include
+--no-float --no-structs --no-unions --max-funcs 4 --max-block-size 3`. No
+structs or unions, because the host16 oracle cannot run them faithfully: lli
+ignores `byval` (a callee's writes to a struct parameter reach the caller),
+and widening pointers for the interpreter breaks the sizes clang computed for
+pointer-bearing aggregates. A first 100-seed campaign with structs flagged
+two programs that way (seeds 73 and 106): loomcc's `ir` and `rom` agreed
+with each other and disagreed with host16, and both programs pass struct
+parameters and modify them. Programs include
 `tests/t7-random/csmith/csmith.h` (found first on the include path), which
 sets 16-bit-int limits so that Csmith's own safe-math wrappers
 (`safe_math_16.h`, its safe_math.h without the 64-bit and floating-point
-parts) guard every 16-bit operation, and replaces the CRC32 checksum with a
+parts, and with the 8/16-bit shift wrappers rejecting counts of 16 and up
+where Csmith hard-codes 32) guard every 16-bit operation, and replaces the CRC32 checksum with a
 16-bit fold. The reference is host16; 816-tcc is not used (its `long`,
 which Csmith's 32-bit constants need, is 16 bits).
 

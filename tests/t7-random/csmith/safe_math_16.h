@@ -2,7 +2,7 @@
  * Utah; BSD licence, see LICENSE.csmith) without the 64-bit and floating-point
  * wrappers; regenerate with make-safe-math-16.py. Csmith's
  * #if (INTn_MAX >= INT_MAX) guards make every wrapper overflow-safe at
- * 16-bit int. */
+ * 16-bit int; the 8/16-bit shift wrappers reject counts >= 16, not 32. */
 
 #ifndef SAFE_MATH_H
 #define SAFE_MATH_H
@@ -101,7 +101,7 @@ FUNC_NAME(lshift_func_int8_t_s_s)(int8_t left, int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((left < 0) || (((int)right) < 0) || (((int)right) >= 32) || (left > (INT8_MAX >> ((int)right)))) ? 
+    ((left < 0) || (((int)right) < 0) || (((int)right) >= 16) || (left > (INT8_MAX >> ((int)right)))) ? 
     (UNDEFINED(left)) : 
 #endif
     (left << ((int)right));
@@ -113,7 +113,7 @@ FUNC_NAME(lshift_func_int8_t_s_u)(int8_t left, unsigned int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((left < 0) || (((unsigned int)right) >= 32) || (left > (INT8_MAX >> ((unsigned int)right)))) ? 
+    ((left < 0) || (((unsigned int)right) >= 16) || (left > (INT8_MAX >> ((unsigned int)right)))) ? 
     (UNDEFINED(left)) : 
 #endif
     (left << ((unsigned int)right));
@@ -125,7 +125,7 @@ FUNC_NAME(rshift_func_int8_t_s_s)(int8_t left, int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((left < 0) || (((int)right) < 0) || (((int)right) >= 32))? 
+    ((left < 0) || (((int)right) < 0) || (((int)right) >= 16))? 
     (UNDEFINED(left)) : 
 #endif
     (left >> ((int)right));
@@ -137,7 +137,7 @@ FUNC_NAME(rshift_func_int8_t_s_u)(int8_t left, unsigned int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((left < 0) || (((unsigned int)right) >= 32)) ? 
+    ((left < 0) || (((unsigned int)right) >= 16)) ? 
     (UNDEFINED(left)) : 
 #endif
     (left >> ((unsigned int)right));
@@ -229,7 +229,7 @@ FUNC_NAME(lshift_func_int16_t_s_s)(int16_t left, int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((left < 0) || (((int)right) < 0) || (((int)right) >= 32) || (left > (INT16_MAX >> ((int)right)))) ? 
+    ((left < 0) || (((int)right) < 0) || (((int)right) >= 16) || (left > (INT16_MAX >> ((int)right)))) ? 
     (UNDEFINED(left)) : 
 #endif
     (left << ((int)right));
@@ -241,7 +241,7 @@ FUNC_NAME(lshift_func_int16_t_s_u)(int16_t left, unsigned int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((left < 0) || (((unsigned int)right) >= 32) || (left > (INT16_MAX >> ((unsigned int)right)))) ? 
+    ((left < 0) || (((unsigned int)right) >= 16) || (left > (INT16_MAX >> ((unsigned int)right)))) ? 
     (UNDEFINED(left)) : 
 #endif
     (left << ((unsigned int)right));
@@ -253,7 +253,7 @@ FUNC_NAME(rshift_func_int16_t_s_s)(int16_t left, int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((left < 0) || (((int)right) < 0) || (((int)right) >= 32))? 
+    ((left < 0) || (((int)right) < 0) || (((int)right) >= 16))? 
     (UNDEFINED(left)) : 
 #endif
     (left >> ((int)right));
@@ -265,7 +265,7 @@ FUNC_NAME(rshift_func_int16_t_s_u)(int16_t left, unsigned int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((left < 0) || (((unsigned int)right) >= 32)) ? 
+    ((left < 0) || (((unsigned int)right) >= 16)) ? 
     (UNDEFINED(left)) : 
 #endif
     (left >> ((unsigned int)right));
@@ -458,7 +458,7 @@ FUNC_NAME(lshift_func_uint8_t_u_s)(uint8_t left, int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((((int)right) < 0) || (((int)right) >= 32) || (left > (UINT8_MAX >> ((int)right)))) ? 
+    ((((int)right) < 0) || (((int)right) >= 16) || (left > (UINT8_MAX >> ((int)right)))) ? 
     (UNDEFINED(left)) : 
 #endif
     (left << ((int)right));
@@ -470,7 +470,7 @@ FUNC_NAME(lshift_func_uint8_t_u_u)(uint8_t left, unsigned int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((((unsigned int)right) >= 32) || (left > (UINT8_MAX >> ((unsigned int)right)))) ? 
+    ((((unsigned int)right) >= 16) || (left > (UINT8_MAX >> ((unsigned int)right)))) ? 
     (UNDEFINED(left)) : 
 #endif
     (left << ((unsigned int)right));
@@ -482,7 +482,7 @@ FUNC_NAME(rshift_func_uint8_t_u_s)(uint8_t left, int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((((int)right) < 0) || (((int)right) >= 32)) ? 
+    ((((int)right) < 0) || (((int)right) >= 16)) ? 
     (UNDEFINED(left)) : 
 #endif
     (left >> ((int)right));
@@ -494,7 +494,7 @@ FUNC_NAME(rshift_func_uint8_t_u_u)(uint8_t left, unsigned int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    (((unsigned int)right) >= 32) ? 
+    (((unsigned int)right) >= 16) ? 
     (UNDEFINED(left)) : 
 #endif
     (left >> ((unsigned int)right));
@@ -558,7 +558,7 @@ FUNC_NAME(lshift_func_uint16_t_u_s)(uint16_t left, int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((((int)right) < 0) || (((int)right) >= 32) || (left > (UINT16_MAX >> ((int)right)))) ? 
+    ((((int)right) < 0) || (((int)right) >= 16) || (left > (UINT16_MAX >> ((int)right)))) ? 
     (UNDEFINED(left)) : 
 #endif
     (left << ((int)right));
@@ -570,7 +570,7 @@ FUNC_NAME(lshift_func_uint16_t_u_u)(uint16_t left, unsigned int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((((unsigned int)right) >= 32) || (left > (UINT16_MAX >> ((unsigned int)right)))) ? 
+    ((((unsigned int)right) >= 16) || (left > (UINT16_MAX >> ((unsigned int)right)))) ? 
     (UNDEFINED(left)) : 
 #endif
     (left << ((unsigned int)right));
@@ -582,7 +582,7 @@ FUNC_NAME(rshift_func_uint16_t_u_s)(uint16_t left, int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    ((((int)right) < 0) || (((int)right) >= 32)) ? 
+    ((((int)right) < 0) || (((int)right) >= 16)) ? 
     (UNDEFINED(left)) : 
 #endif
     (left >> ((int)right));
@@ -594,7 +594,7 @@ FUNC_NAME(rshift_func_uint16_t_u_u)(uint16_t left, unsigned int right LOG_INDEX)
   LOG_EXEC
   return 
 #ifndef UNSAFE
-    (((unsigned int)right) >= 32) ? 
+    (((unsigned int)right) >= 16) ? 
     (UNDEFINED(left)) : 
 #endif
     (left >> ((unsigned int)right));
