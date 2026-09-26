@@ -1,0 +1,11 @@
+name = "player_tick"
+kind = "pair"
+description = "The player's platformer tick: run and dash caps, skid, jump buffer, the run-scaled jump and its cut, gravity, the X move with the slope step, the floor and ceiling scans and the slope under the feet. Three ticks in a 20x14 room."
+unit_labels = ["loom_pvs_player_tick"]
+helper_labels = ["tcc__mul", "tcc__udiv"]
+
+[provenance]
+loom_commit = "925fc3a"
+c_source = "runtime/src/movement.c:412-465 (loom_movement_floor_in_cell, _slope_feet, _column_solid) and 480-936 (loom_movement_platformer_tick) at 925fc3a^"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_player_tick with loom_pvs_tight_cell/_advance/_probe_x/_scan_floor/_scan_ceiling and loom_pvs_player_ease/_slope_feet/_jump_scale/_umul/_udiv at 925fc3a"
+notes = "The C takes held/pressed as arguments (it read pad 0 of the input snapshot) and uses the portable probe loops (the asm inlines its probes). The generated actor hooks are driver.c's no-placed-actors versions: the asm tick only runs while the room has no solid actor, and ignores them."
