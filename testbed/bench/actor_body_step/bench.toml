@@ -1,0 +1,11 @@
+name = "actor_body_step"
+kind = "pair"
+description = "The actor platformer body step on its record: ledge turn, velocities and clamps, jump and cut, gravity, the X move against walls and the Y tile scan. Six bodies in a 20x14 room."
+unit_labels = ["loom_pvs_actor_body"]
+helper_labels = []
+
+[provenance]
+loom_commit = "13d8987"
+c_source = "runtime/src/actor.c:509-673, 744-752 and 776-779 at 13d8987^ (loom_actor_platformer_step through the Y scans, console path with LOOM_BODY_PROBES_FAST), moved onto the LoomActorBodyStep record 13d8987 introduced"
+asm_source = "runtime/backends/pvsneslib/src/body.asm:loom_pvs_actor_body (with loom_pvs_actor_pointers/_s8/_advance and loom_pvs_body_cell/_grid) at 13d8987 (at HEAD it survives as loom_pvs_actor_core behind loom_pvs_actor_body, with the probes inlined and the RAM moved)"
+notes = "The C is Loom's step with the pool's arrays and the type's box replaced by the record's fields and its locals stored to the record, as the asm's contract says; the floor merge after the scans stayed in C and is not here. The tile probes the step calls are driver.c C functions (from the portable loops) in both variants, not measured as the unit. Known divergence avoided by the inputs: a record that is grounded with vy < 0 (Loom never makes one: landing zeroes vy) takes the floor scan in the C and the ceiling scan in the asm."
