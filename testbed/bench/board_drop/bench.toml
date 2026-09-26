@@ -1,0 +1,11 @@
+name = "board_drop"
+kind = "pair"
+description = "Hard drop: lift a piece off the board, find the lowest row it fits straight below, stamp it there (cells, tilemap words, dirty spans, kept hash). One two-cell drop on a 10x20 board."
+unit_labels = ["loom_pvs_board_drop"]
+helper_labels = ["tcc__mul"]
+
+[provenance]
+loom_commit = "cb5a47f"
+c_source = "loom_board_drop is new in cb5a47f; the C is its host #else branch there (runtime/src/board.c: erase, fits one row lower until it fails, stamp) over the parent's C calls: runtime/src/board.c at cb5a47f^ / e239e1c^ loom_board_fits (264-296), loom_board_paint_shape (298-333), loom_board_set, loom_board_draw_cell, loom_board_cell, and surface.c's loom_surface_dirty/_cell/_row/_mark, taking the LoomBoardPaint record"
+asm_source = "runtime/backends/pvsneslib/src/board.asm:loom_pvs_board_drop (+ _move_from, _fits_core, _paint_core, _draw, _rehash, _dirty, _load, _mul) at cb5a47f (unchanged at HEAD)"
+notes = "The scene checks board.c makes before calling the asm (board handle, kind < kind_count, the surface's row bound) are left out of both. The kept hash update (hash += (kind - old) * (2 * index + 1) while hash_valid) is not in the parent's C: e239e1c added it with the asm; the C here adds it in loom_board_set. Only a two-cell piece falling one row, with hash_valid = 0 (a release build), fits the one-frame budget through 816-tcc; board_paint covers the kept hash. .BASE LOOM_ROM_BASE is written .BASE $80."
