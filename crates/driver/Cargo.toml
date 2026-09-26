@@ -15,5 +15,6 @@ loomcc-pp = { path = "../pp" }
 loomcc-parse = { path = "../parse" }
 loomcc-sema = { path = "../sema" }
 loomcc-ir = { path = "../ir" }
+loomcc-opt = { path = "../opt" }
 loomcc-w65816 = { path = "../w65816" }
 serde_json = "1"

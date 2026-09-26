@@ -82,10 +82,10 @@ pub struct Compiled {
 
 /// Front end + lowering for a whole program (all translation units at once).
 pub fn compile_ir(paths: &[std::path::PathBuf], opts: &Options) -> Compiled {
-    compile_ir_prefixed(paths, opts, "")
+    compile_ir_prefixed(paths, opts, "", 2)
 }
 
-pub fn compile_ir_prefixed(paths: &[std::path::PathBuf], opts: &Options, prefix: &str) -> Compiled {
+pub fn compile_ir_prefixed(paths: &[std::path::PathBuf], opts: &Options, prefix: &str, opt_level: u8) -> Compiled {
     let mut units = Vec::new();
     let mut sources = Vec::new();
     let mut messages = String::new();
@@ -112,6 +112,10 @@ pub fn compile_ir_prefixed(paths: &[std::path::PathBuf], opts: &Options, prefix:
         messages.push_str(&sources[*ui].render(d));
         messages.push('\n');
         failed |= d.level == Level::Error;
+    }
+    let mut m = m;
+    if !failed {
+        loomcc_opt::optimize_module(&mut m, &loomcc_opt::Options { level: opt_level, inline: true });
     }
     if let Err(e) = loomcc_ir::verify::verify_module(&m) {
         messages.push_str(&format!("loomcc: internal IR error: {}\n", e));

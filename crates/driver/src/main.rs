@@ -10,6 +10,7 @@ struct Args {
     mode: Mode,
     output: Option<PathBuf>,
     nostdinc: bool,
+    opt: u8,
 }
 
 #[derive(PartialEq)]
@@ -29,7 +30,7 @@ enum Mode {
 }
 
 fn parse_args() -> Result<Args, String> {
-    let mut args = Args { inputs: Vec::new(), pp: Options { target_macros: true, ..Default::default() }, mode: Mode::Preprocess, output: None, nostdinc: false };
+    let mut args = Args { inputs: Vec::new(), pp: Options { target_macros: true, ..Default::default() }, mode: Mode::Preprocess, output: None, nostdinc: false, opt: 2 };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
         let mut value = |flag: &str, rest: &str| -> Result<String, String> {
@@ -55,6 +56,12 @@ fn parse_args() -> Result<Args, String> {
             args.pp.defines.push(Define::Unset(value("-U", rest)?));
         } else if a == "-E" {
             args.mode = Mode::Preprocess;
+        } else if let Some(l) = a.strip_prefix("-O") {
+            args.opt = match l {
+                "" | "1" => 1,
+                "0" => 0,
+                _ => 2,
+            };
         } else if a == "-fsyntax-only" {
             args.mode = Mode::SyntaxOnly;
         } else if a == "--emit-ir" {
@@ -107,7 +114,7 @@ fn main() -> ExitCode {
             .map(|s| s.to_string_lossy().to_string())
             .unwrap_or_else(|| "unit".into());
         let prefix = if args.mode == Mode::Assembly { format!("{}_", tag) } else { String::new() };
-        let c = loomcc::compile_ir_prefixed(&args.inputs, &args.pp, &prefix);
+        let c = loomcc::compile_ir_prefixed(&args.inputs, &args.pp, &prefix, args.opt);
         eprint!("{}", c.messages);
         if c.failed {
             return ExitCode::from(1);
