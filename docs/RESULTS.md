@@ -363,6 +363,33 @@ assembly:
 - Cliffside: `body.asm` and `oam.asm`, 4,681 of 7,346;
 - Stack: `board.asm`, `vblank.asm` and `oam.asm`, 1,435 of 3,581.
 
+## Recursion with real frames (2026-09-26)
+
+Recursive functions now get frames on the hardware stack (PLAN §9), so
+each activation has its own locals, address-taken ones included. The new
+tests in `tests/tests/t4-exec/recursion/` cover address-taken locals passed
+down the recursion, mutual recursion, 90 levels deep (about 5.9 KB of
+stack), recursion through a function pointer with a struct result, and
+tail recursion 30,000 deep. Six of the seven fail with the previous
+compiler; all pass now.
+
+Benchmark `micro_recursion`: a flood fill (four recursive calls per cell), a
+recursive-descent evaluator (three mutually recursive functions) and a
+binary-tree sum with an out-parameter per level.
+
+| | code bytes | instructions | clocks |
+|---|---:|---:|---:|
+| 816-tcc | 1,442 | 7,324 | 192,932 |
+| loomcc | 1,185 | 5,529 | **168,360** (0.87x) |
+
+The gain is smaller than on the other benchmarks (0.39x geometric mean)
+because every recursive call costs a frame. A call is about 19
+instructions of overhead: the pushes, `jsl`, and `phd`/`tcd` in; the
+reverse on the way out. The body code is the usual loomcc code.
+
+None of the other 31 benchmarks, and none of Cliffside, Lantern Road and
+Stack, recurses. Their loomcc builds are byte-identical before and after.
+
 ## Current table (M7c)
 
 | bench | kind | equal | tcc bytes | tcc instr | tcc clocks | asm bytes | asm instr | asm clocks | loomcc bytes | loomcc instr | loomcc clocks | loomcc/tcc clocks | loomcc/asm clocks | cstack bytes |
