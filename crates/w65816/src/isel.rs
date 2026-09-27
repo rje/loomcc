@@ -10,8 +10,8 @@ use crate::alloc::*;
 /// Where an index-register value is parked for an operation that needs it in
 /// memory.
 const XY_SPILL: u8 = 0x18;
-/// Consecutive byte arguments share one `sep` (PERF commit).
-const BATCH8: bool = false;
+/// Consecutive byte arguments share one `sep`.
+const BATCH8: bool = true;
 
 /// The most frame bytes one call site saves on the hardware stack (Loom's
 /// whole stack is 7,632 bytes).

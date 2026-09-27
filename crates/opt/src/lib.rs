@@ -42,7 +42,7 @@ pub fn optimize_func(f: &mut Func, level: u8) {
         copy::propagate_local(f);
         copy::retarget_defs(f);
         range::refold_signed_indexes(f);
-        // range::unsign_compares(f); (PERF commit)
+        range::unsign_compares(f);
         dce::dce(f);
         if level >= 2 {
             licm::hoist_invariants(f);

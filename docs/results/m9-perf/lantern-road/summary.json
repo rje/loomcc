@@ -1,0 +1,67 @@
+{
+ "sample": "lantern-road",
+ "tick_frames": 2,
+ "provenance": "packaged by loom-automation",
+ "tcc_build": "tcc: 524288 bytes, sha256 5e27cb23baa8033f, IDENTICAL to the automation ROM",
+ "loomcc_build": "loomcc: 524288 bytes, sha256 853452d9744dd21c, differs from the automation ROM",
+ "units": {
+  "loomcc": [
+   ".loom/generated/src/audio_data.c",
+   ".loom/generated/src/mode1_data.c",
+   ".loom/generated/src/runtime_schedule.c",
+   ".loom/generated/src/ui_data.c",
+   ".loom/generated/src/user_hooks.c",
+   ".loom/generated/src/variables_data.c",
+   ".loom/generated/target/pvsneslib/asset_table.c",
+   ".loom/generated/target/pvsneslib/audio_table.c",
+   ".loom/generated/target/pvsneslib/raster_table.c",
+   "project/Code/Portable/Hooks/game_update.c",
+   "project/Code/Portable/adventure.c",
+   "runtime/backends/pvsneslib/src/frame-transaction.c",
+   "runtime/backends/pvsneslib/src/runtime-adapter.c",
+   "runtime/backends/pvsneslib/src/startup.c",
+   "runtime/src/actor.c",
+   "runtime/src/adventure.c",
+   "runtime/src/animation.c",
+   "runtime/src/audio.c",
+   "runtime/src/camera.c",
+   "runtime/src/combat.c",
+   "runtime/src/frame-build.c",
+   "runtime/src/frame-shell.c",
+   "runtime/src/game.c",
+   "runtime/src/mode1.c",
+   "runtime/src/movement.c",
+   "runtime/src/save.c",
+   "runtime/src/scene.c",
+   "runtime/src/ui.c",
+   "runtime/src/variables.c"
+  ],
+  "816-tcc": []
+ },
+ "window": [
+  400,
+  1000
+ ],
+ "tcc_instructions_per_tick": 6911,
+ "tcc_ticks_in_window": 300,
+ "tcc_lag_in_window_at_tick_frames_2": 304,
+ "tcc_lag_whole_run_at_tick_frames_2": 1016,
+ "loomcc_instructions_per_tick": 3828,
+ "loomcc_ticks_in_window": 300,
+ "loomcc_lag_in_window_at_tick_frames_2": 301,
+ "loomcc_lag_whole_run_at_tick_frames_2": 1008,
+ "tickcompare": {
+  "distinct_images": [
+   303,
+   303
+  ],
+  "image_sequences_identical": true,
+  "ticks_compared": 1000,
+  "witness_differ": [],
+  "shots_compared": 2016
+ },
+ "tcc_lag_in_window_at_tick_frames_1": 12,
+ "tcc_lag_whole_run_at_tick_frames_1": 39,
+ "loomcc_lag_in_window_at_tick_frames_1": 5,
+ "loomcc_lag_whole_run_at_tick_frames_1": 19
+}

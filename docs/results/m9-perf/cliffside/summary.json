@@ -1,0 +1,65 @@
+{
+ "sample": "cliffside",
+ "tick_frames": 2,
+ "provenance": "packaged by loom-automation",
+ "tcc_build": "tcc: 262144 bytes, sha256 7decdd69279a6803, IDENTICAL to the automation ROM",
+ "loomcc_build": "loomcc: 262144 bytes, sha256 66a18da2162b3b28, differs from the automation ROM",
+ "units": {
+  "loomcc": [
+   ".loom/generated/src/audio_data.c",
+   ".loom/generated/src/mode1_data.c",
+   ".loom/generated/src/runtime_schedule.c",
+   ".loom/generated/src/ui_data.c",
+   ".loom/generated/src/user_hooks.c",
+   ".loom/generated/src/variables_data.c",
+   ".loom/generated/target/pvsneslib/asset_table.c",
+   ".loom/generated/target/pvsneslib/audio_table.c",
+   ".loom/generated/target/pvsneslib/raster_table.c",
+   "project/Code/Portable/cliffside.c",
+   "runtime/backends/pvsneslib/src/frame-transaction.c",
+   "runtime/backends/pvsneslib/src/runtime-adapter.c",
+   "runtime/backends/pvsneslib/src/startup.c",
+   "runtime/src/actor.c",
+   "runtime/src/adventure.c",
+   "runtime/src/animation.c",
+   "runtime/src/audio.c",
+   "runtime/src/camera.c",
+   "runtime/src/combat.c",
+   "runtime/src/frame-build.c",
+   "runtime/src/frame-shell.c",
+   "runtime/src/game.c",
+   "runtime/src/mode1.c",
+   "runtime/src/movement.c",
+   "runtime/src/scene.c",
+   "runtime/src/ui.c",
+   "runtime/src/variables.c"
+  ],
+  "816-tcc": []
+ },
+ "window": [
+  400,
+  1000
+ ],
+ "tcc_instructions_per_tick": 10622,
+ "tcc_ticks_in_window": 300,
+ "tcc_lag_in_window_at_tick_frames_2": 301,
+ "tcc_lag_whole_run_at_tick_frames_2": 832,
+ "loomcc_instructions_per_tick": 7326,
+ "loomcc_ticks_in_window": 300,
+ "loomcc_lag_in_window_at_tick_frames_2": 300,
+ "loomcc_lag_whole_run_at_tick_frames_2": 820,
+ "tickcompare": {
+  "distinct_images": [
+   582,
+   582
+  ],
+  "image_sequences_identical": true,
+  "ticks_compared": 813,
+  "witness_differ": [],
+  "shots_compared": 1566
+ },
+ "tcc_lag_in_window_at_tick_frames_1": 54,
+ "tcc_lag_whole_run_at_tick_frames_1": 126,
+ "loomcc_lag_in_window_at_tick_frames_1": 2,
+ "loomcc_lag_whole_run_at_tick_frames_1": 22
+}

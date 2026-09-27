@@ -40,6 +40,7 @@ assembly that replaced the C in Loom's history, **loomcc** = this compiler.
 | M7c: branch-free compare results, clean 8-bit values, join-aware layout | 0.38 | 1.27 | 0.50 | 31/31 |
 | M8 + F29/F30 fixes (re-entry saves only the caller's live frame words, by block move; no `n,s` offset past 255) | 0.38 | 1.28 | 0.51 | 31/31 |
 | F34 fix (struct-return pointer and index-register arguments in the call's parallel move) | 0.38 | 1.28 | 0.51 | 31/31 |
+| Byte-argument batching, unsigned compares of non-negative values (32 benchmarks with micro_recursion) | 0.39 | 1.27 | 0.51 | 32/32 |
 
 (Geometric means. Lower is better; asm/tcc clocks is 0.32 for scale.)
 
@@ -389,6 +390,33 @@ reverse on the way out. The body code is the usual loomcc code.
 
 None of the other 31 benchmarks, and none of Cliffside, Lantern Road and
 Stack, recurses. Their loomcc builds are byte-identical before and after.
+
+## Two small code-generation gains, checked on the tick clock (2026-09-26)
+
+Two code-generation changes, applied only after Cliffside, Lantern Road and
+Stack still matched 816-tcc on the tick clock (witness 813, 1000 and 968
+ticks, 0 bytes differ; distinct image sequences identical):
+
+- **Byte-argument batching:** consecutive 8-bit argument pushes share one
+  `sep` instead of a `sep`/`rep` pair each.
+- **Unsigned compares for non-negative values:** a signed comparison of
+  values that cannot be negative, proved without assuming that signed
+  arithmetic never overflows (widened bytes, masks, logical shifts),
+  becomes an unsigned one, so the `eor #$8000` on each side goes.
+
+| | before | after |
+|---|---:|---:|
+| Cliffside instr/tick | 7,346 | **7,326** |
+| Lantern Road instr/tick | 3,836 | **3,828** |
+| Stack instr/tick | 3,581 | **3,546** |
+| micro_recursion clocks (816-tcc 192,932) | 168,360 (0.87x) | **162,212 (0.84x)** |
+| loomcc/asm clocks, 24 pairs (geometric mean) | 1.28x | **1.27x** |
+
+13 of the 32 benchmarks got faster (by 0.2 to 5.3%) and none slower; all 32
+agree with host, 816-tcc and hand assembly. At `tick_frames = 1`, loomcc's
+Lantern Road lag in frames 400-1000 went from 6 to 5; Cliffside (2) and
+Stack (8) are unchanged. Raw data is in `docs/results/m9-perf/` and
+`docs/results/perf-batch8-unsigned-bench.json`.
 
 ## Current table (M7c)
 
