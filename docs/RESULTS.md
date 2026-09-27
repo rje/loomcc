@@ -418,6 +418,67 @@ Lantern Road lag in frames 400-1000 went from 6 to 5; Cliffside (2) and
 Stack (8) are unchanged. Raw data is in `docs/results/m9-perf/` and
 `docs/results/perf-batch8-unsigned-bench.json`.
 
+## Private game corpus (2026-09-27)
+
+Six Loom games made separately from the samples, larger and denser than
+them, all shipping at `tick_frames = 1`. They are private: their files,
+art, code and ROMs are not in this repository, only these numbers. Method
+as in M9:
+- each project was copied, never modified in place, and packaged by
+  loom-automation;
+- the runtime was copied from Loom's working tree right after packaging
+  (Loom HEAD 36583ce);
+- each game was rebuilt by `build.py` with 816-tcc (byte-identical to
+  Loom's own ROM for all six) and with loomcc, which compiled every C
+  unit, the games' own hooks included;
+- the input came from each game's ROM test (`test2script.py`).
+
+The window is frames 400-1000, or, for a test shorter than 1000 frames,
+from the end of the boot span plus 20 frames to the end (as for Stack).
+
+| game | C units | 816-tcc instr/tick | loomcc instr/tick | change | lag frames in window, 816-tcc | lag frames in window, loomcc | tick-clock comparison |
+|---|---:|---:|---:|---:|---|---|---|
+| Thornvale | 29 | 9,798 | **5,477** | -44% | 96 of 600 (16%) | **2 (0.3%)** | 2,232 ticks, witness equal; 1,605 = 1,605 images |
+| Twin Wings | 27 | 8,482 | **2,665** | -69% | 97 of 600 (16%) | **0** | 1,120 ticks, equal; 167 = 167 |
+| Plumber Plains | 27 | 21,122 | **12,018** | -43% | 323 of 600 (54%) | **204 (34%)** | 1,581 ticks, equal; 1,411 = 1,411 |
+| Panel Garden | 28 | 18,154 | **6,394** | -65% | 102 of 275 (37%) | **4 (1.5%)** | 433 ticks, equal; 29 = 29 |
+| Ember Depths | 27 | 10,066 | **6,283** | -38% | 15 of 332 (4.5%) | **1 (0.3%)** | 486 ticks, equal; 306 = 306 |
+| Verdant Keep | 27 | 19,811 | **10,253** | -48% | 250 of 499 (50%) | **33 (6.6%)** | 646 ticks, equal; 422 = 422 |
+
+**Behaviour.** loomcc and 816-tcc agree on every game: the debug witness
+is identical on every tick and the distinct presented images are
+identical in sequence. One Thornvale comparison first showed 1,605 images
+against 1,593 with equal witnesses, and a rerun gave 1,605 = 1,605:
+screen capture under load. `measure.py` now reruns the comparison when
+only the images differ.
+
+**60 Hz.** With loomcc, four of the six run at 60 Hz with at most 0.3-1.5%
+lag frames (Thornvale, Twin Wings, Panel Garden, Ember Depths); with
+816-tcc only Ember Depths comes close. The two that still lag:
+- **Plumber Plains** (34% lag frames): Loom's hand assembly is about 8,700
+  of loomcc's 12,018 instructions a tick (`body.asm`, collision, 6,400;
+  `oam.asm` 1,800). The C loomcc compiles is about 3,300, so no compiler
+  change can bring this game to 60 Hz; its collision assembly is the
+  bottleneck.
+- **Verdant Keep** (6.6%): the actor code in C is the largest item (actor.c
+  8,015 -> 2,789 instructions a tick), then hand assembly (`body.asm` and
+  `oam.asm`, about 4,800). The C part is where further compiler gains
+  would show.
+
+**Where loomcc saves most.** The same runtime modules as in the samples:
+- `mode1.c` and `ui.c` fall to a third or less;
+- the pvsneslib adapter's wrappers inline away;
+- `actor.c` falls from 8,015 to 2,789 in Verdant Keep;
+- the games' own C hooks shrink by 2.3-3.2x (Panel Garden's hook from
+  about 11,900 to about 3,700 instructions a tick). In the per-unit
+  tables that hook appears under `assets.asm`: its code follows an asset
+  label and has no symbol of its own in loomcc's build.
+
+At `tick_frames = 1` the two builds complete different numbers of ticks
+in the same frames, so the per-unit rows compare slightly different
+stretches of play. The hand-assembly rows (identical code in both builds)
+differ by up to about 10% for that reason.
+
 ## Current table (M7c)
 
 | bench | kind | equal | tcc bytes | tcc instr | tcc clocks | asm bytes | asm instr | asm clocks | loomcc bytes | loomcc instr | loomcc clocks | loomcc/tcc clocks | loomcc/asm clocks | cstack bytes |
