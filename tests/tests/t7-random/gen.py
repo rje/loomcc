@@ -63,6 +63,7 @@ class Gen:
         self.small = False
         self.structs = []   # (name, [(field, type)], (array field, type, size))
         self.recursion = recursion
+        self.pure = 0
 
     def lit(self, t):
         bits, signed = TYPES[t]
@@ -114,7 +115,11 @@ class Gen:
                 return f"(({t})((1u * ({ut}){a()}) << {n}))" if bits < 32 else f"(({t})(({ut}){a()} << {n}))"
             return f"(({t})({a()} >> {n}))"   # >> of a negative value: arithmetic everywhere here
         if k < 0.55:
+            # The guard evaluates the operands twice: no calls in them (a
+            # call may change the globals the divisor reads in between).
+            self.pure += 1
             x, y = a(), a()
+            self.pure -= 1
             if signed:
                 mn = f"(({t})(({ut})1 << {bits - 1}))"
                 return f"(({t})(({y}) == 0 || (({x}) == {mn} && ({y}) == -1) ? 0 : ({x}) {self.r.choice(['/', '%'])} ({y})))"
@@ -133,7 +138,7 @@ class Gen:
             return f"(({t})(!{a()} {self.r.choice(['&&', '||'])} {a()}))"
         if k < 0.94:
             return f"(({t})~({ut}){a()})"
-        fs = [f for f in self.funcs if f[1] == t]
+        fs = [f for f in self.funcs if f[1] == t] if not self.pure else []
         if fs:
             name, _, params = self.r.choice(fs)
             return f"{name}({', '.join(self.expr(p, env, depth - 1) for p in params)})"

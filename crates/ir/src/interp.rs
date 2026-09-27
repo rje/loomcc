@@ -272,7 +272,10 @@ impl<'m> Machine<'m> {
                         _ => binop(*op, IrTy::I32, x, y)?,
                     }
                 } else {
-                    binop(*op, t, x, y)?
+                    binop(*op, t, x, y).map_err(|e| match e {
+                        Trap::Error(m) => Trap::Error(format!("{} (in {}: {})", m, f.name, crate::print_inst(f, i))),
+                        other => other,
+                    })?
                 };
                 regs[dst.0 as usize] = t.zext(r);
             }
