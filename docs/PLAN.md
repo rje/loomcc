@@ -133,9 +133,9 @@ suite runs with each pass on and off.
   word the callee tree never touches. What does not fit goes to a
   **compiled stack**: static frames in bank $7E (absolute addressing,
   DBR = $7E), overlaid by call-graph depth so frames of functions that are
-  never active together share memory. Recursive SCCs, and functions reached
-  from interrupt context, get their own storage (recursion: frames saved on
-  the hardware stack around intra-SCC calls).
+  never active together share memory. Functions reached from interrupt
+  context get their own copies; recursive functions get real frames on the
+  hardware stack (§9, 2026-09-26: recursion).
 - **Calling convention** (internal, between loomcc functions): arguments are
   written straight into the callee's parameter homes (first 16-bit argument
   in A), the result comes back in A (A:X for 32-bit and pointers, X = bank),
@@ -342,10 +342,9 @@ ends). The same inputs go to all three variants.
     call from one of its members) pushes the members' static frames on the
     hardware stack and pulls them back afterwards. The calling function's
     own address-taken slots are not restored (the callee may write them
-    through a pointer: out-parameters, struct results). Limitation: a
-    re-entrant activation that writes the *same* address-taken slot as an
-    outer activation still shares it; a stack-allocated frame for
-    recursive functions would lift this.
+    through a pointer: out-parameters, struct results). (Superseded for
+    recursion in the program itself by stack frames, below; still used for
+    cycles only through callbacks from external code.)
   - **816-tcc 32-bit results** come back in tcc__r0 (low) and tcc__r1 (high,
     $04), not tcc__r0h as pointers do.
   - **NMI cloning**: every function reachable from an interrupt root gets a
@@ -377,3 +376,40 @@ ends). The same inputs go to all three variants.
     under its core count before each emulator run: at background priority
     a saturated machine starves the emulator past its fixed 5-second
     frame deadline.
+- 2026-09-26: **Recursion with real frames.** Every function in a
+  recursive component of the program's own call graph (direct calls and
+  calls through pointers), outside interrupt context, gets a frame on the
+  hardware stack, so each activation has its own locals, address-taken
+  ones included. Non-recursive functions keep static frames at no cost.
+  - **Frame.** The prologue is `phd; tsc; sec; sbc #size; tcs; inc a; tcd`.
+    D points at the frame. Its first bytes are the activation's own copy of
+    the direct-page register file (the allocator's homes and the scratch
+    words), so the function's code is the same as with D = 0. Spilled
+    values and slots sit above it, then the caller's D, the return address
+    and the arguments. Arguments are pushed by the caller in the 816-tcc
+    layout, which also makes the 816-tcc entry a copy-and-call.
+  - **Reach.** Direct-page offsets are 8 bits. Spilled values must lie
+    within 256 bytes of D. Slots and arguments further up are reached as
+    `0,x` with X holding the offset: `dp,x` adds X to D without wrapping.
+    The allocator is told that frame-slot accesses use X. A function with
+    more than 256 bytes of spilled values keeps a static frame, saved
+    around its recursive calls as before.
+  - **D back to 0.** D is restored to 0 around calls from a stack-frame
+    function to anything that expects D = 0: a static-frame function (its
+    direct-page parameter homes are written with absolute addressing,
+    since $7E:0000-$1FFF is the same memory as bank 0's low 8 KiB),
+    816-tcc code, PVSnesLib and hand assembly. Results are read from
+    tcc__r0/r0h/r1 while D is still 0. The NMI handler (PVSnesLib's
+    VBlank) sets D itself, so an interrupt during a stack-frame function is
+    safe. Loom has no IRQ handler.
+  - **Stack budget.** Each recursive component is reported with its bytes
+    per call (frame + saved D + return address + arguments) and the depth
+    that fits in `--stack-budget=` (default 7,632, Loom's reserve). The
+    depth of recursion is not bounded at compile time.
+  - **Tail calls** to the function itself (`return f(...)` or `f(...);
+    return;`) become loops (loomcc-opt `tailrec`) when the function has no
+    frame slots whose address could escape.
+  - Recursion only through callbacks from hand assembly keeps the old
+    frame-save scheme. So does interrupt context, whose functions are
+    cloned.
+

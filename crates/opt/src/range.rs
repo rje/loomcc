@@ -103,3 +103,79 @@ pub fn refold_signed_indexes(f: &mut Func) {
         }
     }
 }
+
+/// Registers in 0..0x8000 without assuming signed arithmetic never
+/// overflows (programs written for 816-tcc may rely on wrapping): widened
+/// bytes, masks, logical right shifts, compare results and copies of them.
+pub fn nonneg_wrapping(f: &Func) -> Vec<bool> {
+    let n = f.vregs.len();
+    let mut nn: Vec<bool> = (0..n).map(|i| f.vregs[i] == IrTy::I16).collect();
+    for r in f.param_regs.iter().flatten() {
+        nn[r.0 as usize] = false;
+    }
+    let op_nn = |o: &Operand, nn: &[bool]| match o {
+        Operand::Imm(v) => (v & 0xffff) < 0x8000,
+        Operand::Reg(r) => nn[r.0 as usize],
+        _ => false,
+    };
+    loop {
+        let mut changed = false;
+        for b in &f.blocks {
+            for i in &b.insts {
+                let Some(d) = i.def() else { continue };
+                if !nn[d.0 as usize] {
+                    continue;
+                }
+                let ok = match i {
+                    Inst::Mov { src, .. } => op_nn(src, &nn),
+                    Inst::Conv { kind: ConvKind::Zext, from: IrTy::I8, .. } => true,
+                    Inst::Cmp { .. } => true,
+                    Inst::Bin { op: BinOp::And, a, b, .. } => op_nn(a, &nn) || op_nn(b, &nn),
+                    Inst::Bin { op: BinOp::ShrU, b, .. } => b.imm().map_or(false, |k| k & 0xffff >= 1),
+                    Inst::Bin { op: BinOp::Or | BinOp::Xor, a, b, .. } => op_nn(a, &nn) && op_nn(b, &nn),
+                    _ => false,
+                };
+                if !ok {
+                    nn[d.0 as usize] = false;
+                    changed = true;
+                }
+            }
+        }
+        if !changed {
+            return nn;
+        }
+    }
+}
+
+/// A signed comparison of two values known to be in 0..0x8000 is the
+/// unsigned one, which the 65816 does without flipping sign bits
+/// (`cmp`/`bcs` rather than `eor #$8000` on both sides).
+pub fn unsign_compares(f: &mut Func) {
+    let nn = nonneg_wrapping(f);
+    let op_nn = |o: &Operand| match o {
+        Operand::Imm(v) => (0..0x8000).contains(v),
+        Operand::Reg(r) => nn[r.0 as usize],
+        _ => false,
+    };
+    let unsigned = |cc: Cond| match cc {
+        Cond::LtS => Cond::LtU,
+        Cond::LeS => Cond::LeU,
+        Cond::GtS => Cond::GtU,
+        Cond::GeS => Cond::GeU,
+        c => c,
+    };
+    for b in &mut f.blocks {
+        for i in &mut b.insts {
+            if let Inst::Cmp { cc, ty: IrTy::I16, a, b, .. } = i {
+                if cc.is_signed() && op_nn(a) && op_nn(b) {
+                    *cc = unsigned(*cc);
+                }
+            }
+        }
+        if let Term::BrCmp { cc, ty: IrTy::I16, a, b, .. } = &mut b.term {
+            if cc.is_signed() && op_nn(a) && op_nn(b) {
+                *cc = unsigned(*cc);
+            }
+        }
+    }
+}

@@ -14,6 +14,8 @@ struct Args {
     /// Hand-written assembly whose `jsl` targets are C functions called back
     /// while the assembly runs (frames must stay disjoint).
     asm_callbacks: Vec<PathBuf>,
+    /// Hardware stack bytes available (recursion is reported against it).
+    stack_budget: u32,
 }
 
 #[derive(PartialEq)]
@@ -33,7 +35,7 @@ enum Mode {
 }
 
 fn parse_args() -> Result<Args, String> {
-    let mut args = Args { inputs: Vec::new(), pp: Options { target_macros: true, ..Default::default() }, mode: Mode::Preprocess, output: None, nostdinc: false, opt: 2, asm_callbacks: Vec::new() };
+    let mut args = Args { inputs: Vec::new(), pp: Options { target_macros: true, ..Default::default() }, mode: Mode::Preprocess, output: None, nostdinc: false, opt: 2, asm_callbacks: Vec::new(), stack_budget: 7632 };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
         let mut value = |flag: &str, rest: &str| -> Result<String, String> {
@@ -69,6 +71,8 @@ fn parse_args() -> Result<Args, String> {
             args.mode = Mode::SyntaxOnly;
         } else if a == "--emit-ir" {
             args.mode = Mode::EmitIr;
+        } else if let Some(n) = a.strip_prefix("--stack-budget=") {
+            args.stack_budget = n.parse().map_err(|_| format!("--stack-budget needs a byte count, not '{}'", n))?;
         } else if let Some(f) = a.strip_prefix("--asm-callbacks=") {
             args.asm_callbacks.push(f.into());
         } else if a == "-S" {
@@ -174,7 +178,10 @@ fn real_main() -> ExitCode {
                     }
                 }
                 let callbacks = if args.asm_callbacks.is_empty() { None } else { Some(callbacks) };
-                let o = loomcc_w65816::compile_module(&m, &loomcc_w65816::Options { tag, callbacks, ..Default::default() });
+                let o = loomcc_w65816::compile_module(&m, &loomcc_w65816::Options { tag, callbacks, stack_budget: args.stack_budget, ..Default::default() });
+                for w in &o.warnings {
+                    eprintln!("loomcc: warning: {}", w);
+                }
                 for e in &o.errors {
                     eprintln!("loomcc: error: {}", e);
                 }

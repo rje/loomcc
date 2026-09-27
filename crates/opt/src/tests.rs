@@ -55,6 +55,13 @@ pub const PROGRAMS: &[&str] = &[
     static int sq(int x) { return x * x; }
     int main(void) { int a[10], i, *p = a, *q = &a[9]; for (i = 0; i < 10; i++) a[i] = i;
       printf("%d %d %d %d %d\n", fib(12), twice(inc, 5), sq(7), *(q - 2), (int)(q - p)); return 0; }"#,
+    r#"int printf(const char *, ...);
+    unsigned fact(unsigned n, unsigned acc) { if (n <= 1) return acc; return fact(n - 1, acc * n); }
+    int gcd(int a, int b) { if (b == 0) return a; return gcd(b, a % b); }
+    int swapper(int a, int b, int n) { if (n == 0) return a * 10 + b; return swapper(b, a, n - 1); }
+    void count(int *out, int n) { if (n == 0) return; *out += n; count(out, n - 1); }
+    int main(void) { int c = 0; count(&c, 10);
+      printf("%u %d %d %d %d\n", fact(7, 1), gcd(1071, 462), swapper(1, 2, 3), swapper(1, 2, 4), c); return 0; }"#,
 ];
 
 #[test]
@@ -81,4 +88,13 @@ fn copies_are_retargeted() {
     let text = loomcc_ir::print_module(&o);
     let movs = text.lines().filter(|l| l.contains(" = i16 %")).count();
     assert_eq!(movs, 0, "{}", text);
+}
+
+#[test]
+fn tail_recursion_becomes_a_loop() {
+    let m = compile("int gcd(int a, int b) { if (b == 0) return a; return gcd(b, a % b); }");
+    let mut o = m.clone();
+    crate::optimize_module(&mut o, &Default::default());
+    let text = loomcc_ir::print_module(&o);
+    assert!(!text.contains("call"), "{}", text);
 }

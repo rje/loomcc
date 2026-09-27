@@ -39,6 +39,12 @@ pub enum IdxReg {
 /// read or write `v` (the candidate living in `r`) as its own index?
 /// Must agree with isel.rs; when in doubt, say yes.
 pub fn inst_uses_reg(f: &Func, inst: &Inst, r: IdxReg, v: VReg) -> bool {
+    inst_uses_reg_ext(f, inst, r, v, false)
+}
+
+/// `slot_x`: frame slots may lie beyond direct-page reach of a frame on the
+/// hardware stack, where any slot access goes through X (dynframe).
+pub fn inst_uses_reg_ext(f: &Func, inst: &Inst, r: IdxReg, v: VReg, slot_x: bool) -> bool {
     let addr_uses = |a: &Addr, width2: bool| -> bool {
         match &a.base {
             Base::Reg(_) => {
@@ -54,6 +60,7 @@ pub fn inst_uses_reg(f: &Func, inst: &Inst, r: IdxReg, v: VReg) -> bool {
                     IdxReg::X => width2 || a.index.map_or(false, |(i, _)| i != v),
                 }
             }
+            Base::Slot(_) if slot_x => r == IdxReg::X,
             _ => match r {
                 IdxReg::X => match a.index {
                     None => false,
@@ -172,6 +179,12 @@ fn defines_in_a(f: &Func, inst: &Inst) -> bool {
 /// `clobber` gives the direct-page words a call may overwrite (its callee
 /// tree's words; everything for code outside the module).
 pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8>) -> Alloc {
+    allocate_ext(f, dp_allowed, clobber, false)
+}
+
+/// allocate, with frame-slot accesses using X (`slot_x`, see
+/// inst_uses_reg_ext).
+pub fn allocate_ext(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8>, slot_x: bool) -> Alloc {
     let n = f.vregs.len();
     let uses = use_counts(f);
     let defs = def_counts(f);
@@ -343,7 +356,7 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8
             });
             for v in cands {
                 let clash = in_reg.iter().any(|&(o, r2)| r2 == reg && adj[v as usize].contains(&o));
-                if clash || !reg_free(f, &lv, VReg(v), reg) {
+                if clash || !reg_free(f, &lv, VReg(v), reg, slot_x) {
                     continue;
                 }
                 homes[v as usize] = if reg == IdxReg::X { Home::X } else { Home::Y };
@@ -480,7 +493,7 @@ pub fn allocate(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Vec<u8
 }
 
 /// Can `v` live in `reg` from its definitions to its last uses?
-fn reg_free(f: &Func, lv: &Liveness, v: VReg, reg: IdxReg) -> bool {
+fn reg_free(f: &Func, lv: &Liveness, v: VReg, reg: IdxReg, slot_x: bool) -> bool {
     for (bi, b) in f.blocks.iter().enumerate() {
         let after = live_after(f, lv, bi);
         for (k, inst) in b.insts.iter().enumerate() {
@@ -491,7 +504,7 @@ fn reg_free(f: &Func, lv: &Liveness, v: VReg, reg: IdxReg) -> bool {
             if !live_in && !live_out && !defd {
                 continue;
             }
-            if live_in && inst_uses_reg(f, inst, reg, v) {
+            if live_in && inst_uses_reg_ext(f, inst, reg, v, slot_x) {
                 return false;
             }
             // Wide (32-bit/pointer) results written through X.
@@ -510,10 +523,18 @@ fn reg_free(f: &Func, lv: &Liveness, v: VReg, reg: IdxReg) -> bool {
 /// 8-bit registers whose every definition leaves a zero high byte in the
 /// 16-bit home (constants, compare results, masks, zero-extended shifts).
 pub fn clean8(f: &Func) -> Vec<bool> {
+    clean8_ext(f, false)
+}
+
+/// `clean_params`: 8-bit parameters arrive with a zero high byte (a frame
+/// on the hardware stack masks them in its prologue).
+pub fn clean8_ext(f: &Func, clean_params: bool) -> Vec<bool> {
     let n = f.vregs.len();
     let mut c: Vec<bool> = (0..n).map(|i| f.vregs[i] == IrTy::I8).collect();
-    for r in f.param_regs.iter().flatten() {
-        c[r.0 as usize] = false;
+    if !clean_params {
+        for r in f.param_regs.iter().flatten() {
+            c[r.0 as usize] = false;
+        }
     }
     let op = |o: &Operand, c: &[bool]| match o {
         Operand::Imm(v) => (v & 0xffff) < 0x100,

@@ -28,11 +28,10 @@ It is not a general-purpose C compiler.
   and IR interpreter have it), variable-length arrays and most GNU
   extensions.
 - Known open issues are listed in
-  [tests/docs/FINDINGS.md](tests/docs/FINDINGS.md): missing preprocessor and
-  constraint diagnostics, a crash on an enumerator of `LLONG_MAX`, spurious
-  errors from two scope rules, UTF-8-only source files, functions larger
-  than a ROM bank, and re-entrant activations of a recursive function
-  sharing an address-taken local (docs/PLAN.md §9).
+  [tests/docs/FINDINGS.md](tests/docs/FINDINGS.md): some preprocessor corner
+  cases (deferred rescans, `__VA_OPT__` details), constraint diagnostics
+  from GCC's testsuite, UTF-8-only source files, functions larger than a
+  ROM bank, and defining variadic functions.
 
 ## Results
 

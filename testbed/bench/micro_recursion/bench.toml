@@ -1,0 +1,5 @@
+name = "micro_recursion"
+kind = "micro"
+description = "Recursion: a four-way flood fill over an 4x3 grid, a recursive-descent evaluator (mutual recursion through expr/term/atom) and a binary-tree sum with an out-parameter per level."
+unit_labels = ["flood", "fill_rec", "eval", "expr", "term", "atom", "tree_sum"]
+helper_labels = ["tcc__mul"]

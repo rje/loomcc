@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """loomcc-gen: a small Csmith-style generator of self-checking C programs.
 
-    tests/t7-random/gen.py SEED [--stmts N] [--narrow] [--shapes] > prog.c
+    tests/t7-random/gen.py SEED [--stmts N] [--narrow] [--shapes] [--recursion] > prog.c
 
 --narrow uses only 8- and 16-bit types.
 --shapes adds the shapes behind F29 and F30: structs of up to ~500 bytes
@@ -12,6 +12,11 @@ passing a struct down by value; functions with 8-16 parameters; and calls
 into foreign code at every level (`printf("%s", "")`, which prints nothing
 and on the ROM is 816-tcc code; -DT7_NO_FOREIGN leaves them out). --small keeps every struct under
 about 110 bytes (clear of F29's 8-bit stack offsets).
+--recursion adds recursive functions of bounded depth (a depth parameter
+that shrinks by one each level, at most 12 levels): one calling itself, a
+mutually recursive pair, and a tail-recursive one. Each keeps an array
+local, passes a pointer to it down the recursion and writes through its
+caller's, so every activation needs its own locals.
 
 The program uses only what loomcc's back end supports first (8/16/32-bit
 integers, arrays, structs, calls, loops, switch; no floating point, no
@@ -43,7 +48,7 @@ UNSIGNED = {"u8": "u8", "i8": "u8", "u16": "u16", "i16": "u16", "u32": "u32", "i
 
 
 class Gen:
-    def __init__(self, seed, stmts, narrow=False, shapes=False):
+    def __init__(self, seed, stmts, narrow=False, shapes=False, recursion=False):
         global TYPES
         if narrow:  # 8- and 16-bit only: what every back end handles first
             TYPES = {k: v for k, v in TYPES.items() if v[0] <= 16}
@@ -57,6 +62,7 @@ class Gen:
         self.shapes = shapes
         self.small = False
         self.structs = []   # (name, [(field, type)], (array field, type, size))
+        self.recursion = recursion
 
     def lit(self, t):
         bits, signed = TYPES[t]
@@ -202,6 +208,8 @@ class Gen:
             self.funcs.append((f"f{i}", ret, params))
         if self.shapes:
             self.shape_funcs()
+        if self.recursion:
+            self.recursive_funcs()
         o.append("static u16 checksum(void) {")
         o.append("  u16 c = 0;")
         o.append("  u8 k;")
@@ -221,6 +229,8 @@ class Gen:
             o.append(self.stmt([], 3, 1))
             if self.shapes and self.r.random() < 0.5:
                 o.append(self.shape_stmt([], 1))
+            if self.recursion and self.r.random() < 0.4:
+                o.append(self.recursion_stmt([], 1))
         o.append("#ifdef LOOMCC_T7_PRINT")
         o.append('  printf("%u\\n", (unsigned)checksum());')
         o.append("  return 0;")
@@ -355,13 +365,60 @@ class Gen:
         return f"{pad}{t} = ({tt})chain0({self.expr('u16', env, 1)}, {cg});"
 
 
+    # --recursion -------------------------------------------------------
+    def recursive_funcs(self):
+        o = self.out
+        self.globals.append(("rg", "u16"))
+        o.append(f"static u16 rg = {self.lit('u16')};")
+        self.rec = []
+        n = self.r.randint(2, 6)
+        # r0 calls itself; r1 and r2 call each other; r3 is tail-recursive.
+        o.append("static u16 r2(u8 d, i16 x, u16 *up);")
+        for name, callee in (("r0", "r0"), ("r1", "r2"), ("r2", "r1")):
+            env = [("x", "i16")]
+            locs = [(f"l{j}", self.r.choice(list(TYPES))) for j in range(self.r.randint(0, 2))]
+            o.append(f"static u16 {name}(u8 d, i16 x, u16 *up) {{")
+            o.append("  i16 i1, i2, i3, i4;")
+            o.append(f"  u16 loc[{n}];")
+            o.append("  u8 k;")
+            for ln, t in locs:
+                o.append(f"  {t} {ln} = {self.expr(t, env, 2)};")
+            env = env + locs
+            o.append(f"  for (k = 0; k < {n}; k++) loc[k] = (u16)(1u * (u16)x * (k + 1u) + {self.r.randrange(256)}u);")
+            for _ in range(self.r.randint(0, 2)):
+                o.append(self.stmt(env, 1, 1))
+            a, b = self.r.randrange(n), self.r.randrange(n)
+            o.append("  if (d > 0) {")
+            o.append(f"    loc[{a}] = (u16)(loc[{a}] + {callee}((u8)(d - 1), (i16)({self.expr('i16', env, 2)}), &loc[{b}]));")
+            o.append("  }")
+            o.append(f"  *up = (u16)((*up ^ loc[{self.r.randrange(n)}]) + d);")
+            o.append(f"  return (u16)(loc[0] + 3u * loc[{n - 1}] + (u16)({self.expr('u16', env, 2)}));")
+            o.append("}")
+        o.append("static u16 r3(u8 d, u16 acc, u16 m) {")
+        o.append("  if (d == 0) return acc;")
+        o.append(f"  return r3((u8)(d - 1), (u16)(1u * acc * 3u + m + {self.r.randrange(256)}u), (u16)(m ^ acc));")
+        o.append("}")
+
+    def recursion_stmt(self, env, indent):
+        pad = "  " * indent
+        t = self.r.choice([n for n, _ in self.globals if n != "rg"])
+        tt = dict(self.globals)[t]
+        f = self.r.choice(["r0", "r1", "r2", "r3"])
+        d = self.r.randint(0, 12)
+        if f == "r3":
+            call = f"r3({d}, {self.expr('u16', env, 1)}, {self.expr('u16', env, 1)})"
+        else:
+            call = f"{f}({d}, (i16)({self.expr('i16', env, 1)}), &rg)"
+        return f"{pad}{t} = ({tt})(({tt}){t} + ({tt}){call});"
+
+
 def main(argv):
     if len(argv) < 2:
         print(__doc__, file=sys.stderr)
         return 2
     seed = int(argv[1])
     stmts = int(argv[argv.index("--stmts") + 1]) if "--stmts" in argv else 12
-    g = Gen(seed, stmts, narrow="--narrow" in argv, shapes="--shapes" in argv)
+    g = Gen(seed, stmts, narrow="--narrow" in argv, shapes="--shapes" in argv, recursion="--recursion" in argv)
     g.small = "--small" in argv
     sys.stdout.write(g.program())
     return 0

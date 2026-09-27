@@ -6,6 +6,7 @@
 pub mod alloc;
 pub mod analysis;
 pub mod asm;
+pub mod dynframe;
 pub mod isel;
 
 use alloc::{allocate, Alloc, DP_POOL};
@@ -28,6 +29,14 @@ pub struct FuncInfo {
     /// there); None for aggregates (their frame slot).
     pub param_homes: Vec<Option<alloc::Home>>,
     pub sret_home: Option<alloc::Home>,
+    /// A frame on the hardware stack (recursive functions; see dynframe):
+    /// its size in bytes, direct-page register file included. Callers push
+    /// the arguments in the 816-tcc layout and jump to the body label.
+    pub dyn_frame: Option<u32>,
+    /// Its slots may be beyond direct-page reach: slot accesses use X.
+    pub dyn_slot_x: bool,
+    /// Offset of the frame above D (past the register file).
+    pub dyn_base: u32,
 }
 
 pub struct ModuleInfo {
@@ -46,6 +55,34 @@ pub struct ModuleInfo {
     pub scc_of: HashMap<String, usize>,
     /// Members of each recursive component with their frame sizes.
     pub scc_members: Vec<Vec<(String, u32)>>,
+}
+
+impl ModuleInfo {
+    /// The function has a frame on the hardware stack (D points at it).
+    pub fn is_dyn(&self, f: &str) -> bool {
+        self.funcs.get(f).map_or(false, |i| i.dyn_frame.is_some())
+    }
+}
+
+/// Functions reachable from an interrupt root through direct calls.
+fn interrupt_reach(m: &Module) -> HashSet<String> {
+    let index: HashMap<&str, usize> = m.funcs.iter().enumerate().map(|(i, f)| (f.name.as_str(), i)).collect();
+    let mut out = HashSet::new();
+    let mut stack: Vec<usize> = m.funcs.iter().enumerate().filter(|(_, f)| f.interrupt).map(|(i, _)| i).collect();
+    while let Some(v) = stack.pop() {
+        if out.insert(m.funcs[v].name.clone()) {
+            for b in &m.funcs[v].blocks {
+                for i in &b.insts {
+                    if let Inst::Call { callee: Callee::Direct(n), .. } = i {
+                        if let Some(&j) = index.get(n.as_str()) {
+                            stack.push(j);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    out
 }
 
 /// Strongly connected components of the direct call graph that contain a
@@ -161,17 +198,21 @@ pub struct Options {
     /// inputs for `jsl`/`jsr.l` targets). None: any exported or
     /// address-taken function may be called back from any external call.
     pub callbacks: Option<HashSet<String>>,
+    /// Bytes of hardware stack the program may use (Loom reserves 7,632);
+    /// recursion is reported against it.
+    pub stack_budget: u32,
 }
 
 impl Default for Options {
     fn default() -> Options {
-        Options { rom_base: 0x80, tag: "unit".into(), callbacks: None }
+        Options { rom_base: 0x80, tag: "unit".into(), callbacks: None, stack_budget: 7632 }
     }
 }
 
 pub struct Output {
     pub asm: String,
     pub errors: Vec<String>,
+    pub warnings: Vec<String>,
     /// Bytes of compiled stack (static frames) this module reserves.
     pub cstack_bytes: u32,
 }
@@ -189,6 +230,20 @@ pub fn may_call_back(name: &str) -> bool {
 
 pub(crate) fn interp_add(base: u32, delta: i64) -> u32 {
     (base & 0xff_0000) | (((base & 0xffff) as i64 + delta) as u32 & 0xffff)
+}
+
+/// A function's C name: private symbols carry a `lcs<tag>_<unit>_` prefix.
+pub fn c_name(sym: &str) -> &str {
+    if let Some(rest) = sym.strip_prefix("lcs") {
+        if let Some(i) = rest.find('_') {
+            let after = &rest[i + 1..];
+            let digits = after.chars().take_while(|c| c.is_ascii_digit()).count();
+            if digits > 0 && after[digits..].starts_with('_') {
+                return &after[digits + 1..];
+            }
+        }
+    }
+    sym
 }
 
 fn sanitize(s: &str) -> String {
@@ -247,9 +302,42 @@ pub fn clone_for_interrupts(m: &mut Module) {
 pub fn compile_module(m: &Module, opts: &Options) -> Output {
     let mut owned = m.clone();
     clone_for_interrupts(&mut owned);
-    let m = &owned;
     let tag = sanitize(&opts.tag);
     let mut errors = Vec::new();
+    let mut warnings = Vec::new();
+
+    // Recursion: components of the call graph (with callbacks through
+    // external code), the functions interrupts reach, and the candidates
+    // for a frame on the hardware stack.
+    let callbacks: HashSet<String> = match &opts.callbacks {
+        Some(c) => c.clone(),
+        None => owned.funcs.iter().filter(|f| f.exported || f.address_taken).map(|f| f.name.clone()).collect(),
+    };
+    let sccs = recursive_components(&owned, &callbacks);
+    let mut scc_index: Vec<Option<usize>> = vec![None; owned.funcs.len()];
+    for (k, comp) in sccs.iter().enumerate() {
+        for &v in comp {
+            scc_index[v] = Some(k);
+        }
+    }
+    let interrupt_funcs = interrupt_reach(&owned);
+    // Recursion within the C program itself (direct calls and calls through
+    // pointers) gets frames on the hardware stack. A cycle only through
+    // callbacks from external code keeps static frames, saved around the
+    // external calls.
+    let real: HashSet<usize> = recursive_components(&owned, &HashSet::new()).into_iter().flatten().collect();
+    let dyn_cand: Vec<bool> = owned
+        .funcs
+        .iter()
+        .enumerate()
+        .map(|(v, f)| real.contains(&v) && !interrupt_funcs.contains(&f.name) && !f.variadic)
+        .collect();
+    for (v, f) in owned.funcs.iter_mut().enumerate() {
+        if dyn_cand[v] {
+            dynframe::materialize_slot_addresses(f);
+        }
+    }
+    let m = &owned;
 
     // Which globals are near (bank $7E): our own .bss definitions.
     let mut near_globals = HashSet::new();
@@ -301,10 +389,54 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
     let all_dp: Vec<u8> = DP_POOL.to_vec();
     let mut trans: Vec<Option<Vec<u8>>> = vec![None; m.funcs.len()];
     let mut allocs_opt: Vec<Option<Alloc>> = (0..m.funcs.len()).map(|_| None).collect();
+    let mut is_dyn = vec![false; m.funcs.len()];
+    let mut slot_x = vec![false; m.funcs.len()];
+    // The absolute direct-page words a call into a dynamic-frame function
+    // may change: those of the static-frame code its component calls (its
+    // own words are in its frame).
+    let scc_trans = |k: usize, trans: &[Option<Vec<u8>>], is_dyn: &[bool]| -> Vec<u8> {
+        let mut t: Vec<u8> = Vec::new();
+        for &u in &sccs[k] {
+            if !is_dyn[u] {
+                return all_dp.clone();
+            }
+            for c in &callees[u] {
+                let words = match c {
+                    Some(j) if scc_index[*j] == Some(k) => continue,
+                    Some(j) => trans[*j].clone().unwrap_or_else(|| all_dp.clone()),
+                    None => all_dp.clone(),
+                };
+                for w in words {
+                    if !t.contains(&w) {
+                        t.push(w);
+                    }
+                }
+            }
+        }
+        t
+    };
     for &v in &post {
+        if dyn_cand[v] {
+            // Its direct-page words are its own (relative to its frame), so
+            // no call clobbers them.
+            let none = |_: &Callee| Vec::new();
+            let mut a = alloc::allocate_ext(&m.funcs[v], DP_POOL, &none, false);
+            if dynframe::needs_slot_x(&a) {
+                a = alloc::allocate_ext(&m.funcs[v], DP_POOL, &none, true);
+                slot_x[v] = true;
+            }
+            if dynframe::homes_near(&a, &m.funcs[v]) {
+                a.clean8 = alloc::clean8_ext(&m.funcs[v], true);
+                is_dyn[v] = true;
+                allocs_opt[v] = Some(a);
+                continue;
+            }
+            slot_x[v] = false;
+        }
         let clobber = |c: &Callee| -> Vec<u8> {
             match c {
                 Callee::Direct(n) => match index.get(n.as_str()) {
+                    Some(&j) if is_dyn[j] => scc_trans(scc_index[j].unwrap(), &trans, &is_dyn),
                     Some(&j) => trans[j].clone().unwrap_or_else(|| all_dp.clone()),
                     None => all_dp.clone(),
                 },
@@ -315,6 +447,7 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
         let mut t = a.dp_used.clone();
         for c in &callees[v] {
             let words = match c {
+                Some(j) if is_dyn[*j] => scc_trans(scc_index[*j].unwrap(), &trans, &is_dyn),
                 Some(j) => trans[*j].clone().unwrap_or_else(|| all_dp.clone()),
                 None => all_dp.clone(),
             };
@@ -353,36 +486,59 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
                 has_abi_entry: f.exported || f.address_taken || f.name == "main",
                 param_homes: f.param_regs.iter().map(|r| r.map(|r| a.homes[r.0 as usize])).collect(),
                 sret_home: f.sret_reg.map(|r| a.homes[r.0 as usize]),
+                dyn_frame: None,
+                dyn_slot_x: false,
+                dyn_base: 0,
             },
         );
     }
+    for (v, f) in m.funcs.iter().enumerate() {
+        if is_dyn[v] {
+            let fi = funcs.get_mut(&f.name).unwrap();
+            fi.dyn_frame = Some(dynframe::frame_base(&allocs[v]) + allocs[v].frame_size);
+            fi.dyn_base = dynframe::frame_base(&allocs[v]);
+            fi.dyn_slot_x = slot_x[v];
+        }
+    }
 
-    // The compiled stack: frames placed by call-graph depth.
-    let callbacks: HashSet<String> = match &opts.callbacks {
-        Some(c) => c.clone(),
-        None => m.funcs.iter().filter(|f| f.exported || f.address_taken).map(|f| f.name.clone()).collect(),
-    };
-    let (frame_base, cstack_bytes, fe) = place_frames(m, &allocs, &callbacks);
+    // The compiled stack: frames placed by call-graph depth (dynamic
+    // frames live on the hardware stack instead).
+    let static_sizes: Vec<u32> = (0..m.funcs.len()).map(|v| if is_dyn[v] { 0 } else { allocs[v].frame_size }).collect();
+    let (frame_base, cstack_bytes, fe) = place_frames(m, &static_sizes, &callbacks);
     errors.extend(fe);
 
     let externs = m.extern_funcs.iter().map(|(n, p, _, _)| (n.clone(), p.clone())).collect();
-    let mut interrupt_funcs = HashSet::new();
-    let mut stack: Vec<usize> = m.funcs.iter().enumerate().filter(|(_, f)| f.interrupt).map(|(i, _)| i).collect();
-    while let Some(v) = stack.pop() {
-        if interrupt_funcs.insert(m.funcs[v].name.clone()) {
-            stack.extend(callees[v].iter().flatten().copied());
-        }
-    }
     let mut scc_of = HashMap::new();
     let mut scc_members = Vec::new();
-    for comp in recursive_components(m, &callbacks) {
+    for comp in &sccs {
         let id = scc_members.len();
         let mut members = Vec::new();
-        for &v in &comp {
+        for &v in comp {
             scc_of.insert(m.funcs[v].name.clone(), id);
             members.push((m.funcs[v].name.clone(), allocs[v].frame_size));
         }
         scc_members.push(members);
+        // Stack use per level of recursion.
+        let per_call: Vec<(String, u32)> = comp
+            .iter()
+            .filter(|&&v| is_dyn[v] && real.contains(&v))
+            .map(|&v| {
+                let f = &m.funcs[v];
+                (f.name.clone(), dynframe::frame_base(&allocs[v]) + allocs[v].frame_size + 5 + dynframe::arg_bytes(&f.params, f.sret.is_some()))
+            })
+            .collect();
+        if !per_call.is_empty() {
+            let names: Vec<String> = comp.iter().filter(|v| real.contains(v)).map(|&v| format!("'{}'", c_name(&m.funcs[v].name))).collect();
+            let worst = per_call.iter().map(|p| p.1).max().unwrap();
+            let levels = opts.stack_budget / worst.max(1);
+            warnings.push(format!(
+                "recursion through {}: each call takes up to {} bytes of hardware stack and the depth is not bounded at compile time ({} levels fit in the {}-byte stack budget)",
+                names.join(", "),
+                worst,
+                levels,
+                opts.stack_budget
+            ));
+        }
     }
     let mi = ModuleInfo { funcs, near_globals, tag: tag.clone(), frame_base: frame_base.clone(), externs, interrupt_funcs, scc_of, scc_members };
 
@@ -398,6 +554,16 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
         let mut g = Gen::new(f, a, &mi, format!("{}f{}", tag, fi));
         g.gen_function(info.has_abi_entry);
         errors.extend(g.errors.iter().map(|e| format!("{}: {}", f.name, e)));
+        if info.dyn_frame.is_some() {
+            let fs = mi.frame_symbol(&f.name);
+            let mut text = String::new();
+            for l in &g.lines {
+                print_line(l, &mut text);
+            }
+            if text.contains(&fs) {
+                errors.push(format!("{}: internal: a static frame reference in a function with a stack frame", f.name));
+            }
+        }
         helpers.extend(g.helpers.iter().copied());
         let mut lines = g.lines;
         peephole(&mut lines);
@@ -458,7 +624,7 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
         out.push_str(".ENDS\n");
     }
     let _ = writeln!(out, ".BASE ${:02X}", opts.rom_base);
-    Output { asm: out, errors, cstack_bytes }
+    Output { asm: out, errors, warnings, cstack_bytes }
 }
 
 fn emit_bytes(out: &mut String, g: &Global) {
@@ -531,7 +697,7 @@ fn resolve_frames(l: &Line, bases: &HashMap<String, u32>, cstack: &str) -> Line 
 /// function's frame starts after every caller's frame ends (longest path in
 /// the call graph). Calls to code outside the module may come back into any
 /// function with an ABI entry.
-fn place_frames(m: &Module, allocs: &[Alloc], callbacks: &HashSet<String>) -> (HashMap<String, u32>, u32, Vec<String>) {
+fn place_frames(m: &Module, sizes: &[u32], callbacks: &HashSet<String>) -> (HashMap<String, u32>, u32, Vec<String>) {
     let n = m.funcs.len();
     let index: HashMap<&str, usize> = m.funcs.iter().enumerate().map(|(i, f)| (f.name.as_str(), i)).collect();
     let mut succ: Vec<BTreeSet<usize>> = vec![BTreeSet::new(); n];
@@ -613,7 +779,7 @@ fn place_frames(m: &Module, allocs: &[Alloc], callbacks: &HashSet<String>) -> (H
         pos[v] = i;
     }
     for &v in &order {
-        let end = base[v] + allocs[v].frame_size;
+        let end = base[v] + sizes[v];
         for &w in &succ[v] {
             if pos[w] > pos[v] {
                 base[w] = base[w].max(end);
@@ -621,7 +787,7 @@ fn place_frames(m: &Module, allocs: &[Alloc], callbacks: &HashSet<String>) -> (H
         }
     }
     // Interrupt roots and everything they reach get frames past all others.
-    let main_top = (0..n).map(|v| base[v] + allocs[v].frame_size).max().unwrap_or(0);
+    let main_top = (0..n).map(|v| base[v] + sizes[v]).max().unwrap_or(0);
     let irq: Vec<usize> = m.funcs.iter().enumerate().filter(|(_, f)| f.interrupt).map(|(i, _)| i).collect();
     if !irq.is_empty() {
         let mut reach = HashSet::new();
@@ -637,7 +803,7 @@ fn place_frames(m: &Module, allocs: &[Alloc], callbacks: &HashSet<String>) -> (H
             }
         }
     }
-    let total = (0..n).map(|v| base[v] + allocs[v].frame_size).max().unwrap_or(0);
+    let total = (0..n).map(|v| base[v] + sizes[v]).max().unwrap_or(0);
     let map = m.funcs.iter().enumerate().map(|(i, f)| (f.name.clone(), base[i])).collect();
     (map, total, errors)
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Measure one Loom sample built with 816-tcc and with loomcc.
 
-    measure.py <sample> <workdir> <runtime-snapshot> [--skip-tf1] [--skip-compare]
+    measure.py <sample> <workdir> <runtime-snapshot> [--skip-tf1] [--skip-compare] [--build-only]
 
 For examples/<sample> (copied, never touched in place):
   1. package the release ROM with loom-automation (unit list, generated C);
@@ -134,6 +134,15 @@ def main():
     summary = {"sample": sample, "tick_frames": per, "provenance": summary_note}
     summary["tcc_build"] = build(copy, runtime, "tcc", d / "b-tcc")
     summary["loomcc_build"] = build(copy, runtime, "loomcc", d / "b-lcc")
+    if "--build-only" in sys.argv:
+        # Checks that a compiler change leaves the ROMs alone: compare the
+        # hashes with a previous summary.json.
+        (d / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
+        for sub in d.iterdir():
+            if sub.is_dir():
+                shutil.rmtree(sub, ignore_errors=True)
+        print(json.dumps(summary, indent=1))
+        return
     units = json.loads((d / "b-lcc/units.json").read_text())
     summary["units"] = {"loomcc": sorted(u for u, h in units.items() if h == "loomcc"),
                         "816-tcc": sorted(u for u, h in units.items() if h == "816-tcc")}

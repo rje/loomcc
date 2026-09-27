@@ -10,6 +10,8 @@ use crate::alloc::*;
 /// Where an index-register value is parked for an operation that needs it in
 /// memory.
 const XY_SPILL: u8 = 0x18;
+/// Consecutive byte arguments share one `sep` (PERF commit).
+const BATCH8: bool = false;
 
 /// The most frame bytes one call site saves on the hardware stack (Loom's
 /// whole stack is 7,632 bytes).
@@ -50,6 +52,8 @@ enum Place {
     AbsX(Expr),
     LongX(Expr),
     Dp(u8),
+    /// `dp,x` (a slot of a frame on the hardware stack, indexed).
+    DpX(u8),
     /// `[dp],y` with Y holding the base offset (word k adds 2k).
     IndY(u8),
     /// `[dp]` (single word at offset 0).
@@ -100,6 +104,13 @@ pub struct Gen<'a> {
     m8: bool,
     /// Inside an explicit 8-bit section.
     in8: bool,
+    /// The function's frame is on the hardware stack with D pointing at it
+    /// (the frame's size, direct-page register file included; dynframe).
+    dynf: Option<u32>,
+    /// Its slots may lie beyond direct-page reach (accessed through X).
+    dyn_slot_x: bool,
+    /// The frame's offset above D.
+    dyn_base: u32,
 }
 
 fn w(n: i64) -> Expr {
@@ -129,6 +140,9 @@ impl<'a> Gen<'a> {
             order: Vec::new(),
             m8: false,
             in8: false,
+            dynf: mi.funcs.get(&f.name).and_then(|i| i.dyn_frame),
+            dyn_slot_x: mi.funcs.get(&f.name).map_or(false, |i| i.dyn_slot_x),
+            dyn_base: mi.funcs.get(&f.name).map_or(0, |i| i.dyn_base),
         }
     }
 
@@ -226,6 +240,56 @@ impl<'a> Gen<'a> {
         Expr::Sym(self.frame.clone(), off as i64)
     }
 
+    /// The addressing mode of byte `off` of this function's frame: absolute
+    /// in the compiled stack, or direct page above the register file when
+    /// the frame is on the hardware stack.
+    fn frame_mode(&self, off: u32) -> Mode {
+        match self.dynf {
+            Some(_) => Mode::Dp((self.dyn_base + off) as u8),
+            None => Mode::Abs(self.frame_expr(off)),
+        }
+    }
+
+    fn frame_src(&self, off: u32) -> Src {
+        match self.dynf {
+            Some(_) => Src::Dp((self.dyn_base + off) as u8),
+            None => Src::Abs(self.frame_expr(off)),
+        }
+    }
+
+    /// A = the low word of the address of frame byte `off` (plus A when
+    /// `add_a`, an index already in A). Bank: $7E (with a frame on the
+    /// hardware stack, bank 0's low 8 KiB is the same memory).
+    fn frame_addr_in_a(&mut self, off: i64, add_a: bool) {
+        match self.dynf {
+            Some(_) => {
+                let off = self.dyn_base as i64 + off;
+                if add_a {
+                    self.i("sta", Mode::Dp(SCRATCH_WORD));
+                    self.i("tdc", Mode::Implied);
+                    self.i("clc", Mode::Implied);
+                    self.i("adc", Mode::Dp(SCRATCH_WORD));
+                } else {
+                    self.i("tdc", Mode::Implied);
+                }
+                if off != 0 {
+                    self.i("clc", Mode::Implied);
+                    self.i("adc", Mode::Imm(w(off)));
+                }
+            }
+            None => {
+                let e = Expr::Sym(self.frame.clone(), off);
+                if add_a {
+                    self.i("clc", Mode::Implied);
+                    self.i("adc", Mode::Imm(e));
+                } else {
+                    self.i("lda", Mode::Imm(e));
+                }
+            }
+        }
+        self.acc = None;
+    }
+
     // ------------------------------------------------------------------ operands
 
     /// Word `k` of an operand as a source.
@@ -241,7 +305,7 @@ impl<'a> Gen<'a> {
                 }
                 match self.home(*r) {
                     Home::Dp(d) => Src::Dp(d + 2 * k as u8),
-                    Home::Frame(off) => Src::Abs(self.frame_expr(off + 2 * k)),
+                    Home::Frame(off) => self.frame_src(off + 2 * k),
                     Home::X => Src::X,
                     Home::Y => Src::Y,
                     Home::None => Src::Imm(Expr::Num(0)),
@@ -256,6 +320,8 @@ impl<'a> Gen<'a> {
             }
             Operand::Slot(s, off) => {
                 if k == 0 {
+                    // (Never for a frame on the hardware stack: its slot
+                    // addresses are Lea results, dynframe.)
                     Src::Imm(Expr::Sym(self.frame.clone(), self.al.slot_offsets[s.0 as usize] as i64 + off))
                 } else {
                     Src::Imm(Expr::Num(0x7e))
@@ -405,8 +471,8 @@ impl<'a> Gen<'a> {
         match self.home(r) {
             Home::Dp(d) => self.i("sta", Mode::Dp(d + 2 * k as u8)),
             Home::Frame(off) => {
-                let e = self.frame_expr(off + 2 * k);
-                self.i("sta", Mode::Abs(e));
+                let m = self.frame_mode(off + 2 * k);
+                self.i("sta", m);
             }
             Home::X => self.i("tax", Mode::Implied),
             Home::Y => self.i("tay", Mode::Implied),
@@ -434,8 +500,8 @@ impl<'a> Gen<'a> {
         match self.home(r) {
             Home::Dp(d) => self.i("stz", Mode::Dp(d + 2 * k as u8)),
             Home::Frame(off) => {
-                let e = self.frame_expr(off + 2 * k);
-                self.i("stz", Mode::Abs(e));
+                let m = self.frame_mode(off + 2 * k);
+                self.i("stz", m);
             }
             Home::X => self.i("ldx", Mode::Imm(w(0))),
             Home::Y => self.i("ldy", Mode::Imm(w(0))),
@@ -448,8 +514,8 @@ impl<'a> Gen<'a> {
         match self.home(r) {
             Home::Dp(d) => self.i("stx", Mode::Dp(d + 2 * k as u8)),
             Home::Frame(off) => {
-                let e = self.frame_expr(off + 2 * k);
-                self.i("stx", Mode::Abs(e));
+                let m = self.frame_mode(off + 2 * k);
+                self.i("stx", m);
             }
             Home::X => {}
             Home::Y => self.i("txy", Mode::Implied),
@@ -474,11 +540,20 @@ impl<'a> Gen<'a> {
         self.order = layout(f, &reach);
         let mi = self.mi;
         let info = mi.funcs.get(&f.name).expect("function info");
-        if abi_entry {
-            self.label(f.name.clone());
-            self.abi_prologue();
+        if let Some(size) = self.dynf {
+            if abi_entry {
+                self.label(f.name.clone());
+                self.dyn_abi_entry(&info.body_label);
+            }
+            self.label(info.body_label.clone());
+            self.dyn_prologue(size);
+        } else {
+            if abi_entry {
+                self.label(f.name.clone());
+                self.abi_prologue();
+            }
+            self.label(info.body_label.clone());
         }
-        self.label(info.body_label.clone());
         self.forget();
         let order = self.order.clone();
         for (pos, &b) in order.iter().enumerate() {
@@ -508,6 +583,118 @@ impl<'a> Gen<'a> {
 
     fn next_block(&self) -> Option<BlockId> {
         self.order.get(self.cur_block + 1).map(|&b| BlockId(b as u32))
+    }
+
+    /// The 816-tcc ABI entry of a function with a stack frame: the
+    /// arguments are already in the body's layout, one return address too
+    /// low; copy them under a new call to the body, then put the result
+    /// where 816-tcc callers read it.
+    fn dyn_abi_entry(&mut self, body: &str) {
+        let n = crate::dynframe::arg_bytes(&self.f.params, self.f.sret_reg.is_some());
+        let n2 = (n + 1) & !1;
+        if n2 > 0 && 4 + n2 - 2 > 255 {
+            self.errors.push(format!("{} bytes of arguments: too many for a recursive function's 816-tcc entry", n));
+        }
+        for _ in 0..n2 / 2 {
+            // Each push moves the next word up to the same offset.
+            self.i("lda", Mode::Sr((4 + n2 - 2) as u8));
+            self.i("pha", Mode::Implied);
+        }
+        self.i("jsl", Mode::Label(body.to_string()));
+        let ret = self.f.ret;
+        self.pop_args(n2, ret.is_some());
+        if let Some(t) = ret {
+            self.i("sta", Mode::Dp(0));
+            if self.width(t) == 2 {
+                self.i("stx", Mode::Dp(if t == IrTy::I32 { 4 } else { 2 }));
+            }
+        }
+        self.i("rtl", Mode::Implied);
+        self.forget();
+    }
+
+    /// Entry of a function with a stack frame: save the caller's D, carve
+    /// the frame, point D at it, and move the arguments (above the saved D
+    /// and the return address) into their homes.
+    fn dyn_prologue(&mut self, size: u32) {
+        self.i("phd", Mode::Implied);
+        self.i("tsc", Mode::Implied);
+        self.i("sec", Mode::Implied);
+        self.i("sbc", Mode::Imm(w(size as i64)));
+        self.i("tcs", Mode::Implied);
+        self.i("inc", Mode::Acc);
+        self.i("tcd", Mode::Implied);
+        self.acc = None;
+        let base = size + 5;
+        // An argument out of direct-page reach is read with `0,x`.
+        let read = |g: &mut Self, off: u32| {
+            let d = base + off;
+            if d + 2 <= 256 {
+                g.i("lda", Mode::Dp(d as u8));
+            } else {
+                g.i("ldx", Mode::Imm(w(d as i64)));
+                g.i("lda", Mode::DpX(0));
+            }
+        };
+        let store_frame = |g: &mut Self, off: u32| {
+            let d = g.dyn_base + off;
+            if d + 2 <= 256 {
+                g.i("sta", Mode::Dp(d as u8));
+            } else {
+                g.i("ldx", Mode::Imm(w(d as i64)));
+                g.i("sta", Mode::DpX(0));
+            }
+        };
+        // (offset, home, words, 8-bit), index-register homes last: reads
+        // may use X. An 8-bit argument is one stack byte: masked here, so
+        // the body can count on a zero high byte (clean8_ext).
+        let mut scalars: Vec<(u32, Home, u32, bool)> = Vec::new();
+        let mut so = 0u32;
+        if let Some(r) = self.f.sret_reg {
+            scalars.push((0, self.home(r), 2, false));
+            so += 4;
+        }
+        for (pi, p) in self.f.params.iter().enumerate() {
+            let po = self.al.param_offsets[pi];
+            match p {
+                ParamKind::Scalar(t) => {
+                    let n = match t {
+                        IrTy::I8 => 1,
+                        IrTy::I16 => 2,
+                        _ => 4,
+                    };
+                    let h = self.f.param_regs[pi].map(|r| self.home(r)).unwrap_or(Home::None);
+                    if h != Home::None {
+                        scalars.push((so, h, self.width(*t), *t == IrTy::I8));
+                    }
+                    so += n;
+                }
+                ParamKind::Aggregate(n) => {
+                    let mut k = 0;
+                    while k < *n {
+                        read(self, so + k);
+                        store_frame(self, po + k);
+                        k += 2;
+                    }
+                    so += n;
+                }
+            }
+        }
+        scalars.sort_by_key(|(_, h, _, _)| match h {
+            Home::Y => 1,
+            Home::X => 2,
+            _ => 0,
+        });
+        for (off, h, words, byte) in scalars {
+            for k in 0..words {
+                read(self, off + 2 * k);
+                if byte {
+                    self.i("and", Mode::Imm(w(0xff)));
+                }
+                self.a_to_home(h, k);
+            }
+        }
+        self.xv = None;
     }
 
     /// 816-tcc ABI entry: stack arguments into the parameter slots.
@@ -572,8 +759,8 @@ impl<'a> Gen<'a> {
                     let mut k = 0;
                     while k < *n {
                         read(self, so + k);
-                        let e = self.frame_expr(po + k);
-                        self.i("sta", Mode::Abs(e));
+                        let m = self.frame_mode(po + k);
+                        self.i("sta", m);
                         k += 2;
                     }
                     so += n;
@@ -590,8 +777,8 @@ impl<'a> Gen<'a> {
         match h {
             Home::Dp(d) => self.i("sta", Mode::Dp(d + 2 * k as u8)),
             Home::Frame(o) => {
-                let e = self.frame_expr(o + 2 * k);
-                self.i("sta", Mode::Abs(e));
+                let m = self.frame_mode(o + 2 * k);
+                self.i("sta", m);
             }
             Home::X => self.i("tax", Mode::Implied),
             Home::Y => self.i("tay", Mode::Implied),
@@ -1452,6 +1639,39 @@ impl<'a> Gen<'a> {
     }
 
     fn place_inner(&mut self, addr: &Addr) -> Place {
+        if let (Base::Slot(s), Some(_)) = (&addr.base, self.dynf) {
+            // A slot of a frame on the hardware stack: direct page, or
+            // `0,x` with X holding the offset from D when out of reach.
+            let d = self.dyn_base as i64 + self.al.slot_offsets[s.0 as usize] as i64 + addr.offset;
+            let near = d >= 0 && d + 4 <= 256;
+            return match (addr.index, near) {
+                (None, true) => Place::Dp(d as u8),
+                (None, false) => {
+                    if !self.dyn_slot_x {
+                        self.errors.push("internal: a frame slot out of direct-page reach".into());
+                    }
+                    self.i("ldx", Mode::Imm(w(d)));
+                    self.xv = None;
+                    Place::DpX(0)
+                }
+                (Some((r, sc)), true) => {
+                    if sc == 1 && !self.al.forwarded[r.0 as usize] {
+                        self.ldx(&Operand::Reg(r));
+                    } else {
+                        self.scaled_index_in_a(r, sc, 0);
+                        self.i("tax", Mode::Implied);
+                        self.xv = None;
+                    }
+                    Place::DpX(d as u8)
+                }
+                (Some((r, sc)), false) => {
+                    self.scaled_index_in_a(r, sc, d);
+                    self.i("tax", Mode::Implied);
+                    self.xv = None;
+                    Place::DpX(0)
+                }
+            };
+        }
         match &addr.base {
             Base::Global(_) | Base::Abs(_) | Base::Slot(_) => {
                 let (expr, near) = match &addr.base {
@@ -1609,6 +1829,7 @@ impl<'a> Gen<'a> {
                 }
             }
             Place::Dp(d) => self.i(mnem, Mode::Dp(d + 2 * k as u8)),
+            Place::DpX(d) => self.i(mnem, Mode::DpX(d + 2 * k as u8)),
             Place::IndY(d) => {
                 if k > 0 {
                     self.i("iny", Mode::Implied);
@@ -1712,15 +1933,29 @@ impl<'a> Gen<'a> {
                     self.sta_reg(dst, 1);
                 }
             }
+            Base::Slot(s) => {
+                let off = self.al.slot_offsets[s.0 as usize] as i64 + addr.offset;
+                match addr.index {
+                    Some((r, sc)) => {
+                        self.scaled_index_in_a(r, sc, 0);
+                        self.frame_addr_in_a(off, true);
+                    }
+                    None => self.frame_addr_in_a(off, false),
+                }
+                self.acc = None;
+                self.sta_reg(dst, 0);
+                self.i("lda", Mode::Imm(Expr::Num(0x7e)));
+                self.acc = None;
+                self.sta_reg(dst, 1);
+            }
             other => {
                 let (lo, bank) = match other {
                     Base::Global(g) => (Expr::Sym(g.clone(), addr.offset), Expr::Bank(g.clone())),
-                    Base::Slot(s) => (Expr::Sym(self.frame.clone(), self.al.slot_offsets[s.0 as usize] as i64 + addr.offset), Expr::Num(0x7e)),
                     Base::Abs(a) => {
                         let full = super::interp_add(*a, addr.offset);
                         (Expr::Num((full & 0xffff) as i64), Expr::Num((full >> 16) as i64))
                     }
-                    Base::Reg(_) => unreachable!(),
+                    Base::Reg(_) | Base::Slot(_) => unreachable!(),
                 };
                 match addr.index {
                     Some((r, s)) => {
@@ -1765,15 +2000,27 @@ impl<'a> Gen<'a> {
                 self.op_src("lda", &sp);
                 self.i("sta", Mode::Dp(dp + 2));
             }
+            Base::Slot(s) => {
+                let off = self.al.slot_offsets[s.0 as usize] as i64 + addr.offset;
+                match addr.index {
+                    Some((r, sc)) => {
+                        self.scaled_index_in_a(r, sc, 0);
+                        self.frame_addr_in_a(off, true);
+                    }
+                    None => self.frame_addr_in_a(off, false),
+                }
+                self.i("sta", Mode::Dp(dp));
+                self.i("lda", Mode::Imm(Expr::Num(0x7e)));
+                self.i("sta", Mode::Dp(dp + 2));
+            }
             other => {
                 let (lo, bank) = match other {
                     Base::Global(g) => (Expr::Sym(g.clone(), addr.offset), Expr::Bank(g.clone())),
-                    Base::Slot(s) => (Expr::Sym(self.frame.clone(), self.al.slot_offsets[s.0 as usize] as i64 + addr.offset), Expr::Num(0x7e)),
                     Base::Abs(a) => {
                         let full = super::interp_add(*a, addr.offset);
                         (Expr::Num((full & 0xffff) as i64), Expr::Num((full >> 16) as i64))
                     }
-                    Base::Reg(_) => unreachable!(),
+                    Base::Reg(_) | Base::Slot(_) => unreachable!(),
                 };
                 match addr.index {
                     Some((r, s)) => {
@@ -2063,6 +2310,80 @@ impl<'a> Gen<'a> {
         self.yv = None;
     }
 
+    /// pass_internal_args from a function whose D points at its own frame:
+    /// the callee's direct-page homes are absolute ($7E:00xx is bank 0's
+    /// direct page), so no source (in this frame) can be overwritten.
+    fn pass_internal_args_abs(&mut self, info: &crate::FuncInfo, args: &[Operand], sret: Option<&Addr>) {
+        let callee_frame = |o: u32| Expr::Sym(info.frame_sym.clone(), o as i64);
+        let abs = |d: u8| Mode::Abs(Expr::Num(d as i64));
+        let mut xy_moves: Vec<(Home, Operand)> = Vec::new();
+        for (i, a) in args.iter().enumerate() {
+            let Some(p) = info.params.get(i) else { break };
+            match p {
+                ParamKind::Scalar(t) => {
+                    let words = self.width(*t);
+                    let target = match info.param_homes[i] {
+                        Some(Home::Frame(o)) => (0..words).map(|k| Mode::Abs(callee_frame(o + 2 * k))).collect(),
+                        Some(Home::Dp(d)) => (0..words).map(|k| abs(d + 2 * k as u8)).collect(),
+                        Some(h @ (Home::X | Home::Y)) => {
+                            xy_moves.push((h, a.clone()));
+                            Vec::new()
+                        }
+                        _ => Vec::new(),
+                    };
+                    for (k, m) in target.into_iter().enumerate() {
+                        if self.src(a, k as u32) == Src::Imm(Expr::Num(0)) {
+                            self.i("stz", m);
+                        } else {
+                            self.lda(a, k as u32);
+                            self.i("sta", m);
+                        }
+                    }
+                }
+                ParamKind::Aggregate(n) => {
+                    let po = info.param_offsets[i];
+                    let addr = match a {
+                        Operand::Reg(r) => Addr { base: Base::Reg(*r), offset: 0, index: None },
+                        Operand::Global(g, o) => Addr { base: Base::Global(g.clone()), offset: *o, index: None },
+                        Operand::Slot(s, o) => Addr { base: Base::Slot(*s), offset: *o, index: None },
+                        Operand::Imm(v) => Addr { base: Base::Abs(*v as u32), offset: 0, index: None },
+                    };
+                    self.addr_to_dp(&addr, SCRATCH_PTR2);
+                    let mut k = 0;
+                    while k < *n {
+                        self.i("ldy", Mode::Imm(w(k as i64)));
+                        self.i("lda", Mode::DpIndLongY(SCRATCH_PTR2));
+                        self.i("sta", Mode::Abs(callee_frame(po + k)));
+                        k += 2;
+                    }
+                    self.forget();
+                }
+            }
+        }
+        if let Some(sa) = sret {
+            self.addr_to_dp(sa, SCRATCH_PTR);
+            let targets: Vec<Mode> = match info.sret_home {
+                Some(Home::Dp(d)) => vec![abs(d), abs(d + 2)],
+                Some(Home::Frame(o)) => vec![Mode::Abs(callee_frame(o)), Mode::Abs(callee_frame(o + 2))],
+                _ => vec![],
+            };
+            for (k, m) in targets.into_iter().enumerate() {
+                self.i("lda", Mode::Dp(SCRATCH_PTR + 2 * k as u8));
+                self.i("sta", m);
+            }
+            self.acc = None;
+        }
+        for (h, src) in &xy_moves {
+            if *h == Home::X {
+                self.ldx(src);
+            } else {
+                self.ldy(src);
+            }
+        }
+        self.xv = None;
+        self.yv = None;
+    }
+
     fn gen_call(&mut self, dst: Option<VReg>, callee: &Callee, args: &[Operand], arg_tys: &[IrTy], sret: Option<&Addr>) {
         let internal = match callee {
             Callee::Direct(n) => self.mi.funcs.get(n).cloned(),
@@ -2080,13 +2401,29 @@ impl<'a> Gen<'a> {
                 (Some(a), Some(b)) if a == b => Some(*a),
                 _ => None,
             };
-            let saved = scc.and_then(|_| self.save_range(dst));
+            // (A frame on the hardware stack needs no saving.)
+            let saved = if self.dynf.is_some() { None } else { scc.and_then(|_| self.save_range(dst)) };
             if let Some(r) = saved {
                 self.emit_save(r);
             }
             self.acc = None;
-            self.pass_internal_args(&info, args, sret);
-            self.i("jsl", Mode::Label(info.body_label.clone()));
+            if info.dyn_frame.is_some() {
+                // The callee makes its own frame: arguments on the stack.
+                let pushed = self.push_call_args(args, arg_tys, &info.params, sret);
+                self.i("jsl", Mode::Label(info.body_label.clone()));
+                self.pop_args(pushed, dst.is_some());
+            } else if self.dynf.is_some() {
+                // A static-frame callee runs with D = 0.
+                self.pass_internal_args_abs(&info, args, sret);
+                self.i("phd", Mode::Implied);
+                self.i("pea", Mode::Abs(Expr::Num(0)));
+                self.i("pld", Mode::Implied);
+                self.i("jsl", Mode::Label(info.body_label.clone()));
+                self.i("pld", Mode::Implied);
+            } else {
+                self.pass_internal_args(&info, args, sret);
+                self.i("jsl", Mode::Label(info.body_label.clone()));
+            }
             if let Some(r) = saved {
                 self.i("sta", Mode::Dp(0x18));
                 self.i("stx", Mode::Dp(0x1a));
@@ -2111,6 +2448,7 @@ impl<'a> Gen<'a> {
         // this function's recursive component: save its frames around the
         // call, as for direct recursion.
         let saved = match (self.mi.scc_of.get(&self.f.name), callee) {
+            _ if self.dynf.is_some() => None,
             (Some(_), Callee::Direct(n)) if !crate::may_call_back(n) => None,
             (Some(_), _) => self.save_range(dst),
             (None, _) => None,
@@ -2240,6 +2578,118 @@ impl<'a> Gen<'a> {
         // The call's own argument kinds (from the callee's type) cover
         // indirect calls too.
         let kinds: Vec<ParamKind> = self.call_kinds.clone();
+        let dynf = self.dynf.is_some();
+        if dynf {
+            // The foreign code runs with D = 0: keep this frame's D under
+            // the arguments.
+            self.i("phd", Mode::Implied);
+        }
+        let pushed = self.push_call_args(args, arg_tys, &kinds, sret);
+        match callee {
+            Callee::Direct(n) => {
+                if dynf {
+                    self.i("pea", Mode::Abs(Expr::Num(0)));
+                    self.i("pld", Mode::Implied);
+                }
+                self.i("jsl", Mode::Label(n.clone()))
+            }
+            Callee::Indirect(o) => {
+                for k in 0..2 {
+                    self.acc = None;
+                    let s = self.src(o, k);
+                    if s == Src::InA {
+                        self.errors.push("indirect call target in A".into());
+                    }
+                    self.op_src("lda", &s);
+                    // The helper reads the target at $1c with D = 0.
+                    if dynf {
+                        self.i("sta", Mode::Abs(Expr::Num((SCRATCH_PTR + 2 * k as u8) as i64)));
+                    } else {
+                        self.i("sta", Mode::Dp(SCRATCH_PTR + 2 * k as u8));
+                    }
+                }
+                if dynf {
+                    self.i("pea", Mode::Abs(Expr::Num(0)));
+                    self.i("pld", Mode::Implied);
+                }
+                self.helpers.insert(Helper::JslR10);
+                let name = self.mi.helper_name(Helper::JslR10);
+                self.i("jsl", Mode::Label(name));
+            }
+        }
+        self.forget();
+        if dynf {
+            // Results out of tcc__r0/r0h/r1 while D is still 0, the
+            // arguments popped, this frame's D back, then the stores.
+            let t = dst.map(|d| self.f.ty(d));
+            if let Some(t) = t {
+                self.i("lda", Mode::Dp(0));
+                if self.width(t) == 2 {
+                    self.i("ldx", Mode::Dp(if t == IrTy::I32 { 4 } else { 2 }));
+                }
+            }
+            self.pop_args(pushed, t.is_some());
+            self.i("pld", Mode::Implied);
+            self.forget();
+            if let (Some(d), Some(t)) = (dst, t) {
+                self.sta_reg(d, 0);
+                if self.width(t) == 2 {
+                    self.stx_reg(d, 1);
+                }
+            }
+            return;
+        }
+        self.pop_args(pushed, false);
+        self.yv = None;
+        self.acc = None;
+        if let Some(d) = dst {
+            let t = self.f.ty(d);
+            // 816-tcc returns a 32-bit integer's high word in tcc__r1.
+            let src = |k: u32| if k == 1 && t == IrTy::I32 { 4u8 } else { 2 * k as u8 };
+            let mut order: Vec<u32> = (0..self.width(t)).collect();
+            // A result homed where its own high word arrives ($02 for a
+            // pointer, $04 for a long) takes the high word first.
+            if order.len() == 2 && self.home(d) == Home::Dp(src(1)) {
+                order.reverse();
+            }
+            for k in order {
+                self.i("lda", Mode::Dp(src(k)));
+                self.acc = None;
+                self.sta_reg(d, k);
+            }
+            self.flags_a = true;
+        }
+    }
+
+    /// Pops `n` bytes of call arguments, keeping A (and X) when `keep_a`.
+    fn pop_args(&mut self, n: u32, keep_a: bool) {
+        match n {
+            0 => {}
+            2 | 4 => {
+                for _ in 0..n / 2 {
+                    self.i("ply", Mode::Implied);
+                }
+            }
+            n => {
+                if keep_a {
+                    self.i("tay", Mode::Implied);
+                }
+                self.i("tsc", Mode::Implied);
+                self.i("clc", Mode::Implied);
+                self.i("adc", Mode::Imm(w(n as i64)));
+                self.i("tcs", Mode::Implied);
+                if keep_a {
+                    self.i("tya", Mode::Implied);
+                }
+            }
+        }
+        self.yv = None;
+    }
+
+    /// Pushes a call's arguments in the 816-tcc layout (right to left, a
+    /// struct whole, an 8-bit value as one byte, the hidden result pointer
+    /// last); returns the bytes pushed.
+    fn push_call_args(&mut self, args: &[Operand], arg_tys: &[IrTy], kinds: &[ParamKind], sret: Option<&Addr>) -> u32 {
         let mut pushed = 0u32;
         for (i, a) in args.iter().enumerate().rev() {
             if let Some(ParamKind::Aggregate(n)) = kinds.get(i) {
@@ -2281,10 +2731,24 @@ impl<'a> Gen<'a> {
             let t = arg_tys.get(i).copied().unwrap_or(IrTy::I16);
             match t {
                 IrTy::I8 => {
-                    self.lda(a, 0);
-                    self.begin8();
-                    self.i("pha", Mode::Implied);
-                    self.end8();
+                    // A byte from direct page, absolute memory or an
+                    // immediate loads in 8-bit mode, so consecutive byte
+                    // arguments share one sep (the rep comes lazily).
+                    match self.src(a, 0) {
+                        s @ (Src::Dp(_) | Src::Abs(_) | Src::Imm(_)) if !self.fwd(a) && BATCH8 => {
+                            self.begin8();
+                            self.op_src("lda", &s);
+                            self.i("pha", Mode::Implied);
+                            self.end8();
+                            self.acc = None;
+                        }
+                        _ => {
+                            self.lda(a, 0);
+                            self.begin8();
+                            self.i("pha", Mode::Implied);
+                            self.end8();
+                        }
+                    }
                     pushed += 1;
                 }
                 _ => {
@@ -2308,58 +2772,7 @@ impl<'a> Gen<'a> {
             self.i("pei", Mode::DpInd(SCRATCH_PTR2));
             pushed += 4;
         }
-        match callee {
-            Callee::Direct(n) => self.i("jsl", Mode::Label(n.clone())),
-            Callee::Indirect(o) => {
-                for k in 0..2 {
-                    self.acc = None;
-                    let s = self.src(o, k);
-                    if s == Src::InA {
-                        self.errors.push("indirect call target in A".into());
-                    }
-                    self.op_src("lda", &s);
-                    self.i("sta", Mode::Dp(SCRATCH_PTR + 2 * k as u8));
-                }
-                self.helpers.insert(Helper::JslR10);
-                let name = self.mi.helper_name(Helper::JslR10);
-                self.i("jsl", Mode::Label(name));
-            }
-        }
-        self.forget();
-        // Pop the arguments.
-        match pushed {
-            0 => {}
-            2 => self.i("ply", Mode::Implied),
-            4 => {
-                self.i("ply", Mode::Implied);
-                self.i("ply", Mode::Implied);
-            }
-            n => {
-                self.i("tsc", Mode::Implied);
-                self.i("clc", Mode::Implied);
-                self.i("adc", Mode::Imm(w(n as i64)));
-                self.i("tcs", Mode::Implied);
-            }
-        }
-        self.yv = None;
-        self.acc = None;
-        if let Some(d) = dst {
-            let t = self.f.ty(d);
-            // 816-tcc returns a 32-bit integer's high word in tcc__r1.
-            let src = |k: u32| if k == 1 && t == IrTy::I32 { 4u8 } else { 2 * k as u8 };
-            let mut order: Vec<u32> = (0..self.width(t)).collect();
-            // A result homed where its own high word arrives ($02 for a
-            // pointer, $04 for a long) takes the high word first.
-            if order.len() == 2 && self.home(d) == Home::Dp(src(1)) {
-                order.reverse();
-            }
-            for k in order {
-                self.i("lda", Mode::Dp(src(k)));
-                self.acc = None;
-                self.sta_reg(d, k);
-            }
-            self.flags_a = true;
-        }
+        pushed
     }
 
     fn sta_reg_after_call(&mut self, d: VReg, k: u32) {
@@ -2388,6 +2801,34 @@ impl<'a> Gen<'a> {
             }
             Term::BrCmp { cc, ty, a, b, t, f } => self.branch(*cc, *ty, a, b, *t, *f),
             Term::Switch { val, ty, cases, default } => self.gen_switch(val, *ty, cases, *default),
+            Term::Ret(v) if self.dynf.is_some() => {
+                let size = self.dynf.unwrap();
+                let t = self.f.ret.unwrap_or(IrTy::I16);
+                if let Some(v) = v {
+                    if self.width(t) == 2 {
+                        match self.src(v, 1) {
+                            Src::Imm(e) => self.i("ldx", Mode::Imm(e)),
+                            Src::Dp(d) => self.i("ldx", Mode::Dp(d)),
+                            _ => {
+                                self.lda(v, 1);
+                                self.i("tax", Mode::Implied);
+                            }
+                        }
+                    }
+                    self.lda(v, 0);
+                    self.i("tay", Mode::Implied);
+                }
+                self.i("tsc", Mode::Implied);
+                self.i("clc", Mode::Implied);
+                self.i("adc", Mode::Imm(w(size as i64)));
+                self.i("tcs", Mode::Implied);
+                self.i("pld", Mode::Implied);
+                if v.is_some() {
+                    self.i("tya", Mode::Implied);
+                }
+                self.i("rtl", Mode::Implied);
+                self.forget();
+            }
             Term::Ret(v) => {
                 let exported = self.mi.funcs.get(&self.f.name).map_or(false, |i| i.has_abi_entry);
                 if let Some(v) = v {

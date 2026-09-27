@@ -10,6 +10,7 @@ pub mod fold;
 pub mod inline;
 pub mod licm;
 pub mod range;
+pub mod tailrec;
 
 use loomcc_ir::*;
 
@@ -33,6 +34,7 @@ pub fn optimize_func(f: &mut Func, level: u8) {
     }
     for _ in 0..6 {
         let before = f.clone();
+        tailrec::eliminate(f);
         cfg::simplify(f);
         fold::fold(f);
         copy::propagate(f);
@@ -40,6 +42,7 @@ pub fn optimize_func(f: &mut Func, level: u8) {
         copy::propagate_local(f);
         copy::retarget_defs(f);
         range::refold_signed_indexes(f);
+        // range::unsign_compares(f); (PERF commit)
         dce::dce(f);
         if level >= 2 {
             licm::hoist_invariants(f);
