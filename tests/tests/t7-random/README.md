@@ -114,3 +114,26 @@ Campaigns of 2026-09-26 (loomcc 70e5955 to 0a86f99):
 
 816-tcc, the second reference, fails most 32-bit programs (F-tcc notes above).
 
+Round 2 (loomcc 4ddb3cf):
+
+| campaign | programs | loomcc results | finding |
+|---|---:|---|---|
+| `--csmith --seeds 4201-4600` | ~350 | 2 suspects, 5 too big for a bank (F28) | both suspects were host16 errors, now fixed or excluded (below) |
+| `--narrow --recursion --stmts 16 --seeds 5001-5400` | 394 | all pass | none |
+| `--recursion --seeds 6001-6200` (32-bit) | 198 | all pass | none |
+
+Two more host16 limits:
+- **Seed 4438.** A struct passed by value from an element of a global array
+  is a `getelementptr` constant expression. `fixup.py` copied only
+  arguments that are plain names, so the callee's writes reached the
+  global. It now copies constant expressions too.
+- **Seed 4590.** host16 widens pointers to 64 bits for lli. That changes
+  the size of a union with a pointer member, while clang types an
+  initialised array of such unions by its first member, so indexing reads
+  past the elements. `run.py --csmith` now skips programs with such a
+  union.
+
+`reduce.py` accepts clang's distinct-pointer-type comparisons, which Csmith
+writes, and rejects tentative definitions of incomplete arrays, which
+C-Reduce introduces.
+

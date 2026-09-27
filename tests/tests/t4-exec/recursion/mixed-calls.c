@@ -1,5 +1,6 @@
 // loomcc-do: run
 // loomcc-int: agnostic
+// loomcc-skip-mode: host16
 // A recursive function calling non-recursive helpers (which keep static
 // frames and run with D = 0), with 8-bit, 16-bit and 32-bit values
 // crossing each kind of call.

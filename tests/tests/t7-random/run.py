@@ -113,6 +113,13 @@ def main(argv):
                            capture_output=True, cwd=work)
             prog = tmp.read_text()
             extra = [f"-I{CSMITH_DIR}"]
+            # host16 widens pointers to 64 bits for lli, which changes the
+            # size of a union with a pointer member, while clang types an
+            # initialised array of such unions by its first member: indexing
+            # then reads past the elements. host16 cannot model that program.
+            if re.search(r"union U\d+ \{[^}]*\*", prog):
+                print(f"seed {s}: a union with a pointer member (host16 cannot model it); skipped")
+                continue
         else:
             prog = subprocess.run([sys.executable, str(HERE / "gen.py"), str(s), "--stmts", stmts] + (["--narrow"] if narrow else []) + (["--shapes"] if shapes else []) + (["--small"] if small else []) + (["--recursion"] if recursion else []),
                                   capture_output=True, text=True, check=True).stdout

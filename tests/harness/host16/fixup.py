@@ -111,6 +111,37 @@ MEMCALL = re.compile(r"call void @llvm\.(memcpy|memset|memmove)\.[\w.]+\((.*)\)"
 BYVAL = re.compile(r"ptr (?:noundef )?byval\((.+?)\)(?: align (\d+))? ([%@][\w.$\"-]+)")
 
 
+BYVAL_HEAD = re.compile(r"ptr (?:noundef )?byval\((.+?)\)(?: align (\d+))? (?=getelementptr|bitcast)")
+
+
+def byval_constexprs(line, copy):
+    """A byval argument that is a constant expression (a `getelementptr` into
+    a global array, which BYVAL's plain-name pattern misses): copy it too."""
+    while True:
+        m = BYVAL_HEAD.search(line)
+        if not m:
+            return line
+        i = m.end()
+        # The expression: a keyword, then a balanced parenthesised operand.
+        j = line.index("(", i)
+        depth = 0
+        k = j
+        while True:
+            if line[k] == "(":
+                depth += 1
+            elif line[k] == ")":
+                depth -= 1
+                if depth == 0:
+                    break
+            k += 1
+        expr = line[i:k + 1]
+
+        class M:
+            def group(self, n):
+                return {1: m.group(1), 2: m.group(2), 3: expr}[n]
+        line = line[:m.start()] + copy(M()) + line[k + 1:]
+
+
 def pre(text):
     text = text.replace("p:16:16", "p:64:64").replace(" optnone", "")
     layout = Layout(text)
@@ -159,6 +190,7 @@ def pre(text):
                 pre_lines.append(f"  call void @llvm.memcpy.p0.p0.i16(ptr align {align} {tmp}, ptr align {align} {v}, i16 {sizeof(t)}, i1 false)")
                 return f"ptr noundef {tmp}"
             line = BYVAL.sub(copy, line)
+            line = byval_constexprs(line, copy)
             out.extend(pre_lines)
         out.append(line)
     text = "\n".join(out)

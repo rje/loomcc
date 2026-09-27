@@ -37,7 +37,8 @@ UB_WARNINGS = ["-Werror=uninitialized", "-Werror=sometimes-uninitialized", "-Wer
                "-Werror=division-by-zero", "-Werror=shift-count-overflow", "-Werror=shift-count-negative",
                "-Werror=int-conversion", "-Werror=incompatible-pointer-types", "-Werror=unsequenced",
                "-Werror=format-insufficient-args", "-Werror=format", "-Werror=c23-extensions",
-               "-Werror=gnu-empty-initializer", "-Werror=missing-braces", "-Werror=empty-body"]
+               "-Werror=gnu-empty-initializer", "-Werror=missing-braces", "-Werror=empty-body",
+               "-Werror=tentative-definition-array"]
 # Scaffolding a candidate must keep (else C-Reduce "reduces" the checksum away).
 KEEP_GEN = [r'#include "loomcc-test.h"', r'printf("%u\n", (unsigned)checksum());', r"return checksum() != EXPECTED;"]
 KEEP_CSMITH = [r'#include "csmith.h"', r"platform_main_end("]
@@ -76,7 +77,7 @@ p = Path("prog.c")
 text = p.read_text()
 if not all(k in text for k in {keep!r}):
     sys.exit(1)
-r = subprocess.run(["clang", "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-pedantic-errors", "-fsyntax-only",
+r = subprocess.run(["clang", "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-pedantic-errors", "-Wno-compare-distinct-pointer-types", "-fsyntax-only",
                     "-I{ROOT / 'harness/include'}", "-DLOOMCC_T7_PRINT=1", *extra, *{UB_WARNINGS!r}, "prog.c"],
                    capture_output=True)
 if r.returncode:
