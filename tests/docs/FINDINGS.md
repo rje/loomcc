@@ -379,5 +379,5 @@ reflected the result, but the last instruction to set them was `dey`, so
 `if (1 << n)` branched on the zero count and was taken as false. The flags
 are now trusted only when the last emitted instruction sets them from A.
 
-Fixed in loomcc F38HASH.
+Fixed in loomcc 0a86f99.
 
