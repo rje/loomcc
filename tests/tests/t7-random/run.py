@@ -131,6 +131,12 @@ def main(argv):
             extra = []
         try:
             ck = host16_checksum(tmp, work, extra)
+            # A program whose result depends on memory lli does not model
+            # (uninitialised storage, pointers host16 widens) gives a
+            # different checksum from run to run: not a reference.
+            if use_csmith and host16_checksum(tmp, work, extra, "pattern") != ck:
+                print(f"seed {s}: host16 is not deterministic on it (reads memory it does not model); skipped")
+                continue
         except Exception as e:  # a generator bug or a program host16 rejects: report, skip
             print(f"seed {s}: host16 failed ({str(e)[:200]}); skipped")
             continue

@@ -137,3 +137,19 @@ Two more host16 limits:
 writes, and rejects tentative definitions of incomplete arrays, which
 C-Reduce introduces.
 
+Round 3 (loomcc e73b299; the emulator now at `nice -n 10`, see below):
+
+| campaign | programs | loomcc results | finding |
+|---|---:|---|---|
+| `--narrow --recursion --loom --seeds 7001-7400` | 399 | 798 of 798 pass | none |
+| `--recursion --loom --seeds 8001-8200` (32-bit) | 199 | 398 of 398 pass | none |
+| `--csmith --seeds 4601-5000` | 322 (78 skipped: unions with pointer members) | 1 suspect, 1 too big for a bank (F28) | the suspect (4925) was host16: its checksum changed from run to run. `run.py --csmith` now checks the checksum twice, with different fill for uninitialised storage, and skips a program whose result changes |
+
+`--loom` generates the shapes of Loom's runtime: a struct-of-arrays actor
+pool indexed by u8, pointer walks over const ROM tables, u8/s16 mixed
+arithmetic, a switch on a small enum, and a const table of hook functions
+called through pointers. `--recursion` now also generates a three-function
+cycle up to 24 deep and a struct result built through recursion. For the
+latter, `harness/host16/fixup.py` lowers `llvm.memcpy` itself: lli lowers
+it lazily and crashes when a recursive activation is live.
+
