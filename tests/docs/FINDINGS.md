@@ -82,7 +82,7 @@ SNES text strings are plausible. Low priority.
 the 65816 backend". Calling variadic functions compiled by 816-tcc (printf)
 works. Loom's C defines none.
 
-### F39. Initialised data over one bank cannot link (loomcc F28HASH; open, low priority)
+### F39. Initialised data over one bank cannot link (loomcc c333847; open, low priority)
 
 Csmith seed 5002 has 61,463 bytes of initialised globals. PVSnesLib's
 start-up code copies initial values from the `glob.data` section, which
@@ -390,7 +390,7 @@ the hard limit for one SUPERFREE section; loomcc could split huge functions,
 limit inlining into them, or at least say which function is too big.
 816-tcc cannot assemble this program either (its stack offsets overflow).
 
-Fixed in loomcc F28HASH. When a function's code overflows a bank, the
+Fixed in loomcc c333847. When a function's code overflows a bank, the
 driver compiles again without inlining into it. If it is still too big,
 the backend splits it at block boundaries into bank-sized sections:
 - a branch to another section becomes `jml`, and a conditional one skips
