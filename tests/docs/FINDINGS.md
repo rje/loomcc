@@ -360,7 +360,7 @@ and over 120 s for `limits-caselabels.c` (10,000 case labels): the backend's
 per-instruction liveness queries are quadratic in function size. Loom's
 largest functions compile in well under a second.
 
-Fixed in loomcc F37HASH: branch relaxation relaxed one branch per pass
+Fixed in loomcc 503c160: branch relaxation relaxed one branch per pass
 over the whole function (quadratic); it now relaxes every out-of-range
 branch in each pass, reaching the same fixed point (the M9 ROMs are
 byte-identical). Release build: `20001226-1.c` 83 s to 7.9 s,
