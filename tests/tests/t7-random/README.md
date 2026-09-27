@@ -153,3 +153,11 @@ cycle up to 24 deep and a struct result built through recursion. For the
 latter, `harness/host16/fixup.py` lowers `llvm.memcpy` itself: lli lowers
 it lazily and crashes when a recursive activation is live.
 
+Round 4 (loomcc fe0eba9):
+
+| campaign | programs | loomcc results | finding |
+|---|---:|---|---|
+| `--narrow --recursion --loom --stmts 24 --seeds 9001-9600` | 595 | 1,190 of 1,190 pass | none (816-tcc could not even assemble 266 of them) |
+| `--loom --stmts 24 --seeds 10001-10300` (32-bit) | 295 | 590 of 590 pass | none |
+| `--csmith --seeds 5001-5500` | 368 (92 skipped: unions with pointer members) | all pass but 5 | the 5 are F28: one Csmith function larger than a 32 KiB bank |
+
