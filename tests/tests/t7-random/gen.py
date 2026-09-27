@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """loomcc-gen: a small Csmith-style generator of self-checking C programs.
 
-    tests/t7-random/gen.py SEED [--stmts N] [--narrow] [--shapes] [--recursion] [--loom] > prog.c
+    tests/t7-random/gen.py SEED [--stmts N] [--narrow] [--shapes] [--recursion] [--loom] [--widen] > prog.c
 
 --narrow uses only 8- and 16-bit types.
 --shapes adds the shapes behind F29 and F30: structs of up to ~500 bytes
@@ -23,6 +23,16 @@ struct built from its recursive call's struct result.
 indexed by u8, const ROM tables walked through pointers, u8/s16 mixed
 arithmetic, switches on small enums, and a const table of hook functions
 called through pointers.
+--widen adds three things the ROM build treats specially:
+- a second module (compiled separately) that shares globals with the
+  main one, calls back into it, and has a static function of the same name;
+- a VBlank handler (nmiSet) that shares a helper with the main loop;
+- hand assembly that calls a C function back twice while its C caller keeps
+  locals live across the call (loomcc's --asm-callbacks scan).
+The output is then a bundle: the main file, then `//@@FILE <suffix>` parts
+that run.py writes beside it. Without LOOMCC_TEST_ROM (host16, the IR
+interpreter), nmiSet does nothing and the assembly routine has a C
+equivalent. The checksum never depends on how many NMIs arrived.
 
 The program uses only what loomcc's back end supports first (8/16/32-bit
 integers, arrays, structs, calls, loops, switch; no floating point, no
@@ -54,7 +64,7 @@ UNSIGNED = {"u8": "u8", "i8": "u8", "u16": "u16", "i16": "u16", "u32": "u32", "i
 
 
 class Gen:
-    def __init__(self, seed, stmts, narrow=False, shapes=False, recursion=False, loom=False):
+    def __init__(self, seed, stmts, narrow=False, shapes=False, recursion=False, loom=False, widen=False):
         global TYPES
         if narrow:  # 8- and 16-bit only: what every back end handles first
             TYPES = {k: v for k, v in TYPES.items() if v[0] <= 16}
@@ -70,6 +80,8 @@ class Gen:
         self.structs = []   # (name, [(field, type)], (array field, type, size))
         self.recursion = recursion
         self.loom = loom
+        self.widen = widen
+        self.bundle = []
         self.pure = 0
 
     def lit(self, t):
@@ -224,6 +236,8 @@ class Gen:
             self.recursive_funcs()
         if self.loom:
             self.loom_funcs()
+        if self.widen:
+            self.widen_funcs()
         o.append("static u16 checksum(void) {")
         o.append("  u16 c = 0;")
         o.append("  u8 k;")
@@ -239,6 +253,11 @@ class Gen:
             o.append("#endif")
         o.append("int main(void) {")
         o.append("  i16 i1, i2, i3, i4;")
+        if self.widen:
+            o.append("  nmiSet(on_vblank);")
+            o.append("#ifdef LOOMCC_TEST_ROM")
+            o.append("  *LT_ADDR(volatile u8, 0x4200) = 0x80;")
+            o.append("#endif")
         for _ in range(self.stmts):
             o.append(self.stmt([], 3, 1))
             if self.shapes and self.r.random() < 0.5:
@@ -247,6 +266,15 @@ class Gen:
                 o.append(self.recursion_stmt([], 1))
             if self.loom and self.r.random() < 0.5:
                 o.append(self.loom_stmt([], 1))
+            if self.widen and self.r.random() < 0.5:
+                o.append(self.widen_stmt([], 1))
+        if self.widen:
+            # NMIs off, then check the handler's own work: however many
+            # NMIs came, nmi_acc must be mix applied nmi_count times.
+            o.append("#ifdef LOOMCC_TEST_ROM")
+            o.append("  *LT_ADDR(volatile u8, 0x4200) = 0x00;")
+            o.append("#endif")
+            o.append("  { u16 n, a = 0; for (n = 1; n <= nmi_count; n++) a = shared_mix(a, n); if (a != nmi_acc) nmi_bad = 1; }")
         o.append("#ifdef LOOMCC_T7_PRINT")
         o.append('  printf("%u\\n", (unsigned)checksum());')
         o.append("  return 0;")
@@ -254,7 +282,10 @@ class Gen:
         o.append("  return checksum() != EXPECTED;")
         o.append("#endif")
         o.append("}")
-        return "\n".join(o) + "\n"
+        text = "\n".join(o) + "\n"
+        for suffix, body in self.bundle:
+            text += f"//@@FILE {suffix}\n{body}"
+        return text
 
     # --shapes ----------------------------------------------------------
     def struct_fields(self, prefix, st):
@@ -546,13 +577,95 @@ class Gen:
         return f"{pad}{t} = ({tt})(({tt}){t} + ({tt})walk_tab((u8)({self.expr('u8', env, 1)}), (u8)({self.r.randint(0, 25)})));"
 
 
+    # --widen -----------------------------------------------------------
+    def widen_funcs(self):
+        o = self.out
+        k1, k2, k3 = self.r.randrange(1, 9), self.r.randrange(256), self.r.randrange(1, 7)
+        for n in ("w_shared", "m1_counter", "nmi_bad", "cb_calls"):
+            self.globals.append((n, "u16"))
+        o.append("u16 w_shared;")
+        o.append("u16 nmi_bad;")
+        o.append("u16 cb_calls;")
+        o.append("extern u16 m1_counter;")
+        o.append("u16 m1_step(u16 x, u8 k);")
+        # Same-named static helper in both modules.
+        o.append(f"static u16 helper(u16 a) {{ return (u16)(1u * a * {k1}u + {k2}u); }}")
+        o.append("u16 main_hook(u16 x) { w_shared = (u16)(w_shared + helper(x)); return (u16)(x ^ w_shared); }")
+        # NMI.
+        o.append("#ifdef LOOMCC_TEST_ROM")
+        o.append("void nmiSet(void (*vblankRoutine)(void));")
+        o.append("#else")
+        o.append("static void nmiSet(void (*vblankRoutine)(void)) { (void)vblankRoutine; }")
+        o.append("#endif")
+        o.append("static volatile u16 nmi_count, nmi_acc;")
+        o.append(f"static u16 shared_mix(u16 a, u16 b) {{ u16 t = (u16)(1u * a * {k3 * 2 + 1}u + b); u16 u = (u16)(t ^ (t >> 3)); return (u16)(u + a); }}")
+        o.append("static void on_vblank(void) { u16 c = (u16)(nmi_count + 1u); nmi_acc = shared_mix(nmi_acc, c); nmi_count = c; }")
+        # Assembly calling back into C.
+        o.append("u16 t7_cb(u16 x);")
+        o.append("#ifdef LOOMCC_TEST_ROM")
+        o.append("u16 asm_twice(u16 x);")
+        o.append("#else")
+        o.append("u16 asm_twice(u16 x) { return t7_cb(t7_cb(x)); }")
+        o.append("#endif")
+        o.append(f"u16 t7_cb(u16 x) {{ u16 l[3]; u8 k; cb_calls++; for (k = 0; k < 3; k++) l[k] = (u16)(x + k * {k1}u); "
+                 f"return (u16)(helper(l[0]) ^ l[1] ^ (u16)(l[2] << 1)); }}")
+        o.append(f"static u16 around(u16 v) {{ u16 a = (u16)(1u * v * 3u), b = (u16)(v ^ {k2}u); u16 r = asm_twice(a); return (u16)(r + a + b); }}")
+        # The second module.
+        m1 = [
+            '#include "loomcc-test.h"',
+            "extern u16 w_shared;",
+            "u16 main_hook(u16 x);",
+            "u16 m1_counter;",
+            f"static u16 helper(u16 a) {{ return (u16)(a ^ {self.r.randrange(1, 0xffff)}u); }}",
+            "u16 m1_step(u16 x, u8 k) {",
+            "  u16 acc = x;",
+            "  u8 i;",
+            f"  for (i = 0; i < (u8)(k % 5u); i++) acc = (u16)(helper(acc) + main_hook((u16)(acc + i)));",
+            "  m1_counter++;",
+            "  w_shared = (u16)(w_shared ^ acc);",
+            "  return acc;",
+            "}",
+        ]
+        self.bundle.append(("m1.c", "\n".join(m1) + "\n"))
+        asm = [
+            '.include "hdr.asm"',
+            "; asm_twice(x): t7_cb(t7_cb(x)), through the 816-tcc ABI.",
+            f'.SECTION ".t7_asm_{self.seed}" SUPERFREE',
+            "asm_twice:",
+            "  rep #$30",
+            "  lda 4,s",
+            "  pha",
+            "  jsl t7_cb",
+            "  pla",
+            "  lda.b $00",
+            "  pha",
+            "  jsl t7_cb",
+            "  pla",
+            "  rtl",
+            ".ENDS",
+        ]
+        self.bundle.append(("cb.asm", "\n".join(asm) + "\n"))
+
+    def widen_stmt(self, env, indent):
+        pad = "  " * indent
+        k = self.r.random()
+        t = self.r.choice([n for n, ty in self.globals if ty in ("u16", "i16", "u8", "i8") and n not in ("nmi_bad",)] or ["w_shared"])
+        tt = dict(self.globals)[t]
+        if k < 0.35:
+            return f"{pad}{t} = ({tt})(({tt}){t} + ({tt})m1_step((u16)({self.expr('u16', env, 1)}), (u8)({self.expr('u8', env, 1)})));"
+        if k < 0.7:
+            return f"{pad}{t} = ({tt})(({tt}){t} + ({tt})around((u16)({self.expr('u16', env, 1)})));"
+        n = self.r.randint(100, 600)
+        return f"{pad}{{ u16 w, a = (u16)({self.expr('u16', env, 1)}); for (w = 0; w < {n}u; w++) a = shared_mix(a, w); {t} = ({tt})(({tt}){t} + ({tt})a); }}"
+
+
 def main(argv):
     if len(argv) < 2:
         print(__doc__, file=sys.stderr)
         return 2
     seed = int(argv[1])
     stmts = int(argv[argv.index("--stmts") + 1]) if "--stmts" in argv else 12
-    g = Gen(seed, stmts, narrow="--narrow" in argv, shapes="--shapes" in argv, recursion="--recursion" in argv, loom="--loom" in argv)
+    g = Gen(seed, stmts, narrow="--narrow" in argv, shapes="--shapes" in argv, recursion="--recursion" in argv, loom="--loom" in argv, widen="--widen" in argv)
     g.small = "--small" in argv
     sys.stdout.write(g.program())
     return 0

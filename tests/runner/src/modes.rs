@@ -439,6 +439,9 @@ fn run_loomcc(job: &Job, t: &Test, cfg: &Config, work: &Path, log: &mut String) 
             for (n, s) in sources.iter().enumerate() {
                 let asm = work.join(format!("u{}.asm", n));
                 let mut args = flags.clone();
+                // Hand assembly may call back into C: loomcc keeps the frames
+                // of the functions it calls disjoint from its callers'.
+                args.extend(t.asm_sources.iter().map(|a| format!("--asm-callbacks={}", a)));
                 args.extend(["-S".into(), s.clone(), "-o".into(), asm.display().to_string()]);
                 let out = exec::run(lc, &args, dir, timeout(t, 180));
                 rom::log_cmd(log, &out);

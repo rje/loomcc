@@ -45,14 +45,24 @@ CSMITH_FLAGS = ["--no-argc", "--no-longlong", "--no-math64", "--no-bitfields", "
                 "--max-funcs", "4", "--max-block-size", "3", "--quiet", "--concise"]
 
 
-def host16_checksum(src, work, extra=(), init=None):
-    ll = work / (src.stem + ".ll")
-    r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "clang"), "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-O0",
-                        "-w", "-S", "-emit-llvm", "-DLOOMCC_T7_PRINT=1", f"-I{HARNESS}", *extra,
-                        *([f"-ftrivial-auto-var-init={init}"] if init else []), str(src), "-o", str(ll)],
-                       capture_output=True, text=True)
-    if r.returncode:
-        raise RuntimeError("clang: " + r.stderr[-500:])
+def host16_checksum(src, work, extra=(), init=None, more=()):
+    """`more`: further C sources of the program (linked with llvm-link)."""
+    lls = []
+    for n, s in enumerate([src, *more]):
+        ll = work / (src.stem + (f".m{n}" if n else "") + ".ll")
+        r = subprocess.run(["taskpolicy", "-b", "nice", "-n", "19", str(LLVM / "clang"), "--target=msp430-none-elf", "-fsigned-char", "-std=c17", "-O0",
+                            "-w", "-S", "-emit-llvm", "-DLOOMCC_T7_PRINT=1", f"-I{HARNESS}", *extra,
+                            *([f"-ftrivial-auto-var-init={init}"] if init else []), str(s), "-o", str(ll)],
+                           capture_output=True, text=True)
+        if r.returncode:
+            raise RuntimeError("clang: " + r.stderr[-500:])
+        lls.append(ll)
+    ll = lls[0]
+    if len(lls) > 1:
+        ll = work / (src.stem + ".linked.ll")
+        r = subprocess.run([str(LLVM / "llvm-link"), "-S", "-o", str(ll), *map(str, lls)], capture_output=True, text=True)
+        if r.returncode:
+            raise RuntimeError("llvm-link: " + r.stderr[-500:])
     fix = ROOT / "harness/host16/fixup.py"
     pre = work / (src.stem + ".pre.ll")
     subprocess.run([sys.executable, str(fix), "pre", str(ll), str(pre)], check=True)
@@ -97,6 +107,9 @@ def main(argv):
     loom = "--loom" in args  # Loom-shaped pools, ROM tables and hooks (gen.py)
     if loom:
         args.remove("--loom")
+    widen = "--widen" in args  # a second module, an NMI handler, assembly calling back (gen.py)
+    if widen:
+        args.remove("--widen")
     recursion = "--recursion" in args  # recursive functions (gen.py)
     if recursion:
         args.remove("--recursion")
@@ -108,6 +121,7 @@ def main(argv):
     work = Path(tempfile.mkdtemp(prefix="loomcc-t7-work-"))
     made = []
     for s in seeds:
+        aux = {}
         if use_csmith:
             tmp = work / f"csmith-{s}.c"
             # Csmith writes platform.info into its working directory: keep it
@@ -124,13 +138,24 @@ def main(argv):
                 print(f"seed {s}: a union with a pointer member (host16 cannot model it); skipped")
                 continue
         else:
-            prog = subprocess.run([sys.executable, str(HERE / "gen.py"), str(s), "--stmts", stmts] + (["--narrow"] if narrow else []) + (["--shapes"] if shapes else []) + (["--small"] if small else []) + (["--recursion"] if recursion else []) + (["--loom"] if loom else []),
+            prog = subprocess.run([sys.executable, str(HERE / "gen.py"), str(s), "--stmts", stmts] + (["--narrow"] if narrow else []) + (["--shapes"] if shapes else []) + (["--small"] if small else []) + (["--recursion"] if recursion else []) + (["--loom"] if loom else []) + (["--widen"] if widen else []),
                                   capture_output=True, text=True, check=True).stdout
+            # A bundle: the main file, then `//@@FILE <suffix>` parts (a second
+            # module, hand assembly), written beside the test.
+            parts = prog.split("\n//@@FILE ")
+            prog = parts[0]
+            aux = {}
+            for part in parts[1:]:
+                suffix, _, body = part.partition("\n")
+                aux[suffix.strip()] = body
             tmp = work / f"seed-{s}.c"
             tmp.write_text(prog)
+            for suffix, body in aux.items():
+                (work / f"seed-{s}.{suffix}").write_text(body)
             extra = []
+        more = [] if use_csmith else [work / f"seed-{s}.{sfx}" for sfx in aux if sfx.endswith(".c")]
         try:
-            ck = host16_checksum(tmp, work, extra)
+            ck = host16_checksum(tmp, work, extra, more=more)
             # A program whose result depends on memory lli does not model
             # (uninitialised storage, pointers host16 widens) gives a
             # different checksum from run to run: not a reference.
@@ -156,7 +181,11 @@ def main(argv):
                             "// loomcc-ref: host16\n// loomcc-max-frames: 3600\n// loomcc-timeout: 180\n" + prog)
         else:
             test = out / f"seed-{s}.c"
-            test.write_text("// loomcc-do: run\n// loomcc-int: 16\n"
+            dirs = ""
+            for suffix, body in aux.items():
+                (out / f"seed-{s}.{suffix}").write_text(body)
+                dirs += f"// loomcc-{'asm' if suffix.endswith('.asm') else 'extra'}-sources: seed-{s}.{suffix}\n"
+            test.write_text("// loomcc-do: run\n// loomcc-int: 16\n" + dirs +
                             f"// loomcc-options: -DEXPECTED={ck}u\n"
                             f"// loomcc-note: generated by tests/t7-random/gen.py {s} --stmts {stmts}{' --narrow' if narrow else ''}; checksum from host16\n"
                             "// loomcc-ref: tcc-rom\n" + prog)
