@@ -91,13 +91,6 @@ SNES text strings are plausible. Low priority.
 the 65816 backend". Calling variadic functions compiled by 816-tcc (printf)
 works. Loom's C defines none.
 
-### F37. Compile time on huge functions (open; low priority)
-
-The debug build takes 90 s at `-S` for `gcc.c-torture/compile/20001226-1.c`
-and over 120 s for `limits-caselabels.c` (10,000 case labels): the backend's
-per-instruction liveness queries are quadratic in function size. Loom's
-largest functions compile in well under a second.
-
 ## Design questions
 
 ### Q2. PVSnesLib's `int32_t` under loomcc
@@ -359,3 +352,19 @@ timeouts, all in inputs outside Loom's subset:
 Tests: `t3-sema/robust/*.c`, `t5-snes/unsupported/*.c`.
 
 Fixed in loomcc d1ab81f.
+
+### F37. Compile time on huge functions (open; low priority)
+
+The debug build takes 90 s at `-S` for `gcc.c-torture/compile/20001226-1.c`
+and over 120 s for `limits-caselabels.c` (10,000 case labels): the backend's
+per-instruction liveness queries are quadratic in function size. Loom's
+largest functions compile in well under a second.
+
+Fixed in loomcc F37HASH: branch relaxation relaxed one branch per pass
+over the whole function (quadratic); it now relaxes every out-of-range
+branch in each pass, reaching the same fixed point (the M9 ROMs are
+byte-identical). Release build: `20001226-1.c` 83 s to 7.9 s,
+`limits-caselabels.c` over 120 s to 9.9 s, `pr43058.c` 12.5 s. An array
+sized by its initializer is now bounded by the 16 MiB address space too
+(`large-size-array-2.c` laid out an 8 GiB object). Still slow:
+`limits-fndefn.c`, a function with 100,000 parameters (over 10 minutes).

@@ -265,6 +265,20 @@ impl Checker {
     // ------------------------------------------------------------------ initialiser traversal
 
     pub(crate) fn array_len_from_init(&mut self, elem: Ty, init: &ast::Initializer) -> u64 {
+        let n = self.array_len_from_init_inner(elem, init);
+        // The 65816 addresses 16 MiB: no object can be larger.
+        if self.types.size(elem).max(1).saturating_mul(n) > 0x100_0000 {
+            let loc = match init {
+                ast::Initializer::Expr(e) => e.loc,
+                ast::Initializer::List(_, l) => *l,
+            };
+            self.error(loc, "array is too large (larger than the 16 MiB address space)");
+            return 1;
+        }
+        n
+    }
+
+    fn array_len_from_init_inner(&mut self, elem: Ty, init: &ast::Initializer) -> u64 {
         match init {
             ast::Initializer::Expr(e) => {
                 if let ast::ExprKind::Str(parts) = &e.kind {

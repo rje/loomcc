@@ -239,6 +239,10 @@ pub fn print_line(l: &Line, out: &mut String) {
 /// Replaces out-of-range short branches: `bcc far` becomes `bcs +; brl far`
 /// (emitted as `bcs __rN` / `brl far` / `__rN:`), `bra far` becomes `brl`.
 pub fn relax_branches(lines: &mut Vec<Line>, fresh: &mut u32) {
+    // Relaxing a branch only lengthens the code, so a branch out of range
+    // in one layout stays out of range in every later one: relax every such
+    // branch in one pass and repeat until none is left (the same fixed
+    // point as relaxing one at a time, in linear passes).
     loop {
         // Label addresses.
         let mut pos = 0u32;
@@ -255,36 +259,37 @@ pub fn relax_branches(lines: &mut Vec<Line>, fresh: &mut u32) {
                 _ => {}
             }
         }
-        let mut changed = false;
-        let mut i = 0;
-        while i < lines.len() {
-            if let Line::Inst { mnem, mode: Mode::Label(target), .. } = &lines[i] {
-                let mnem = *mnem;
-                if is_cond_branch(mnem) || mnem == "bra" {
+        let far = |i: usize, l: &Line| -> bool {
+            if let Line::Inst { mnem, mode: Mode::Label(target), .. } = l {
+                if is_cond_branch(mnem) || *mnem == "bra" {
                     if let Some(&t) = label_at.get(target) {
-                        let from = at[i] + 2;
-                        let d = t as i64 - from as i64;
-                        if !(-128..=127).contains(&d) {
-                            let target = target.clone();
-                            if mnem == "bra" {
-                                lines[i] = Line::inst("brl", Mode::Label(target));
-                            } else {
-                                *fresh += 1;
-                                let skip = format!("__lr{}", fresh);
-                                lines[i] = Line::inst(invert_branch(mnem), Mode::Label(skip.clone()));
-                                lines.insert(i + 1, Line::inst("brl", Mode::Label(target)));
-                                lines.insert(i + 2, Line::Label(skip));
-                            }
-                            changed = true;
-                            break;
-                        }
+                        let d = t as i64 - (at[i] + 2) as i64;
+                        return !(-128..=127).contains(&d);
                     }
                 }
             }
-            i += 1;
-        }
-        if !changed {
+            false
+        };
+        if !lines.iter().enumerate().any(|(i, l)| far(i, l)) {
             return;
         }
+        let mut out = Vec::with_capacity(lines.len() + 16);
+        for (i, l) in lines.iter().enumerate() {
+            if !far(i, l) {
+                out.push(l.clone());
+                continue;
+            }
+            let Line::Inst { mnem, mode: Mode::Label(target), .. } = l else { unreachable!() };
+            if *mnem == "bra" {
+                out.push(Line::inst("brl", Mode::Label(target.clone())));
+            } else {
+                *fresh += 1;
+                let skip = format!("__lr{}", fresh);
+                out.push(Line::inst(invert_branch(mnem), Mode::Label(skip.clone())));
+                out.push(Line::inst("brl", Mode::Label(target.clone())));
+                out.push(Line::Label(skip));
+            }
+        }
+        *lines = out;
     }
 }
