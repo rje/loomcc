@@ -93,3 +93,24 @@ It was checked with a deliberately broken loomcc (a wrapper that makes
 `--run-ir` fail on any program containing `^`): a 330-line generated
 program reduced to 18 lines (one `^`, plus the checksum scaffolding) in
 about ten minutes.
+
+## Recursion (`--recursion`)
+
+`gen.py --recursion` adds recursive functions of bounded depth: a depth
+parameter shrinks by one each level, at most 12 levels. There is one
+self-recursive function, a mutually recursive pair and a tail-recursive
+one. Each keeps an array local, passes a pointer to it down the recursion
+and writes through its caller's pointer, so the program is correct only if
+every activation has its own locals.
+
+Campaigns of 2026-09-26 (loomcc 70e5955 to 0a86f99):
+
+| campaign | programs | loomcc results | finding |
+|---|---:|---|---|
+| `--narrow --recursion --seeds 1001-1300` | 299 | 597 of 598 pass | seed 1009 was a generator bug: a call inside a guarded division could change the divisor between the guard and the division. Calls are no longer generated there. |
+| `--recursion --seeds 2001-2200` (32-bit) | 200 | 400 of 400 pass | none |
+| `--shapes --small --no-foreign --recursion --seeds 3001-3100` | 98 | 294 of 294 pass | none |
+| `--csmith --seeds 4001-4200` | ~180 | all pass but 4103, and 3 that are too big for a bank (F28) | seed 4103: F38 (a branch on a variable shift), fixed |
+
+816-tcc, the second reference, fails most 32-bit programs (F-tcc notes above).
+
