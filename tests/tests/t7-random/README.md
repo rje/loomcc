@@ -161,3 +161,16 @@ Round 4 (loomcc fe0eba9):
 | `--loom --stmts 24 --seeds 10001-10300` (32-bit) | 295 | 590 of 590 pass | none |
 | `--csmith --seeds 5001-5500` | 368 (92 skipped: unions with pointer members) | all pass but 5 | the 5 are F28: one Csmith function larger than a 32 KiB bank |
 
+Round 5, `--widen` (loomcc 66d3cb8). Every program here has a second
+module compiled separately on the ROM, a VBlank handler (a check on one
+program confirmed more than three NMIs arrive during a run), and hand
+assembly calling back into C:
+
+| campaign | programs | loomcc results | finding |
+|---|---:|---|---|
+| `--narrow --widen --loom --recursion --seeds 11001-11300` | 298 | 596 of 596 pass (ir, rom) | none |
+| `--widen --loom --seeds 12001-12150` (32-bit) | 150 | 300 of 300 pass | none |
+
+For `--widen` the reference is host16 alone: 816-tcc times out compiling
+these programs.
+
