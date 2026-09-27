@@ -230,7 +230,70 @@ def post(text):
             out.append(f"{ind}{dst}.host16w = ptrtoint ptr {src} to i64")
             line = f"{ind}{dst} = trunc i64 {dst}.host16w to {ty}"
         out.append(line)
-    return "\n".join(out)
+    return lower_mem_intrinsics("\n".join(out))
+
+
+MEM_INTRINSIC = re.compile(r"^(\s*)(?:tail |musttail |notail )?call void @llvm\.(memcpy|memmove|memset)\.[\w.]+\((.*)\)(.*)$")
+
+
+def split_args(s):
+    """Top-level comma-separated arguments (constant expressions nest)."""
+    args, depth, cur = [], 0, ""
+    for ch in s:
+        if ch in "([{<":
+            depth += 1
+        elif ch in ")]}>":
+            depth -= 1
+        if ch == "," and depth == 0:
+            args.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    if cur.strip():
+        args.append(cur.strip())
+    return args
+
+
+def lower_mem_intrinsics(text):
+    """lli lowers llvm.memcpy/memset lazily, rewriting the function's body
+    the first time the call executes. In a recursive function an outer
+    activation is still iterating over that body, and the interpreter
+    crashes. Lower them to libc calls before lli runs."""
+    out, n, used = [], 0, set()
+    for line in text.split("\n"):
+        m = MEM_INTRINSIC.match(line)
+        if not m:
+            out.append(line)
+            continue
+        ind, kind, args = m.group(1), m.group(2), split_args(m.group(3))
+        # Operand: the last token of each argument after its type and
+        # attributes (a value or a constant expression).
+        def value(a):
+            t = a.split(" ", 1)
+            ty = t[0]
+            rest = t[1] if len(t) > 1 else ""
+            v = re.sub(r"^(?:(?:noundef|nonnull|noalias|readonly|writeonly|align \d+|dereferenceable\(\d+\)|captures\([^)]*\))\s+)*", "", rest)
+            return ty, v
+        (_, dst), (sty, src), (lty, length) = value(args[0]), value(args[1]), value(args[2])
+        n += 1
+        if lty == "i64":
+            len64 = length
+        else:
+            out.append(f"{ind}%host16.mlen.{n} = zext {lty} {length} to i64")
+            len64 = f"%host16.mlen.{n}"
+        if kind == "memset":
+            out.append(f"{ind}%host16.mval.{n} = zext {sty} {src} to i32")
+            out.append(f"{ind}%host16.mres.{n} = call ptr @memset(ptr {dst}, i32 %host16.mval.{n}, i64 {len64})")
+        else:
+            out.append(f"{ind}%host16.mres.{n} = call ptr @{kind}(ptr {dst}, ptr {src}, i64 {len64})")
+        used.add(kind)
+    text = "\n".join(out)
+    decls = {"memcpy": "declare ptr @memcpy(ptr, ptr, i64)", "memmove": "declare ptr @memmove(ptr, ptr, i64)",
+             "memset": "declare ptr @memset(ptr, i32, i64)"}
+    for k in sorted(used):
+        if not re.search(rf"^declare [^@]*@{k}\(", text, re.M):
+            text += "\n" + decls[k] + "\n"
+    return text
 
 
 def main(argv):

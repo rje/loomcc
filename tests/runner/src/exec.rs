@@ -41,17 +41,21 @@ impl Output {
 
 pub fn run(program: &Path, args: &[String], cwd: &Path, timeout: Duration) -> Output {
     let cmdline = format!("{} {}", program.display(), args.join(" "));
-    // Background QoS band (taskpolicy -b) plus nice: the machine also runs
-    // Loom's ROM suites, and nice alone does not stop them starving.
-    // (taskpolicy is macOS-only; elsewhere plain nice.)
-    let mut cmd = if cfg!(target_os = "macos") {
+    // Compilers and reference tools run in the background QoS band
+    // (taskpolicy -b) plus nice -n 19: the machine also runs Loom's ROM
+    // suites. The emulator does not: in the background band it gets too
+    // little CPU to produce a frame within MesenCore's five-second limit, so
+    // it runs under plain nice -n 10. (taskpolicy is macOS-only; elsewhere
+    // plain nice.)
+    let emulator = program.file_name().map_or(false, |n| n.to_string_lossy().contains("loom-emulator"));
+    let mut cmd = if cfg!(target_os = "macos") && !emulator {
         let mut c = Command::new("taskpolicy");
         c.arg("-b").arg("nice");
         c
     } else {
         Command::new("nice")
     };
-    cmd.arg("-n").arg("19").arg(program).args(args).current_dir(cwd);
+    cmd.arg("-n").arg(if emulator { "10" } else { "19" }).arg(program).args(args).current_dir(cwd);
     cmd.stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped());
     cmd.env("CARGO_BUILD_JOBS", "2");
     let mut child = match cmd.spawn() {

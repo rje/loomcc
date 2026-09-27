@@ -30,6 +30,10 @@ EMU = os.environ.get(
     str(Path(os.environ.get("LOOM_REPO", Path(__file__).resolve().parents[3] / "loom"))
         / "target/debug/loom-emulator"))
 BG = ["taskpolicy", "-b", "nice", "-n", "19"]
+# The emulator runs under plain nice -n 10: in the background QoS band
+# (taskpolicy -b) it gets too little CPU to produce a frame within
+# MesenCore's five-second limit. Compilers and assemblers stay in the band.
+EMU_NICE = ["nice", "-n", "10"]
 
 
 def symbol(sym, name):
@@ -70,7 +74,7 @@ def run(name, rom, script, out, clock=None):
     for attempt in range(8):
         while os.getloadavg()[0] > (os.cpu_count() or 8):
             time.sleep(30)  # a saturated machine starves the emulator past its 5 s frame deadline
-        p = subprocess.run(BG + [EMU, "trace", "--rom", rom, "--script", str(script), "--out", str(d),
+        p = subprocess.run(EMU_NICE + [EMU, "trace", "--rom", rom, "--script", str(script), "--out", str(d),
                                  "--shots", "1", "--watches", ",".join(watches)], capture_output=True, text=True)
         if p.returncode == 0:
             break

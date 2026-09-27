@@ -25,7 +25,10 @@ from pathlib import Path
 LOOM = Path(os.environ.get("LOOM_REPO", Path(__file__).resolve().parents[3] / "loom"))
 HERE = Path(__file__).resolve().parent
 EMU = LOOM / "target/debug/loom-emulator"
-BG = ["taskpolicy", "-b", "nice", "-n", "19"]
+# The emulator runs under plain nice -n 10: in the background QoS band
+# (taskpolicy -b) it gets too little CPU to produce a frame within
+# MesenCore's five-second limit. Compilers and assemblers stay in the band.
+EMU_NICE = ["nice", "-n", "10"]
 
 
 def sh(cmd, **kw):
@@ -46,7 +49,7 @@ def package(copy, work):
     fw = LOOM / "target/Frameworks"
     env = dict(os.environ, LOOM_MESEN_FRAMEWORKS=str(fw), LOOM_DISABLE_AUDIO="1", DYLD_LIBRARY_PATH=str(fw))
     wait_for_quiet()
-    p = sh(BG + [LOOM / "target/debug/loom-automation", work / f"in-{copy.name}.json", work / f"out-{copy.name}.json"], env=env)
+    p = sh(EMU_NICE + [LOOM / "target/debug/loom-automation", work / f"in-{copy.name}.json", work / f"out-{copy.name}.json"], env=env)
     ok = (copy / "Build/Release/project").exists() and any((copy / "Build/Release/project").iterdir())
     return ok, (p.stdout + p.stderr)[-500:]
 
@@ -78,7 +81,7 @@ def wait_for_quiet(limit=None):
 def trace(rom, script, out, extra):
     for _ in range(8):
         wait_for_quiet()
-        p = sh(BG + [EMU, "trace", "--rom", rom, "--script", script, "--out", out] + extra)
+        p = sh(EMU_NICE + [EMU, "trace", "--rom", rom, "--script", script, "--out", out] + extra)
         if p.returncode == 0:
             return
         print("emulator retry:", (p.stderr or p.stdout).strip().splitlines()[:1])

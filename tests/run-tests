@@ -5,4 +5,6 @@ here=$(cd "$(dirname "$0")" && pwd)
 nice_cmd=""
 command -v taskpolicy >/dev/null 2>&1 && nice_cmd="taskpolicy -b nice -n 19"
 (cd "$here/.." && CARGO_BUILD_JOBS=2 $nice_cmd cargo build -q -p loomcc -p loomcc-tests) || exit 2
-exec "$here/../target/debug/loomcc-tests" "$@"
+# The runner itself is not put in the background band (its children would
+# inherit it): it places each tool it runs (runner/src/exec.rs).
+exec nice -n 10 "$here/../target/debug/loomcc-tests" "$@"

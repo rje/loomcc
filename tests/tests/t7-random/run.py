@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Differential testing with generated programs (T7).
 
-    tests/t7-random/run.py --seeds 1-100 [--dir DIR] [--stmts N] [--narrow] [--shapes [--no-foreign] [--small]] [--recursion] [--csmith] [runner options...]
+    tests/t7-random/run.py --seeds 1-100 [--dir DIR] [--stmts N] [--narrow] [--shapes [--no-foreign] [--small]] [--recursion] [--loom] [--csmith] [runner options...]
 
 --csmith generates with Csmith (brew install csmith) instead of gen.py, using
 tests/t7-random/csmith/csmith.h (16-bit-int limits, Csmith's safe math, a
@@ -94,6 +94,9 @@ def main(argv):
     small = "--small" in args  # with --shapes: structs under ~110 bytes
     if small:
         args.remove("--small")
+    loom = "--loom" in args  # Loom-shaped pools, ROM tables and hooks (gen.py)
+    if loom:
+        args.remove("--loom")
     recursion = "--recursion" in args  # recursive functions (gen.py)
     if recursion:
         args.remove("--recursion")
@@ -121,7 +124,7 @@ def main(argv):
                 print(f"seed {s}: a union with a pointer member (host16 cannot model it); skipped")
                 continue
         else:
-            prog = subprocess.run([sys.executable, str(HERE / "gen.py"), str(s), "--stmts", stmts] + (["--narrow"] if narrow else []) + (["--shapes"] if shapes else []) + (["--small"] if small else []) + (["--recursion"] if recursion else []),
+            prog = subprocess.run([sys.executable, str(HERE / "gen.py"), str(s), "--stmts", stmts] + (["--narrow"] if narrow else []) + (["--shapes"] if shapes else []) + (["--small"] if small else []) + (["--recursion"] if recursion else []) + (["--loom"] if loom else []),
                                   capture_output=True, text=True, check=True).stdout
             tmp = work / f"seed-{s}.c"
             tmp.write_text(prog)

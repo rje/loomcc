@@ -40,6 +40,10 @@ EMULATOR = Path(os.environ.get(
 LOOMCC = os.environ.get("LOOMCC", str(REPO / "target/debug/loomcc"))
 
 NICE = ["taskpolicy", "-b", "nice", "-n", "19"]
+# The emulator runs under plain nice -n 10: in the background QoS band
+# (taskpolicy -b) it gets too little CPU to produce a frame within
+# MesenCore's five-second limit. Compilers and assemblers stay in the band.
+EMU_NICE = ["nice", "-n", "10"]
 DONE = 0x600D
 MAX_FRAMES = 1200
 SCANLINE_CLOCKS = 1364
@@ -215,7 +219,7 @@ def emulate(rom, sym, out, watches, profile=None):
     out.mkdir(parents=True, exist_ok=True)
     script = out / "script.json"
     script.write_text(json.dumps([{"until": f"done={DONE}", "max": MAX_FRAMES}]))
-    cmd = NICE + [EMULATOR, "trace", "--rom", rom, "--script", script, "--out", out,
+    cmd = EMU_NICE + [EMULATOR, "trace", "--rom", rom, "--script", script, "--out", out,
                   "--watches", ",".join(f"{n}:{a:06x}:{w}" for n, a, w in watches)]
     if profile:
         cmd += ["--profile", sym, "--profile-from", profile[0], "--profile-to", profile[1]]

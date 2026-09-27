@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """loomcc-gen: a small Csmith-style generator of self-checking C programs.
 
-    tests/t7-random/gen.py SEED [--stmts N] [--narrow] [--shapes] [--recursion] > prog.c
+    tests/t7-random/gen.py SEED [--stmts N] [--narrow] [--shapes] [--recursion] [--loom] > prog.c
 
 --narrow uses only 8- and 16-bit types.
 --shapes adds the shapes behind F29 and F30: structs of up to ~500 bytes
@@ -16,7 +16,13 @@ about 110 bytes (clear of F29's 8-bit stack offsets).
 that shrinks by one each level, at most 12 levels): one calling itself, a
 mutually recursive pair, and a tail-recursive one. Each keeps an array
 local, passes a pointer to it down the recursion and writes through its
-caller's, so every activation needs its own locals.
+caller's, so every activation needs its own locals. It also adds a
+three-function cycle up to 24 levels deep and a function that returns a
+struct built from its recursive call's struct result.
+--loom adds the shapes of Loom's runtime: a struct-of-arrays actor pool
+indexed by u8, const ROM tables walked through pointers, u8/s16 mixed
+arithmetic, switches on small enums, and a const table of hook functions
+called through pointers.
 
 The program uses only what loomcc's back end supports first (8/16/32-bit
 integers, arrays, structs, calls, loops, switch; no floating point, no
@@ -48,7 +54,7 @@ UNSIGNED = {"u8": "u8", "i8": "u8", "u16": "u16", "i16": "u16", "u32": "u32", "i
 
 
 class Gen:
-    def __init__(self, seed, stmts, narrow=False, shapes=False, recursion=False):
+    def __init__(self, seed, stmts, narrow=False, shapes=False, recursion=False, loom=False):
         global TYPES
         if narrow:  # 8- and 16-bit only: what every back end handles first
             TYPES = {k: v for k, v in TYPES.items() if v[0] <= 16}
@@ -63,6 +69,7 @@ class Gen:
         self.small = False
         self.structs = []   # (name, [(field, type)], (array field, type, size))
         self.recursion = recursion
+        self.loom = loom
         self.pure = 0
 
     def lit(self, t):
@@ -215,6 +222,8 @@ class Gen:
             self.shape_funcs()
         if self.recursion:
             self.recursive_funcs()
+        if self.loom:
+            self.loom_funcs()
         o.append("static u16 checksum(void) {")
         o.append("  u16 c = 0;")
         o.append("  u8 k;")
@@ -236,6 +245,8 @@ class Gen:
                 o.append(self.shape_stmt([], 1))
             if self.recursion and self.r.random() < 0.4:
                 o.append(self.recursion_stmt([], 1))
+            if self.loom and self.r.random() < 0.5:
+                o.append(self.loom_stmt([], 1))
         o.append("#ifdef LOOMCC_T7_PRINT")
         o.append('  printf("%u\\n", (unsigned)checksum());')
         o.append("  return 0;")
@@ -403,18 +414,136 @@ class Gen:
         o.append("  if (d == 0) return acc;")
         o.append(f"  return r3((u8)(d - 1), (u16)(1u * acc * 3u + m + {self.r.randrange(256)}u), (u16)(m ^ acc));")
         o.append("}")
+        # A three-function cycle, each with its own locals, up to 24 deep.
+        o.append("static i16 c1(u8 d, i16 v, u8 *trail);")
+        o.append("static i16 c2(u8 d, i16 v, u8 *trail);")
+        for name, nxt in (("c0", "c1"), ("c1", "c2"), ("c2", "c0")):
+            k = self.r.randrange(1, 7)
+            o.append(f"static i16 {name}(u8 d, i16 v, u8 *trail) {{")
+            o.append(f"  u8 mark[3];")
+            o.append(f"  i16 r;")
+            o.append(f"  mark[0] = (u8)(d + {k}u); mark[1] = (u8)v; mark[2] = (u8)(mark[0] ^ mark[1]);")
+            o.append(f"  trail[d % 3u] = (u8)(trail[d % 3u] + mark[2]);")
+            o.append(f"  if (d == 0) return (i16)((u16)v + mark[1]);")
+            o.append(f"  r = {nxt}((u8)(d - 1), (i16)((u16)v * {k}u + d), mark);")
+            o.append(f"  return (i16)((u16)r ^ (u16)(mark[0] + mark[1] + mark[2]));")
+            o.append("}")
+        # A struct result built from the recursive call's struct result.
+        o.append("typedef struct { u16 sum; u8 depth; i8 last; u16 hist[3]; } RS;")
+        o.append("static RS rs(u8 d, i8 x) {")
+        o.append("  RS r, sub;")
+        o.append("  u8 k;")
+        o.append("  if (d == 0) {")
+        o.append("    r.sum = (u16)(i16)x; r.depth = 0; r.last = x;")
+        o.append("    for (k = 0; k < 3; k++) r.hist[k] = (u16)(k + 1u);")
+        o.append("    return r;")
+        o.append("  }")
+        o.append(f"  sub = rs((u8)(d - 1), (i8)((u8)x * {self.r.randrange(1, 9)}u + {self.r.randrange(256)}u));")
+        o.append("  r = sub;")
+        o.append("  r.sum = (u16)(r.sum + (u16)(i16)x + r.hist[d % 3u]);")
+        o.append("  r.depth = (u8)(sub.depth + 1u);")
+        o.append("  r.hist[d % 3u] = (u16)(1u * r.hist[d % 3u] * 3u + (u8)x);")
+        o.append("  return r;")
+        o.append("}")
 
     def recursion_stmt(self, env, indent):
         pad = "  " * indent
         t = self.r.choice([n for n, _ in self.globals if n != "rg"])
         tt = dict(self.globals)[t]
-        f = self.r.choice(["r0", "r1", "r2", "r3"])
+        f = self.r.choice(["r0", "r1", "r2", "r3", "c0", "rs"])
         d = self.r.randint(0, 12)
+        if f == "c0":
+            d = self.r.randint(0, 24)
+            return (f"{pad}{{ u8 tr[3] = {{ 0, 0, 0 }}; {t} = ({tt})(({tt}){t} + ({tt})c0({d}, (i16)({self.expr('i16', env, 1)}), tr)"
+                    f" + ({tt})(tr[0] + tr[1] * 7u + tr[2] * 13u)); }}")
+        if f == "rs":
+            return (f"{pad}{{ RS q = rs({d}, (i8)({self.expr('i8', env, 1)})); {t} = ({tt})(({tt}){t} + ({tt})(q.sum + q.depth"
+                    f" + (u16)(i16)q.last + q.hist[0] + q.hist[1] * 3u + q.hist[2] * 5u)); }}")
         if f == "r3":
             call = f"r3({d}, {self.expr('u16', env, 1)}, {self.expr('u16', env, 1)})"
         else:
             call = f"{f}({d}, (i16)({self.expr('i16', env, 1)}), &rg)"
         return f"{pad}{t} = ({tt})(({tt}){t} + ({tt}){call});"
+
+
+    # --loom ------------------------------------------------------------
+    def loom_funcs(self):
+        o = self.out
+        n = self.r.choice([4, 8, 12, 16])
+        tn = self.r.randint(6, 20)
+        self.pool_n = n
+        o.append("typedef i16 s16;")
+        o.append("typedef enum { K_IDLE, K_WALK, K_JUMP, K_FALL, K_HURT } Kind;")
+        o.append(f"#define POOL {n}")
+        o.append("static u8 pool_kind[POOL];")
+        o.append("static s16 pool_x[POOL], pool_y[POOL];")
+        o.append("static s16 pool_vx[POOL];")
+        o.append("static u8 pool_timer[POOL];")
+        o.append("static u8 pool_count;")
+        vals = ", ".join(str(self.r.randrange(256)) for _ in range(tn))
+        o.append(f"static const u8 rom_tab[{tn}] = {{ {vals} }};")
+        pairs = ", ".join(f"{{ {self.r.randrange(-300, 300)}, {self.r.randrange(256)} }}" for _ in range(self.r.randint(3, 6)))
+        o.append("typedef struct { s16 dx; u8 frames; } Step;")
+        o.append(f"static const Step rom_steps[] = {{ {pairs} }};")
+        o.append("#define NSTEPS (sizeof(rom_steps) / sizeof(rom_steps[0]))")
+        for name in ("pool_kind", "pool_timer"):
+            self.arrays.append((name, "u8", n))
+        for name in ("pool_x", "pool_y", "pool_vx"):
+            self.arrays.append((name, "i16", n))
+        self.globals.append(("pool_count", "u8"))
+        # Spawning: the next free slot, wrapping.
+        o.append("static u8 spawn(u8 kind, s16 x, s16 y) {")
+        o.append("  u8 i = (u8)(pool_count % POOL);")
+        o.append("  pool_kind[i] = (u8)(kind % 5u); pool_x[i] = x; pool_y[i] = y; pool_vx[i] = 0; pool_timer[i] = 0;")
+        o.append("  pool_count++;")
+        o.append("  return i;")
+        o.append("}")
+        # A pointer walk over a const ROM table.
+        o.append("static u16 walk_tab(u8 start, u8 len) {")
+        o.append("  const u8 *p = &rom_tab[start % sizeof(rom_tab)];")
+        o.append("  const u8 *end = rom_tab + sizeof(rom_tab);")
+        o.append("  u16 acc = 0;")
+        o.append("  while (len-- && p < end) { acc = (u16)(1u * acc * 5u + *p); p++; }")
+        o.append("  return acc;")
+        o.append("}")
+        # Hooks: behaviour per kind through a const table of functions.
+        for k, body in enumerate([
+            "pool_vx[i] = 0;",
+            f"pool_vx[i] = (s16)(pool_vx[i] + {self.r.randrange(1, 9)}); if (pool_vx[i] > 40) pool_vx[i] = 40;",
+            f"pool_y[i] = (s16)(pool_y[i] - (s16)rom_tab[pool_timer[i] % sizeof(rom_tab)] / {self.r.randrange(2, 9)});",
+            f"pool_y[i] = (s16)(pool_y[i] + (s16)(u8)(pool_timer[i] * {self.r.randrange(1, 5)}u));",
+            "if (pool_timer[i] > 10u) pool_kind[i] = K_IDLE;",
+        ]):
+            o.append(f"static void hook{k}(u8 i) {{ {body} }}")
+        o.append("typedef void (*Hook)(u8);")
+        o.append("static const Hook hooks[5] = { hook0, hook1, hook2, hook3, hook4 };")
+        # One tick over the pool: switch on the kind, mixed u8/s16 arithmetic.
+        o.append("static void tick(void) {")
+        o.append("  u8 i;")
+        o.append("  for (i = 0; i < POOL; i++) {")
+        o.append("    const Step *st = &rom_steps[pool_timer[i] % NSTEPS];")
+        o.append("    switch ((Kind)pool_kind[i]) {")
+        o.append("    case K_IDLE: break;")
+        o.append("    case K_WALK: pool_x[i] = (s16)(pool_x[i] + st->dx / 16 + pool_vx[i]); break;")
+        o.append(f"    case K_JUMP: if (pool_timer[i] >= st->frames % 16u) pool_kind[i] = K_FALL; break;")
+        o.append("    case K_FALL: if (pool_y[i] > 200) { pool_y[i] = 200; pool_kind[i] = K_WALK; } break;")
+        o.append("    default: pool_x[i] = (s16)(pool_x[i] - (s16)(u8)(pool_timer[i] + 1u)); break;")
+        o.append("    }")
+        o.append("    hooks[pool_kind[i] % 5u](i);")
+        o.append("    pool_timer[i]++;")
+        o.append("  }")
+        o.append("}")
+
+    def loom_stmt(self, env, indent):
+        pad = "  " * indent
+        k = self.r.random()
+        t = self.r.choice([n for n, ty in self.globals if ty in ("u16", "i16", "u8", "i8")] or ["pool_count"])
+        tt = dict(self.globals)[t]
+        if k < 0.35:
+            return f"{pad}spawn((u8)({self.expr('u8', env, 1)}), (s16)({self.expr('i16', env, 1)}), (s16)({self.expr('i16', env, 1)}));"
+        if k < 0.7:
+            return f"{pad}{{ u8 n = (u8)({self.r.randint(1, 4)}); while (n--) tick(); }}"
+        return f"{pad}{t} = ({tt})(({tt}){t} + ({tt})walk_tab((u8)({self.expr('u8', env, 1)}), (u8)({self.r.randint(0, 25)})));"
 
 
 def main(argv):
@@ -423,7 +552,7 @@ def main(argv):
         return 2
     seed = int(argv[1])
     stmts = int(argv[argv.index("--stmts") + 1]) if "--stmts" in argv else 12
-    g = Gen(seed, stmts, narrow="--narrow" in argv, shapes="--shapes" in argv, recursion="--recursion" in argv)
+    g = Gen(seed, stmts, narrow="--narrow" in argv, shapes="--shapes" in argv, recursion="--recursion" in argv, loom="--loom" in argv)
     g.small = "--small" in argv
     sys.stdout.write(g.program())
     return 0
