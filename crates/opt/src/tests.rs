@@ -72,7 +72,7 @@ fn optimisation_preserves_behaviour() {
         assert!(before.0.is_ok(), "{:?}", before);
         for level in [1u8, 2] {
             let mut o = m.clone();
-            crate::optimize_module(&mut o, &crate::Options { level, inline: true });
+            crate::optimize_module(&mut o, &crate::Options { level, inline: true, ..Default::default() });
             loomcc_ir::verify::verify_module(&o).unwrap();
             let after = run(&o);
             assert_eq!(before, after, "level {} changed behaviour of:\n{}\n{}", level, src, loomcc_ir::print_module(&o));

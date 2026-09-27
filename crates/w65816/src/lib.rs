@@ -10,7 +10,7 @@ pub mod dynframe;
 pub mod isel;
 
 use alloc::{allocate, Alloc, DP_POOL};
-use asm::{print_line, relax_branches, Line};
+use asm::{print_line, relax_branches, Line, Mode};
 use isel::{Gen, Helper};
 use loomcc_ir::*;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
@@ -213,9 +213,168 @@ pub struct Output {
     pub asm: String,
     pub errors: Vec<String>,
     pub warnings: Vec<String>,
+    /// Functions whose code is larger than a ROM bank (name, bytes): they
+    /// cannot link. The driver retries without inlining into them.
+    pub oversized: Vec<(String, u32)>,
     /// Bytes of compiled stack (static frames) this module reserves.
     pub cstack_bytes: u32,
 }
+
+/// A LoROM bank: the most code one function (one SUPERFREE section) can hold.
+pub const BANK_BYTES: u32 = 0x8000;
+
+fn code_bytes(lines: &[Line]) -> u32 {
+    lines
+        .iter()
+        .map(|l| match l {
+            Line::Inst { mnem, mode, wide_imm } => asm::size(mnem, mode, *wide_imm),
+            Line::Data(_, n) => *n,
+            _ => 0,
+        })
+        .sum()
+}
+
+fn is_transfer(l: &Line) -> bool {
+    matches!(l, Line::Inst { mnem: "bra" | "brl" | "jml" | "jmp" | "rtl" | "rts" | "rti", .. })
+}
+
+/// Splits a function's code (before branch relaxation) into pieces that
+/// each fit a ROM bank. Cuts fall on labels; a piece that would fall
+/// through into the next ends with `jml` to it; a branch to a label in
+/// another piece becomes `jml` (a conditional one skips over it on the
+/// inverted condition); a jump-table entry for a label in another piece goes
+/// through a `jml` trampoline in the table's piece (`jmp (abs,x)` stays in
+/// the program bank).
+fn split_function(lines: Vec<Line>, fresh: &mut u32) -> Result<Vec<Vec<Line>>, String> {
+    // Leaves room for the jml conversions and branch relaxation.
+    const TARGET: u32 = 0x5800;
+    let mut chunks: Vec<Vec<Line>> = vec![Vec::new()];
+    let mut size = 0u32;
+    let mut prev_indirect = false;
+    for l in lines {
+        let cut_here = matches!(l, Line::Label(_)) && size >= TARGET && !prev_indirect;
+        if cut_here {
+            chunks.push(Vec::new());
+            size = 0;
+        }
+        prev_indirect = matches!(l, Line::Inst { mode: Mode::AbsIndX(_), .. }) || (prev_indirect && matches!(l, Line::Label(_)));
+        size += code_bytes(std::slice::from_ref(&l));
+        chunks.last_mut().unwrap().push(l);
+    }
+    // Which piece defines each label.
+    let mut home: HashMap<String, usize> = HashMap::new();
+    for (ci, c) in chunks.iter().enumerate() {
+        for l in c {
+            if let Line::Label(n) = l {
+                home.insert(n.clone(), ci);
+            }
+        }
+    }
+    let n = chunks.len();
+    // Every piece after the first starts with the label it was cut at.
+    let firsts: Vec<Option<String>> = chunks
+        .iter()
+        .map(|c| match c.first() {
+            Some(Line::Label(l)) => Some(l.clone()),
+            _ => None,
+        })
+        .collect();
+    // WLA-DX labels starting with `_` are local to their section: a label
+    // reached from another piece gets a global alias at its definition.
+    let alias = |l: &str| format!("lcx{}", l.trim_start_matches('_'));
+    let mut crossed: HashSet<String> = HashSet::new();
+    for (ci, c) in chunks.iter().enumerate() {
+        for l in c {
+            match l {
+                Line::Inst { mode: Mode::Label(t), .. } if home.get(t).map_or(false, |&h| h != ci) => {
+                    crossed.insert(t.clone());
+                }
+                Line::Data(text, _) if text.trim_start().starts_with(".dw") => {
+                    for e in text.trim_start()[3..].split(',') {
+                        let e = e.trim();
+                        if home.get(e).map_or(false, |&h| h != ci) {
+                            crossed.insert(e.to_string());
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        if ci > 0 {
+            if let Some(f) = &firsts[ci] {
+                crossed.insert(f.clone());
+            }
+        }
+    }
+    let target = |l: &str| if l.starts_with('_') { alias(l) } else { l.to_string() };
+    let mut out: Vec<Vec<Line>> = Vec::with_capacity(n);
+    for (ci, c) in chunks.into_iter().enumerate() {
+        let mut o: Vec<Line> = Vec::with_capacity(c.len() + 8);
+        let mut trampolines: Vec<Line> = Vec::new();
+        for l in c {
+            match &l {
+                Line::Inst { mnem, mode: Mode::Label(t), .. } if home.get(t).map_or(false, |&h| h != ci) => {
+                    if asm::is_cond_branch(mnem) {
+                        *fresh += 1;
+                        let skip = format!("__ls{}", fresh);
+                        o.push(Line::inst(asm::invert_branch(mnem), Mode::Label(skip.clone())));
+                        o.push(Line::inst("jml", Mode::Long(asm::Expr::Sym(target(t), 0))));
+                        o.push(Line::Label(skip));
+                    } else if matches!(*mnem, "bra" | "brl" | "jmp") {
+                        o.push(Line::inst("jml", Mode::Long(asm::Expr::Sym(target(t), 0))));
+                    } else {
+                        o.push(l.clone());
+                    }
+                }
+                Line::Data(text, bytes) if text.trim_start().starts_with(".dw") => {
+                    let entries: Vec<String> = text.trim_start()[3..].split(',').map(|e| e.trim().to_string()).collect();
+                    let fixed: Vec<String> = entries
+                        .into_iter()
+                        .map(|e| {
+                            if home.get(&e).map_or(false, |&h| h != ci) {
+                                *fresh += 1;
+                                let tr = format!("__lt{}", fresh);
+                                trampolines.push(Line::Label(tr.clone()));
+                                trampolines.push(Line::inst("jml", Mode::Long(asm::Expr::Sym(target(&e), 0))));
+                                tr
+                            } else {
+                                e
+                            }
+                        })
+                        .collect();
+                    o.push(Line::Data(format!("  .dw {}", fixed.join(", ")), *bytes));
+                }
+                Line::Label(name) if crossed.contains(name) && name.starts_with('_') => {
+                    let a = alias(name);
+                    o.push(l);
+                    o.push(Line::Label(a));
+                }
+                _ => o.push(l),
+            }
+        }
+        // Falling through into the next piece.
+        if ci + 1 < n && !o.iter().rev().find(|l| matches!(l, Line::Inst { .. } | Line::Data(..))).map_or(false, is_transfer) {
+            match firsts[ci + 1].clone() {
+                Some(lbl) => o.push(Line::inst("jml", Mode::Long(asm::Expr::Sym(target(&lbl), 0)))),
+                None => return Err("internal: a split piece does not start with a label".into()),
+            }
+        }
+        o.extend(trampolines);
+        let mut f2 = *fresh;
+        relax_branches(&mut o, &mut f2);
+        *fresh = f2;
+        let b = code_bytes(&o);
+        if b > BANK_BYTES {
+            return Err(format!(
+                "a single stretch of this function compiles to {} bytes, more than a {}-byte ROM bank: split the function",
+                b, BANK_BYTES
+            ));
+        }
+        out.push(o);
+    }
+    Ok(out)
+}
+
 
 /// Library functions that never call back into the program: calls to them
 /// need no protection against re-entry.
@@ -305,6 +464,7 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
     let tag = sanitize(&opts.tag);
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
+    let mut oversized: Vec<(String, u32)> = Vec::new();
 
     // Recursion: components of the call graph (with callbacks through
     // external code), the functions interrupts reach, and the candidates
@@ -567,12 +727,34 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
         helpers.extend(g.helpers.iter().copied());
         let mut lines = g.lines;
         peephole(&mut lines);
+        let unsplit = lines.clone();
         relax_branches(&mut lines, &mut fresh);
-        let _ = writeln!(out, "\n.SECTION \"lcc.{}\" SUPERFREE", f.name);
-        for l in &lines {
-            print_line(&resolve_frames(l, &frame_base, &cstack), &mut out);
+        let bytes = code_bytes(&lines);
+        // A function larger than a ROM bank goes into several sections
+        // (F28); the driver first retries without inlining into it.
+        let chunks = if bytes > BANK_BYTES {
+            oversized.push((f.name.clone(), bytes));
+            match split_function(unsplit, &mut fresh) {
+                Ok(c) => c,
+                Err(e) => {
+                    errors.push(format!("{}: {}", f.name, e));
+                    vec![lines]
+                }
+            }
+        } else {
+            vec![lines]
+        };
+        for (ci, chunk) in chunks.iter().enumerate() {
+            if ci == 0 {
+                let _ = writeln!(out, "\n.SECTION \"lcc.{}\" SUPERFREE", f.name);
+            } else {
+                let _ = writeln!(out, "\n.SECTION \"lcc.{}.part{}\" SUPERFREE", f.name, ci);
+            }
+            for l in chunk {
+                print_line(&resolve_frames(l, &frame_base, &cstack), &mut out);
+            }
+            out.push_str(".ENDS\n");
         }
-        out.push_str(".ENDS\n");
     }
     for h in &helpers {
         out.push_str(&helper_text(*h, &mi.helper_name(*h), &mi));
@@ -624,7 +806,7 @@ pub fn compile_module(m: &Module, opts: &Options) -> Output {
         out.push_str(".ENDS\n");
     }
     let _ = writeln!(out, ".BASE ${:02X}", opts.rom_base);
-    Output { asm: out, errors, warnings, cstack_bytes }
+    Output { asm: out, errors, warnings, cstack_bytes, oversized }
 }
 
 fn emit_bytes(out: &mut String, g: &Global) {

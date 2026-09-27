@@ -135,7 +135,7 @@ fn real_main() -> ExitCode {
         if c.failed {
             return ExitCode::from(1);
         }
-        let m = c.module.unwrap();
+        let mut m = c.module.unwrap();
         match args.mode {
             Mode::EmitIr => out = loomcc_ir::print_module(&m),
             Mode::Interpret => {
@@ -178,7 +178,33 @@ fn real_main() -> ExitCode {
                     }
                 }
                 let callbacks = if args.asm_callbacks.is_empty() { None } else { Some(callbacks) };
-                let o = loomcc_w65816::compile_module(&m, &loomcc_w65816::Options { tag, callbacks, stack_budget: args.stack_budget, ..Default::default() });
+                let wopts = loomcc_w65816::Options { tag, callbacks, stack_budget: args.stack_budget, ..Default::default() };
+                let mut o = loomcc_w65816::compile_module(&m, &wopts);
+                // A function larger than a ROM bank cannot link (F28): compile
+                // again without inlining into it (inlining is what usually
+                // makes it that big), until nothing overflows or the same
+                // functions are still too big on their own.
+                let mut no_inline: std::collections::HashSet<String> = Default::default();
+                while !o.oversized.is_empty() && o.oversized.iter().any(|(n, _)| !no_inline.contains(n)) {
+                    no_inline.extend(o.oversized.iter().map(|(n, _)| n.clone()));
+                    let c = loomcc::compile_ir_with(&args.inputs, &args.pp, &prefix, args.opt, &no_inline);
+                    if c.failed {
+                        eprint!("{}", c.messages);
+                        return ExitCode::from(1);
+                    }
+                    m = c.module.unwrap();
+                    o = loomcc_w65816::compile_module(&m, &wopts);
+                }
+                // Still too big: the backend placed it in several sections
+                // (or reported an error if a single stretch overflows).
+                for (n, bytes) in &o.oversized {
+                    eprintln!(
+                        "loomcc: warning: function '{}' compiles to {} bytes of code, more than a {}-byte ROM bank, even without inlining into it; it is split across banks (jumps between the parts cost a little)",
+                        loomcc_w65816::c_name(n),
+                        bytes,
+                        loomcc_w65816::BANK_BYTES
+                    );
+                }
                 for w in &o.warnings {
                     eprintln!("loomcc: warning: {}", w);
                 }

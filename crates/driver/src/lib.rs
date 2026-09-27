@@ -86,6 +86,17 @@ pub fn compile_ir(paths: &[std::path::PathBuf], opts: &Options) -> Compiled {
 }
 
 pub fn compile_ir_prefixed(paths: &[std::path::PathBuf], opts: &Options, prefix: &str, opt_level: u8) -> Compiled {
+    compile_ir_with(paths, opts, prefix, opt_level, &Default::default())
+}
+
+/// compile_ir_prefixed with inlining disabled into the named functions.
+pub fn compile_ir_with(
+    paths: &[std::path::PathBuf],
+    opts: &Options,
+    prefix: &str,
+    opt_level: u8,
+    no_inline_into: &std::collections::HashSet<String>,
+) -> Compiled {
     let mut units = Vec::new();
     let mut sources = Vec::new();
     let mut messages = String::new();
@@ -115,7 +126,7 @@ pub fn compile_ir_prefixed(paths: &[std::path::PathBuf], opts: &Options, prefix:
     }
     let mut m = m;
     if !failed {
-        loomcc_opt::optimize_module(&mut m, &loomcc_opt::Options { level: opt_level, inline: true });
+        loomcc_opt::optimize_module(&mut m, &loomcc_opt::Options { level: opt_level, inline: true, no_inline_into: no_inline_into.clone() });
     }
     if let Err(e) = loomcc_ir::verify::verify_module(&m) {
         messages.push_str(&format!("loomcc: internal IR error: {}\n", e));

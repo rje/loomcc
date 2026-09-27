@@ -18,11 +18,14 @@ use loomcc_ir::*;
 pub struct Options {
     pub level: u8,
     pub inline: bool,
+    /// Functions nothing may be inlined into (the driver's retry for a
+    /// function whose code overflowed a ROM bank).
+    pub no_inline_into: std::collections::HashSet<String>,
 }
 
 impl Default for Options {
     fn default() -> Options {
-        Options { level: 2, inline: true }
+        Options { level: 2, inline: true, no_inline_into: Default::default() }
     }
 }
 
@@ -60,7 +63,7 @@ pub fn optimize_module(m: &mut Module, opts: &Options) {
         optimize_func(f, opts.level);
     }
     if opts.level >= 2 && opts.inline {
-        inline::inline_module(m);
+        inline::inline_module(m, &opts.no_inline_into);
         for f in &mut m.funcs {
             optimize_func(f, opts.level);
         }

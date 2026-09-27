@@ -69,7 +69,7 @@ fn recursive(m: &Module) -> HashSet<String> {
     rec
 }
 
-pub fn inline_module(m: &mut Module) {
+pub fn inline_module(m: &mut Module, no_inline_into: &std::collections::HashSet<String>) {
     let rec = recursive(m);
     for _round in 0..4 {
         let sites = call_sites(m);
@@ -77,6 +77,9 @@ pub fn inline_module(m: &mut Module) {
         let mut changed = false;
         for fi in 0..m.funcs.len() {
             let caller_name = m.funcs[fi].name.clone();
+            if no_inline_into.contains(&caller_name) {
+                continue;
+            }
             loop {
                 let f = &m.funcs[fi];
                 if size(f) > CALLER_LIMIT {

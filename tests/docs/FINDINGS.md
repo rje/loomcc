@@ -44,15 +44,6 @@ Loom's C does not use it: low priority.
 - `va-opt-stringize.c`: `#__VA_OPT__(...)` must stringize the replacement
   (`H3(, 0)` gives `""`); loomcc leaves `#` in the output.
 
-### F28. A function bigger than a ROM bank cannot link (cac2523, rom; low priority)
-
-Csmith seed 239 (`tests/t7-random/run.py --csmith --seeds 239`): loomcc
-compiles `func_1` to 34,570 bytes, and wlalink reports `No room for section
-"lcc.lcsu0_0_func_1" (34570 bytes) in ROM bank 0`. A 32 KiB LoROM bank is
-the hard limit for one SUPERFREE section; loomcc could split huge functions,
-limit inlining into them, or at least say which function is too big.
-816-tcc cannot assemble this program either (its stack offsets overflow).
-
 ### F33. Constraint diagnostics missing, from gcc.dg (481d369)
 
 `external/wrap-gcc-dg-errors.py` wraps 186 of GCC's gcc.dg compile tests
@@ -90,6 +81,15 @@ SNES text strings are plausible. Low priority.
 `va_start`/`va_arg`/`va_end` report "variadic functions are not supported by
 the 65816 backend". Calling variadic functions compiled by 816-tcc (printf)
 works. Loom's C defines none.
+
+### F39. Initialised data over one bank cannot link (loomcc F28HASH; open, low priority)
+
+Csmith seed 5002 has 61,463 bytes of initialised globals. PVSnesLib's
+start-up code copies initial values from the `glob.data` section, which
+wlalink must place in a single ROM bank ("No room for section
+"glob.data" (61463 bytes) in ROM bank 0"). A fix needs loomcc's own copy
+of the initial values in bank-sized pieces, and a start-up hook to copy
+them. Loom's samples have under 2 KB.
 
 ## Design questions
 
@@ -381,3 +381,27 @@ are now trusted only when the last emitted instruction sets them from A.
 
 Fixed in loomcc 0a86f99.
 
+### F28. A function bigger than a ROM bank cannot link (cac2523, rom; low priority)
+
+Csmith seed 239 (`tests/t7-random/run.py --csmith --seeds 239`): loomcc
+compiles `func_1` to 34,570 bytes, and wlalink reports `No room for section
+"lcc.lcsu0_0_func_1" (34570 bytes) in ROM bank 0`. A 32 KiB LoROM bank is
+the hard limit for one SUPERFREE section; loomcc could split huge functions,
+limit inlining into them, or at least say which function is too big.
+816-tcc cannot assemble this program either (its stack offsets overflow).
+
+Fixed in loomcc F28HASH. When a function's code overflows a bank, the
+driver compiles again without inlining into it. If it is still too big,
+the backend splits it at block boundaries into bank-sized sections:
+- a branch to another section becomes `jml`, and a conditional one skips
+  over it on the inverted condition;
+- falling into the next section is an explicit `jml`;
+- a jump-table entry for another section goes through a `jml` trampoline
+  in the table's section;
+- a cross-section target gets a global alias, since WLA-DX labels starting
+  with `_` are local to their section.
+
+A warning names the function and its size. Seeds 239, 4097, 4182, 5197,
+5409, 5413 and 5443, which could not link, now run on the ROM and agree
+with host16. Test: `t5-snes/codegen/function-larger-than-a-bank.c` (69.5 KB,
+three sections).
