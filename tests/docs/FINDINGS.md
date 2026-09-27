@@ -368,3 +368,16 @@ byte-identical). Release build: `20001226-1.c` 83 s to 7.9 s,
 sized by its initializer is now bounded by the 16 MiB address space too
 (`large-size-array-2.c` laid out an 8 GiB object). Still slow:
 `limits-fndefn.c`, a function with 100,000 parameters (over 10 minutes).
+
+### F38. Branching on a shift by a variable count tested the loop counter (rom; 4903574)
+
+Found by Csmith seed 4103 (`tests/t7-random/run.py --csmith --seeds 4001-4200`),
+reduced with C-Reduce (30 minutes, to 1.7 KB) and then by hand. Test:
+`t4-exec/expr/branch-on-variable-shift.c`. A shift by a variable count is a
+loop (`asl a; dey; bne`); code generation claimed afterwards that N and Z
+reflected the result, but the last instruction to set them was `dey`, so
+`if (1 << n)` branched on the zero count and was taken as false. The flags
+are now trusted only when the last emitted instruction sets them from A.
+
+Fixed in loomcc F38HASH.
+

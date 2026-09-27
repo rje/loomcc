@@ -1241,8 +1241,23 @@ impl<'a> Gen<'a> {
             }
         }
         self.acc = None;
-        self.flags_a = !matches!(op, BinOp::Mul | BinOp::DivU | BinOp::DivS | BinOp::RemU | BinOp::RemS);
+        // N and Z reflect A only when the last instruction set them from A:
+        // not after a helper call, and not after a variable shift's loop
+        // (whose last flag-setting instruction is `dey`).
+        self.flags_a = !matches!(op, BinOp::Mul | BinOp::DivU | BinOp::DivS | BinOp::RemU | BinOp::RemS) && self.last_sets_flags_from_a();
         self.sta_reg(dst, 0);
+    }
+
+    /// The last emitted line is an instruction that sets N and Z from A.
+    fn last_sets_flags_from_a(&self) -> bool {
+        match self.lines.last() {
+            Some(Line::Inst { mnem, mode, .. }) => match *mnem {
+                "lda" | "adc" | "sbc" | "and" | "ora" | "eor" | "pla" | "txa" | "tya" | "tdc" | "tsc" => true,
+                "asl" | "lsr" | "rol" | "ror" | "inc" | "dec" => matches!(mode, Mode::Acc),
+                _ => false,
+            },
+            _ => false,
+        }
     }
 
     /// A = a, X = b (for helpers).

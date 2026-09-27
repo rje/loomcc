@@ -220,13 +220,16 @@ def emulate(rom, sym, out, watches, profile=None):
     if profile:
         cmd += ["--profile", sym, "--profile-from", profile[0], "--profile-to", profile[1]]
     # MesenCore gives up on a frame after five seconds of wall time, which a
-    # background-priority run can exceed: retry those.
+    # background-priority run can exceed; and the emulator has occasionally
+    # printed its usage and exited on a valid command line under load. Retry
+    # both (a result is only ever taken from a run that finished).
+    transient = ("NoFrame", "usage", "debug-probe")
     for attempt in range(4):
         try:
             result = run(cmd)
             break
         except BenchError as error:
-            if "NoFrame" not in str(error) or attempt == 3:
+            if not any(t in str(error) for t in transient) or attempt == 3:
                 raise
     (out / "emulator.log").write_text(result.stdout + result.stderr)
     rows = (out / "trace.csv").read_text().splitlines()
