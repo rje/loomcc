@@ -62,6 +62,28 @@ pub const PROGRAMS: &[&str] = &[
     void count(int *out, int n) { if (n == 0) return; *out += n; count(out, n - 1); }
     int main(void) { int c = 0; count(&c, 10);
       printf("%u %d %d %d %d\n", fact(7, 1), gcd(1071, 462), swapper(1, 2, 3), swapper(1, 2, 4), c); return 0; }"#,
+    r#"int printf(const char *, ...);
+    unsigned char kind[8] = { 1, 0, 2, 3, 0, 1, 4, 2 };
+    short px[8] = { 10, -20, 30, -40, 50, -60, 70, -80 };
+    long big[8] = { 100000, 2, 3, -4, 5, 6, 7, 8 };
+    signed char sv[8] = { -3, 5, -128, 127, 0, -1, 1, 2 };
+    unsigned char order[8] = { 7, 3, 0, 5, 1, 6, 2, 4 };
+    int step(unsigned char n) { unsigned char i, c = 0; long t = 0; short s = 0;
+      for (i = 0; i < n; i++) { unsigned char slot = order[i];
+        if (kind[slot] == 2) s += px[slot]; else if (kind[slot] > 2) s -= px[slot];
+        t += big[slot] + px[slot]; if (sv[slot] < -1) c++; if (sv[slot] >= 2) c += 2; if (slot >= 4) c += 3; }
+      return (int)(t & 0x7fff) + s + c; }
+    int main(void) { printf("%d %d %d\n", step(8), step(5), step(0)); return 0; }"#,
+    r#"int printf(const char *, ...);
+    unsigned char a[10] = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3 };
+    int post(unsigned char n) { unsigned char i = 0; int s = 0; while (i++ < n) s += i; return s; }
+    int prev(unsigned char n) { unsigned char p, have = 0, k; int s = 0, s2 = 0;
+      for (k = 0; k < n; k++) { if (have) s += p * 3 + p; p = a[k]; s2 += p + (p << 1); have = 1; }
+      return s * 100 + s2; }
+    int chase(unsigned char i, unsigned char lim) { unsigned char old; int c = 0;
+      do { old = i; i = a[i]; if (old < i) c += 1; if (old == lim) break; c += 10; } while (c < 200);
+      return c; }
+    int main(void) { printf("%d %d %d %d %d\n", post(5), prev(10), prev(3), chase(0, 9), chase(2, 1)); return 0; }"#,
 ];
 
 #[test]
@@ -97,4 +119,26 @@ fn tail_recursion_becomes_a_loop() {
     crate::optimize_module(&mut o, &Default::default());
     let text = loomcc_ir::print_module(&o);
     assert!(!text.contains("call"), "{}", text);
+}
+
+#[test]
+fn widening_is_deterministic() {
+    // Several bytes whose shared widenings land at the start of one block:
+    // the order of those copies must not depend on hash order.
+    let src = "unsigned char a[8], b[8], c[8]; int g;
+      int f(unsigned char i, unsigned char j, unsigned char k, int t) {
+        unsigned char x = a[i], y = b[j], z = c[k];
+        if (t) { g = x + y + z; return a[x] + b[y] + c[z] + x * 2 + y * 3 + z * 4; }
+        return 0; }";
+    let m = compile(src);
+    let mut first = None;
+    for _ in 0..16 {
+        let mut o = m.clone();
+        crate::optimize_module(&mut o, &Default::default());
+        let text = loomcc_ir::print_module(&o);
+        match &first {
+            None => first = Some(text),
+            Some(t) => assert_eq!(t, &text),
+        }
+    }
 }

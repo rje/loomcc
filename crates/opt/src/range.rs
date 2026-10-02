@@ -10,8 +10,49 @@
 
 use loomcc_ir::*;
 
+/// 16-bit registers whose value is always a byte (0..0x100): widened
+/// bytes, masks with a byte, and copies of them.
+fn bytes(f: &Func) -> Vec<bool> {
+    let n = f.vregs.len();
+    let mut sm: Vec<bool> = (0..n).map(|i| f.vregs[i] == IrTy::I16).collect();
+    for r in f.param_regs.iter().flatten() {
+        sm[r.0 as usize] = false;
+    }
+    let op_sm = |o: &Operand, sm: &[bool]| match o {
+        Operand::Imm(v) => (0..0x100).contains(v),
+        Operand::Reg(r) => sm[r.0 as usize],
+        _ => false,
+    };
+    loop {
+        let mut changed = false;
+        for b in &f.blocks {
+            for i in &b.insts {
+                let Some(d) = i.def() else { continue };
+                if !sm[d.0 as usize] {
+                    continue;
+                }
+                let ok = match i {
+                    Inst::Mov { src, .. } => op_sm(src, &sm),
+                    Inst::Conv { kind: ConvKind::Zext, from: IrTy::I8, .. } => true,
+                    Inst::Bin { op: BinOp::And, a, b, .. } => op_sm(a, &sm) || op_sm(b, &sm),
+                    Inst::Bin { op: BinOp::ShrU, a, .. } => op_sm(a, &sm),
+                    _ => false,
+                };
+                if !ok {
+                    sm[d.0 as usize] = false;
+                    changed = true;
+                }
+            }
+        }
+        if !changed {
+            return sm;
+        }
+    }
+}
+
 /// Registers whose value is always in 0..0x8000 (as 16 bits).
 pub fn nonneg(f: &Func) -> Vec<bool> {
+    let sm = bytes(f);
     let n = f.vregs.len();
     let mut nn: Vec<bool> = (0..n).map(|i| matches!(f.vregs[i], IrTy::I16 | IrTy::I8)).collect();
     for r in f.param_regs.iter().flatten() {
@@ -40,6 +81,8 @@ pub fn nonneg(f: &Func) -> Vec<bool> {
                         BinOp::RemU | BinOp::RemS => op_nn(b, &nn) && op_nn(a, &nn),
                         BinOp::DivU => b.imm().map_or(false, |k| k & 0xffff >= 2) || op_nn(a, &nn),
                         BinOp::DivS | BinOp::ShrS => op_nn(a, &nn) && op_nn(b, &nn),
+                        // A byte shifted by at most 7 (a scaled index) stays under 0x8000.
+                        BinOp::Shl if matches!(a, Operand::Reg(r) if sm[r.0 as usize]) && b.imm().map_or(false, |k| (0..8).contains(&k)) => true,
                         BinOp::Add | BinOp::Mul | BinOp::Shl | BinOp::Or => f.is_signed(*dst) && op_nn(a, &nn) && op_nn(b, &nn),
                         _ => false,
                     },

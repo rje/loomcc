@@ -11,6 +11,7 @@ pub mod inline;
 pub mod licm;
 pub mod range;
 pub mod tailrec;
+pub mod widen;
 
 use loomcc_ir::*;
 
@@ -29,8 +30,59 @@ impl Default for Options {
     }
 }
 
+/// Functions on a cycle of the call graph: direct calls, and calls through
+/// pointers to any function whose address is taken (the back end gives
+/// these frames on the hardware stack, whose prologue masks byte
+/// parameters).
+pub fn recursive_functions(m: &Module) -> std::collections::HashSet<String> {
+    use std::collections::HashMap;
+    let index: HashMap<&str, usize> = m.funcs.iter().enumerate().map(|(i, f)| (f.name.as_str(), i)).collect();
+    let taken: Vec<usize> = m.funcs.iter().enumerate().filter(|(_, f)| f.address_taken).map(|(i, _)| i).collect();
+    let succ: Vec<Vec<usize>> = m
+        .funcs
+        .iter()
+        .map(|f| {
+            let mut v = Vec::new();
+            for b in &f.blocks {
+                for i in &b.insts {
+                    match i {
+                        Inst::Call { callee: Callee::Direct(c), .. } => v.extend(index.get(c.as_str()).copied()),
+                        Inst::Call { callee: Callee::Indirect(_), .. } => v.extend(taken.iter().copied()),
+                        _ => {}
+                    }
+                }
+            }
+            v.sort_unstable();
+            v.dedup();
+            v
+        })
+        .collect();
+    let mut out = std::collections::HashSet::new();
+    for start in 0..m.funcs.len() {
+        // Does `start` reach itself?
+        let mut seen = vec![false; m.funcs.len()];
+        let mut stack = succ[start].clone();
+        while let Some(v) = stack.pop() {
+            if v == start {
+                out.insert(m.funcs[start].name.clone());
+                break;
+            }
+            if !std::mem::replace(&mut seen[v], true) {
+                stack.extend(succ[v].iter().copied());
+            }
+        }
+    }
+    out
+}
+
 /// Per-function pipeline, iterated to a fixed point (bounded).
 pub fn optimize_func(f: &mut Func, level: u8) {
+    optimize_func_ext(f, level, false)
+}
+
+/// `recursive`: the function is on a call-graph cycle (see
+/// `recursive_functions`).
+pub fn optimize_func_ext(f: &mut Func, level: u8, recursive: bool) {
     if level == 0 {
         cfg::remove_unreachable(f);
         return;
@@ -44,6 +96,14 @@ pub fn optimize_func(f: &mut Func, level: u8) {
         copy::retarget_defs(f);
         copy::propagate_local(f);
         copy::retarget_defs(f);
+        if level >= 2 && widen::widen_and_scale(f, recursive) {
+            copy::propagate(f);
+            copy::retarget_defs(f);
+        }
+        if level >= 2 {
+            widen::scale_once(f);
+            widen::narrow_compares(f);
+        }
         range::refold_signed_indexes(f);
         range::unsign_compares(f);
         dce::dce(f);
@@ -59,13 +119,17 @@ pub fn optimize_func(f: &mut Func, level: u8) {
 }
 
 pub fn optimize_module(m: &mut Module, opts: &Options) {
+    let recursive = recursive_functions(m);
     for f in &mut m.funcs {
-        optimize_func(f, opts.level);
+        let r = recursive.contains(&f.name);
+        optimize_func_ext(f, opts.level, r);
     }
     if opts.level >= 2 && opts.inline {
         inline::inline_module(m, &opts.no_inline_into);
+        let recursive = recursive_functions(m);
         for f in &mut m.funcs {
-            optimize_func(f, opts.level);
+            let r = recursive.contains(&f.name);
+            optimize_func_ext(f, opts.level, r);
         }
     }
     if opts.level >= 1 {
