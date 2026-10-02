@@ -76,7 +76,7 @@ def wait_for_quiet(limit=None):
     deadline when the machine is saturated by other work (NoFrame at frame 0
     or mid-run). Wait for the load to fall instead of burning retries."""
     import time
-    limit = limit or (os.cpu_count() or 8)
+    limit = limit or 4 * (os.cpu_count() or 8)
     waited = 0
     while os.getloadavg()[0] > limit:
         if waited % 600 == 0:
@@ -222,9 +222,12 @@ def main():
             summary[f"{v}_lag_whole_run_at_tick_frames_1"] = lag_all
             summary[f"{v}_instructions_per_tick_at_tick_frames_1"] = pt
     (d / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
-    # Keep numbers and small artifacts only.
+    # Keep numbers and small artifacts only (--numbers-only: also the
+    # project copy, the builds and the runtime snapshot).
+    only = "--numbers-only" in sys.argv
     for sub in d.iterdir():
-        if sub.is_dir() and (sub.name.startswith(("p-", "q-", "d-", "t1-")) or sub.name.endswith("-tf1")):
+        if sub.is_dir() and (sub.name.startswith(("p-", "q-", "d-", "t1-")) or sub.name.endswith("-tf1")
+                             or (only and sub.name in (sample, "b-tcc", "b-lcc", "runtime-snapshot"))):
             shutil.rmtree(sub, ignore_errors=True)
     print(json.dumps(summary, indent=1))
 

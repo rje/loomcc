@@ -95,6 +95,7 @@ def main():
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--profile", default="release", choices=["release", "debug"])
     ap.add_argument("--reference-build", type=Path, help="take the unit list and build identity from this project copy's packaged build")
+    ap.add_argument("--listing", action="store_true", help="assemble and link loomcc's output with WLA's list files (addresses beside each line; for profiling)")
     a = ap.parse_args()
     global DEFS
     if a.profile == "debug":
@@ -178,11 +179,11 @@ def main():
         run([WLA, "-d", "-s", "-x", "-I", stage] + sum([["-I", r] for r in roots], []) + ["-I", project, "-o", obj, f"{st}.asm"], stage)
         objs.append(obj)
     if a.variant == "loomcc":
-        run([WLA, "-d", "-s", "-x", "-I", stage] + sum([["-I", r] for r in roots], []) + ["-I", project, "-o", "loomcc.obj", "loomcc_whole.asm"], stage)
+        run([WLA, "-d", "-s", "-x"] + (["-i"] if a.listing else []) + ["-I", stage] + sum([["-I", r] for r in roots], []) + ["-I", project, "-o", "loomcc.obj", "loomcc_whole.asm"], stage)
         objs.append("loomcc.obj")
     link = "[objects]\n" + "".join(o + "\n" for o in objs) + "".join(str(LIB / l) + "\n" for l in ["crt0_snes.obj", "libc.obj", "libm.obj", "libtcc.obj"])
     (stage / "linkfile").write_text(link)
-    p = run([LINK, "-d", "-s", "-A", "-c", "-L", LIB, "linkfile", "loom-project.sfc"], stage)
+    p = run([LINK, "-d", "-s", "-A", "-c"] + (["-i"] if a.listing else []) + ["-L", LIB, "linkfile", "loom-project.sfc"], stage)
     (out / "link.log").write_text(p.stdout + p.stderr)
     for f in ["loom-project.sfc", "loom-project.sym"]:
         shutil.copy(stage / f, out / f)

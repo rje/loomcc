@@ -72,7 +72,7 @@ def run(name, rom, script, out, clock=None):
         watches = [f"ts:{base + 106:06x}:2"] + [f"w{o}:{base + o:06x}:4" for o in range(0, 108, 4)]
     d = out / name
     for attempt in range(8):
-        while os.getloadavg()[0] > (os.cpu_count() or 8):
+        while os.getloadavg()[0] > 4 * (os.cpu_count() or 8):
             time.sleep(30)  # a saturated machine starves the emulator past its 5 s frame deadline
         p = subprocess.run(EMU_NICE + [EMU, "trace", "--rom", rom, "--script", str(script), "--out", str(d),
                                  "--shots", "1", "--watches", ",".join(watches)], capture_output=True, text=True)
