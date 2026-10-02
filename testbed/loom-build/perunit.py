@@ -12,7 +12,8 @@ import re
 import sys
 from pathlib import Path
 
-WAITS = ("loom_port_frame_wait", "WaitForVBlank", "loom_pvs_runtime_pass_vblank")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from tickcost import waits_for  # noqa: E402  (which labels are waiting)
 
 
 def profile(path):
@@ -59,6 +60,8 @@ def main():
     lunits = [u for u, how in json.loads((lb / "units.json").read_text()).items() if how == "loomcc"]
     # loomcc: private labels carry the unit index (lcs<tag>_<index>_name);
     # exported names are looked up in the 816-tcc build's map.
+    WAITS = waits_for(Path(tp).read_text().splitlines()) + waits_for(Path(lp).read_text().splitlines())
+
     def unit_of(label, lc):
         b = base(label)
         if b in WAITS or any(b.endswith("_" + w) for w in WAITS):
