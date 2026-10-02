@@ -386,6 +386,24 @@ pub fn allocate_ext(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Ve
 
     // 4. Colour: pointer bases and hot values first get direct page.
     let bases = pointer_bases(f);
+    // Copy partners: the two sides of a `mov` between registers or of a
+    // byte widened to 16 bits (the same home makes the copy free).
+    let mut partners: Vec<Vec<u32>> = vec![Vec::new(); n];
+    for b in &f.blocks {
+        for i in &b.insts {
+            let pair = match i {
+                Inst::Mov { dst, src: Operand::Reg(s) } => Some((*dst, *s)),
+                Inst::Conv { kind: ConvKind::Zext, dst, src: Operand::Reg(s), from: IrTy::I8 } => Some((*dst, *s)),
+                _ => None,
+            };
+            if let Some((d, s)) = pair {
+                if d != s {
+                    partners[d.0 as usize].push(s.0);
+                    partners[s.0 as usize].push(d.0);
+                }
+            }
+        }
+    }
     let mut order: Vec<u32> = (0..n as u32).filter(|&i| needs[i as usize]).collect();
     order.sort_by_key(|&i| {
         let b = bases[i as usize] as u64;
@@ -411,14 +429,21 @@ pub fn allocate_ext(f: &Func, dp_allowed: &[u8], clobber: &dyn Fn(&Callee) -> Ve
                     }
                 }
             }
-            let pick = dp_allowed.iter().copied().find(|&d| {
-                let ok1 = !busy.contains(&d);
+            let free = |d: u8| {
+                let ok1 = dp_allowed.contains(&d) && !busy.contains(&d);
                 if w == 1 {
                     ok1
                 } else {
                     ok1 && dp_allowed.contains(&(d + 2)) && !busy.contains(&(d + 2))
                 }
+            };
+            // A copy partner's word first (a `mov`, or a byte widened to
+            // 16 bits): when they do not interfere the copy disappears.
+            let partner = partners[v as usize].iter().find_map(|&p| match homes[p as usize] {
+                Home::Dp(d) if words(f.ty(VReg(p))) == w && free(d) => Some(d),
+                _ => None,
             });
+            let pick = partner.or_else(|| dp_allowed.iter().copied().find(|&d| free(d)));
             if let Some(d) = pick {
                 // A value used once and not in a loop is not worth a DP word
                 // more than a frame word; take it anyway (DP is cheaper).
