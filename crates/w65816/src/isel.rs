@@ -111,6 +111,8 @@ pub struct Gen<'a> {
     dyn_slot_x: bool,
     /// The frame's offset above D.
     dyn_base: u32,
+    /// The pointer register the scratch pointer ($1c-$1f) holds a copy of.
+    scratch_ptr: Option<VReg>,
 }
 
 fn w(n: i64) -> Expr {
@@ -143,6 +145,7 @@ impl<'a> Gen<'a> {
             dynf: mi.funcs.get(&f.name).and_then(|i| i.dyn_frame),
             dyn_slot_x: mi.funcs.get(&f.name).map_or(false, |i| i.dyn_slot_x),
             dyn_base: mi.funcs.get(&f.name).map_or(0, |i| i.dyn_base),
+            scratch_ptr: None,
         }
     }
 
@@ -195,6 +198,20 @@ impl<'a> Gen<'a> {
         {
             self.flags_a = false;
         }
+        if self.scratch_ptr.is_some() {
+            let writes_dp = matches!(mnem, "sta" | "stz" | "stx" | "sty" | "inc" | "dec" | "asl" | "lsr" | "rol" | "ror" | "tsb" | "trb");
+            // (Any `dp,x` write, and absolute writes to bank 0's direct
+            // page, count as hits: conservative.)
+            let hits = match &mode {
+                Mode::Dp(d) => (SCRATCH_PTR..SCRATCH_PTR + 4).contains(d) || d + 1 == SCRATCH_PTR,
+                Mode::DpX(_) => true,
+                Mode::Abs(Expr::Num(a)) | Mode::Long(Expr::Num(a)) => (a & 0xffff) < 0x100,
+                _ => false,
+            };
+            if (writes_dp && hits) || matches!(mnem, "jsl" | "jsr" | "jml" | "tcd" | "pld" | "mvn" | "mvp") {
+                self.scratch_ptr = None;
+            }
+        }
         self.lines.push(Line::inst(mnem, mode));
     }
 
@@ -209,6 +226,8 @@ impl<'a> Gen<'a> {
         if !self.in8 {
             self.ensure16();
         }
+        // Control merges here: the scratch pointer may hold anything.
+        self.scratch_ptr = None;
         self.lines.push(Line::Label(l));
     }
 
@@ -222,6 +241,7 @@ impl<'a> Gen<'a> {
     }
 
     fn forget(&mut self) {
+        self.scratch_ptr = None;
         self.acc = None;
         self.xv = None;
         self.yv = None;
@@ -484,6 +504,9 @@ impl<'a> Gen<'a> {
     }
 
     fn invalidate_reg(&mut self, r: VReg) {
+        if self.scratch_ptr == Some(r) {
+            self.scratch_ptr = None;
+        }
         let stale = |v: &Option<Val>| matches!(v, Some(Val::Reg(x, _)) if *x == r);
         if stale(&self.acc) {
             self.acc = None;
@@ -790,7 +813,16 @@ impl<'a> Gen<'a> {
 
     fn gen_inst(&mut self, inst: &Inst) {
         let before = self.errors.len();
+        // The scratch pointer's copy of a register this instruction
+        // redefines is stale (whichever way the new value reaches its home).
+        let def = inst.def();
+        if def.is_some() && self.scratch_ptr == def {
+            self.scratch_ptr = None;
+        }
         self.gen_inst_inner(inst);
+        if def.is_some() && self.scratch_ptr == def {
+            self.scratch_ptr = None;
+        }
         if self.errors.len() > before {
             let t = print_inst(self.f, inst);
             if let Some(e) = self.errors.last_mut() {
@@ -1765,6 +1797,7 @@ impl<'a> Gen<'a> {
             Base::Reg(p) => {
                 let dp = match self.home(*p) {
                     Home::Dp(d) => d,
+                    _ if self.scratch_ptr == Some(*p) && !self.fwd(&Operand::Reg(*p)) => SCRATCH_PTR,
                     _ => {
                         // Stage the pointer in scratch direct page, keeping a
                         // forwarded index (in A) in X meanwhile.
@@ -1785,6 +1818,8 @@ impl<'a> Gen<'a> {
                             self.acc = held;
                             self.xv = None;
                         }
+                        // (Set after the stores, which would clear it.)
+                        self.scratch_ptr = Some(*p);
                         SCRATCH_PTR
                     }
                 };
