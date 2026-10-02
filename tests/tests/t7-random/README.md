@@ -174,3 +174,13 @@ assembly calling back into C:
 For `--widen` the reference is host16 alone: 816-tcc times out compiling
 these programs.
 
+Round 6, after widen-once/scale-once and the scratch-pointer reuse (see
+docs/RESULTS.md):
+
+| campaign | programs | loomcc results | finding |
+|---|---:|---|---|
+| `--narrow --recursion --loom --stmts 24 --seeds 13001-13300` | 299 | 598 of 598 pass | none |
+| `--loom --stmts 24 --seeds 14001-14200` (32-bit) | 199 | 398 of 398 pass | none |
+| `--narrow --widen --loom --recursion --seeds 15001-15200` | 198 | 396 of 396 pass | none |
+| `--csmith --seeds 16001-16200` | 149 (51 skipped: unions with pointer members) | 298 of 298 pass | none |
+

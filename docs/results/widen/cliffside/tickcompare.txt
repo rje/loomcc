@@ -1,0 +1,15 @@
+tcc: 1663 frames, ticks 0..812
+after: 1641 frames, ticks 0..812
+witness: 813 ticks compared, 0 differ
+screenshots: 1565 (tick, frame) pairs compared, 288 differ (presentation phase; the timing-free check is the next line)
+distinct presented images: 582 vs 582, sequences IDENTICAL
+  tick 270 frame 1
+  tick 282 frame 1
+  tick 294 frame 1
+  tick 306 frame 1
+  tick 311 frame 1
+  tick 318 frame 1
+  tick 319 frame 1
+  tick 325 frame 1
+  tick 326 frame 1
+  tick 334 frame 1

@@ -36,16 +36,16 @@ It is not a general-purpose C compiler.
 ## Results
 
 From [docs/RESULTS.md](docs/RESULTS.md), measured in an emulator
-(loom-emulator, MesenCore) over 31 benchmarks taken from Loom: each one runs
+(loom-emulator, MesenCore) over 32 benchmarks taken from Loom: each one runs
 the same C under 816-tcc (with 816-opt), under loomcc, and, for 24 of them,
 as the hand-written assembly that replaced that C in Loom.
 
 | loomcc relative to | clocks | instructions | code + rodata bytes |
 |---|---:|---:|---:|
-| 816-tcc (31 benchmarks) | 0.38x | 0.35x | 0.50x |
-| hand assembly (24 pairs) | 1.28x | 1.37x | 1.43x |
+| 816-tcc (32 benchmarks) | 0.37x | 0.33x | 0.49x |
+| hand assembly (24 pairs) | 1.22x | 1.23x | 1.35x |
 
-All 31 produce identical results in every variant.
+All 32 produce identical results in every variant.
 
 Loom's Cliffside sample, built entirely with loomcc (27 C units, Loom's
 hand assembly unchanged), runs 28% fewer instructions per game tick than

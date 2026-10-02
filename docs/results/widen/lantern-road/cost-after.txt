@@ -1,0 +1,27 @@
+instructions a frame 6217, waiting 4122, working 2095
+instructions a tick 4191
+       331  loom_mode1_build_frame
+       308  loom_generated_runtime_tick
+       305  loom_port_frame_wait
+       180  loom_ui_build_frame
+       164  loom_pvs_display_apply
+       130  transfer_again
+       121  loom_scene_dispatch_triggers
+       118  loom_frame_build_begin
+       118  loom_pvs_oam_batch_accept
+       108  FVBlank
+       104  loom_pvs_oam_batch_visible
+       104  loom_pvs_oam_batch_x_ok
+       103  loom_movement_update
+       101  spcProcessStream
+        98  loom_frame_build_submit
+        84  loom_pvs_mode1_scroll
+        79  loom_pvs_oam_batch_stage
+        78  loom_runtime_tick
+        76  loom_pvs_oam_batch_next
+        72  loom_pvs_mode1_display
+        67  loom_pvs_oam_finish_hide_loop
+        53  loom_pvs_scene_intersect_loop
+        48  loom_pvs_oam_batch_fast_high
+        47  loom_pvs_camera_update
+        45  loom_movement_box_blocked

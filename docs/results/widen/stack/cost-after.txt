@@ -1,0 +1,27 @@
+instructions a frame 3896, waiting 11, working 3885
+instructions a tick 3925
+       335  loom_port_frame_wait
+       319  loom_board_repeat_update
+       317  loom_mode1_build_frame
+       250  loom_generated_runtime_tick
+       182  update_well
+       181  loom_ui_build_frame
+       165  loom_pvs_display_apply
+       159  loom_pvs_flush_loop
+       126  loom_pvs_board_mul
+       119  loom_frame_build_begin
+       112  loom_frame_build_submit
+       103  spcProcessStream
+       103  loom_pvs_board_draw_sub
+        85  loom_pvs_mode1_scroll
+        85  loom_pvs_rep_dir
+        78  loom_runtime_tick
+        75  loom_variable_get
+        72  FVBlank
+        69  loom_pvs_mode1_display
+        64  loom_pvs_board_paint_col
+        61  loom_port_dma_stage
+        54  loom_pvs_oam_batch
+        52  loom_surface_build_frame
+        46  loom_pvs_board_repeat
+        46  loom_pvs_rep_next

@@ -1,0 +1,27 @@
+instructions a frame 6280, waiting 2294, working 3986
+instructions a tick 7971
+       430  loom_pvs_oam_batch_visible
+       411  loom_generated_runtime_tick
+       393  loom_mode1_build_frame
+       338  loom_port_frame_wait
+       257  loom_pvs_pass_loop
+       257  loom_pvs_touch_loop
+       231  loom_pvs_oam_batch_next
+       199  loom_pvs_tight_cell
+       177  loom_ui_build_frame
+       165  loom_pvs_display_apply
+       153  loom_pvs_scene_intersect_loop
+       147  loom_pvs_oam_batch_accept
+       147  loom_pvs_solid_next_take
+       143  loom_pvs_anim_loop
+       133  loom_scene_dispatch_triggers
+       129  loom_pvs_oam_batch_x_ok
+       119  loom_frame_build_begin
+       108  FVBlank
+       104  loom_frame_build_submit
+        99  loom_pvs_oam_batch_stage
+        95  loom_pvs_pass_window
+        93  loom_camera_auto_scroll_axes
+        90  loom_actor_update
+        84  loom_pvs_oam_batch_body
+        84  loom_pvs_oam_finish_hide_loop

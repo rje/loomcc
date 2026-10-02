@@ -1,0 +1,29 @@
+{
+ "name": "stack",
+ "tick_frames": 1,
+ "tcc_build": "tcc: 262144 bytes, sha256 b77f7d7f7480cd91, IDENTICAL to the automation ROM",
+ "before_build": "loomcc: 262144 bytes, sha256 fa31245e20ea716f, differs from the automation ROM",
+ "after_build": "loomcc: 262144 bytes, sha256 4c918acf846bd393, differs from the automation ROM",
+ "release_roms_identical": false,
+ "window": [
+  180,
+  967
+ ],
+ "before_instructions_per_tick": 3993,
+ "before_ticks_in_window": 779,
+ "before_lag_in_window": 8,
+ "after_instructions_per_tick": 3925,
+ "after_ticks_in_window": 779,
+ "after_lag_in_window": 8,
+ "tickcompare": {
+  "distinct_images": [
+   104,
+   104
+  ],
+  "image_sequences_identical": true,
+  "ticks_compared": 968,
+  "witness_differ": [],
+  "shots_compared": 994
+ },
+ "builds": "before: loomcc e8cf17a; after: this change; tickcompare: 816-tcc debug vs after debug"
+}

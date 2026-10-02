@@ -1,0 +1,29 @@
+{
+ "name": "lantern-road",
+ "tick_frames": 2,
+ "tcc_build": "tcc: 524288 bytes, sha256 1942087dddb23b74, IDENTICAL to the automation ROM",
+ "before_build": "loomcc: 524288 bytes, sha256 1380293df3599db6, differs from the automation ROM",
+ "after_build": "loomcc: 524288 bytes, sha256 14bfca6e91f71086, differs from the automation ROM",
+ "release_roms_identical": false,
+ "window": [
+  400,
+  1000
+ ],
+ "before_instructions_per_tick": 4274,
+ "before_ticks_in_window": 300,
+ "before_lag_in_window": 301,
+ "after_instructions_per_tick": 4191,
+ "after_ticks_in_window": 300,
+ "after_lag_in_window": 301,
+ "tickcompare": {
+  "distinct_images": [
+   303,
+   303
+  ],
+  "image_sequences_identical": true,
+  "ticks_compared": 1000,
+  "witness_differ": [],
+  "shots_compared": 2017
+ },
+ "builds": "before: loomcc e8cf17a; after: this change; tickcompare: 816-tcc debug vs after debug"
+}
